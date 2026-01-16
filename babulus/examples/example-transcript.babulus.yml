@@ -1,0 +1,8 @@
+scenes:
+  - id: intro
+    title: "Intro to LLM Agents"
+    cues:
+      - label: "Hook"
+        voice: "In this video, we'll build an LLM agent."
+      - label: "What we'll cover"
+        voice: "We'll cover tools, memory, and error handling."

@@ -1,0 +1,72 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "babulus"
+version = "0.1.0"
+description = "Narration-first DSL + audio pipeline for Remotion videos"
+readme = "README.md"
+requires-python = ">=3.11"
+license = {text = "MIT"}
+authors = [
+    {name = "Ryan Porter", email = "ryan.porter@anthus.ai"}
+]
+keywords = ["video", "remotion", "dsl", "tts", "narration", "audio", "elevenlabs", "yaml"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Multimedia :: Sound/Audio :: Speech",
+    "Topic :: Multimedia :: Video",
+    "Topic :: Software Development :: Code Generators",
+]
+dependencies = [
+  "PyYAML>=6.0.1",
+  "requests>=2.31.0",
+  "chardet>=5.2.0",
+  "dotyaml>=0.1.3",
+  "boto3>=1.34.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.23",
+    "black",
+    "ruff",
+    "python-semantic-release>=9.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/AnthusAI/Babulus"
+Documentation = "https://github.com/AnthusAI/Babulus/tree/main/docs"
+Repository = "https://github.com/AnthusAI/Babulus"
+Issues = "https://github.com/AnthusAI/Babulus/issues"
+
+[project.scripts]
+babulus = "babulus.cli:main"
+
+[tool.setuptools]
+packages = ["babulus", "babulus.music", "babulus.sfx", "babulus.tts"]
+
+[tool.semantic_release]
+version_toml = ["pyproject.toml:project.version"]
+version_variables = ["babulus/__init__.py:__version__"]
+branch = "main"
+build_command = "pip install build && python -m build"
+commit_parser = "angular"
+changelog_file = "CHANGELOG.md"
+upload_to_vcs_release = true
+upload_to_pypi = true
+commit_author = "github-actions[bot] <github-actions[bot]@users.noreply.github.com>"
+commit_message = "chore(release): {version}\n\n[skip ci]"
+tag_format = "v{version}"
+major_on_zero = false
+allow_zero_version = true
+
+[tool.semantic_release.remote]
+type = "github"

@@ -1,0 +1,15 @@
+scenes:
+  - id: intro
+    title: "Intro to LLM Agents"
+    time: "0s-8s"
+    cues:
+      - label: "Hook"
+        time: "0s-3s"
+        voice: "In this video, we'll build an LLM agent."
+      - label: "What we'll cover"
+        time: "3s-8s"
+        voice: "We'll cover tools, memory, and error handling."
+        bullets:
+          - "Tools and APIs"
+          - "Memory and state"
+          - "Error handling"
