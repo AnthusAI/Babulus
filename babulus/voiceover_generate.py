@@ -37,6 +37,13 @@ from .voiceover_dsl import (
     TextSegmentSpec,
     VoiceoverConfig,
     load_voiceover_yaml,
+    _get_environment,
+)
+from .cache_resolver import (
+    resolve_env_cache_dir,
+    resolve_cached_segment,
+    resolve_cached_sfx,
+    resolve_cached_music,
 )
 
 
@@ -45,6 +52,7 @@ class GeneratedArtifact:
     script: Script
     audio_path: str | None
     timeline_path: str
+    did_synthesize: bool  # True if any audio was actually generated (vs all cache hits)
 
 
 def _write_silence_wav_append(wf: wave.Wave_write, *, duration_sec: float, sample_rate_hz: int) -> None:
@@ -177,6 +185,15 @@ def _get_manifest_duration(manifest: dict[str, Any], section: str, path: Path, e
     if not isinstance(sec, dict):
         return None
     entry = sec.get(str(path))
+    
+    # Fallback: match by filename if exact path match fails (handles CWD changes)
+    if entry is None:
+        target_name = path.name
+        for k, v in sec.items():
+            if Path(k).name == target_name:
+                entry = v
+                break
+
     if not isinstance(entry, dict):
         return None
     if entry.get("key") != expected_key:
@@ -226,6 +243,7 @@ def generate_voiceover(
     seed_override: int | None = None,
     fresh: bool = False,
     log: Callable[[str], None] | None = None,
+    verbose_logs: bool = True,
 ) -> GeneratedArtifact:
     def _log(msg: str) -> None:
         if log is not None:
@@ -233,24 +251,36 @@ def generate_voiceover(
 
     dsl_text = Path(dsl_path).read_text(encoding="utf-8")
     voiceover, scenes, audio_plan = load_voiceover_yaml(dsl_text)
-    _log(
-        f"dsl: loaded scenes={len(scenes)}"
-        + (f" audio_tracks={len(audio_plan.tracks)}" if audio_plan is not None else " audio_tracks=0")
-    )
+    if verbose_logs:
+        _log(
+            f"dsl: loaded scenes={len(scenes)}"
+            + (f" audio_tracks={len(audio_plan.tracks)}" if audio_plan is not None else " audio_tracks=0")
+        )
     provider_name = provider_override or voiceover.provider or get_default_provider(config) or "dry-run"
     provider = get_provider(provider_name, config=config)
 
     # Log provider details
-    model_info = f"model={voiceover.model or getattr(provider, 'default_model', None)}"
-    voice_info = f"voice={voiceover.voice or getattr(provider, 'default_voice', None)}"
-    _log(f"voice: provider={provider_name} {model_info} {voice_info} fresh={bool(fresh)}")
+    if verbose_logs:
+        model_info = f"model={voiceover.model or getattr(provider, 'default_model', None)}"
+        voice_info = f"voice={voiceover.voice or getattr(provider, 'default_voice', None)}"
+        _log(f"voice: provider={provider_name} {model_info} {voice_info} fresh={bool(fresh)}")
 
     rng = random.Random(seed_override if seed_override is not None else voiceover.seed)
     out_dir_p = Path(out_dir)
-    segments_dir = out_dir_p / "segments"
+
+    # Use environment-specific cache directories
+    current_env = _get_environment()
+    env_cache_dir = resolve_env_cache_dir(out_dir_p, current_env)
+    segments_dir = env_cache_dir / "segments"
     segments_dir.mkdir(parents=True, exist_ok=True)
-    manifest_path = out_dir_p / "manifest.json"
+    manifest_path = env_cache_dir / "manifest.json"
     manifest = _load_manifest(manifest_path) if not fresh else {"version": 1, "segments": {}, "sfx": {}}
+
+    if verbose_logs:
+        _log(f"cache: env={current_env} provider={provider_name}")
+
+    # Track whether we actually synthesized anything new (vs just using cache)
+    did_synthesize = False
 
     effective_pronunciation_dictionary_locators = voiceover.pronunciation_dictionary_locators
     pronunciation_rules: list[PronunciationRule] = []
@@ -499,37 +529,54 @@ def generate_voiceover(
                     if effective_pronunciation_dictionary_locators is not None
                     else {},
                 )
-                if seg_path.exists() and not fresh:
-                    duration = _get_manifest_duration(manifest, "segments", seg_path, seg_key)
+                # Try to find cached segment in current or fallback environments
+                cached_path, cached_env = resolve_cached_segment(
+                    out_dir=out_dir_p,
+                    current_env=current_env,
+                    cache_key=seg_key,
+                    scene_id=scene.id,
+                    cue_id=cue.id,
+                    occurrence=occurrence,
+                    extension=tts_ext,
+                    log=_log,
+                )
+
+                if cached_path is not None and not fresh:
+                    # Found in cache (current or fallback environment)
+                    duration = _get_manifest_duration(manifest, "segments", cached_path, seg_key)
                     if duration is None:
                         duration = (
-                            _wav_duration_sec(seg_path)
-                            if seg_path.suffix == ".wav"
-                            else probe_duration_sec(seg_path)
+                            _wav_duration_sec(cached_path)
+                            if cached_path.suffix == ".wav"
+                            else probe_duration_sec(cached_path)
                         )
-                    # Self-heal corrupted cached audio (e.g. a multi-minute mp3 for a short utterance).
+
+                    # Self-heal corrupted cached audio
                     max_seg = float(getattr(voiceover, "max_tts_segment_seconds", _MAX_TTS_SEGMENT_SECONDS_DEFAULT))
                     if float(duration) > max_seg:
                         _log(
                             f"tts: corrupt-duration scene={scene.id} cue={cue.id} seg={seg_i+1} duration={float(duration):.1f}s -> regen"
                         )
-                        try:
-                            seg_path.unlink()
-                        except Exception:  # noqa: BLE001
-                            pass
-                        try:
-                            seg = provider.synthesize(req, seg_path)
-                            duration = float(seg.durationSec)
-                        except Exception:  # noqa: BLE001
-                            # If regeneration fails (quota/network/etc), clamp the duration so a single corrupted
-                            # file can't explode the whole video length.
-                            duration = float(max_seg)
-                        if duration > max_seg:
-                            duration = float(max_seg)
+                        # Regenerate in current environment
+                        seg = provider.synthesize(req, seg_path)
+                        duration = float(seg.durationSec)
+                        did_synthesize = True
+                    else:
+                        # Use cached file
+                        if cached_env != current_env:
+                            # Using fallback from different environment - log it
+                            _log(f"tts: fallback scene={scene.id} cue={cue.id} seg={seg_i+1} using env={cached_env}")
+                        elif verbose_logs:
+                            # Cache hit in current environment - only show in verbose mode
+                            _log(f"tts: cache scene={scene.id} cue={cue.id} seg={seg_i+1} key={_safe_prefix(seg_key)[:8]}")
+                        # If from different env, use that path; otherwise seg_path == cached_path
+                        seg_path = cached_path
                 else:
+                    # Not in cache, generate new
                     _log(f"tts: synth scene={scene.id} cue={cue.id} seg={seg_i+1} -> {seg_path.name}")
                     seg = provider.synthesize(req, seg_path)
                     duration = float(seg.durationSec)
+                    did_synthesize = True
 
                 trim_end_cfg = float(getattr(seg_spec, "trim_end_sec", 0.0))
                 if trim_end_cfg > 0:
@@ -568,7 +615,7 @@ def generate_voiceover(
                 segment_paths.append(seg_path)
                 concat_path = seg_path
                 if trim_end > 0:
-                    trimmed_dir = out_dir_p / "segments_trimmed"
+                    trimmed_dir = env_cache_dir / "segments_trimmed"
                     trimmed_dir.mkdir(parents=True, exist_ok=True)
                     trimmed = trimmed_dir / seg_path.name
                     if not trimmed.exists() or fresh:
@@ -654,7 +701,8 @@ def generate_voiceover(
 
     Path(script_out).parent.mkdir(parents=True, exist_ok=True)
     Path(script_out).write_text(json.dumps(script.to_jsonable(), indent=2) + "\n", encoding="utf-8")
-    _log(f"write: script={script_out} duration_seconds={total_end_sec:.2f}")
+    if verbose_logs:
+        _log(f"write: script={script_out} duration_seconds={total_end_sec:.2f}")
 
     # NOTE: don't delete stale staged files until the very end, otherwise a failing run can leave
     # Remotion pointing at now-missing assets (old timeline + cleaned public/).
@@ -697,12 +745,14 @@ def generate_voiceover(
             music_provider = None
 
         # Log provider configuration
-        sfx_status = default_sfx_provider if sfx_provider is not None else "none"
-        music_status = default_music_provider if music_provider is not None else "none"
-        _log(f"audio: sfx_provider={sfx_status} music_provider={music_status}")
-        sfx_out_dir = out_dir_p / "sfx"
+        if verbose_logs:
+            sfx_status = default_sfx_provider if sfx_provider is not None else "none"
+            music_status = default_music_provider if music_provider is not None else "none"
+            _log(f"audio: sfx_provider={sfx_status} music_provider={music_status}")
+        # Use environment-specific directories for SFX and music
+        sfx_out_dir = env_cache_dir / "sfx"
         sfx_out_dir.mkdir(parents=True, exist_ok=True)
-        music_out_dir = out_dir_p / "music"
+        music_out_dir = env_cache_dir / "music"
         music_out_dir.mkdir(parents=True, exist_ok=True)
         public_sfx_dir: Path | None = None
         public_music_dir: Path | None = None
@@ -798,9 +848,7 @@ def generate_voiceover(
                     if pick >= variants:
                         raise CompileError(f'music pick out of range for "{clip.id}" (pick={pick}, variants={variants})')
 
-                    _log(
-                        f"music: plan clip={clip.id} start_seconds={start_sec:.2f} duration_seconds={desired:.1f} variants={variants} pick={pick}"
-                    )
+                    # Plan music generation (logging removed to reduce noise - only log actual synthesis/fallback)
                     generated: list[dict[str, Any]] = []
                     music_ext = ".mp3" if default_music_provider == "elevenlabs" else ".wav"
                     for v in range(variants):
@@ -819,12 +867,28 @@ def generate_voiceover(
                         )
                         # ElevenLabs expects a 32-bit signed integer seed (<= 2_147_483_647).
                         seed = int(music_key[:8], 16) % 2147483647
+                        # Build target path in current environment
                         out_path = music_out_dir / f"{cache_id}--v{v+1}--{_safe_prefix(music_key)}{music_ext}"
-                        if out_path.exists() and not fresh:
-                            _log(f"music: cache clip={clip.id} variant={v+1}/{variants} path={out_path.name}")
-                            dur = _get_manifest_duration(manifest, "music", out_path, music_key)
+
+                        # Try to find cached music in current or fallback environments
+                        cached_path, cached_env = resolve_cached_music(
+                            out_dir=out_dir_p,
+                            current_env=current_env,
+                            cache_key=music_key,
+                            clip_id=cache_id,
+                            variant=v,
+                            extension=music_ext,
+                            log=_log,
+                        )
+
+                        if cached_path is not None and not fresh:
+                            # Found in cache
+                            if cached_env != current_env:
+                                _log(f"music: fallback clip={clip.id} variant={v+1}/{variants} using env={cached_env}")
+                            dur = _get_manifest_duration(manifest, "music", cached_path, music_key)
                             if dur is None:
-                                dur = probe_duration_sec(out_path)
+                                dur = probe_duration_sec(cached_path)
+                            out_path = cached_path
                         else:
                             _log(
                                 f"music: synth clip={clip.id} variant={v+1}/{variants} seed={seed} duration_seconds={desired:.1f} -> {out_path.name}"
@@ -841,6 +905,7 @@ def generate_voiceover(
                             try:
                                 seg = music_provider.generate(req, out_path)
                                 dur = float(seg.durationSec)
+                                did_synthesize = True
                             except Exception as e:  # noqa: BLE001
                                 msg = str(e).strip().splitlines()[0] if str(e).strip() else type(e).__name__
                                 _log(
@@ -912,11 +977,7 @@ def generate_voiceover(
                                         pass
                             chosen_src = str(staged).split("public/", 1)[1]
 
-                    _log(
-                        f"music: chosen clip={clip.id} src="
-                        + (chosen_src if chosen_src is not None else "null")
-                        + f" duration_seconds={float(chosen['durationSec']):.2f}"
-                    )
+                    # Selected variant (logging removed to reduce noise)
                     clips_out.append(
                         {
                             "id": clip.id,
@@ -974,16 +1035,35 @@ def generate_voiceover(
                     )
                     # ElevenLabs expects a 32-bit signed integer seed (<= 2_147_483_647).
                     seed = int(sfx_key[:8], 16) % 2147483647
+                    # Build target path in current environment
                     out_path = sfx_out_dir / f"{cache_id}--v{v+1}--{_safe_prefix(sfx_key)}{sfx_ext}"
-                    if out_path.exists() and not fresh:
-                        dur = _get_manifest_duration(manifest, "sfx", out_path, sfx_key)
+
+                    # Try to find cached SFX in current or fallback environments
+                    cached_path, cached_env = resolve_cached_sfx(
+                        out_dir=out_dir_p,
+                        current_env=current_env,
+                        cache_key=sfx_key,
+                        clip_id=cache_id,
+                        variant=v,
+                        extension=sfx_ext,
+                        log=_log,
+                    )
+
+                    if cached_path is not None and not fresh:
+                        # Found in cache
+                        if cached_env != current_env:
+                            _log(f"sfx: fallback clip={clip.id} variant={v+1}/{variants} using env={cached_env}")
+                        dur = _get_manifest_duration(manifest, "sfx", cached_path, sfx_key)
                         if dur is None:
                             dur = (
-                                _wav_duration_sec(out_path)
-                                if out_path.suffix == ".wav"
-                                else probe_duration_sec(out_path)
+                                _wav_duration_sec(cached_path)
+                                if cached_path.suffix == ".wav"
+                                else probe_duration_sec(cached_path)
                             )
+                        out_path = cached_path
                     else:
+                        # Generate new SFX
+                        _log(f"sfx: synth clip={clip.id} variant={v+1}/{variants} seed={seed} -> {out_path.name}")
                         req = SFXRequest(
                             prompt=clip.prompt or "",
                             durationSec=clip.durationSec,
@@ -993,6 +1073,7 @@ def generate_voiceover(
                         )
                         seg = sfx_provider.generate(req, out_path)
                         dur = float(seg.durationSec)
+                        did_synthesize = True
                     _set_manifest_entry(
                         manifest,
                         "sfx",
@@ -1078,7 +1159,8 @@ def generate_voiceover(
         json.dumps({"items": timeline, "audio": {"tracks": audio_tracks_out}}, indent=2) + "\n",
         encoding="utf-8",
     )
-    _log(f"write: timeline={timeline_out} items={len(timeline)} tracks={len(audio_tracks_out)}")
+    if verbose_logs:
+        _log(f"write: timeline={timeline_out} items={len(timeline)} tracks={len(audio_tracks_out)}")
     _atomic_write_json(manifest_path, manifest)
 
     if audio_out:
@@ -1088,7 +1170,8 @@ def generate_voiceover(
         else:
             concat_audio_files(outp, segment_paths_for_concat)
         audio_path = audio_out
-        _log(f"write: audio={audio_out} segments={len(segment_paths_for_concat)}")
+        if verbose_logs:
+            _log(f"write: audio={audio_out} segments={len(segment_paths_for_concat)}")
     else:
         audio_path = None
 
@@ -1099,6 +1182,9 @@ def generate_voiceover(
         except Exception:  # noqa: BLE001
             pass
     if stale_public_segment_paths:
-        _log(f"cleanup: deleted_stale_public_segments={len(stale_public_segment_paths)}")
+        if verbose_logs:
+            _log(f"cleanup: deleted_stale_public_segments={len(stale_public_segment_paths)}")
 
-    return GeneratedArtifact(script=script, audio_path=audio_path, timeline_path=timeline_out)
+    return GeneratedArtifact(
+        script=script, audio_path=audio_path, timeline_path=timeline_out, did_synthesize=did_synthesize
+    )

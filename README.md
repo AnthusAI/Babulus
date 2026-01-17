@@ -67,21 +67,42 @@ scenes:
 
 If you omit `id` for a scene/cue, Babulus derives one from `title`/`label` (slugified). It’s optional, but for real projects you usually want explicit IDs so you can rename titles/labels without breaking the Remotion mapping.
 
-## Compile to JSON (CLI)
+## Installation
 
-Install (for local development, from a clone of this repo):
+**Requirements**: Python 3.11 or newer
+
+Install for local development (from a clone of this repo):
 
 ```bash
 python -m pip install -e . -U
 ```
 
+Or install from requirements.txt in a project:
+
+```bash
+pip install -r requirements.txt  # where requirements.txt lists babulus>=0.1.0
+```
+
 You can then run either `babulus ...` (recommended) or `python -m babulus ...`.
+
+## CLI Commands
+
+### Project Directory (Root Workflow)
+
+If your Babulus project lives in a subdirectory (e.g., `videos/`) but you want to run commands from the project root (e.g., via `package.json` scripts), use the `--project-dir` argument. This ensures config files, content paths, and outputs are resolved correctly relative to that subdirectory.
+
+```bash
+# Run from root, targeting the 'videos' subdirectory
+babulus generate videos/content --project-dir videos
+```
+
+This is equivalent to `cd videos && babulus generate content`.
 
 ### Manual timing compile
 
 ```bash
 babulus compile \
-  --dsl path/to/video.babulus.yml \
+  path/to/video.babulus.yml \
   --out path/to/script.json \
   --pretty
 ```
@@ -92,12 +113,19 @@ Transcript-driven alignment is supported if you pass `--transcript path/to/words
 { "words": [{ "word": "Hello", "start": 0.0, "end": 0.2 }] }
 ```
 
-### Audio-driven generation (the “real” pipeline)
+### Audio-driven generation (the "real" pipeline)
 
 This mode is for when you want cue timing to come from the actual generated audio (plus explicit pauses), rather than hard-coded `time:` ranges.
 
 ```bash
-babulus generate --dsl path/to/video.babulus.yml
+# Generate a specific video
+babulus generate content/intro.babulus.yml
+
+# Generate all videos in a directory
+babulus generate content/
+
+# Auto-discover (if exactly one DSL in ./content/)
+babulus generate
 ```
 
 Defaults (derived from the DSL filename `<video>.babulus.yml`):
@@ -107,28 +135,95 @@ Defaults (derived from the DSL filename `<video>.babulus.yml`):
 - `audio-out`: `public/babulus/<video>.wav`
 - `out-dir`: `.babulus/out/<video>`
 
-If you have exactly one DSL under `./content/`, you can omit `--dsl` entirely:
-
-```bash
-babulus generate
-```
-
 Idempotence / caching:
 
 - By default, `generate` reuses cached audio segments when the inputs are unchanged (so changing one word only regenerates the affected clip).
 - Use `--fresh` to force regeneration of everything.
+
+### Environment-Aware Caching
+
+Babulus caches audio per-environment to avoid burning through API quotas when switching environments or iterating on DSL changes. Cache structure:
+
+```
+.babulus/out/<video>/
+└── env/
+    ├── development/     # Cheap/fast providers (OpenAI, dry-run)
+    ├── aws/             # AWS Polly
+    ├── azure/           # Azure Speech
+    ├── production/      # High-quality providers (Eleven Labs)
+    └── static/          # Pre-generated reusable assets
+```
+
+Set the environment via `BABULUS_ENV`:
+
+```bash
+# Development mode (cheap/fast iteration)
+BABULUS_ENV=development babulus generate content/intro.babulus.yml
+
+# Production mode (high quality)
+BABULUS_ENV=production babulus generate content/intro.babulus.yml
+```
+
+**Fallback chain**: When generating, Babulus searches `development → aws → azure → production → static` for matching cached audio. This lets you reuse expensive production audio during development iterations.
+
+**Key benefits**:
+- Switching environments doesn't force regeneration
+- Watch mode only regenerates changed segments (79x faster on cache hits)
+- 70%+ cost savings in typical iteration workflows
+- Each video/environment maintains independent cache
+
+**Example workflow**:
+```bash
+# Generate with cheap provider for fast iteration
+BABULUS_ENV=development babulus generate --watch content/intro.babulus.yml
+
+# Edit DSL - watch mode regenerates only changed segments
+
+# Final production pass with high-quality provider
+BABULUS_ENV=production babulus generate content/intro.babulus.yml
+```
 
 ### Watch mode
 
 Regenerate automatically when you edit the DSL (and `./.babulus/config.yml` if present):
 
 ```bash
-babulus generate --watch --dsl path/to/video.babulus.yml
+# Watch a single video
+babulus generate --watch content/intro.babulus.yml
+
+# Watch all videos in a directory
+babulus generate --watch content/
+```
+
+**Watch mode features**:
+- Monitors DSL files, config files, and SFX selections
+- Clear logging shows exactly what changed and what was regenerated
+- Shows file sizes after regeneration to verify success
+- Only regenerates changed segments (uses cache for unchanged content)
+- Environment-aware (respects `BABULUS_ENV`)
+
+**Example output**:
+```
+CHANGE DETECTED
+  Changed: content/intro.babulus.yml
+  → Will regenerate 1 video(s):
+      • intro
+
+Starting regeneration...
+[12:43:17] intro: tts: cache scene=paradigm cue=paradigm seg=2
+[12:43:17] intro: tts: synth scene=paradigm cue=paradigm seg=4 -> ...
+...
+
+REGENERATION COMPLETE (1.23s)
+  intro:
+    Script:   src/videos/intro/intro.script.json [45.2KB]
+    Timeline: src/videos/intro/intro.timeline.json [23.1KB]
+    Audio:    public/babulus/intro.wav [11.1MB]
 ```
 
 ### Clean
 
-Remove generated artifacts (script/timeline/audio, `.babulus/out/`, staged `public/babulus/` files).
+Remove generated artifacts. **Environment-aware**: only cleans the current environment by default.
 
 Dry-run (prints what would be deleted):
 
@@ -140,6 +235,25 @@ Actually delete:
 
 ```bash
 babulus clean --yes
+```
+
+**Selective cleaning**:
+
+```bash
+# Clean only voice/TTS segments in development
+BABULUS_ENV=development babulus clean --only-voice --yes
+
+# Clean only SFX in production
+babulus clean --env production --only-sfx --yes
+
+# Clean only music
+babulus clean --only-music --yes
+
+# Clean multiple types
+babulus clean --only-voice --only-music --yes
+
+# Clean specific environment
+babulus clean --env production --yes
 ```
 
 Babulus loads API credentials from config in this order (unless `BABULUS_PATH` is set):
@@ -159,15 +273,128 @@ providers:
   elevenlabs:
     api_key: "..."
     voice_id: "..."
+    model_id: "eleven_turbo_v2_5"  # Optional: TTS model selection
   openai:
     api_key: "..."
+    model: "tts-1"                  # Optional: TTS model selection
+    voice: "alloy"                  # Optional: voice selection
   azure_speech:
     api_key: "..."
     region: "eastus"
+    voice: "en-US-JennyNeural"      # Optional: voice selection
   aws_polly:
     region: "us-east-1"
-    voice_id: "Joanna"
+    voice_id: "Joanna"              # Optional: voice selection
+    engine: "neural"                # Optional: standard or neural
 ```
+
+## Model and Voice Configuration
+
+Babulus supports **three-level configuration** for TTS models and voices:
+
+1. **Built-in defaults** (in provider class definitions)
+2. **Global config** (`.babulus/config.yml` or `~/.babulus/config.yml`)
+3. **Per-video overrides** (in `.babulus.yml` DSL files)
+
+### Per-Video Model and Voice Override
+
+You can override the model and voice for individual videos in your `.babulus.yml`:
+
+```yaml
+voiceover:
+  provider: elevenlabs
+  model: "eleven_turbo_v2_5"      # Override model per video
+  voice: "EXAVITQu4vr4xnSDxMaL"   # Override voice per video
+```
+
+### Environment-Based Model and Voice Switching
+
+Combine provider switching with model and voice overrides for different environments:
+
+```yaml
+voiceover:
+  provider:
+    development: openai           # Fast, cheap for iteration
+    production: elevenlabs        # High quality for final render
+  model:
+    development: "tts-1"          # OpenAI standard model
+    production: "eleven_turbo_v2_5"  # ElevenLabs turbo tier
+  voice:
+    development: "alloy"          # OpenAI voice
+    production: "lxYfHSkYm1EzQzGhdbfc"  # ElevenLabs voice ID
+```
+
+Set the environment via `BABULUS_ENV`:
+
+```bash
+# Development mode (cheap/fast iteration)
+BABULUS_ENV=development babulus generate content/intro.babulus.yml
+
+# Production mode (high quality)
+BABULUS_ENV=production babulus generate content/intro.babulus.yml
+```
+
+### Available Models and Voices by Provider
+
+#### ElevenLabs
+
+**Models (set via `model_id` in config or `model` in DSL):**
+
+ElevenLabs offers multiple model tiers. Commonly used models include:
+- `eleven_v3` - Latest v3 model (premium quality, best for production)
+- `eleven_multilingual_v2` - Multilingual support, premium quality
+- `eleven_turbo_v2_5` - Turbo tier (faster, good balance)
+- `eleven_turbo_v2` - Older turbo tier
+- `eleven_flash_v2_5` - Flash tier (fastest generation)
+- `eleven_monolingual_v1` - English-only premium model
+
+**Note:** Model availability and names may change. Check [ElevenLabs documentation](https://elevenlabs.io/docs) for the most current list.
+
+**Voices:** Use any voice ID from your ElevenLabs account (set via `voice_id` in config or `voice` in DSL)
+
+**Recommendation:**
+- **Development:** Use a faster/cheaper model or switch to OpenAI for rapid iteration
+- **Production:** Use `eleven_v3` or `eleven_multilingual_v2` for highest quality
+
+#### OpenAI TTS
+
+**Models (set via `model` in config or DSL):**
+- `tts-1` - Standard quality, faster, cheaper (~$0.015/1K chars)
+- `tts-1-hd` - Higher quality, slower, more expensive (~$0.030/1K chars)
+- `gpt-4o-mini-tts` - Mini model
+
+**Voices (set via `voice` in config or DSL):**
+- `alloy`, `echo`, `fable`, `onyx`, `nova`, `shimmer`, `marin`
+
+#### AWS Polly
+
+**Engine (set via `engine` in config, no DSL override):**
+- `standard` - Standard voices, cheaper
+- `neural` - Neural voices, better quality
+
+**Voices (set via `voice_id` in config or `voice` in DSL):**
+- `Joanna`, `Matthew`, `Ivy`, `Justin`, `Kendra`, `Kimberly`, `Salli`, etc.
+- See [AWS Polly voices](https://docs.aws.amazon.com/polly/latest/dg/voicelist.html) for full list
+
+**Note:** AWS Polly doesn't have a separate model parameter. The engine choice (standard/neural) and voice selection determine the capabilities.
+
+#### Azure Speech
+
+**Voices (set via `voice` in config or DSL):**
+- Voice names include the tier in the suffix:
+  - `*-Neural` = Neural voices (premium quality)
+  - `*-Standard` = Standard voices (lower quality)
+- Examples: `en-US-JennyNeural`, `en-US-GuyNeural`, `en-GB-SoniaNeural`
+- See [Azure voices](https://learn.microsoft.com/en-us/azure/ai-services/speech-service/language-support?tabs=tts) for full list
+
+**Note:** Azure doesn't have a separate model parameter. The voice name determines both the voice personality and quality tier.
+
+### Configuration Best Practices
+
+1. **Set global defaults** in `.babulus/config.yml` for your most commonly used model/voice
+2. **Use environment-based switching** to save costs during development
+3. **Override per-video** when specific content needs a different model or voice
+4. **Start with turbo** (ElevenLabs) or `tts-1` (OpenAI) for development, then upgrade for production if needed
 
 ### Providers (TTS)
 
