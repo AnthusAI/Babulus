@@ -82,10 +82,21 @@ def _video_slug_from_dsl_path(dsl_path: Path) -> str:
 
 
 def _defaults_for_dsl(dsl_path: Path, project_dir: Path | None = None) -> tuple[str, str, str, str]:
+    """
+    Compute default output paths.
+
+    If project_dir not provided, auto-detect it from DSL location by
+    walking up to find .babulus/ or .git/ directory.
+    """
+    # Auto-detect project root if not specified
+    if project_dir is None:
+        from .config import find_project_root
+        project_dir = find_project_root(dsl_path.resolve())
+
     video = _video_slug_from_dsl_path(dsl_path)
 
     def _p(p: str) -> str:
-        return str(project_dir / p) if project_dir else p
+        return str(project_dir / p)
 
     script_out = _p(f"src/videos/{video}/{video}.script.json")
     timeline_out = _p(f"src/videos/{video}/{video}.timeline.json")
@@ -265,6 +276,11 @@ def main(argv: list[str] | None = None) -> int:
         help="Output audio path (default: public/babulus/<video>.wav). If under public/, Remotion can play it.",
     )
     p_gen.add_argument("--out-dir", help="Intermediate output dir (default: .babulus/out/<video>)")
+    p_gen.add_argument(
+        "--environment",
+        "--env",
+        help='Set environment for provider/voice/model selection (e.g. "development", "marin", "production"). Overrides BABULUS_ENV.',
+    )
     p_gen.add_argument("--provider", help='Override voiceover.provider (e.g. "dry-run")')
     p_gen.add_argument("--sfx-provider", help='Override config audio.default_sfx_provider (e.g. "elevenlabs")')
     p_gen.add_argument("--music-provider", help='Override config audio.default_music_provider (e.g. "elevenlabs")')
@@ -289,8 +305,14 @@ def main(argv: list[str] | None = None) -> int:
     p_gen.add_argument("--project-dir", help="Project root directory (prefix for outputs)")
 
     def _cmd_generate(args: argparse.Namespace) -> int:
+        import os
+
+        # Set environment from --environment flag if provided
+        if args.environment:
+            os.environ["BABULUS_ENV"] = args.environment
+
         cwd = Path.cwd()
-        project_dir = Path(args.project_dir) if args.project_dir else None
+        project_dir = (cwd / args.project_dir).resolve() if args.project_dir else None
 
         # Resolve DSL paths from positional argument
         if args.dsl:
@@ -344,7 +366,10 @@ def main(argv: list[str] | None = None) -> int:
                 return _log
 
             # Reload config each run so `--watch` picks up API key/provider changes.
-            cfg = load_config(project_dir)
+            # For multi-DSL scenarios, use first DSL's location for config discovery
+            # (all DSLs in same run should typically share config)
+            reference_dsl = (dsls_to_process if dsls_to_process is not None else dsl_paths)[0]
+            cfg = load_config(project_dir=project_dir, dsl_path=reference_dsl)
             # Process only specified DSLs, or all if none specified
             paths_to_process = dsls_to_process if dsls_to_process is not None else dsl_paths
             any_synthesis = False
@@ -384,7 +409,11 @@ def main(argv: list[str] | None = None) -> int:
                             + f" elapsed_seconds={time.time() - t0:.2f}"
                             + f" err={type(e).__name__}: {msg}"
                         )
-                    raise
+                    if not args.watch:
+                        # In non-watch mode, fail fast
+                        raise
+                    # In watch mode, log the error and continue to next video
+                    print(f"\n{dsl_path}: {e}\n", file=sys.stderr)
                 else:
                     if art.did_synthesize:
                         any_synthesis = True
@@ -594,8 +623,9 @@ def main(argv: list[str] | None = None) -> int:
         return Path(_defaults_for_dsl(dsl_path)[3])
 
     def _cmd_sfx(args: argparse.Namespace) -> int:
+        cwd = Path.cwd()
         dsl_path = _resolve_single_dsl(getattr(args, "dsl", None))
-        project_dir = Path(args.project_dir) if getattr(args, "project_dir", None) else None
+        project_dir = (cwd / args.project_dir).resolve() if getattr(args, "project_dir", None) else None
         
         def _resolve_out_dir(dsl_path: Path, out_dir_override: str | None) -> Path:
             if out_dir_override:
@@ -609,7 +639,7 @@ def main(argv: list[str] | None = None) -> int:
         def _apply_generate() -> None:
             nonlocal cfg
             if cfg is None:
-                cfg = load_config(project_dir)
+                cfg = load_config(project_dir=project_dir, dsl_path=dsl_path)
             script_out, timeline_out, audio_out, out_dir_s = _defaults_for_dsl(dsl_path, project_dir)
             generate_voiceover(
                 dsl_path=str(dsl_path),

@@ -1,12 +1,14 @@
 from __future__ import annotations
 
 import json
+import os
 import shutil
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
 from .errors import BabulusError
+from .cache_resolver import resolve_env_cache_dir
 
 
 @dataclass(frozen=True)
@@ -15,12 +17,30 @@ class SfxSelectionState:
     picks: dict[str, int]
 
 
-def selection_path(out_dir: str | Path) -> Path:
-    return Path(out_dir) / "selections.json"
+def selection_path(out_dir: str | Path, env: str | None = None) -> Path:
+    """Get path to selections.json for a specific environment.
+
+    Args:
+        out_dir: Base output directory
+        env: Environment name (defaults to BABULUS_ENV)
+
+    Returns:
+        Path to selections.json in environment-specific directory
+    """
+    if env is None:
+        env = os.environ.get("BABULUS_ENV", "development")
+    env_dir = resolve_env_cache_dir(Path(out_dir), env)
+    return env_dir / "selections.json"
 
 
-def load_selections(out_dir: str | Path) -> SfxSelectionState:
-    path = selection_path(out_dir)
+def load_selections(out_dir: str | Path, env: str | None = None) -> SfxSelectionState:
+    """Load selections from environment-specific selections.json.
+
+    Args:
+        out_dir: Base output directory
+        env: Environment name (defaults to BABULUS_ENV)
+    """
+    path = selection_path(out_dir, env)
     if not path.exists():
         return SfxSelectionState(picks={})
     try:
@@ -44,31 +64,55 @@ def load_selections(out_dir: str | Path) -> SfxSelectionState:
     return SfxSelectionState(picks=picks)
 
 
-def save_selections(out_dir: str | Path, state: SfxSelectionState) -> None:
-    path = selection_path(out_dir)
+def save_selections(out_dir: str | Path, state: SfxSelectionState, env: str | None = None) -> None:
+    """Save selections to environment-specific selections.json.
+
+    Args:
+        out_dir: Base output directory
+        state: Selection state to save
+        env: Environment name (defaults to BABULUS_ENV)
+    """
+    path = selection_path(out_dir, env)
     path.parent.mkdir(parents=True, exist_ok=True)
     tmp = path.with_suffix(path.suffix + ".tmp")
     tmp.write_text(json.dumps({"version": 1, "sfx_picks": state.picks}, indent=2) + "\n", encoding="utf-8")
     tmp.replace(path)
 
 
-def set_pick(out_dir: str | Path, *, clip_id: str, pick: int) -> int:
+def set_pick(out_dir: str | Path, *, clip_id: str, pick: int, env: str | None = None) -> int:
+    """Set the selected variant for a clip in a specific environment.
+
+    Args:
+        out_dir: Base output directory
+        clip_id: Clip identifier
+        pick: Variant index to select
+        env: Environment name (defaults to BABULUS_ENV)
+    """
     if pick < 0:
         raise BabulusError("--pick must be >= 0")
-    state = load_selections(out_dir)
+    state = load_selections(out_dir, env)
     picks = dict(state.picks)
     picks[clip_id] = int(pick)
-    save_selections(out_dir, SfxSelectionState(picks=picks))
+    save_selections(out_dir, SfxSelectionState(picks=picks), env)
     return int(pick)
 
 
-def bump_pick(out_dir: str | Path, *, clip_id: str, delta: int, variants: int) -> int:
+def bump_pick(out_dir: str | Path, *, clip_id: str, delta: int, variants: int, env: str | None = None) -> int:
+    """Cycle to next/previous variant for a clip in a specific environment.
+
+    Args:
+        out_dir: Base output directory
+        clip_id: Clip identifier
+        delta: Amount to change (+1 for next, -1 for previous)
+        variants: Total number of variants
+        env: Environment name (defaults to BABULUS_ENV)
+    """
     if variants <= 0:
         raise BabulusError("variants must be > 0")
-    state = load_selections(out_dir)
+    state = load_selections(out_dir, env)
     cur = int(state.picks.get(clip_id, 0))
     nxt = (cur + int(delta)) % int(variants)
-    return set_pick(out_dir, clip_id=clip_id, pick=nxt)
+    return set_pick(out_dir, clip_id=clip_id, pick=nxt, env=env)
 
 
 def archive_variants(
@@ -76,17 +120,26 @@ def archive_variants(
     out_dir: str | Path,
     clip_id: str,
     keep_variant: int | None,
+    env: str | None = None,
 ) -> int:
     """
-    Move cached variant files for a clip from `<out_dir>/sfx/` to `<out_dir>/sfx_archived/<clip_id>/`.
+    Move cached variant files for a clip from env-specific sfx/ to sfx_archived/<clip_id>/.
     If keep_variant is not None, keep that variant in-place.
     Returns number of files moved.
+
+    Args:
+        out_dir: Base output directory
+        clip_id: Clip identifier
+        keep_variant: Variant index to keep (others archived), or None to archive all
+        env: Environment name (defaults to BABULUS_ENV)
     """
-    out_dir_p = Path(out_dir)
-    live_dir = out_dir_p / "sfx"
+    if env is None:
+        env = os.environ.get("BABULUS_ENV", "development")
+    env_dir = resolve_env_cache_dir(Path(out_dir), env)
+    live_dir = env_dir / "sfx"
     if not live_dir.exists():
         return 0
-    archived_dir = out_dir_p / "sfx_archived" / clip_id
+    archived_dir = env_dir / "sfx_archived" / clip_id
     archived_dir.mkdir(parents=True, exist_ok=True)
 
     moved = 0
@@ -113,10 +166,19 @@ def archive_variants(
     return moved
 
 
-def restore_variants(*, out_dir: str | Path, clip_id: str) -> int:
-    out_dir_p = Path(out_dir)
-    archived_dir = out_dir_p / "sfx_archived" / clip_id
-    live_dir = out_dir_p / "sfx"
+def restore_variants(*, out_dir: str | Path, clip_id: str, env: str | None = None) -> int:
+    """Restore archived variants back to live sfx directory for a specific environment.
+
+    Args:
+        out_dir: Base output directory
+        clip_id: Clip identifier
+        env: Environment name (defaults to BABULUS_ENV)
+    """
+    if env is None:
+        env = os.environ.get("BABULUS_ENV", "development")
+    env_dir = resolve_env_cache_dir(Path(out_dir), env)
+    archived_dir = env_dir / "sfx_archived" / clip_id
+    live_dir = env_dir / "sfx"
     if not archived_dir.exists():
         return 0
     live_dir.mkdir(parents=True, exist_ok=True)
@@ -134,13 +196,20 @@ def restore_variants(*, out_dir: str | Path, clip_id: str) -> int:
     return moved
 
 
-def clear_live_variants(*, out_dir: str | Path, clip_id: str) -> int:
+def clear_live_variants(*, out_dir: str | Path, clip_id: str, env: str | None = None) -> int:
     """
-    Delete cached live variant files for a clip (forces re-generation next run).
+    Delete cached live variant files for a clip in a specific environment (forces re-generation next run).
     Returns number of files deleted.
+
+    Args:
+        out_dir: Base output directory
+        clip_id: Clip identifier
+        env: Environment name (defaults to BABULUS_ENV)
     """
-    out_dir_p = Path(out_dir)
-    live_dir = out_dir_p / "sfx"
+    if env is None:
+        env = os.environ.get("BABULUS_ENV", "development")
+    env_dir = resolve_env_cache_dir(Path(out_dir), env)
+    live_dir = env_dir / "sfx"
     if not live_dir.exists():
         return 0
     deleted = 0

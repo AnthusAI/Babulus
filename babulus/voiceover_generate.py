@@ -406,44 +406,6 @@ def generate_voiceover(
         "pronunciation_rules_hash": pronunciation_rules_hash,
     }
 
-    # If the pronunciation dictionary is breaking a lexeme, fail fast with a helpful message.
-    if provider_name == "elevenlabs" and pronunciation_rules and effective_pronunciation_dictionary_locators:
-        checks_dir = out_dir_p / "pronunciation-checks"
-        checks_dir.mkdir(parents=True, exist_ok=True)
-        did = str(effective_pronunciation_dictionary_locators[0].get("pronunciation_dictionary_id"))
-        for rule in pronunciation_rules:
-            check_key = _hash_key(
-                {
-                    "kind": "pronunciation-check",
-                    "grapheme": rule.string_to_replace,
-                    "rule": rule.to_api(),
-                    "provider_ctx": provider_cache_context(),
-                    "dictionary_id": did,
-                }
-            )
-            out_path = checks_dir / f"{slugify(rule.string_to_replace)}--{_safe_prefix(check_key)}.mp3"
-            if not out_path.exists() or fresh:
-                provider.synthesize(
-                    TTSRequest(
-                        text=rule.string_to_replace,
-                        voice=voiceover.voice,
-                        model=voiceover.model,
-                        format=voiceover.format,
-                        sample_rate_hz=voiceover.sample_rate_hz,
-                        extra={"pronunciation_dictionary_locators": effective_pronunciation_dictionary_locators},
-                    ),
-                    out_path,
-                )
-            dur = probe_duration_sec(out_path)
-            probe_sec = min(2.0, max(0.25, dur))
-            silent = is_audio_all_silence(out_path, seconds=probe_sec, sample_rate_hz=voiceover.sample_rate_hz)
-            activity = audio_activity_ratio(out_path, seconds=probe_sec, sample_rate_hz=voiceover.sample_rate_hz)
-            if silent or activity < 0.01:
-                raise CompileError(
-                    f'Pronunciation dictionary produced unusable audio for "{rule.string_to_replace}". '
-                    "Try using an `alias:` lexeme instead of `phoneme:` (or adjust the phoneme)."
-                )
-
     for scene in scenes:
         scene_start = now if scene.time is None else scene.time.start
         if scene.time is not None and scene_start < now - 1e-6:
@@ -558,7 +520,21 @@ def generate_voiceover(
                             f"tts: corrupt-duration scene={scene.id} cue={cue.id} seg={seg_i+1} duration={float(duration):.1f}s -> regen"
                         )
                         # Regenerate in current environment
-                        seg = provider.synthesize(req, seg_path)
+                        try:
+                            seg = provider.synthesize(req, seg_path)
+                        except Exception as e:
+                            # Add context to provider errors
+                            error_msg = str(e)
+                            context_msg = (
+                                f"\n\nLocation: {dsl_path}\n"
+                                f"  Scene: {scene.id}\n"
+                                f"  Cue: {cue.id}\n"
+                                f"  Segment: {seg_i+1}\n"
+                                f"  Text: {seg_spec.text[:100]!r}{'...' if len(seg_spec.text) > 100 else ''}\n"
+                                f"\nEnvironment: {current_env}\n"
+                                f"Provider: {provider_name}\n"
+                            )
+                            raise CompileError(error_msg + context_msg) from e
                         duration = float(seg.durationSec)
                         did_synthesize = True
                     else:
@@ -574,7 +550,21 @@ def generate_voiceover(
                 else:
                     # Not in cache, generate new
                     _log(f"tts: synth scene={scene.id} cue={cue.id} seg={seg_i+1} -> {seg_path.name}")
-                    seg = provider.synthesize(req, seg_path)
+                    try:
+                        seg = provider.synthesize(req, seg_path)
+                    except Exception as e:
+                        # Add context to provider errors
+                        error_msg = str(e)
+                        context_msg = (
+                            f"\n\nLocation: {dsl_path}\n"
+                            f"  Scene: {scene.id}\n"
+                            f"  Cue: {cue.id}\n"
+                            f"  Segment: {seg_i+1}\n"
+                            f"  Text: {seg_spec.text[:100]!r}{'...' if len(seg_spec.text) > 100 else ''}\n"
+                            f"\nEnvironment: {current_env}\n"
+                            f"Provider: {provider_name}\n"
+                        )
+                        raise CompileError(error_msg + context_msg) from e
                     duration = float(seg.durationSec)
                     did_synthesize = True
 
@@ -704,13 +694,16 @@ def generate_voiceover(
     if verbose_logs:
         _log(f"write: script={script_out} duration_seconds={total_end_sec:.2f}")
 
-    # NOTE: don't delete stale staged files until the very end, otherwise a failing run can leave
-    # Remotion pointing at now-missing assets (old timeline + cleaned public/).
+    # NOTE: Don't delete "stale" files from public/ to allow environment switching.
+    # Files from other environments (e.g., .wav from development, .mp3 from production)
+    # are not stale - they're valid cached assets that may be reused later.
+    # Only manual cleanup (babulus clean) should remove these files.
     stale_public_segment_paths: list[Path] = []
-    if public_segments_dir is not None:
-        for p in public_segments_dir.iterdir():
-            if p.is_file() and p.name not in staged_segment_filenames:
-                stale_public_segment_paths.append(p)
+    # Disabled: allows keeping files from multiple environments
+    # if public_segments_dir is not None:
+    #     for p in public_segments_dir.iterdir():
+    #         if p.is_file() and p.name not in staged_segment_filenames:
+    #             stale_public_segment_paths.append(p)
 
     audio_tracks_out: list[dict[str, Any]] = []
     if narration_segment_clips:

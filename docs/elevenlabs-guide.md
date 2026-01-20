@@ -45,6 +45,112 @@ scenes:
 
 ---
 
+## MODEL TIER SELECTION
+
+ElevenLabs offers multiple model tiers with different trade-offs between quality, speed, and cost. Babulus supports all ElevenLabs TTS models through configuration.
+
+### Available Models
+
+ElevenLabs offers multiple model tiers with different trade-offs between quality, speed, and cost. Commonly used models include:
+
+| Model ID | Tier | Description |
+|----------|------|-------------|
+| `eleven_v3` ⭐ | Premium | Latest v3 model - **Recommended for production** |
+| `eleven_multilingual_v2` | Premium | Multilingual support, high quality |
+| `eleven_turbo_v2_5` | Turbo | Faster generation, good quality balance |
+| `eleven_turbo_v2` | Turbo | Older turbo model |
+| `eleven_flash_v2_5` | Flash | Fastest generation, lower quality |
+| `eleven_monolingual_v1` | Premium | English-only, premium quality |
+
+**Note:** Model availability and names may change. Check [ElevenLabs documentation](https://elevenlabs.io/docs) for the most current list.
+
+### When to Use Each Tier
+
+**Development/Iteration:**
+- Use faster models (turbo/flash tiers) or switch to OpenAI for rapid iteration
+- Saves on API costs during frequent regeneration
+
+**Production:**
+- Use **`eleven_v3`** for highest quality (recommended)
+- Use `eleven_multilingual_v2` if you need multilingual support
+
+**Quick prototypes:**
+- Use flash tier models for fastest generation when quality is less critical
+
+### Configuration: Three Ways
+
+#### 1. Global Default (Config File)
+
+Set model_id in `.babulus/config.yml` or `~/.babulus/config.yml`:
+
+```yaml
+providers:
+  elevenlabs:
+    api_key: "sk_xxxxx"
+    voice_id: "lxYfHSkYm1EzQzGhdbfc"
+    model_id: "eleven_turbo_v2_5"      # Global default model
+```
+
+#### 2. Per-Video Override (DSL)
+
+Override model for specific videos in your `.babulus.yml`:
+
+```yaml
+voiceover:
+  provider: elevenlabs
+  model: "eleven_flash_v2_5"          # Override for this video only
+  # voice: "different_voice_id"       # Optional: override voice too
+```
+
+#### 3. Environment-Based Switching (DSL)
+
+Use different models for development vs production:
+
+```yaml
+voiceover:
+  provider:
+    development: openai               # Or elevenlabs with flash model
+    production: elevenlabs
+  model:
+    development: "tts-1"              # Fast OpenAI for iteration
+    production: "eleven_v3"           # Best quality ElevenLabs for final render
+  voice:
+    development: "alloy"              # OpenAI voice
+    production: "lxYfHSkYm1EzQzGhdbfc"  # ElevenLabs voice ID
+```
+
+Set environment:
+```bash
+# Development (fast iteration)
+BABULUS_ENV=development babulus generate content/video.babulus.yml
+
+# Production (highest quality)
+BABULUS_ENV=production babulus generate content/video.babulus.yml
+```
+
+**Key insight:** Use faster/cheaper models during iteration, upgrade to best quality for final render only.
+
+### Voice Selection vs Model Selection
+
+**Model (`model_id` or `model`)**: Which TTS inference model to use
+- Affects quality, speed, cost, language support
+- Examples: `eleven_v3`, `eleven_multilingual_v2`, `eleven_turbo_v2_5`
+
+**Voice (`voice_id` or `voice`)**: Which voice personality to use
+- Affects voice characteristics (gender, accent, tone)
+- Get voice IDs from your ElevenLabs account
+- Example: `lxYfHSkYm1EzQzGhdbfc`
+
+**Both are independent:**
+```yaml
+voiceover:
+  provider: elevenlabs
+  model: "eleven_v3"                  # Quality/model tier
+  voice: "lxYfHSkYm1EzQzGhdbfc"       # Voice personality
+```
+
+---
+
 ### TTS Pattern 1: Minimal Voiceover
 
 ```yaml
@@ -491,8 +597,8 @@ scenes:
 | Field | Type | Default | Description | Example |
 |-------|------|---------|-------------|---------|
 | `provider` | string | `"dry-run"` | TTS provider | `"elevenlabs"` |
-| `voice` | string? | `null` | Voice ID override | `"EXAVITQu4vr4xnSDxMaL"` |
-| `model` | string? | `null` | Model override | `"eleven_multilingual_v2"` |
+| `voice` | string? | `null` | Voice ID override (per-video) | `"EXAVITQu4vr4xnSDxMaL"` |
+| `model` | string? | `null` | Model override (per-video) | `"eleven_turbo_v2_5"`, `"eleven_flash_v2_5"`, `"eleven_multilingual_v2"`, `"eleven_v3"` |
 | `format` | string | `"wav"` | Output format | `"wav"` |
 | `sample_rate_hz` | int | `44100` | Audio sample rate | `22050`, `24000`, `44100` |
 | `seed` | int | `0` | Deterministic variation | `1337` |
@@ -725,16 +831,21 @@ pronunciations:
 When generating `.babulus.yml` with ElevenLabs features:
 
 1. **Set provider** in `voiceover` section: `provider: elevenlabs`
-2. **Add pronunciation dictionary** if custom terms exist
-3. **Use CMU Arpabet** with `alphabet: "cmu-arpabet"` for pronunciation (most reliable)
-4. **Always specify `alphabet`** when using `phoneme` field
-5. **Add `lead_in_seconds: 0.25`** to prevent first-word clipping
-6. **Use `pause_between_items_gaussian`** for natural-sounding narration
-7. **Generate SFX variants** with `variants: 8` and audition with `pick`
-8. **Use `fade_to` / `fade_out`** for professional music bed mixing
-9. **Add `play_through: true`** for continuous background music
-10. **Use volume format consistently**: `0.8`, `80`, or `"80%"`
-11. **Reference audio library** for reusable clips with `use: <id>`
+2. **Choose model tier** based on use case:
+   - `model: "eleven_v3"` for production (best quality)
+   - Use faster models (turbo/flash) for development/iteration
+   - `model: "eleven_multilingual_v2"` for multilingual content
+3. **Use environment-based switching** to optimize iteration workflow
+4. **Add pronunciation dictionary** if custom terms exist
+5. **Use CMU Arpabet** with `alphabet: "cmu-arpabet"` for pronunciation (most reliable)
+6. **Always specify `alphabet`** when using `phoneme` field
+7. **Add `lead_in_seconds: 0.25`** to prevent first-word clipping
+8. **Use `pause_between_items_gaussian`** for natural-sounding narration
+9. **Generate SFX variants** with `variants: 8` and audition with `pick`
+10. **Use `fade_to` / `fade_out`** for professional music bed mixing
+11. **Add `play_through: true`** for continuous background music
+12. **Use volume format consistently**: `0.8`, `80`, or `"80%"`
+13. **Reference audio library** for reusable clips with `use: <id>`
 
 ---
 

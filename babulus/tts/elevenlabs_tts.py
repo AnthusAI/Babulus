@@ -54,6 +54,20 @@ class ElevenLabsTTSProvider(TTSProvider):
         if not voice_id:
             raise CompileError("ElevenLabs TTS requires providers.elevenlabs.voice_id (or request voice)")
 
+        # Validate text is not empty
+        if not req.text or not req.text.strip():
+            raise CompileError(
+                f"ElevenLabs TTS requires non-empty text. "
+                f"Received: {req.text!r}\n\n"
+                f"This usually means a voice segment has empty or whitespace-only text in your .babulus.yml file. "
+                f"Check that all 'voice:' entries have actual text content."
+            )
+
+        # Log what we're about to synthesize
+        import sys
+        text_preview = repr(req.text)[:100]
+        print(f"[ELEVENLABS] Synthesizing: text={text_preview} len={len(req.text)} out={out_path}", file=sys.stderr, flush=True)
+
         out = Path(out_path)
         out.parent.mkdir(parents=True, exist_ok=True)
 
@@ -77,7 +91,14 @@ class ElevenLabsTTSProvider(TTSProvider):
                 timeout=120,
             )
             if r.status_code >= 400:
-                raise CompileError(f"ElevenLabs TTS failed ({r.status_code}): {r.text[:400]}")
+                # Enhanced error message with payload info
+                text_preview = payload.get('text', '')[:200]
+                raise CompileError(
+                    f"ElevenLabs TTS failed ({r.status_code}): {r.text[:400]}\n\n"
+                    f"Payload text was: {text_preview!r}\n"
+                    f"Text length: {len(payload.get('text', ''))}\n"
+                    f"Text repr: {repr(payload.get('text', ''))[:100]}"
+                )
             return r.content
 
         payload = dict(payload_base)

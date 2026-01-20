@@ -13,7 +13,7 @@ def _get_environment() -> str:
     return os.environ.get("BABULUS_ENV", "development")
 
 
-def _resolve_env_value(value: Any) -> Any:
+def _resolve_env_value(value: Any, where: str = "unknown") -> Any:
     """Resolve environment-specific value.
 
     If value is a dict with environment keys, return value[env].
@@ -27,6 +27,8 @@ def _resolve_env_value(value: Any) -> Any:
         return value[env]
     if "production" in value:
         return value["production"]
+    # If it's a dict but no env keys found, this is likely an error
+    # Return the original value and let the caller handle it
     return value
 
 
@@ -1104,7 +1106,7 @@ def load_audio_music_provider(root: dict[str, Any]) -> str | None:
     a = _require_mapping(audio, "audio")
     # Support environment-specific music_provider
     provider_raw = a.get("music_provider")
-    provider = _resolve_env_value(provider_raw)
+    provider = _resolve_env_value(provider_raw, "audio.music_provider")
     return _opt_str(provider, "audio.music_provider")
 
 
@@ -1124,7 +1126,7 @@ def load_audio_sfx_provider(root: dict[str, Any]) -> str | None:
     a = _require_mapping(audio, "audio")
     # Support environment-specific sfx_provider
     provider_raw = a.get("sfx_provider")
-    provider = _resolve_env_value(provider_raw)
+    provider = _resolve_env_value(provider_raw, "audio.sfx_provider")
     return _opt_str(provider, "audio.sfx_provider")
 
 
@@ -1133,8 +1135,14 @@ def load_audio_plan(root: dict[str, Any]) -> AudioPlan | None:
     if audio is None:
         return None
     a = _require_mapping(audio, "audio")
-    sfx_provider = _opt_str(a.get("sfx_provider"), "audio.sfx_provider")
-    music_provider = _opt_str(a.get("music_provider"), "audio.music_provider")
+    # Support environment-specific providers
+    sfx_provider_raw = a.get("sfx_provider")
+    sfx_provider = _resolve_env_value(sfx_provider_raw, "audio.sfx_provider")
+    sfx_provider = _opt_str(sfx_provider, "audio.sfx_provider")
+    
+    music_provider_raw = a.get("music_provider")
+    music_provider = _resolve_env_value(music_provider_raw, "audio.music_provider")
+    music_provider = _opt_str(music_provider, "audio.music_provider")
     tracks_val = a.get("tracks")
     # Allow `audio:` to exist purely for configuration (`sfx_provider`, `library`, etc.)
     # without requiring the legacy `tracks:` list.

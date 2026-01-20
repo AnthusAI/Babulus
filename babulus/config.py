@@ -36,11 +36,13 @@ def _load_yaml_file(path: Path) -> dict[str, Any]:
     return obj
 
 
-def find_config_path(project_dir: str | Path | None = None) -> Path | None:
+def find_config_path(project_dir: str | Path | None = None, dsl_path: Path | None = None) -> Path | None:
     """
     Search order:
       - if BABULUS_PATH is set: use that (file) or that/config.yml (dir)
-      - ./.babulus/config.yml
+      - if dsl_path provided: walk up from DSL looking for .babulus/config.yml
+      - if project_dir provided: use project_dir/.babulus/config.yml
+      - ./.babulus/config.yml (current directory)
       - ~/.babulus/config.yml
     """
     override = os.getenv("BABULUS_PATH")
@@ -52,18 +54,62 @@ def find_config_path(project_dir: str | Path | None = None) -> Path | None:
             return p
         raise ParseError(f"BABULUS_PATH is set but config not found: {p}")
 
-    project_root = Path(project_dir or Path.cwd())
+    # NEW: If DSL path provided, walk up from DSL location
+    if dsl_path:
+        project_root = find_project_root(dsl_path)
+        local = project_root / ".babulus" / "config.yml"
+        if local.exists():
+            return local
+
+    # If project_dir provided, use it
+    if project_dir:
+        project_root = Path(project_dir)
+        local = project_root / ".babulus" / "config.yml"
+        if local.exists():
+            return local
+
+    # Fall back to current directory
+    project_root = Path.cwd()
     local = project_root / ".babulus" / "config.yml"
     if local.exists():
         return local
+
+    # Fall back to home directory
     home = Path.home() / ".babulus" / "config.yml"
     if home.exists():
         return home
     return None
 
 
-def load_config(project_dir: str | Path | None = None) -> dict[str, Any]:
-    path = find_config_path(project_dir)
+def find_project_root(dsl_path: Path) -> Path:
+    """
+    Find project root by walking up from DSL location looking for:
+    1. .babulus/ directory
+    2. .git/ directory
+    3. Otherwise return DSL's parent directory
+
+    Args:
+        dsl_path: Absolute path to DSL file
+
+    Returns:
+        Absolute path to project root
+    """
+    current = dsl_path.parent.resolve()
+
+    # Walk up looking for .babulus/ or .git/
+    while current != current.parent:
+        if (current / ".babulus").exists():
+            return current
+        if (current / ".git").exists():
+            return current
+        current = current.parent
+
+    # Fall back to DSL's parent directory
+    return dsl_path.parent.resolve()
+
+
+def load_config(project_dir: str | Path | None = None, dsl_path: Path | None = None) -> dict[str, Any]:
+    path = find_config_path(project_dir, dsl_path)
     if path is None:
         return {}
     return _load_yaml_file(path)
