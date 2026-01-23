@@ -1,6 +1,6 @@
 # Babulus Studio — Step-by-Step Implementation Plan (Draft)
 
-**Status:** In progress (Phase 3.2 → 4.1, 2026-01-22)  
+**Status:** In progress (Phase 4.2 → 5.1, 2026-01-22)  
 **Companion doc:** `docs/saas-electron-plan.md`
 
 This document turns the vision into an execution plan with concrete milestones, deliverables, and “definition of done” checks.
@@ -14,14 +14,43 @@ This document turns the vision into an execution plan with concrete milestones, 
 - Phase 3.2 UI shell: storyboard + chat + preview layout in `studio-web`.
 - Local preview bridge: `studio:preview`/`studio:watch` generates `script.json` + `timeline.json` into `apps/studio-web/public/preview`.
 - BDD coverage expanded for generation, media helpers, provider registries, and renderer math.
-- Coverage baseline captured in `docs/baselines/coverage-20260122.json` (lines 51.49%, functions 60.48%).
+- Coverage baseline captured in `docs/baselines/coverage-20260122.json` (lines 69.30%, functions 72.52%).
+- CLI usage/generate/clean/sfx flows now covered with BDD tests.
+- Config loading and BABULUS_PATH resolution covered with BDD tests.
+- DSL validation coverage added for resolved video specs.
+- Preview wiring consumes `script.json` metadata, loads `timeline.json` for track stats, and supports cue-based seeking + audio-driven playback.
+- Timeline helpers live in `packages/shared` with BDD coverage, plus per-track clip visualization + click-to-seek and audio-synced playhead in the preview UI.
+- Shared video config helper derives fps/size/duration from script + timeline data, used by the preview UI.
+- Semantic markup is now preserved from the DSL into generated script output.
+- Storyboard renderer added for script-only previews, with `render:storyboard` to drive PNG+MP4 output.
+- HTML storyboard frame renderer added (`render:storyboard:frames`) for Playwright-free snapshots.
+- Renderer frame callbacks added for progress/telemetry hooks in pipelines.
+- Render pipeline now fails fast when no frames are produced.
+- Preview now renders the storyboard component against real `script.json` data.
+- Tactus baseline record updated with hashes in `docs/baselines/tactus-intro.json`.
+- Storyboard HTML frames validated against Tactus `intro.script.json` output.
+- Storyboard tree now surfaces semantic markup tags for scenes/cues.
+- Player supports external clock mode for audio-driven frame control.
+- Run artifacts are stored by hash under `env/<env>/runs/<runId>` with `run.json` + `latest.json`.
+- Render harness can emit deterministic HTML snapshots for a single frame (in-memory or file), plus PNG capture via Playwright when installed (`render:frame --format png`, `render:frames`).
+- MP4 encode helper builds ffmpeg args with injected runner tests, plus `render:video` and `render:pipeline` scripts for ad-hoc encoding.
+- Storyboard render pipeline helper added with BDD coverage; `render:storyboard` now uses the shared pipeline helper.
+- Storyboard HTML frames helper added with BDD coverage; `render:storyboard:frames` now uses the shared helper.
 
 **In progress**
-- Phase 4.1: preview wiring to timeline + cue navigation (jump-to-cue/scene and live playback integration).
-- Tactus golden-record hashes (template exists, hashes still need to be recorded).
+- Phase 5.1 render harness: validate Playwright-driven PNG capture with real renders.
+- Phase 5.2 MP4 pipeline: integrate frame capture output with `render:pipeline` end-to-end.
+- Storyboard renderer: validate renders with actual Tactus script outputs.
+- Playwright install required for PNG/MP4 render validation.
 
 **Next up**
-- Phase 4.2 artifact model (hash-based outputs + run metadata).
+- Phase 5.2 MP4 render pipeline (frame capture + ffmpeg).
+
+## Design Updates (Implementation-Driven)
+
+- Renderer APIs now expose per-frame callbacks (`onFrame`) to support progress and telemetry.
+- Render pipelines fail fast when no frames are generated to avoid empty encodes.
+- HTML/MP4 storyboard helpers are now first-class public APIs (not just CLI scripts).
 
 ## Guiding Principles (Non-Negotiables)
 

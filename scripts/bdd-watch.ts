@@ -7,6 +7,9 @@ const watchPaths = [
   "features/**/*.ts",
   "src/dsl/**/*.ts",
   "packages/dsl/**/*.ts",
+  "packages/shared/src/**/*.ts",
+  "packages/renderer/src/**/*.ts",
+  "packages/renderer/src/**/*.tsx",
   "../Tactus-web/videos/content/**/*.ts",
 ];
 

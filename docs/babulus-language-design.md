@@ -112,6 +112,8 @@ The resolved manifest is pure data:
 
 This keeps rendering predictable and enables caching, diffing, and auditing.
 
+- Resolved manifests are schema-validated before preview/render; validation errors return precise paths for fast fixes.
+
 ---
 
 ## 6) Agent-Friendly Semantics
@@ -200,6 +202,7 @@ Guidelines:
 Add a lightweight **semantic markup** system that can be attached to cues/scenes:
 
 - `cue(...).markup({ goal: "hook", audience: "devs", approval: "required" })`
+- Markup values are flat scalars (`string | number | boolean | null`), not nested objects.
 - Markup is **optional**, serializable, and ignored by rendering.
 - Agents use markup for planning, review, and automation.
 

@@ -33,3 +33,54 @@ Feature: Config loading
       """
     When I load the config from BABULUS_PATH and capture errors for provider "dry-run"
     Then the config error should include "config.providers must be a mapping"
+
+  Scenario: Provider entry must be mapping
+    Given a config file with content:
+      """
+      providers:
+        dry-run: nope
+      """
+    When I load the config from BABULUS_PATH and capture errors for provider "dry-run"
+    Then the config error should include "config.providers.dry-run must be a mapping"
+
+  Scenario: Default provider must be a string
+    Given a config file with content:
+      """
+      tts:
+        default_provider: 123
+      """
+    When I load the config from BABULUS_PATH and capture errors for default provider
+    Then the config error should include "config.tts.default_provider must be a string"
+
+  Scenario: Load config from BABULUS_PATH directory
+    Given a config file with content:
+      """
+      tts:
+        default_provider: dry-run
+      """
+    When I load the config from BABULUS_PATH directory
+    Then the default provider should be "dry-run"
+
+  Scenario: Load config from project dir
+    Given a project config file with content:
+      """
+      tts:
+        default_provider: dry-run
+      """
+    When I load the config from project dir
+    Then the default provider should be "dry-run"
+
+  Scenario: Load config from DSL path
+    Given a project config file with content:
+      """
+      tts:
+        default_provider: dry-run
+      """
+    And a config DSL file at "content/demo.babulus.ts"
+    When I load the config from DSL path
+    Then the default provider should be "dry-run"
+
+  Scenario: BABULUS_PATH missing config errors
+    Given a missing config path
+    When I load the config from BABULUS_PATH and capture errors
+    Then the config error should include "BABULUS_PATH is set but config not found"

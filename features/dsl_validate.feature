@@ -1,61 +1,26 @@
 Feature: DSL validation
 
-  Scenario: Validate a minimal video spec
-    Given a video spec:
-      """
-      {
-        "id": "intro",
-        "storyboard": {
-          "scenes": [
-            {
-              "id": "title",
-              "cues": [
-                {
-                  "id": "hook",
-                  "content": [{ "kind": "say", "text": "Hello" }]
-                }
-              ]
-            }
-          ]
-        }
-      }
-      """
+  Scenario: Valid video spec passes
+    Given a valid video spec
     When I validate the video spec
     Then the validation should succeed
 
-  Scenario: Fail when id is missing
-    Given a video spec:
-      """
-      {
-        "storyboard": {
-          "scenes": []
-        }
-      }
-      """
+  Scenario: Missing id fails
+    Given a video spec without an id
     When I validate the video spec
-    Then the validation should fail
-    And the validation error path should be "id"
+    Then the validation should fail with path "id"
 
-  Scenario: Fail on invalid cue content
-    Given a video spec:
-      """
-      {
-        "id": "intro",
-        "storyboard": {
-          "scenes": [
-            {
-              "id": "title",
-              "cues": [
-                {
-                  "id": "hook",
-                  "content": [{ "kind": "say", "text": 123 }]
-                }
-              ]
-            }
-          ]
-        }
-      }
-      """
+  Scenario: Invalid storyboard scenes fails
+    Given a video spec with invalid storyboard scenes
     When I validate the video spec
-    Then the validation should fail
-    And the validation error path should be "storyboard.scenes[0].cues[0].content"
+    Then the validation should fail with path "storyboard.scenes"
+
+  Scenario: Invalid cue content fails
+    Given a video spec with invalid cue content
+    When I validate the video spec
+    Then the validation should fail with path "storyboard.scenes[0].cues[0].content"
+
+  Scenario: Invalid cue markup fails
+    Given a video spec with invalid cue markup
+    When I validate the video spec
+    Then the validation should fail with path "storyboard.scenes[0].cues[0].markup"

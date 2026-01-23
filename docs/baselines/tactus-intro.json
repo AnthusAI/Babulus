@@ -2,9 +2,22 @@
   "tactusProject": "../Tactus-web/videos",
   "sourceVideoId": "intro",
   "artifacts": [
-    { "path": "src/videos/intro/intro.script.json" },
-    { "path": "src/videos/intro/intro.timeline.json" },
-    { "path": "public/babulus/intro.wav" },
-    { "path": "out/intro.mp4", "optional": true }
+    {
+      "path": "src/videos/intro/intro.script.json",
+      "sha256": "c56952174e013a1cab7a32d82fea1cac7887d82a279f1eb8979622f2480b24a7"
+    },
+    {
+      "path": "src/videos/intro/intro.timeline.json",
+      "sha256": "5027077444e2c03e41417e3568814d5e41b00a73c4dcca9df3c39b24c1166b8e"
+    },
+    {
+      "path": "public/babulus/intro.wav",
+      "sha256": "eade7d6e6fae20a31313ec9239af25b19f2d66d44bfcc9aa7f94bfcff1ec0d49"
+    },
+    {
+      "path": "out/intro.mp4",
+      "optional": true,
+      "sha256": "a404580bcaf6aa65dd8eb32551bbf6d5c89a6c19759fcf8cc57e127435a1b2aa"
+    }
   ]
 }

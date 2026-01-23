@@ -1,9 +1,10 @@
 import assert from "node:assert/strict";
 import { mkdtempSync, rmSync, readFileSync, existsSync } from "fs";
 import { tmpdir } from "os";
-import { join } from "path";
+import { dirname, join } from "path";
 import { After, Before, Given, Then, When } from "@cucumber/cucumber";
 import { generateComposition, type GeneratedArtifact } from "../../src/generate.js";
+import { computeSha256 } from "../../src/baseline.js";
 import type { CompositionSpec } from "../../src/dsl/types.js";
 import type { Config } from "../../src/config.js";
 
@@ -50,6 +51,7 @@ Given("a dry-run composition with audio plan", () => {
       {
         id: "scene-1",
         title: "Scene 1",
+        markup: { goal: "hook" },
         items: [
           {
             kind: "cue",
@@ -57,6 +59,7 @@ Given("a dry-run composition with audio plan", () => {
             label: "Cue 1",
             segments: [{ kind: "text", text: "Hello world" }],
             bullets: [],
+            markup: { approval: "required" },
           },
         ],
       },
@@ -191,6 +194,14 @@ Then("the script should include the cue text {string}", (text: string) => {
   assert.ok(script.scenes[0].cues[0].endSec > script.scenes[0].cues[0].startSec);
 });
 
+Then("the script meta should include width {int} height {int} fps {int}", (width: number, height: number, fps: number) => {
+  assert.ok(existsSync(scriptOut));
+  const script = readJson<{ meta?: { width?: number; height?: number; fps?: number }; fps?: number }>(scriptOut);
+  assert.equal(script.meta?.width, width);
+  assert.equal(script.meta?.height, height);
+  assert.equal(script.meta?.fps ?? script.fps, fps);
+});
+
 Then("the timeline should include tts and audio tracks", () => {
   assert.ok(existsSync(timelineOut));
   const timeline = readJson<{ items: Array<{ type: string }>; audio: { tracks: Array<{ id: string; clips: unknown[] }> } }>(
@@ -221,6 +232,48 @@ Then("the manifest should include segments, sfx, and music", () => {
   assert.ok(Object.keys(manifest.segments ?? {}).length > 0);
   assert.ok(Object.keys(manifest.sfx ?? {}).length > 0);
   assert.ok(Object.keys(manifest.music ?? {}).length > 0);
+});
+
+Then("the script should include scene markup {string} {string}", (key: string, value: string) => {
+  assert.ok(existsSync(scriptOut));
+  const script = readJson<{ scenes: Array<{ markup?: Record<string, unknown> }> }>(scriptOut);
+  assert.equal(script.scenes[0].markup?.[key], value);
+});
+
+Then("the script should include cue markup {string} {string}", (key: string, value: string) => {
+  assert.ok(existsSync(scriptOut));
+  const script = readJson<{ scenes: Array<{ cues: Array<{ markup?: Record<string, unknown> }> }> }>(scriptOut);
+  assert.equal(script.scenes[0].cues[0].markup?.[key], value);
+});
+
+Then("the run metadata should include script and timeline artifacts", () => {
+  const runsDir = join(outDir, "env", envName, "runs");
+  const latestPath = join(runsDir, "latest.json");
+  assert.ok(existsSync(latestPath));
+  const latest = readJson<{ runId: string; runPath: string }>(latestPath);
+  assert.ok(latest.runId);
+  assert.ok(latest.runPath);
+  const runPath = join(outDir, "env", envName, latest.runPath);
+  assert.ok(existsSync(runPath));
+  const run = readJson<{ artifacts: Array<{ kind: string; path: string; sha256: string }> }>(runPath);
+  const script = run.artifacts.find((artifact) => artifact.kind === "script");
+  const timeline = run.artifacts.find((artifact) => artifact.kind === "timeline");
+  assert.ok(script?.path);
+  assert.ok(timeline?.path);
+  const runDir = dirname(runPath);
+  const scriptPath = join(runDir, script!.path);
+  const timelinePath = join(runDir, timeline!.path);
+  assert.ok(existsSync(scriptPath));
+  assert.ok(existsSync(timelinePath));
+  assert.equal(script!.sha256, computeSha256(scriptPath));
+  assert.equal(timeline!.sha256, computeSha256(timelinePath));
+});
+
+Then("the generation result should include run metadata", () => {
+  const latest = results[0];
+  assert.ok(latest?.runId);
+  assert.ok(latest?.runPath);
+  assert.ok(String(latest?.runPath).includes("run.json"));
 });
 
 Then("the first generation should synthesize", () => {

@@ -16,6 +16,13 @@ let config: VideoConfig;
 let initialFrame = 0;
 let autoplay = false;
 let loop = false;
+let controlled = false;
+let controlledFrame = 0;
+let lastFrameChange: number | null = null;
+let controlledPlayback = false;
+let controlledPlaying = false;
+let lastPlayingChange: boolean | null = null;
+let clockMode: "internal" | "external" = "internal";
 let renderResult: ReturnType<typeof render> | null = null;
 let rafState: RafState | null = null;
 let originalRaf: typeof globalThis.requestAnimationFrame | undefined;
@@ -85,6 +92,13 @@ Before(() => {
   installRaf();
   autoplay = false;
   loop = false;
+  controlled = false;
+  controlledFrame = 0;
+  lastFrameChange = null;
+  controlledPlayback = false;
+  controlledPlaying = false;
+  lastPlayingChange = null;
+  clockMode = "internal";
   initialFrame = 0;
   renderResult = null;
 });
@@ -110,16 +124,50 @@ Given("looping is enabled", () => {
   loop = true;
 });
 
+Given("the player is controlled", () => {
+  controlled = true;
+  controlledFrame = initialFrame;
+});
+
+Given("the player play state is controlled", () => {
+  controlledPlayback = true;
+  controlledPlaying = false;
+});
+
+Given("the player clock is external", () => {
+  clockMode = "external";
+});
+
+const buildPlayerElement = () =>
+  React.createElement(Player, {
+    component: FrameProbe,
+    config,
+    initialFrame,
+    autoplay,
+    loop,
+    clock: clockMode,
+    ...(controlled
+      ? {
+          frame: controlledFrame,
+          onFrameChange: (value: number) => {
+            controlledFrame = value;
+            lastFrameChange = value;
+          },
+        }
+      : {}),
+    ...(controlledPlayback
+      ? {
+          playing: controlledPlaying,
+          onPlayingChange: (value: boolean) => {
+            controlledPlaying = value;
+            lastPlayingChange = value;
+          },
+        }
+      : {}),
+  });
+
 When("I render the player", async () => {
-  renderResult = render(
-    React.createElement(Player, {
-      component: FrameProbe,
-      config,
-      initialFrame,
-      autoplay,
-      loop,
-    }),
-  );
+  renderResult = render(buildPlayerElement());
   await advanceTime(0);
 });
 
@@ -139,12 +187,38 @@ When("I advance time by {int} ms", async (ms: number) => {
   await advanceTime(ms);
 });
 
+When("I externally set frame to {int}", async (frame: number) => {
+  if (!renderResult) {
+    throw new Error("Player not rendered");
+  }
+  controlledFrame = frame;
+  renderResult.rerender(buildPlayerElement());
+  await advanceTime(0);
+});
+
+When("I externally set playing to {word}", async (value: string) => {
+  if (!renderResult) {
+    throw new Error("Player not rendered");
+  }
+  controlledPlaying = value === "true";
+  renderResult.rerender(buildPlayerElement());
+  await advanceTime(0);
+});
+
 Then("the frame probe should read {string}", (value: string) => {
   const probe = renderResult?.getByTestId("frame-probe");
   if (!probe) {
     throw new Error("Player not rendered");
   }
   assert.equal(probe.textContent, value);
+});
+
+Then("the last frame change should be {int}", (frame: number) => {
+  assert.equal(lastFrameChange, frame);
+});
+
+Then("the last play state change should be {word}", (value: string) => {
+  assert.equal(lastPlayingChange, value === "true");
 });
 
 Then("the player should be paused", () => {
