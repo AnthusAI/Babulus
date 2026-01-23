@@ -6,6 +6,11 @@
 - If the user asks you to "do X", implementing X is your job. Committing X is a separate step that requires separate approval.
 - Exception: If the user explicitly says "fix X and commit", you may commit. Otherwise, assume you are in a "review pending" state.
 
+## Agent autonomy (behavior)
+- Proceed independently without stopping to ask permission after each change.
+- Keep moving through the plan and report only when there is meaningful progress or a true blocker.
+- Only pause for explicit approval when required (e.g., commits or destructive operations).
+
 ## What this is
 
 Node/TypeScript CLI tool that compiles `.babulus.ts` DSL files into JSON timing for Remotion, plus generated TTS/SFX/music with environment-aware caching.

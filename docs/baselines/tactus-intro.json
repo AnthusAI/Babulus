@@ -1,0 +1,10 @@
+{
+  "tactusProject": "../Tactus-web/videos",
+  "sourceVideoId": "intro",
+  "artifacts": [
+    { "path": "src/videos/intro/intro.script.json" },
+    { "path": "src/videos/intro/intro.timeline.json" },
+    { "path": "public/babulus/intro.wav" },
+    { "path": "out/intro.mp4", "optional": true }
+  ]
+}
