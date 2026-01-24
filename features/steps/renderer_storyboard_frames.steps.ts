@@ -1,11 +1,8 @@
 import assert from "node:assert/strict";
 import { Before, Given, Then, When } from "@cucumber/cucumber";
-import {
-  StoryboardRenderer,
-  renderStoryboardFramesHtml,
-  type RenderFramesHtmlOptions,
-  type RenderFramesResult,
-} from "../../packages/renderer/src/index.js";
+import { renderStoryboardFramesHtml } from "../../packages/renderer/src/storyboard-frames.js";
+import { StoryboardRenderer } from "../../packages/renderer/src/storyboard.js";
+import type { RenderFramesHtmlOptions, RenderFramesResult } from "../../packages/renderer/src/render.js";
 import type { ScriptData } from "../../packages/shared/src/video.js";
 import type { TimelineData } from "../../packages/shared/src/timeline.js";
 

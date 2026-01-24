@@ -104,6 +104,9 @@ babulus generate --fresh content/intro.babulus.ts
 # Clean (dry run)
 babulus clean
 babulus clean --yes
+
+# Execute a worker job (local execution plane)
+babulus worker run --job job.json --result result.json
 ```
 
 ## Renderer helpers (storyboard previews)

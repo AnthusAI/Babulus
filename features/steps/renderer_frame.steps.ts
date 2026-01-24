@@ -10,9 +10,8 @@ import {
   renderFrameToPng,
   renderFramesToHtml,
   renderFramesToPng,
-  useRenderContext,
-  type VideoConfig,
-} from "../../packages/renderer/src/index.js";
+} from "../../packages/renderer/src/render.js";
+import { useRenderContext, type VideoConfig } from "../../packages/renderer/src/context.js";
 
 let config: VideoConfig;
 let htmlOutput = "";

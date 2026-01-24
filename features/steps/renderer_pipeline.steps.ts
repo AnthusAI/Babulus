@@ -1,14 +1,9 @@
 import assert from "node:assert/strict";
 import React from "react";
 import { Given, Then, When } from "@cucumber/cucumber";
-import {
-  renderVideo,
-  type RenderVideoOptions,
-  type RenderFramesPngOptions,
-  type RenderFramesResult,
-  type EncodeVideoOptions,
-  type EncodeRunner,
-} from "../../packages/renderer/src/index.js";
+import { renderVideo, type RenderVideoOptions } from "../../packages/renderer/src/pipeline.js";
+import type { RenderFramesPngOptions, RenderFramesResult } from "../../packages/renderer/src/render.js";
+import type { EncodeVideoOptions, EncodeRunner } from "../../packages/renderer/src/encode.js";
 
 let pipelineConfig: RenderVideoOptions;
 let renderCall: RenderFramesPngOptions | null = null;

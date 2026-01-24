@@ -1,6 +1,8 @@
 import assert from "node:assert/strict";
 import { Before, Given, Then, When } from "@cucumber/cucumber";
-import { renderFrameToHtml, type VideoConfig, StoryboardRenderer } from "../../packages/renderer/src/index.js";
+import { renderFrameToHtml } from "../../packages/renderer/src/render.js";
+import { StoryboardRenderer } from "../../packages/renderer/src/storyboard.js";
+import type { VideoConfig } from "../../packages/renderer/src/context.js";
 import type { ScriptData } from "../../packages/shared/src/video.js";
 
 let config: VideoConfig;

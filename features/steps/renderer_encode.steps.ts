@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { Given, Then, When } from "@cucumber/cucumber";
-import { buildFfmpegArgs, encodeVideo, type EncodeVideoOptions, type EncodeRunner } from "../../packages/renderer/src/index.js";
+import { buildFfmpegArgs, encodeVideo, type EncodeVideoOptions, type EncodeRunner } from "../../packages/renderer/src/encode.js";
 
 let encodeConfig: EncodeVideoOptions;
 let args: string[] = [];

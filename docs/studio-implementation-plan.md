@@ -115,6 +115,9 @@ The studio web app now has full Cognito authentication and AppSync GraphQL integ
 - **Phase 5.2 MP4 render pipeline: Parallel frame rendering implemented.**
   - Parallel frame rendering added for improved render performance on longer videos.
   - ffmpeg passthrough optimization for video encoding pipeline.
+- **Execution-plane worker CLI (local) implemented.**
+  - `babulus worker run` executes a portable job spec for storyboard rendering.
+  - Worker job spec documented in `docs/worker-job-spec.md` with dry-run validation.
 - Autonomous deployment handler script added for monitoring Amplify deployments and running post-deployment tasks.
 - Preview assets added to public directory for demo content (intro and studio-demo videos).
 
