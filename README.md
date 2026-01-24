@@ -108,7 +108,7 @@ babulus clean --yes
 
 ## Renderer helpers (storyboard previews)
 
-These commands render storyboard frames or MP4 previews from the generated `script.json`/`timeline.json`. PNG/MP4 output uses Playwright + ffmpeg.
+These commands render storyboard frames or MP4 previews from the generated `script.json`/`timeline.json`. PNG/MP4 output uses Playwright + ffmpeg. Frame rendering defaults to a small parallel worker pool; pass `--workers 1` to disable parallelization. Use `--ffmpeg-arg` to forward custom ffmpeg options when you need to tune encoding.
 
 ```bash
 # Verify toolchain versions
@@ -122,6 +122,12 @@ npm run render:storyboard:png -- --script src/videos/intro/intro.script.json --f
 
 # Render storyboard MP4 (Playwright + ffmpeg required)
 npm run render:storyboard -- --script src/videos/intro/intro.script.json --frames out/intro-frames --out out/intro.mp4
+
+# Parallelize frame rendering (default is auto; set 1 to disable)
+npm run render:storyboard -- --script src/videos/intro/intro.script.json --frames out/intro-frames --out out/intro.mp4 --workers 4
+
+# Pass custom ffmpeg arguments (repeat --ffmpeg-arg for each token)
+npm run render:storyboard -- --script src/videos/intro/intro.script.json --frames out/intro-frames --out out/intro.mp4 --ffmpeg-arg -preset --ffmpeg-arg ultrafast
 ```
 
 If Playwright is missing, install Chromium once:

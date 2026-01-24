@@ -2,7 +2,7 @@
 
 import { Command } from "commander";
 import { resolve } from "path";
-import { encodeVideo } from "../packages/renderer/src/index.js";
+import { encodeVideo } from "../packages/renderer/src/encode.js";
 
 const program = new Command();
 
@@ -15,6 +15,12 @@ program
   .option("--pattern <pattern>", "Frame filename pattern", "frame-%06d.png")
   .option("--audio <path>", "Optional audio file path")
   .option("--ffmpeg <path>", "ffmpeg binary path", "ffmpeg")
+  .option(
+    "--ffmpeg-arg <arg>",
+    "Extra ffmpeg argument (repeat for multiple)",
+    (value: string, previous: string[]) => [...previous, value],
+    [],
+  )
   .action(async (opts) => {
     const framesDir = resolve(process.cwd(), opts.frames);
     const outPath = resolve(process.cwd(), opts.out);
@@ -26,6 +32,7 @@ program
       audioPath,
       framePattern: opts.pattern,
       ffmpegPath: opts.ffmpeg,
+      ffmpegArgs: opts.ffmpegArg,
     });
     console.error(`write: ${outPath}`);
   });

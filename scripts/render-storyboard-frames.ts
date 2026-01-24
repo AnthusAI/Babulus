@@ -3,7 +3,7 @@
 import { Command } from "commander";
 import { readFileSync } from "fs";
 import { resolve } from "path";
-import { renderStoryboardFramesHtml } from "../packages/renderer/src/index.js";
+import { renderStoryboardFramesHtml } from "../packages/renderer/src/storyboard-frames.js";
 import type { ScriptData } from "../packages/shared/src/video.js";
 import type { TimelineData } from "../packages/shared/src/timeline.js";
 

@@ -2,7 +2,7 @@
 
 import { Command } from "commander";
 import { resolve } from "path";
-import { renderVideo } from "../packages/renderer/src/index.js";
+import { renderVideo } from "../packages/renderer/src/pipeline.js";
 import { toFileUrl } from "../src/util.js";
 
 const program = new Command();
@@ -23,6 +23,12 @@ program
   .option("--scale <number>", "Device scale factor", (value) => Number(value), 1)
   .option("--audio <path>", "Optional audio file path")
   .option("--ffmpeg <path>", "ffmpeg binary path", "ffmpeg")
+  .option(
+    "--ffmpeg-arg <arg>",
+    "Extra ffmpeg argument (repeat for multiple)",
+    (value: string, previous: string[]) => [...previous, value],
+    [],
+  )
   .action(async (opts) => {
     const modulePath = resolve(process.cwd(), opts.component);
     const framesDir = resolve(process.cwd(), opts.frames);
@@ -50,6 +56,7 @@ program
       endFrame,
       deviceScaleFactor: opts.scale,
       ffmpegPath: opts.ffmpeg,
+      ffmpegArgs: opts.ffmpegArg,
     });
     console.error(`write: ${outputPath}`);
   });

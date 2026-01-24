@@ -2,7 +2,7 @@
 
 import { Command } from "commander";
 import { resolve } from "path";
-import { renderFramesToPng } from "../packages/renderer/src/index.js";
+import { renderFramesToPng } from "../packages/renderer/src/render.js";
 import { toFileUrl } from "../src/util.js";
 
 const program = new Command();
@@ -20,6 +20,7 @@ program
   .option("--height <number>", "Frame height", (value) => Number(value), 1080)
   .option("--duration <number>", "Duration in frames", (value) => Number(value), 300)
   .option("--scale <number>", "Device scale factor", (value) => Number(value), 1)
+  .option("--workers <number>", "Parallel frame workers (set 1 to disable)", (value) => Number(value))
   .action(async (opts) => {
     const modulePath = resolve(process.cwd(), opts.component);
     const outputDir = resolve(process.cwd(), opts.outDir);
@@ -42,6 +43,7 @@ program
       framePattern: opts.pattern,
       outDir: outputDir,
       deviceScaleFactor: opts.scale,
+      workers: opts.workers,
     });
     console.error(`write: ${result.frames.length} frame(s) to ${outputDir}`);
   });

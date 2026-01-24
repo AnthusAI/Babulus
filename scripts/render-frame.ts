@@ -2,7 +2,7 @@
 
 import { Command } from "commander";
 import { resolve } from "path";
-import { renderFrameToFile, renderFrameToPng } from "../packages/renderer/src/index.js";
+import { renderFrameToFile, renderFrameToPng } from "../packages/renderer/src/render.js";
 import { toFileUrl } from "../src/util.js";
 
 const program = new Command();

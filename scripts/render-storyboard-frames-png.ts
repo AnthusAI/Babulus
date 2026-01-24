@@ -3,7 +3,7 @@
 import { Command } from "commander";
 import { readFileSync } from "fs";
 import { resolve } from "path";
-import { renderStoryboardFramesPng } from "../packages/renderer/src/index.js";
+import { renderStoryboardFramesPng } from "../packages/renderer/src/storyboard-frames-png.js";
 import type { ScriptData } from "../packages/shared/src/video.js";
 import type { TimelineData } from "../packages/shared/src/timeline.js";
 
@@ -21,6 +21,7 @@ program
   .option("--end <number>", "End frame (inclusive)")
   .option("--pattern <pattern>", "Frame filename pattern", "frame-%06d.png")
   .option("--scale <number>", "Device scale factor", (value) => Number(value), 1)
+  .option("--workers <number>", "Parallel frame workers (set 1 to disable)", (value) => Number(value))
   .option("--fps <number>", "Override fps")
   .option("--width <number>", "Override width")
   .option("--height <number>", "Override height")
@@ -44,6 +45,7 @@ program
       endFrame,
       framePattern: opts.pattern,
       deviceScaleFactor: opts.scale,
+      workers: opts.workers,
       fps: opts.fps,
       width: opts.width,
       height: opts.height,
