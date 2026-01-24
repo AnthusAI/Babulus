@@ -138,7 +138,7 @@ const studioSchema = schema.schema({
       videoId: schema.string(),
       runId: schema.string(),
       provider: schema.string(),
-      unitType: schema.enum(["chars", "tokens", "seconds", "frames", "bytes", "gb-seconds"]),
+      unitType: schema.enum(["chars", "tokens", "seconds", "frames", "bytes", "gbSeconds"]),
       quantity: schema.float().required(),
       estimatedCost: schema.float(),
       actualCost: schema.float(),
