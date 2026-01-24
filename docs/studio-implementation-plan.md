@@ -1,13 +1,17 @@
 # Babulus Studio — Step-by-Step Implementation Plan (Draft)
 
-**Status:** Phase 6 in progress (2026-01-22)  
+**Status:** Phase 6 milestones completed (2026-01-24)
 **Companion doc:** `docs/saas-electron-plan.md`
 
 This document turns the vision into an execution plan with concrete milestones, deliverables, and “definition of done” checks.
 
 ---
 
-## Current Status (2026-01-22)
+## Current Status (2026-01-24)
+
+### Major Milestone: Authentication + GraphQL Integration Complete
+
+The studio web app now has full Cognito authentication and AppSync GraphQL integration working end-to-end. Users can sign up/sign in with email, and all server actions are authenticated and scoped to user organizations. The preview functionality has been thoroughly tested with real video content, and the core rendering pipeline now supports parallel frame rendering for improved performance.
 
 **Completed**
 - Phase 3.1 runtime helpers (interpolate + easing/spring, frame context) with BDD coverage.
@@ -96,15 +100,30 @@ This document turns the vision into an execution plan with concrete milestones, 
 - Studio web now builds successfully with TypeScript strict mode + ESM module resolution.
 - Renderer package exports split into browser-safe (player/storyboard) and server-only (render/encode) modules.
 - Studio web frontend deployed to Amplify with Next.js SSR (WEB_COMPUTE platform).
+- **Phase 6.1 Auth + tenancy model: Cognito authentication fully integrated.**
+  - Real Cognito authentication implemented in server actions using `runWithAmplifyServerContext` and `getCurrentUser`.
+  - Client-side Amplify configuration added to Authenticator component for auth UI.
+  - Authentication flow working end-to-end: unauthenticated users see sign-in UI, server actions validate via Cognito tokens.
+  - `amplify_outputs.json` downloaded and configured with User Pool, AppSync API, and S3 bucket details.
+- **Phase 6.3 Client library integration: GraphQL client fully integrated.**
+  - Full GraphQL client implementation restored with type adapters for AppSync integration.
+  - Server actions now use real GraphQL operations against deployed AppSync API.
+  - All data operations scoped to authenticated user's organizations via Cognito authorization.
+- **Phase 3.2 UI styling overhaul: Tailwind v4 + Shadcn components integrated.**
+  - Tailwind v4 and Radix UI primitives added for modern component styling.
+  - Preview tested with real video content and frame rendering.
+- **Phase 5.2 MP4 render pipeline: Parallel frame rendering implemented.**
+  - Parallel frame rendering added for improved render performance on longer videos.
+  - ffmpeg passthrough optimization for video encoding pipeline.
+- Autonomous deployment handler script added for monitoring Amplify deployments and running post-deployment tasks.
+- Preview assets added to public directory for demo content (intro and studio-demo videos).
 
 **In progress**
-- Phase 6.1 Auth + tenancy model (org-scoped auth model).
-- Phase 6.2 Project/video/version APIs (schema relations + S3 path strategy).
-- Phase 6.3 Client library integration (aws-amplify client setup).
+- Phase 6.2 Project/video/version APIs (migrate from in-memory control-plane to real Amplify GraphQL operations in UI).
 
 **Next up**
-- Phase 6.1 Auth + tenancy model (Cognito + Org/OrgMember).
-- Phase 6.2 Project/video/version APIs (StoryboardVersion + run records).
+- Phase 6.2 completion: Migrate remaining UI from in-memory control-plane to real Amplify GraphQL operations.
+- Phase 7.1 Job system: Queue and execute generation/render jobs with observable progress.
 
 ## Design Updates (Implementation-Driven)
 
