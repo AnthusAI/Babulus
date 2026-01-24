@@ -19,11 +19,17 @@ import {
   MenubarTrigger,
 } from "@/components/ui/menubar";
 
+import { Settings } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useSettings } from "@/lib/settings-context";
+
 export function AppLayout({ children }: { children: React.ReactNode }) {
+  const { setOpen } = useSettings();
+
   return (
     <div className="flex h-screen flex-col overflow-hidden bg-background text-foreground">
       {/* Top Menu Bar */}
-      <header className="flex h-12 shrink-0 items-center justify-between border-b px-4">
+      <header className="flex h-12 shrink-0 items-center justify-between bg-card px-4">
         <div className="flex items-center gap-2">
           <span className="text-sm font-bold mr-4">Babulus</span>
           <Menubar className="border-none bg-transparent shadow-none px-0">
@@ -40,6 +46,10 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                 <MenubarItem>
                   Save <MenubarShortcut>⌘S</MenubarShortcut>
                 </MenubarItem>
+                <MenubarItem onClick={() => setOpen(true)}>
+                  Settings <MenubarShortcut>⌘,</MenubarShortcut>
+                </MenubarItem>
+                <MenubarSeparator />
                 <MenubarItem>
                   Export... <MenubarShortcut>⇧⌘E</MenubarShortcut>
                 </MenubarItem>
@@ -79,6 +89,10 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
           </Menubar>
         </div>
         <div className="flex items-center gap-4">
+          <Button variant="ghost" size="icon" onClick={() => setOpen(true)}>
+            <Settings className="h-[1.2rem] w-[1.2rem]" />
+            <span className="sr-only">Settings</span>
+          </Button>
           <ModeToggle />
           <UserNav />
         </div>

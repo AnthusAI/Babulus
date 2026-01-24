@@ -3,6 +3,9 @@ import "./globals.css";
 import { configureAmplify } from "../lib/amplify-config.js";
 import { Authenticator } from "../components/authenticator.js";
 import { ThemeProvider } from "@/components/theme-provider";
+import { ThemeConfigProvider } from "@/lib/theme-config";
+import { SettingsProvider } from "@/lib/settings-context";
+import { SettingsDialog } from "@/components/settings-dialog";
 
 // Configure Amplify once at app startup
 configureAmplify();
@@ -23,7 +26,12 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           enableSystem
           disableTransitionOnChange
         >
-          <Authenticator>{children}</Authenticator>
+          <ThemeConfigProvider>
+            <SettingsProvider>
+              <SettingsDialog />
+              <Authenticator>{children}</Authenticator>
+            </SettingsProvider>
+          </ThemeConfigProvider>
         </ThemeProvider>
       </body>
     </html>

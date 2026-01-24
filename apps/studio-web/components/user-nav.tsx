@@ -17,9 +17,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { useAuthenticator } from "@aws-amplify/ui-react"
+import { useSettings } from "@/lib/settings-context"
 
 export function UserNav() {
   const { user, signOut } = useAuthenticator((context) => [context.user]);
+  const { setOpen } = useSettings();
 
   return (
     <DropdownMenu>
@@ -46,7 +48,7 @@ export function UserNav() {
             Profile
             <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
           </DropdownMenuItem>
-          <DropdownMenuItem>
+          <DropdownMenuItem onClick={() => setOpen(true)}>
             Settings
             <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
           </DropdownMenuItem>

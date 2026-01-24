@@ -63,99 +63,152 @@
   }
 }
 
-/*
-  The default border color has changed to `currentColor` in Tailwind CSS v4,
-  so we've added these compatibility styles to make sure everything still
-  looks the same as it did with Tailwind CSS v3.
-
-  If we ever want to remove these styles, we need to add an explicit border
-  color utility to the element, for example come back here and hit:
-  `@apply border-border`
-*/
-@layer base {
-  *,
-  ::after,
-  ::before,
-  ::backdrop,
-  ::file-selector-button {
-    border-color: var(--color-gray-200, currentColor);
-  }
-}
-
+/* Base styles */
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-
+    /* Radix Slate Light Theme Approximation (COOL) */
+    --background: 210 40% 98%;      /* Slate 1 */
+    --foreground: 222.2 47.4% 11.2%; /* Slate 12 */
+    --card: 210 40% 96.1%;          /* Slate 2 */
+    --card-foreground: 222.2 47.4% 11.2%;
+    --popover: 210 40% 98%;
+    --popover-foreground: 222.2 47.4% 11.2%;
     --primary: 222.2 47.4% 11.2%;
     --primary-foreground: 210 40% 98%;
-
-    --secondary: 210 40% 96.1%;
+    --secondary: 210 40% 93%;       /* Slate 3 */
     --secondary-foreground: 222.2 47.4% 11.2%;
-
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-
-    --accent: 210 40% 96.1%;
+    --muted: 210 40% 96.1%;         /* Slate 2 */
+    --muted-foreground: 215.4 16.3% 46.9%; /* Slate 11 */
+    --accent: 210 40% 93%;          /* Slate 3 */
     --accent-foreground: 222.2 47.4% 11.2%;
-
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
-
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
-
-    --radius: 0.5rem;
+    --border: 0 0% 100% / 0;        /* Transparent */
+    --input: 210 40% 93%;           /* Slate 3 */
+    --ring: 222.2 47.4% 11.2%;
+    --radius: 0.75rem;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-
-    --card: 222.2 84% 4.9%;
+    /* Radix Slate Dark Theme Approximation (COOL) */
+    --background: 200 7% 8.8%;      /* Slate 1 */
+    --foreground: 210 40% 98%;      /* Slate 12 */
+    --card: 195 7% 11%;             /* Slate 2 */
     --card-foreground: 210 40% 98%;
-
-    --popover: 222.2 84% 4.9%;
+    --popover: 200 7% 8.8%;
     --popover-foreground: 210 40% 98%;
-
     --primary: 210 40% 98%;
     --primary-foreground: 222.2 47.4% 11.2%;
-
-    --secondary: 217.2 32.6% 17.5%;
+    --secondary: 197 6.8% 13.6%;    /* Slate 3 */
     --secondary-foreground: 210 40% 98%;
-
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-
-    --accent: 217.2 32.6% 17.5%;
+    --muted: 195 7% 11%;            /* Slate 2 */
+    --muted-foreground: 215 20.2% 65.1%; /* Slate 11 */
+    --accent: 197 6.8% 13.6%;       /* Slate 3 */
     --accent-foreground: 210 40% 98%;
-
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
+    --border: 0 0% 0% / 0;          /* Transparent */
+    --input: 197 6.8% 13.6%;        /* Slate 3 */
+    --ring: 210 40% 98%;
+  }
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
+  /* NEUTRAL THEME (Mauve/Gray) */
+  [data-theme="neutral"] {
+    /* Radix Mauve Light */
+    --background: 300 20% 99%;      /* Mauve 1 */
+    --foreground: 280 25% 12%;      /* Mauve 12 */
+    --card: 300 7% 97%;             /* Mauve 2 */
+    --card-foreground: 280 25% 12%;
+    --popover: 300 20% 99%;
+    --popover-foreground: 280 25% 12%;
+    --primary: 280 25% 12%;
+    --primary-foreground: 300 20% 99%;
+    --secondary: 300 5% 93%;        /* Mauve 3 */
+    --secondary-foreground: 280 25% 12%;
+    --muted: 300 7% 97%;            /* Mauve 2 */
+    --muted-foreground: 280 5% 45%; /* Mauve 11 */
+    --accent: 300 5% 93%;           /* Mauve 3 */
+    --accent-foreground: 280 25% 12%;
+    --input: 300 5% 93%;
+    --ring: 280 25% 12%;
+  }
+  
+  [data-theme="neutral"].dark,
+  [data-theme="neutral"] .dark {
+    /* Radix Mauve Dark */
+    --background: 280 6% 9%;        /* Mauve 1 */
+    --foreground: 300 20% 99%;      /* Mauve 12 */
+    --card: 280 5% 11%;             /* Mauve 2 */
+    --card-foreground: 300 20% 99%;
+    --popover: 280 6% 9%;
+    --popover-foreground: 300 20% 99%;
+    --primary: 300 20% 99%;
+    --primary-foreground: 280 25% 12%;
+    --secondary: 280 4% 14%;        /* Mauve 3 */
+    --secondary-foreground: 300 20% 99%;
+    --muted: 280 5% 11%;            /* Mauve 2 */
+    --muted-foreground: 280 4% 65%; /* Mauve 11 */
+    --accent: 280 4% 14%;           /* Mauve 3 */
+    --accent-foreground: 300 20% 99%;
+    --input: 280 4% 14%;
+    --ring: 300 20% 99%;
+  }
+
+  /* WARM THEME (Sand) */
+  [data-theme="warm"] {
+    /* Radix Sand Light */
+    --background: 50 20% 99%;       /* Sand 1 */
+    --foreground: 50 10% 12%;       /* Sand 12 */
+    --card: 60 10% 97%;             /* Sand 2 */
+    --card-foreground: 50 10% 12%;
+    --popover: 50 20% 99%;
+    --popover-foreground: 50 10% 12%;
+    --primary: 50 10% 12%;
+    --primary-foreground: 50 20% 99%;
+    --secondary: 60 5% 93%;         /* Sand 3 */
+    --secondary-foreground: 50 10% 12%;
+    --muted: 60 10% 97%;            /* Sand 2 */
+    --muted-foreground: 50 4% 45%;  /* Sand 11 */
+    --accent: 60 5% 93%;            /* Sand 3 */
+    --accent-foreground: 50 10% 12%;
+    --input: 60 5% 93%;
+    --ring: 50 10% 12%;
+  }
+
+  [data-theme="warm"].dark,
+  [data-theme="warm"] .dark {
+    /* Radix Sand Dark */
+    --background: 50 4% 9%;         /* Sand 1 */
+    --foreground: 50 20% 99%;       /* Sand 12 */
+    --card: 50 3% 11%;              /* Sand 2 */
+    --card-foreground: 50 20% 99%;
+    --popover: 50 4% 9%;
+    --popover-foreground: 50 20% 99%;
+    --primary: 50 20% 99%;
+    --primary-foreground: 50 10% 12%;
+    --secondary: 50 2% 14%;         /* Sand 3 */
+    --secondary-foreground: 50 20% 99%;
+    --muted: 50 3% 11%;             /* Sand 2 */
+    --muted-foreground: 50 2% 65%;  /* Sand 11 */
+    --accent: 50 2% 14%;            /* Sand 3 */
+    --accent-foreground: 50 20% 99%;
+    --input: 50 2% 14%;
+    --ring: 50 20% 99%;
   }
 }
 
 @layer base {
   * {
-    @apply border-border;
+    /* Explicitly remove borders */
+    border-color: transparent; 
   }
   body {
     @apply bg-background text-foreground;
   }
 }
 
-/* Legacy Styles mapped to Theme Variables */
+/* Legacy Styles mapped to Flat Design Theme */
+
 .app-shell {
   display: flex;
   flex-direction: column;
@@ -215,9 +268,9 @@
 
 .workspace-select {
   border-radius: 10px;
-  border: 1px solid var(--color-border);
+  border: none; /* No border */
   padding: 6px 10px;
-  background: var(--color-background);
+  background: var(--color-input); /* Use input bg */
   color: var(--color-foreground);
   font-size: 12px;
   font-weight: 600;
@@ -231,7 +284,7 @@
 
 .button {
   border-radius: 10px;
-  border: 1px solid var(--color-border);
+  border: none; /* No border */
   padding: 8px 14px;
   background: var(--color-secondary);
   color: var(--color-secondary-foreground);
@@ -242,7 +295,7 @@
 
 .button--ghost {
   background: transparent;
-  border-color: transparent;
+  color: var(--color-muted-foreground);
 }
 
 .button--primary {
@@ -270,7 +323,7 @@
 
 .panel {
   background: var(--color-card);
-  border: 1px solid var(--color-border);
+  border: none; /* No border */
   color: var(--color-card-foreground);
   border-radius: 16px;
   padding: 16px;
@@ -278,6 +331,7 @@
   flex-direction: column;
   gap: 12px;
   min-height: 0;
+  /* Flat design: no shadow */
 }
 
 .panel-title {
@@ -293,8 +347,8 @@
   gap: 8px;
   padding: 10px 12px;
   border-radius: 12px;
-  border: 1px solid var(--color-border);
-  background: var(--color-muted);
+  border: none;
+  background: var(--color-muted); /* Distinct background */
 }
 
 .storyboard-controls {
@@ -321,9 +375,9 @@
 .storyboard-select {
   min-width: 160px;
   border-radius: 10px;
-  border: 1px solid var(--color-border);
+  border: none;
   padding: 6px 10px;
-  background: var(--color-background);
+  background: var(--color-background); /* Inner input */
   color: var(--color-foreground);
   font-size: 12px;
   font-weight: 600;
@@ -339,8 +393,8 @@
   color: var(--color-primary);
   padding: 8px 10px;
   border-radius: 10px;
-  border: 1px dashed var(--color-border);
-  background: var(--color-muted);
+  border: none;
+  background: var(--color-background); /* Contrast against muted panel */
   white-space: pre-wrap;
 }
 
@@ -350,7 +404,7 @@
   gap: 8px;
   padding: 8px 10px;
   border-radius: 10px;
-  border: 1px solid var(--color-border);
+  border: none;
   background: var(--color-muted);
 }
 
@@ -364,7 +418,7 @@
 .preview-select {
   flex: 1;
   border-radius: 10px;
-  border: 1px solid var(--color-border);
+  border: none;
   padding: 6px 10px;
   background: var(--color-background);
   color: var(--color-foreground);
@@ -379,7 +433,7 @@
   gap: 12px;
   padding: 12px;
   border-radius: 12px;
-  border: 1px solid var(--color-border);
+  border: none;
   background: var(--color-card);
 }
 
@@ -411,7 +465,7 @@
   gap: 6px;
   padding: 8px 10px;
   border-radius: 10px;
-  border: 1px solid var(--color-border);
+  border: none;
   background: var(--color-muted);
 }
 
@@ -443,12 +497,12 @@
   font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  background: var(--color-muted);
+  background: var(--color-background);
   color: var(--color-foreground);
 }
 
 .run-status--queued {
-  background: var(--color-muted);
+  background: var(--color-background);
 }
 
 .run-status--running {
@@ -483,7 +537,7 @@
   gap: 10px;
   padding: 12px;
   border-radius: 12px;
-  border: 1px solid var(--color-border);
+  border: none;
   background: var(--color-card);
 }
 
@@ -506,8 +560,8 @@
 
 .usage-select {
   border-radius: 8px;
-  border: 1px solid var(--color-border);
-  background: var(--color-background);
+  border: none;
+  background: var(--color-muted);
   color: var(--color-foreground);
   padding: 4px 8px;
   font-size: 11px;
@@ -524,7 +578,7 @@
 .usage-card {
   padding: 10px;
   border-radius: 10px;
-  border: 1px solid var(--color-border);
+  border: none;
   background: var(--color-muted);
 }
 
@@ -548,7 +602,7 @@
   gap: 10px;
   padding: 12px;
   border-radius: 12px;
-  border: 1px solid var(--color-border);
+  border: none;
   background: var(--color-card);
 }
 
@@ -558,7 +612,7 @@
   gap: 10px;
   padding: 12px;
   border-radius: 12px;
-  border: 1px solid var(--color-border);
+  border: none;
   background: var(--color-card);
 }
 
@@ -590,7 +644,7 @@
   gap: 12px;
   padding: 8px 10px;
   border-radius: 10px;
-  border: 1px solid var(--color-border);
+  border: none;
   background: var(--color-muted);
   font-size: 12px;
 }
@@ -621,7 +675,7 @@
   gap: 10px;
   padding: 12px;
   border-radius: 12px;
-  border: 1px solid var(--color-border);
+  border: none;
   background: var(--color-card);
 }
 
@@ -651,7 +705,7 @@
   gap: 6px;
   padding: 8px 10px;
   border-radius: 10px;
-  border: 1px solid var(--color-border);
+  border: none;
   background: var(--color-muted);
 }
 
@@ -724,12 +778,12 @@
   font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  background: var(--color-muted);
+  background: var(--color-background);
   color: var(--color-foreground);
 }
 
 .job-status--queued {
-  background: var(--color-muted);
+  background: var(--color-background);
 }
 
 .job-status--claimed {
@@ -753,7 +807,7 @@
 }
 
 .job-status--canceled {
-  background: var(--color-muted);
+  background: var(--color-background);
   color: var(--color-muted-foreground);
 }
 
@@ -780,12 +834,11 @@
 .story-item {
   padding: 10px 12px;
   border-radius: 12px;
-  border: 1px solid var(--color-border);
+  border: none;
   background: var(--color-card);
 }
 
 .story-item--active {
-  border-color: var(--color-primary);
   background: var(--color-accent);
 }
 
@@ -823,7 +876,7 @@
   list-style: none;
   margin: 0;
   padding-left: 12px;
-  border-left: 1px solid var(--color-border);
+  border: none; /* Removed border-left */
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -873,14 +926,14 @@
   font-size: 10px;
   padding: 2px 6px;
   border-radius: 999px;
-  border: 1px solid var(--color-border);
+  border: none;
   background: var(--color-muted);
   color: var(--color-muted-foreground);
   letter-spacing: 0.02em;
 }
 
 .asset-panel {
-  border: 1px solid var(--color-border);
+  border: none;
   border-radius: 12px;
   padding: 10px 12px;
   display: flex;
@@ -890,7 +943,7 @@
 }
 
 .member-panel {
-  border: 1px solid var(--color-border);
+  border: none;
   border-radius: 12px;
   padding: 10px 12px;
   display: flex;
@@ -933,7 +986,7 @@
   gap: 10px;
   padding: 6px 8px;
   border-radius: 10px;
-  border: 1px solid var(--color-border);
+  border: none;
   background: var(--color-muted);
   font-size: 12px;
 }
@@ -972,7 +1025,7 @@
   gap: 8px;
   padding: 8px 10px;
   border-radius: 12px;
-  border: 1px solid var(--color-border);
+  border: none;
   background: var(--color-muted);
   flex-wrap: wrap;
 }
@@ -986,7 +1039,7 @@
 
 .chat-select {
   border-radius: 8px;
-  border: 1px solid var(--color-border);
+  border: none;
   background: var(--color-background);
   color: var(--color-foreground);
   padding: 4px 8px;
@@ -997,7 +1050,7 @@
 .chat-bubble {
   padding: 10px 12px;
   border-radius: 12px;
-  border: 1px solid var(--color-border);
+  border: none;
   background: var(--color-card);
   max-width: 80%;
 }
@@ -1009,7 +1062,6 @@
 .chat-bubble--user {
   align-self: flex-end;
   background: color-mix(in srgb, var(--color-primary) 10%, transparent);
-  border-color: color-mix(in srgb, var(--color-primary) 20%, transparent);
 }
 
 .chat-role {
@@ -1023,8 +1075,8 @@
   gap: 8px;
   padding: 8px;
   border-radius: 12px;
-  border: 1px solid var(--color-border);
-  background: var(--color-background);
+  border: none;
+  background: var(--color-card); /* was background */
 }
 
 .chat-input input {
@@ -1049,7 +1101,7 @@
 .artifact-card {
   padding: 12px;
   border-radius: 12px;
-  border: 1px solid var(--color-border);
+  border: none;
   background: var(--color-card);
 }
 
@@ -1086,7 +1138,7 @@
   align-items: center;
   padding: 8px 10px;
   border-radius: 12px;
-  border: 1px solid var(--color-border);
+  border: none;
   background: var(--color-muted);
   font-size: 12px;
 }
@@ -1142,7 +1194,7 @@
   position: relative;
   height: 24px;
   border-radius: 10px;
-  border: 1px solid var(--color-border);
+  border: none;
   background: var(--color-muted);
   overflow: hidden;
   cursor: pointer;
@@ -1162,14 +1214,15 @@
   top: 3px;
   height: 18px;
   border-radius: 6px;
-  border: 1px solid color-mix(in srgb, var(--color-background) 20%, transparent);
+  border: none;
+  background: var(--color-secondary); /* Differentiate clips */
   min-width: 2px;
   cursor: pointer;
   transition: transform 0.12s ease;
 }
 
 .timeline-clip--active {
-  box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-foreground) 60%, transparent);
+  background: var(--color-primary); /* Stronger active state without border */
   transform: scaleY(1.05);
 }
 
@@ -1203,8 +1256,8 @@ input[type="range"] {
   gap: 6px;
   padding: 6px 10px;
   border-radius: 999px;
-  border: 1px solid var(--color-border);
-  background: var(--color-card);
+  border: none;
+  background: var(--color-muted);
   font-size: 12px;
   color: var(--color-muted-foreground);
 }
@@ -1216,29 +1269,10 @@ input[type="range"] {
   gap: 12px;
 }
 
-.preview-label {
-  font-size: 11px;
-  color: var(--color-muted-foreground);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
-.preview-select {
-  flex: 1;
-  border-radius: 10px;
-  border: 1px solid var(--color-border);
-  padding: 6px 10px;
-  background: var(--color-background);
-  color: var(--color-foreground);
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-}
-
 .notice {
   border-radius: 12px;
   padding: 10px 12px;
-  border: 1px dashed var(--color-border);
+  border: none;
   background: var(--color-muted);
   color: var(--color-muted-foreground);
   font-size: 12px;
@@ -1256,7 +1290,6 @@ input[type="range"] {
 }
 
 .notice--error {
-  border-color: color-mix(in srgb, var(--color-destructive) 40%, transparent);
   color: var(--color-destructive);
   background: color-mix(in srgb, var(--color-destructive) 10%, transparent);
 }
@@ -1299,7 +1332,7 @@ input[type="range"] {
 .moment-card {
   border-radius: 12px;
   padding: 12px;
-  border: 1px solid var(--color-border);
+  border: none;
   background: var(--color-card);
   display: flex;
   flex-direction: column;
@@ -1332,7 +1365,7 @@ input[type="range"] {
 .scene-item {
   border-radius: 12px;
   padding: 10px 12px;
-  border: 1px solid var(--color-border);
+  border: none;
   background: var(--color-card);
   display: flex;
   flex-direction: column;
@@ -1363,7 +1396,7 @@ input[type="range"] {
 
 .cue-chip {
   border-radius: 999px;
-  border: 1px solid var(--color-border);
+  border: none;
   background: var(--color-muted);
   color: var(--color-muted-foreground);
   font-size: 11px;
@@ -1382,13 +1415,6 @@ input[type="range"] {
   gap: 10px;
 }
 
-.timeline-track {
-  display: grid;
-  grid-template-columns: 120px minmax(0, 1fr);
-  gap: 12px;
-  align-items: center;
-}
-
 .timeline-track-label {
   font-size: 12px;
   color: var(--color-muted-foreground);
@@ -1402,18 +1428,6 @@ input[type="range"] {
   border-radius: 999px;
   background: var(--color-muted);
   overflow: hidden;
-}
-
-.timeline-clip {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  border-radius: 999px;
-  background: linear-gradient(90deg, color-mix(in srgb, var(--color-primary) 70%, transparent), color-mix(in srgb, var(--color-accent) 70%, transparent));
-}
-
-.timeline-clip--active {
-  background: linear-gradient(90deg, var(--color-primary), var(--color-destructive));
 }
 
 .panel--player {
@@ -1450,9 +1464,9 @@ input[type="range"] {
 
 .render-field input {
   border-radius: 10px;
-  border: 1px solid var(--color-border);
+  border: none;
   padding: 6px 10px;
-  background: var(--color-surface);
+  background: var(--color-input); /* Input bg */
   color: var(--color-foreground);
   font-size: 12px;
   text-transform: none;
