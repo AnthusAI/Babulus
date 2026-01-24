@@ -1,0 +1,217 @@
+{
+  "items": [
+    {
+      "type": "lead_in",
+      "startSec": 0,
+      "endSec": 0.5,
+      "seconds": 0.5
+    },
+    {
+      "type": "tts",
+      "sceneId": "opening",
+      "cueId": "hook",
+      "startSec": 0.5,
+      "endSec": 9.627272727272727,
+      "segments": [
+        {
+          "type": "tts",
+          "startSec": 0.5,
+          "endSec": 4.863636363636363,
+          "text": "Welcome to the Babulus preview. We are testing timing, cues, and playback.",
+          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/studio-demo/env/development/segments/opening--hook--tts--d83236686f33--1.wav",
+          "durationSec": 4.363636363636363,
+          "rawDurationSec": 4.363636363636363,
+          "trimEndSec": 0
+        },
+        {
+          "type": "pause",
+          "startSec": 4.863636363636363,
+          "endSec": 5.263636363636364,
+          "seconds": 0.4
+        },
+        {
+          "type": "tts",
+          "startSec": 5.263636363636364,
+          "endSec": 9.627272727272727,
+          "text": "This is a longer segment so the storyboard has time to advance.",
+          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/studio-demo/env/development/segments/opening--hook--tts--fe353024765a--1.wav",
+          "durationSec": 4.363636363636363,
+          "rawDurationSec": 4.363636363636363,
+          "trimEndSec": 0
+        }
+      ]
+    },
+    {
+      "type": "pause",
+      "sceneId": "opening",
+      "startSec": 9.627272727272727,
+      "endSec": 10.227272727272727,
+      "seconds": 0.6
+    },
+    {
+      "type": "tts",
+      "sceneId": "opening",
+      "cueId": "setup",
+      "startSec": 10.227272727272727,
+      "endSec": 21.122727272727275,
+      "segments": [
+        {
+          "type": "tts",
+          "startSec": 10.227272727272727,
+          "endSec": 16.045454545454547,
+          "text": "Each cue becomes a timed span in the script JSON. The player advances frame by frame.",
+          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/studio-demo/env/development/segments/opening--setup--tts--89b451c63e9d--1.wav",
+          "durationSec": 5.818181818181818,
+          "rawDurationSec": 5.818181818181818,
+          "trimEndSec": 0
+        },
+        {
+          "type": "pause",
+          "startSec": 16.045454545454547,
+          "endSec": 16.395454545454548,
+          "seconds": 0.35
+        },
+        {
+          "type": "tts",
+          "startSec": 16.395454545454548,
+          "endSec": 21.122727272727275,
+          "text": "You should see the cue title change when we move past this point.",
+          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/studio-demo/env/development/segments/opening--setup--tts--44cc5b855760--1.wav",
+          "durationSec": 4.727272727272727,
+          "rawDurationSec": 4.727272727272727,
+          "trimEndSec": 0
+        }
+      ]
+    },
+    {
+      "type": "tts",
+      "sceneId": "feature",
+      "cueId": "capability",
+      "startSec": 21.122727272727275,
+      "endSec": 26.577272727272728,
+      "segments": [
+        {
+          "type": "tts",
+          "startSec": 21.122727272727275,
+          "endSec": 26.577272727272728,
+          "text": "Next we highlight a capability. Imagine visuals changing here when we plug in real compositions.",
+          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/studio-demo/env/development/segments/feature--capability--tts--226dc21c494c--1.wav",
+          "durationSec": 5.454545454545455,
+          "rawDurationSec": 5.454545454545455,
+          "trimEndSec": 0
+        }
+      ]
+    },
+    {
+      "type": "pause",
+      "sceneId": "feature",
+      "startSec": 26.577272727272728,
+      "endSec": 27.077272727272728,
+      "seconds": 0.5
+    },
+    {
+      "type": "tts",
+      "sceneId": "feature",
+      "cueId": "outcome",
+      "startSec": 27.077272727272728,
+      "endSec": 32.16818181818182,
+      "segments": [
+        {
+          "type": "tts",
+          "startSec": 27.077272727272728,
+          "endSec": 32.16818181818182,
+          "text": "Playback should keep moving even without real video assets. This proves timing is correct.",
+          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/studio-demo/env/development/segments/feature--outcome--tts--de359f300e89--1.wav",
+          "durationSec": 5.090909090909091,
+          "rawDurationSec": 5.090909090909091,
+          "trimEndSec": 0
+        }
+      ]
+    },
+    {
+      "type": "tts",
+      "sceneId": "wrap",
+      "cueId": "cta",
+      "startSec": 32.16818181818182,
+      "endSec": 36.89545454545455,
+      "segments": [
+        {
+          "type": "tts",
+          "startSec": 32.16818181818182,
+          "endSec": 36.89545454545455,
+          "text": "Final cue. We can now iterate on rendering and swap in real visuals.",
+          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/studio-demo/env/development/segments/wrap--cta--tts--d8207eaa2d1c--1.wav",
+          "durationSec": 4.727272727272727,
+          "rawDurationSec": 4.727272727272727,
+          "trimEndSec": 0
+        }
+      ]
+    }
+  ],
+  "audio": {
+    "tracks": [
+      {
+        "id": "narration",
+        "kind": "narration",
+        "clips": [
+          {
+            "id": "opening--hook--tts--d83236686f33--1",
+            "kind": "file",
+            "startSec": 0.5,
+            "durationSec": 4.363636363636363,
+            "src": "preview/studio-demo/env/development/segments/opening--hook--tts--d83236686f33--1.wav",
+            "volume": 1
+          },
+          {
+            "id": "opening--hook--tts--fe353024765a--1",
+            "kind": "file",
+            "startSec": 5.263636363636364,
+            "durationSec": 4.363636363636363,
+            "src": "preview/studio-demo/env/development/segments/opening--hook--tts--fe353024765a--1.wav",
+            "volume": 1
+          },
+          {
+            "id": "opening--setup--tts--89b451c63e9d--1",
+            "kind": "file",
+            "startSec": 10.227272727272727,
+            "durationSec": 5.818181818181818,
+            "src": "preview/studio-demo/env/development/segments/opening--setup--tts--89b451c63e9d--1.wav",
+            "volume": 1
+          },
+          {
+            "id": "opening--setup--tts--44cc5b855760--1",
+            "kind": "file",
+            "startSec": 16.395454545454548,
+            "durationSec": 4.727272727272727,
+            "src": "preview/studio-demo/env/development/segments/opening--setup--tts--44cc5b855760--1.wav",
+            "volume": 1
+          },
+          {
+            "id": "feature--capability--tts--226dc21c494c--1",
+            "kind": "file",
+            "startSec": 21.122727272727275,
+            "durationSec": 5.454545454545455,
+            "src": "preview/studio-demo/env/development/segments/feature--capability--tts--226dc21c494c--1.wav",
+            "volume": 1
+          },
+          {
+            "id": "feature--outcome--tts--de359f300e89--1",
+            "kind": "file",
+            "startSec": 27.077272727272728,
+            "durationSec": 5.090909090909091,
+            "src": "preview/studio-demo/env/development/segments/feature--outcome--tts--de359f300e89--1.wav",
+            "volume": 1
+          },
+          {
+            "id": "wrap--cta--tts--d8207eaa2d1c--1",
+            "kind": "file",
+            "startSec": 32.16818181818182,
+            "durationSec": 4.727272727272727,
+            "src": "preview/studio-demo/env/development/segments/wrap--cta--tts--d8207eaa2d1c--1.wav",
+            "volume": 1
+          }
+        ]
+      }
+    ]
+  }
+}

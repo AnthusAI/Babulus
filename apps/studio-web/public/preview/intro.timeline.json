@@ -1,0 +1,41 @@
+{
+  "items": [
+    {
+      "type": "tts",
+      "sceneId": "title",
+      "cueId": "hook",
+      "startSec": 0,
+      "endSec": 0.36363636363636365,
+      "segments": [
+        {
+          "type": "tts",
+          "startSec": 0,
+          "endSec": 0.36363636363636365,
+          "text": "Hello",
+          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/intro/env/development/segments/title--hook--tts--6a37b5550727--1.wav",
+          "durationSec": 0.36363636363636365,
+          "rawDurationSec": 0.36363636363636365,
+          "trimEndSec": 0
+        }
+      ]
+    }
+  ],
+  "audio": {
+    "tracks": [
+      {
+        "id": "narration",
+        "kind": "narration",
+        "clips": [
+          {
+            "id": "title--hook--tts--6a37b5550727--1",
+            "kind": "file",
+            "startSec": 0,
+            "durationSec": 0.36363636363636365,
+            "src": "preview/intro/env/development/segments/title--hook--tts--6a37b5550727--1.wav",
+            "volume": 1
+          }
+        ]
+      }
+    ]
+  }
+}
