@@ -13,7 +13,9 @@
  *   const project = await createProjectAction({ name: "My Project" }, orgId);
  */
 
-import { getCurrentUser } from "aws-amplify/auth";
+import { getCurrentUser } from "aws-amplify/auth/server";
+import { cookies } from "next/headers";
+import { runWithAmplifyServerContext } from "../lib/amplify-server.js";
 import * as cp from "../lib/control-plane-graphql.js";
 import type {
   Org,
@@ -55,7 +57,10 @@ import type { VideoStatus } from "@babulus/shared";
 // Helper to get authenticated user ID
 async function getAuthenticatedUserId(): Promise<string> {
   try {
-    const user = await getCurrentUser();
+    const user = await runWithAmplifyServerContext({
+      nextServerContext: { cookies },
+      operation: (contextSpec) => getCurrentUser(contextSpec),
+    });
     return user.userId;
   } catch (error) {
     throw new Error("User not authenticated");

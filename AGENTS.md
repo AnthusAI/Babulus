@@ -87,3 +87,132 @@ npm run babulus -- clean --env production --yes         # Specific env
 npm run babulus -- clean --only-voice --yes            # Only voice
 npm run babulus -- clean --only-sfx --only-music --yes # Multiple types
 ```
+
+---
+
+# Babulus Studio Web (AWS Amplify Gen2)
+
+## Getting amplify_outputs.json
+
+**CRITICAL:** After deploying the Amplify backend, you must download `amplify_outputs.json` to connect your local dev environment to the backend.
+
+### Method 1: Using the Script (Easiest)
+
+```bash
+# From repository root
+./scripts/get-amplify-outputs.sh <app-id> main
+```
+
+**Finding your App ID:**
+1. Go to [AWS Amplify Console](https://console.aws.amazon.com/amplify/home?region=us-east-1)
+2. Click on your app (Babulus)
+3. Copy the App ID from the URL (looks like `d3abc123xyz`)
+
+**Example:**
+```bash
+./scripts/get-amplify-outputs.sh d3abc123xyz main
+```
+
+The file will be saved to `apps/studio-web/amplify_outputs.json`.
+
+### Method 2: Manual Download from Console
+
+1. Go to [AWS Amplify Console](https://console.aws.amazon.com/amplify/home?region=us-east-1)
+2. Select your app (Babulus)
+3. Select the branch (main)
+4. Click "Hosting" → "Download outputs"
+5. Save as `apps/studio-web/amplify_outputs.json`
+
+### Method 3: Using CLI Directly
+
+```bash
+cd apps/studio-web
+AWS_PROFILE=anthus npx @aws-amplify/backend-cli@latest generate outputs \
+  --branch main \
+  --app-id <app-id> \
+  --profile anthus
+```
+
+### Verifying the File
+
+```bash
+# Check that it exists and is valid JSON
+cat apps/studio-web/amplify_outputs.json | jq .
+
+# Should contain auth, data, and storage config
+jq 'keys' apps/studio-web/amplify_outputs.json
+# Expected output: ["auth", "data", "storage", "version"]
+```
+
+## Studio Development
+
+```bash
+# Install dependencies
+cd apps/studio-web
+npm install
+
+# Start dev server
+npm run dev
+
+# Build for production
+npm run build
+
+# Run integration tests (requires amplify_outputs.json)
+npm run test:integration
+```
+
+## Amplify Deployment
+
+### Automatic (Recommended)
+
+Push to `main` branch triggers automatic deployment:
+
+```bash
+git push origin main
+```
+
+Check status at: [AWS Amplify Console](https://console.aws.amazon.com/amplify/home?region=us-east-1)
+
+### Manual
+
+```bash
+cd apps/studio-web
+npm run amplify:deploy
+```
+
+## AWS Account Info
+
+- **Profile:** `anthus`
+- **Account ID:** 335163751677
+- **Region:** us-east-1
+- **Amplify App:** Babulus
+
+## Amplify Build Failure Troubleshooting
+
+If the build fails, check these common issues:
+
+1. **Missing amplify_outputs.json during build**
+   - The build should handle this gracefully with a try/catch in `lib/amplify-config.ts`
+   - If it doesn't, check that the try/catch wrapper exists
+
+2. **TypeScript errors**
+   - Check build logs in Amplify Console
+   - Run `npm run build` locally to reproduce
+
+3. **Module resolution issues**
+   - Ensure ESM imports use `.js` extensions (even for `.ts` files)
+   - Check `next.config.mjs` has correct `transpilePackages` config
+
+4. **Missing dependencies**
+   - Check that all required packages are in `dependencies` (not devDependencies)
+   - Backend packages must be in dependencies for Amplify to install them
+
+## Studio Architecture
+
+- **Backend:** Amplify Gen2 (Cognito + AppSync + DynamoDB + S3)
+- **Frontend:** Next.js 14 with App Router
+- **Data Layer:** GraphQL via `lib/control-plane-graphql.ts`
+- **Storage:** S3 with org-scoped paths via `lib/storage-client.ts`
+- **Auth:** Cognito with `lib/use-auth.ts` hook
+
+See [apps/studio-web/README.md](apps/studio-web/README.md) for detailed documentation.
