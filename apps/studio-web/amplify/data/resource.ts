@@ -13,6 +13,8 @@ const studioSchema = schema.schema({
       name: schema.string().required(),
       slug: schema.string(),
       planTier: schema.string(),
+      customDomain: schema.string(),
+      customDomainVerified: schema.boolean(),
     })
     .authorization((allow) => [allow.authenticated()]),
   OrgMember: schema
@@ -122,7 +124,26 @@ const studioSchema = schema.schema({
       executionMode: schema.enum(["cloud", "local"]),
       inputJson: schema.json(),
     })
-    .authorization((allow) => [allow.authenticated()]),
+    .authorization((allow) => [allow.authenticated(), allow.publicApiKey()]), // Allow publish jobs to be read publicly? No, better to have a separate PublishedVideo model.
+
+  PublishedVideo: schema
+    .model({
+        orgId: schema.string().required(),
+        videoId: schema.string().required(),
+        renderRunId: schema.string().required(),
+        slug: schema.string().required(), // e.g. "my-video-123"
+        accessPolicy: schema.enum(["public", "password", "org_only"]),
+        passwordHash: schema.string(),
+        viewCount: schema.integer(),
+        publishedAt: schema.string(),
+    })
+    .secondaryIndexes((index) => [
+        index("slug"),
+    ])
+    .authorization((allow) => [
+        allow.authenticated(), 
+        allow.publicApiKey().to(["read"]) // Public access for playback
+    ]),
   JobEvent: schema
     .model({
       orgId: schema.string().required(),
@@ -158,6 +179,9 @@ export const data = defineData({
   schema: studioSchema,
   authorizationModes: {
     defaultAuthorizationMode: "userPool",
+    apiKeyAuthorizationMode: {
+      expiresInDays: 30,
+    },
   },
 });
 

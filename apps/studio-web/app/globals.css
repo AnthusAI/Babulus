@@ -65,7 +65,13 @@
 
 /* Base styles */
 @layer base {
-  :root {
+  html, body {
+    height: 100%;
+    overflow: hidden;
+    overscroll-behavior: none;
+  }
+
+  :root, .light, [data-theme="cool"] {
     /* Radix Slate Light Theme Approximation (COOL) */
     --background: 210 40% 98%;      /* Slate 1 */
     --foreground: 222.2 47.4% 11.2%; /* Slate 12 */
@@ -89,7 +95,7 @@
     --radius: 0.75rem;
   }
 
-  .dark {
+  .dark, [data-theme="cool"].dark, [data-theme="cool"] .dark {
     /* Radix Slate Dark Theme Approximation (COOL) */
     --background: 200 7% 8.8%;      /* Slate 1 */
     --foreground: 210 40% 98%;      /* Slate 12 */

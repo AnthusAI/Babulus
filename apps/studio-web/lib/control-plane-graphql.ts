@@ -1,6 +1,8 @@
-import { generateClient } from "aws-amplify/data";
+import { generateServerClientUsingCookies } from "@aws-amplify/adapter-nextjs/data";
+import { cookies } from "next/headers";
 // @ts-ignore - Schema type is generated after backend deployment
 import type { Schema } from "../amplify/data/resource.js";
+import outputs from "../amplify_outputs.json";
 import type {
   Org,
   OrgMember,
@@ -37,6 +39,7 @@ import type {
   CreateRenderAgentInput,
   CreateBillingAccountInput,
   CreateUserProfileInput,
+  CreatePublishedVideoInput, // Add this
 } from "@babulus/shared";
 import {
   buildOrgRecord,
@@ -57,222 +60,50 @@ import {
   buildRenderAgentRecord,
   buildBillingAccountRecord,
   buildUserProfileRecord,
+  buildPublishedVideoRecord, // Add this
 } from "@babulus/shared";
 import { updateVideoStatus, type VideoStatus } from "@babulus/shared";
 
-// Create typed GraphQL client
-const client = generateClient<Schema>();
+// Create typed GraphQL client lazily to ensure request context
+const getClient = () => {
+  if (!outputs) {
+    throw new Error("Amplify outputs not found. Ensure amplify_outputs.json exists.");
+  }
+  return generateServerClientUsingCookies<Schema>({
+    config: outputs,
+    cookies,
+  });
+};
 
 // Type adapters to convert from GraphQL schema types to control-plane types
 // Using any for now - the Amplify client types are complex and need refinement
 type GraphQLModel<T extends keyof Schema> = any;
 
-// function toControlPlaneOrg(model: GraphQLModel<"Org">): Org {
-//   return {
-//     id: model.id,
-//     name: model.name,
-//     planTier: model.planTier ?? null,
-//     createdAt: model.createdAt,
-//   };
-// }
-
-// function toControlPlaneOrgMember(model: GraphQLModel<"OrgMember">): OrgMember {
-//   return {
-//     orgId: model.orgId,
-//     userId: model.userId,
-//     role: model.role,
-//     createdAt: model.createdAt,
-//   };
-// }
-
-// function toControlPlaneProject(model: GraphQLModel<"Project">): Project {
-//   return {
-//     id: model.id,
-//     orgId: model.orgId,
-//     name: model.name,
-//     templateId: model.templateId ?? null,
-//     createdAt: model.createdAt,
-//   };
-// }
-
-// function toControlPlaneVideo(model: GraphQLModel<"Video">): Video {
-//   return {
-//     id: model.id,
-//     orgId: model.orgId,
-//     projectId: model.projectId,
-//     title: model.title,
-//     status: model.status ?? null,
-//     activeStoryboardVersionId: model.activeStoryboardVersionId ?? null,
-//     createdAt: model.createdAt,
-//   };
-// }
-
-// function toControlPlaneStoryboardVersion(model: GraphQLModel<"StoryboardVersion">): StoryboardVersion {
-//   return {
-//     id: model.id,
-//     orgId: model.orgId,
-//     videoId: model.videoId,
-//     sourceText: model.sourceText,
-//     parentVersionId: model.parentVersionId ?? null,
-//     createdBy: model.createdBy ?? null,
-//     createdAt: model.createdAt,
-//   };
-// }
-
-// function toControlPlaneGenerationRun(model: GraphQLModel<"GenerationRun">): GenerationRun {
-//   return {
-//     id: model.id,
-//     orgId: model.orgId,
-//     videoId: model.videoId,
-//     storyboardVersionId: model.storyboardVersionId,
-//     status: model.status as GenerationRun["status"],
-//     scriptArtifactKey: model.scriptArtifactKey ?? null,
-//     timelineArtifactKey: model.timelineArtifactKey ?? null,
-//     audioArtifactKey: model.audioArtifactKey ?? null,
-//     logsArtifactKey: model.logsArtifactKey ?? null,
-//     createdAt: model.createdAt,
-//   };
-// }
-
-// function toControlPlaneRenderRun(model: GraphQLModel<"RenderRun">): RenderRun {
-//   return {
-//     id: model.id,
-//     orgId: model.orgId,
-//     videoId: model.videoId,
-//     generationRunId: model.generationRunId,
-//     status: model.status as RenderRun["status"],
-//     mp4ArtifactKey: model.mp4ArtifactKey ?? null,
-//     stillsArtifactPrefix: model.stillsArtifactPrefix ?? null,
-//     logsArtifactKey: model.logsArtifactKey ?? null,
-//     createdAt: model.createdAt,
-//   };
-// }
-
-// function toControlPlaneAsset(model: GraphQLModel<"Asset">): Asset {
-//   return {
-//     id: model.id,
-//     orgId: model.orgId,
-//     projectId: model.projectId,
-//     kind: model.kind,
-//     sha256: model.sha256,
-//     storageKey: model.storageKey,
-//     metadata: (model.metadataJson as Asset["metadata"]) ?? null,
-//     createdAt: model.createdAt,
-//   };
-// }
-
-// function toControlPlaneJob(model: GraphQLModel<"Job">): Job {
-//   const input = (model.inputJson ?? {}) as Job["input"];
-//   return {
-//     id: model.id,
-//     orgId: model.orgId,
-//     kind: model.kind as Job["kind"],
-//     status: model.status as JobStatus,
-//     claimedByAgentId: model.claimedByAgentId ?? null,
-//     executionMode: model.executionMode as Job["executionMode"],
-//     input,
-//     idempotencyKey: input.idempotencyKey ?? null,
-//     createdAt: model.createdAt,
-//   };
-// }
-
-// function toControlPlaneJobEvent(model: GraphQLModel<"JobEvent">): JobEvent {
-//   return {
-//     id: model.id,
-//     orgId: model.orgId,
-//     jobId: model.jobId,
-//     type: model.type as JobEvent["type"],
-//     message: model.message ?? null,
-//     progress: model.progress ?? null,
-//     createdAt: model.createdAt,
-//   };
-// }
-
-// function toControlPlaneConversation(model: GraphQLModel<"Conversation">): Conversation {
-//   return {
-//     id: model.id,
-//     orgId: model.orgId,
-//     videoId: model.videoId ?? null,
-//     createdAt: model.createdAt,
-//   };
-// }
-
-// function toControlPlaneMessage(model: GraphQLModel<"Message">): Message {
-//   return {
-//     id: model.id,
-//     orgId: model.orgId,
-//     conversationId: model.conversationId,
-//     role: model.role as Message["role"],
-//     content: model.content,
-//     createdAt: model.createdAt,
-//   };
-// }
-
-// function toControlPlaneApproval(model: GraphQLModel<"Approval">): Approval {
-//   return {
-//     id: model.id,
-//     orgId: model.orgId,
-//     videoId: model.videoId,
-//     kind: model.kind,
-//     status: model.status as Approval["status"],
-//     requestedBy: model.requestedBy ?? null,
-//     decidedBy: model.decidedBy ?? null,
-//     decidedAt: model.decidedAt ?? null,
-//     createdAt: model.createdAt,
-//   };
-// }
-
-// function toControlPlaneUsageEvent(model: GraphQLModel<"UsageEvent">): UsageEvent {
-//   return {
-//     id: model.id,
-//     orgId: model.orgId,
-//     videoId: model.videoId ?? null,
-//     runId: model.runId ?? null,
-//     provider: model.provider ?? null,
-//     unitType: model.unitType as UsageEvent["unitType"],
-//     quantity: model.quantity,
-//     estimatedCost: model.estimatedCost ?? null,
-//     actualCost: model.actualCost ?? null,
-//     createdAt: model.createdAt,
-//   };
-// }
-
-// function toControlPlaneRenderAgent(model: GraphQLModel<"RenderAgent">): RenderAgent {
-//   return {
-//     id: model.id,
-//     orgId: model.orgId,
-//     label: model.label ?? null,
-//     status: model.status as RenderAgent["status"],
-//     lastSeenAt: model.lastSeenAt ?? null,
-//     createdAt: model.createdAt,
-//   };
-// }
-
-// function toControlPlaneBillingAccount(model: GraphQLModel<"BillingAccount">): BillingAccount {
-//   return {
-//     id: model.id,
-//     orgId: model.orgId,
-//     planId: model.planId ?? null,
-//     billingMode: model.billingMode as BillingAccount["billingMode"],
-//     usageVisibilityMode: model.usageVisibilityMode as BillingAccount["usageVisibilityMode"],
-//     createdAt: model.createdAt,
-//   };
-// }
-
-// function toControlPlaneUserProfile(model: GraphQLModel<"UserProfile">): UserProfile {
-//   return {
-//     id: model.id,
-//     userId: model.userId,
-//     email: model.email,
-//     displayName: model.displayName ?? null,
-//     createdAt: model.createdAt,
-//   };
-// }
-
 // Control-plane operations using GraphQL client
+export const createPublishedVideo = async (
+  input: CreatePublishedVideoInput,
+  activeOrgId: string,
+): Promise<import("@babulus/shared").PublishedVideo> => {
+  const record = buildPublishedVideoRecord(input, activeOrgId);
+  const { data, errors } = await getClient().models.PublishedVideo.create({
+    orgId: record.orgId,
+    videoId: record.videoId,
+    renderRunId: record.renderRunId,
+    slug: record.slug,
+    accessPolicy: record.accessPolicy,
+    passwordHash: record.passwordHash,
+    viewCount: record.viewCount,
+    publishedAt: record.publishedAt,
+  });
+  if (errors || !data) {
+    throw new Error(`Failed to create published video: ${errors?.map((e) => e.message).join(", ")}`);
+  }
+  return data as any;
+};
+
 export const createOrg = async (input: CreateOrgInput): Promise<Org> => {
   const record = buildOrgRecord(input);
-  const { data, errors } = await client.models.Org.create({
+  const { data, errors } = await getClient().models.Org.create({
     name: record.name,
     planTier: record.planTier,
   });
@@ -287,7 +118,7 @@ export const createOrgMember = async (
   activeOrgId: string,
 ): Promise<OrgMember> => {
   const record = buildOrgMemberRecord(input, activeOrgId);
-  const { data, errors } = await client.models.OrgMember.create({
+  const { data, errors } = await getClient().models.OrgMember.create({
     orgId: record.orgId,
     userId: record.userId,
     role: record.role,
@@ -303,7 +134,7 @@ export const createProject = async (
   activeOrgId: string,
 ): Promise<Project> => {
   const record = buildProjectRecord(input, activeOrgId);
-  const { data, errors } = await client.models.Project.create({
+  const { data, errors } = await getClient().models.Project.create({
     orgId: record.orgId,
     name: record.name,
     templateId: record.templateId,
@@ -316,7 +147,7 @@ export const createProject = async (
 
 export const createVideo = async (input: CreateVideoInput, activeOrgId: string): Promise<Video> => {
   const record = buildVideoRecord(input, activeOrgId);
-  const { data, errors } = await client.models.Video.create({
+  const { data, errors } = await getClient().models.Video.create({
     orgId: record.orgId,
     projectId: record.projectId,
     title: record.title,
@@ -334,7 +165,7 @@ export const createStoryboardVersion = async (
   activeOrgId: string,
 ): Promise<StoryboardVersion> => {
   const record = buildStoryboardVersionRecord(input, activeOrgId);
-  const { data, errors } = await client.models.StoryboardVersion.create({
+  const { data, errors } = await getClient().models.StoryboardVersion.create({
     orgId: record.orgId,
     videoId: record.videoId,
     sourceText: record.sourceText,
@@ -352,7 +183,7 @@ export const createGenerationRun = async (
   activeOrgId: string,
 ): Promise<GenerationRun> => {
   const record = buildGenerationRunRecord(input, activeOrgId);
-  const { data, errors } = await client.models.GenerationRun.create({
+  const { data, errors } = await getClient().models.GenerationRun.create({
     orgId: record.orgId,
     videoId: record.videoId,
     storyboardVersionId: record.storyboardVersionId,
@@ -373,7 +204,7 @@ export const createRenderRun = async (
   activeOrgId: string,
 ): Promise<RenderRun> => {
   const record = buildRenderRunRecord(input, activeOrgId);
-  const { data, errors } = await client.models.RenderRun.create({
+  const { data, errors } = await getClient().models.RenderRun.create({
     orgId: record.orgId,
     videoId: record.videoId,
     generationRunId: record.generationRunId,
@@ -390,7 +221,7 @@ export const createRenderRun = async (
 
 export const createAsset = async (input: CreateAssetInput, activeOrgId: string): Promise<Asset> => {
   const record = buildAssetRecord(input, activeOrgId);
-  const { data, errors } = await client.models.Asset.create({
+  const { data, errors } = await getClient().models.Asset.create({
     orgId: record.orgId,
     projectId: record.projectId,
     kind: record.kind,
@@ -409,7 +240,7 @@ export const createJob = async (input: CreateJobInput, activeOrgId: string): Pro
 
   // Check for existing job with same idempotency key
   if (resolved.idempotencyKey) {
-    const { data: existing } = await client.models.Job.list({
+    const { data: existing } = await getClient().models.Job.list({
       filter: {
         orgId: { eq: resolved.orgId },
       },
@@ -433,7 +264,7 @@ export const createJob = async (input: CreateJobInput, activeOrgId: string): Pro
   }
 
   const record = buildJobRecord(resolved, activeOrgId);
-  const { data, errors } = await client.models.Job.create({
+  const { data, errors } = await getClient().models.Job.create({
     orgId: record.orgId,
     kind: record.kind,
     status: record.status,
@@ -452,7 +283,7 @@ export const createJobEvent = async (
   activeOrgId: string,
 ): Promise<JobEvent> => {
   const record = buildJobEventRecord(input, activeOrgId);
-  const { data, errors } = await client.models.JobEvent.create({
+  const { data, errors } = await getClient().models.JobEvent.create({
     orgId: record.orgId,
     jobId: record.jobId,
     type: record.type,
@@ -470,7 +301,7 @@ export const createConversation = async (
   activeOrgId: string,
 ): Promise<Conversation> => {
   const record = buildConversationRecord(input, activeOrgId);
-  const { data, errors } = await client.models.Conversation.create({
+  const { data, errors } = await getClient().models.Conversation.create({
     orgId: record.orgId,
     videoId: record.videoId,
   });
@@ -485,7 +316,7 @@ export const createMessage = async (
   activeOrgId: string,
 ): Promise<Message> => {
   const record = buildMessageRecord(input, activeOrgId);
-  const { data, errors } = await client.models.Message.create({
+  const { data, errors } = await getClient().models.Message.create({
     orgId: record.orgId,
     conversationId: record.conversationId,
     role: record.role,
@@ -502,7 +333,7 @@ export const createApproval = async (
   activeOrgId: string,
 ): Promise<Approval> => {
   const record = buildApprovalRecord(input, activeOrgId);
-  const { data, errors } = await client.models.Approval.create({
+  const { data, errors } = await getClient().models.Approval.create({
     orgId: record.orgId,
     videoId: record.videoId,
     kind: record.kind,
@@ -522,7 +353,7 @@ export const createUsageEvent = async (
   activeOrgId: string,
 ): Promise<UsageEvent> => {
   const record = buildUsageEventRecord(input, activeOrgId);
-  const { data, errors } = await client.models.UsageEvent.create({
+  const { data, errors } = await getClient().models.UsageEvent.create({
     orgId: record.orgId,
     videoId: record.videoId,
     runId: record.runId,
@@ -543,7 +374,7 @@ export const createRenderAgent = async (
   activeOrgId: string,
 ): Promise<RenderAgent> => {
   const record = buildRenderAgentRecord(input, activeOrgId);
-  const { data, errors } = await client.models.RenderAgent.create({
+  const { data, errors } = await getClient().models.RenderAgent.create({
     orgId: record.orgId,
     label: record.label,
     status: record.status,
@@ -560,7 +391,7 @@ export const createBillingAccount = async (
   activeOrgId: string,
 ): Promise<BillingAccount> => {
   const record = buildBillingAccountRecord(input, activeOrgId);
-  const { data, errors } = await client.models.BillingAccount.create({
+  const { data, errors } = await getClient().models.BillingAccount.create({
     orgId: record.orgId,
     planId: record.planId,
     billingMode: record.billingMode,
@@ -574,7 +405,7 @@ export const createBillingAccount = async (
 
 export const createUserProfile = async (input: CreateUserProfileInput): Promise<UserProfile> => {
   const record = buildUserProfileRecord(input);
-  const { data, errors } = await client.models.UserProfile.create({
+  const { data, errors } = await getClient().models.UserProfile.create({
     userId: record.id,
     email: record.email,
     displayName: record.displayName,
@@ -588,7 +419,7 @@ export const createUserProfile = async (input: CreateUserProfileInput): Promise<
 // List operations
 export const listOrgs = async (userId: string): Promise<Org[]> => {
   // First get all org memberships for this user
-  const { data: memberships } = await client.models.OrgMember.list({
+  const { data: memberships } = await getClient().models.OrgMember.list({
     filter: { userId: { eq: userId } },
   });
   if (!memberships?.length) {
@@ -596,14 +427,14 @@ export const listOrgs = async (userId: string): Promise<Org[]> => {
   }
 
   const orgIds = new Set(memberships.map((m) => m.orgId));
-  const { data: orgs } = await client.models.Org.list({});
+  const { data: orgs } = await getClient().models.Org.list({});
 
   return ((orgs ?? [])
     .filter((org) => orgIds.has(org.id))) as any;
 };
 
 export const listProjects = async (activeOrgId: string): Promise<Project[]> => {
-  const { data } = await client.models.Project.list({
+  const { data } = await getClient().models.Project.list({
     filter: { orgId: { eq: activeOrgId } },
   });
   return (data ?? [])as any;
@@ -616,7 +447,7 @@ export const listVideos = async (activeOrgId: string, projectId?: string | null)
   if (projectId) {
     filter.projectId = { eq: projectId };
   }
-  const { data } = await client.models.Video.list({ filter });
+  const { data } = await getClient().models.Video.list({ filter });
   return (data ?? [])as any;
 };
 
@@ -630,7 +461,7 @@ export const listStoryboardVersions = async (
   if (videoId) {
     filter.videoId = { eq: videoId };
   }
-  const { data } = await client.models.StoryboardVersion.list({ filter });
+  const { data } = await getClient().models.StoryboardVersion.list({ filter });
   return (data ?? [])as any;
 };
 
@@ -644,26 +475,35 @@ export const listGenerationRuns = async (
   if (videoId) {
     filter.videoId = { eq: videoId };
   }
-  const { data } = await client.models.GenerationRun.list({ filter });
+  const { data } = await getClient().models.GenerationRun.list({ filter });
   return (data ?? [])as any;
+};
+
+export const getRenderRun = async (runId: string): Promise<RenderRun | null> => {
+  const { data } = await getClient().models.RenderRun.get({ id: runId });
+  return data as any;
 };
 
 export const listRenderRuns = async (
   activeOrgId: string,
   generationRunId?: string | null,
+  videoId?: string | null,
 ): Promise<RenderRun[]> => {
-  const filter: { orgId: { eq: string }; generationRunId?: { eq: string } } = {
+  const filter: { orgId: { eq: string }; generationRunId?: { eq: string }; videoId?: { eq: string } } = {
     orgId: { eq: activeOrgId },
   };
   if (generationRunId) {
     filter.generationRunId = { eq: generationRunId };
   }
-  const { data } = await client.models.RenderRun.list({ filter });
+  if (videoId) {
+    filter.videoId = { eq: videoId };
+  }
+  const { data } = await getClient().models.RenderRun.list({ filter });
   return (data ?? [])as any;
 };
 
 export const listAssets = async (activeOrgId: string, projectId?: string | null): Promise<Asset[]> => {
-  const { data } = await client.models.Asset.list({
+  const { data } = await getClient().models.Asset.list({
     filter: { orgId: { eq: activeOrgId } },
   });
   if (!projectId) {
@@ -680,7 +520,7 @@ export const listJobs = async (activeOrgId: string, status?: JobStatus | null): 
   if (status) {
     filter.status = { eq: status };
   }
-  const { data } = await client.models.Job.list({ filter });
+  const { data } = await getClient().models.Job.list({ filter });
   return (data ?? [])as any;
 };
 
@@ -691,12 +531,12 @@ export const listJobEvents = async (activeOrgId: string, jobId?: string | null):
   if (jobId) {
     filter.jobId = { eq: jobId };
   }
-  const { data } = await client.models.JobEvent.list({ filter });
+  const { data } = await getClient().models.JobEvent.list({ filter });
   return (data ?? [])as any;
 };
 
 export const listOrgMembers = async (activeOrgId: string): Promise<OrgMember[]> => {
-  const { data } = await client.models.OrgMember.list({
+  const { data } = await getClient().models.OrgMember.list({
     filter: { orgId: { eq: activeOrgId } },
   });
   return (data ?? [])as any;
@@ -712,7 +552,7 @@ export const listConversations = async (
   if (videoId) {
     filter.videoId = { eq: videoId };
   }
-  const { data } = await client.models.Conversation.list({ filter });
+  const { data } = await getClient().models.Conversation.list({ filter });
   return (data ?? [])as any;
 };
 
@@ -726,7 +566,7 @@ export const listMessages = async (
   if (conversationId) {
     filter.conversationId = { eq: conversationId };
   }
-  const { data } = await client.models.Message.list({ filter });
+  const { data } = await getClient().models.Message.list({ filter });
   return (data ?? [])as any;
 };
 
@@ -740,7 +580,7 @@ export const listApprovals = async (
   if (videoId) {
     filter.videoId = { eq: videoId };
   }
-  const { data } = await client.models.Approval.list({ filter });
+  const { data } = await getClient().models.Approval.list({ filter });
   return (data ?? [])as any;
 };
 
@@ -758,22 +598,42 @@ export const listUsageEvents = async (
   if (runId) {
     filter.runId = { eq: runId };
   }
-  const { data } = await client.models.UsageEvent.list({ filter });
+  const { data } = await getClient().models.UsageEvent.list({ filter });
   return (data ?? [])as any;
 };
 
 export const listRenderAgents = async (activeOrgId: string): Promise<RenderAgent[]> => {
-  const { data } = await client.models.RenderAgent.list({
+  const { data } = await getClient().models.RenderAgent.list({
     filter: { orgId: { eq: activeOrgId } },
   });
   return (data ?? [])as any;
 };
 
 export const listBillingAccounts = async (activeOrgId: string): Promise<BillingAccount[]> => {
-  const { data } = await client.models.BillingAccount.list({
+  const { data } = await getClient().models.BillingAccount.list({
     filter: { orgId: { eq: activeOrgId } },
   });
   return (data ?? [])as any;
+};
+
+export const updateOrgDomain = async (
+  orgId: string,
+  customDomain: string | null,
+): Promise<Org> => {
+  const { data: org } = await getClient().models.Org.get({ id: orgId });
+  if (!org) {
+    throw new Error(`Org not found: ${orgId}`);
+  }
+
+  const { data, errors } = await getClient().models.Org.update({
+    id: orgId,
+    customDomain,
+    customDomainVerified: false, // Reset verification when domain changes
+  });
+  if (errors || !data) {
+    throw new Error(`Failed to update org domain: ${errors?.map((e) => e.message).join(", ")}`);
+  }
+  return data as any;
 };
 
 // Update operations
@@ -782,7 +642,7 @@ export const setVideoStatus = async (
   status: VideoStatus,
   activeOrgId: string,
 ): Promise<Video> => {
-  const { data: current } = await client.models.Video.get({ id: videoId });
+  const { data: current } = await getClient().models.Video.get({ id: videoId });
   if (!current) {
     throw new Error(`Video not found: ${videoId}`);
   }
@@ -791,7 +651,7 @@ export const setVideoStatus = async (
   }
 
   const updated = updateVideoStatus(current as any, status);
-  const { data, errors } = await client.models.Video.update({
+  const { data, errors } = await getClient().models.Video.update({
     id: videoId,
     status: (updated as any).status,
   });
@@ -806,7 +666,7 @@ export const setActiveStoryboardVersion = async (
   storyboardVersionId: string,
   activeOrgId: string,
 ): Promise<Video> => {
-  const { data: video } = await client.models.Video.get({ id: videoId });
+  const { data: video } = await getClient().models.Video.get({ id: videoId });
   if (!video) {
     throw new Error(`Video not found: ${videoId}`);
   }
@@ -814,7 +674,7 @@ export const setActiveStoryboardVersion = async (
     throw new Error(`Video ${videoId} does not belong to org ${activeOrgId}`);
   }
 
-  const { data: version } = await client.models.StoryboardVersion.get({ id: storyboardVersionId });
+  const { data: version } = await getClient().models.StoryboardVersion.get({ id: storyboardVersionId });
   if (!version) {
     throw new Error(`Storyboard version not found: ${storyboardVersionId}`);
   }
@@ -822,7 +682,7 @@ export const setActiveStoryboardVersion = async (
     throw new Error(`Storyboard version ${storyboardVersionId} does not belong to video ${videoId}`);
   }
 
-  const { data, errors } = await client.models.Video.update({
+  const { data, errors } = await getClient().models.Video.update({
     id: videoId,
     activeStoryboardVersionId: storyboardVersionId,
   });
@@ -837,7 +697,7 @@ export const setJobStatus = async (
   status: JobStatus,
   activeOrgId: string,
 ): Promise<Job> => {
-  const { data: job } = await client.models.Job.get({ id: jobId });
+  const { data: job } = await getClient().models.Job.get({ id: jobId });
   if (!job) {
     throw new Error(`Job not found: ${jobId}`);
   }
@@ -845,7 +705,7 @@ export const setJobStatus = async (
     throw new Error(`Job ${jobId} does not belong to org ${activeOrgId}`);
   }
 
-  const { data, errors } = await client.models.Job.update({
+  const { data, errors } = await getClient().models.Job.update({
     id: jobId,
     status,
   });
@@ -860,7 +720,7 @@ export const claimJob = async (
   agentId: string,
   activeOrgId: string,
 ): Promise<Job> => {
-  const { data: job } = await client.models.Job.get({ id: jobId });
+  const { data: job } = await getClient().models.Job.get({ id: jobId });
   if (!job) {
     throw new Error(`Job not found: ${jobId}`);
   }
@@ -871,7 +731,7 @@ export const claimJob = async (
     throw new Error(`Job not available: ${jobId}`);
   }
 
-  const { data, errors } = await client.models.Job.update({
+  const { data, errors } = await getClient().models.Job.update({
     id: jobId,
     status: "claimed",
     claimedByAgentId: agentId,
@@ -889,7 +749,7 @@ export const setApprovalStatus = async (
   decidedBy?: string | null,
   decidedAt?: string | null,
 ): Promise<Approval> => {
-  const { data: approval } = await client.models.Approval.get({ id: approvalId });
+  const { data: approval } = await getClient().models.Approval.get({ id: approvalId });
   if (!approval) {
     throw new Error(`Approval not found: ${approvalId}`);
   }
@@ -897,7 +757,7 @@ export const setApprovalStatus = async (
     throw new Error(`Approval ${approvalId} does not belong to org ${activeOrgId}`);
   }
 
-  const { data, errors } = await client.models.Approval.update({
+  const { data, errors } = await getClient().models.Approval.update({
     id: approvalId,
     status,
     decidedBy: decidedBy ?? (approval as any).decidedBy ?? undefined,
@@ -914,8 +774,8 @@ export const setRenderAgentStatus = async (
   status: RenderAgent["status"],
   activeOrgId: string,
   lastSeenAt?: string | null,
-): Promise<RenderAgent> => {
-  const { data: agent } = await client.models.RenderAgent.get({ id: agentId });
+  ): Promise<RenderAgent> => {
+  const { data: agent } = await getClient().models.RenderAgent.get({ id: agentId });
   if (!agent) {
     throw new Error(`Render agent not found: ${agentId}`);
   }
@@ -923,7 +783,7 @@ export const setRenderAgentStatus = async (
     throw new Error(`Render agent ${agentId} does not belong to org ${activeOrgId}`);
   }
 
-  const { data, errors } = await client.models.RenderAgent.update({
+  const { data, errors } = await getClient().models.RenderAgent.update({
     id: agentId,
     status,
     lastSeenAt: lastSeenAt ?? (agent as any).lastSeenAt ?? undefined,
@@ -939,7 +799,7 @@ export const setOrgMemberRole = async (
   role: OrgMember["role"],
   activeOrgId: string,
 ): Promise<OrgMember> => {
-  const { data: members } = await client.models.OrgMember.list({
+  const { data: members } = await getClient().models.OrgMember.list({
     filter: {
       orgId: { eq: activeOrgId },
       userId: { eq: userId },
@@ -950,7 +810,7 @@ export const setOrgMemberRole = async (
     throw new Error(`Org member not found: ${userId}`);
   }
 
-  const { data, errors } = await client.models.OrgMember.update({
+  const { data, errors } = await getClient().models.OrgMember.update({
     id: member.id,
     role,
   });
@@ -965,7 +825,7 @@ export const setGenerationRunStatus = async (
   status: GenerationRun["status"],
   activeOrgId: string,
 ): Promise<GenerationRun> => {
-  const { data: run } = await client.models.GenerationRun.get({ id: runId });
+  const { data: run } = await getClient().models.GenerationRun.get({ id: runId });
   if (!run) {
     throw new Error(`Generation run not found: ${runId}`);
   }
@@ -973,7 +833,7 @@ export const setGenerationRunStatus = async (
     throw new Error(`Generation run ${runId} does not belong to org ${activeOrgId}`);
   }
 
-  const { data, errors } = await client.models.GenerationRun.update({
+  const { data, errors } = await getClient().models.GenerationRun.update({
     id: runId,
     status,
   });
@@ -988,7 +848,7 @@ export const setRenderRunStatus = async (
   status: RenderRun["status"],
   activeOrgId: string,
 ): Promise<RenderRun> => {
-  const { data: run } = await client.models.RenderRun.get({ id: runId });
+  const { data: run } = await getClient().models.RenderRun.get({ id: runId });
   if (!run) {
     throw new Error(`Render run not found: ${runId}`);
   }
@@ -996,7 +856,7 @@ export const setRenderRunStatus = async (
     throw new Error(`Render run ${runId} does not belong to org ${activeOrgId}`);
   }
 
-  const { data, errors } = await client.models.RenderRun.update({
+  const { data, errors } = await getClient().models.RenderRun.update({
     id: runId,
     status,
   });
@@ -1011,7 +871,7 @@ export const setBillingVisibility = async (
   usageVisibilityMode: BillingAccount["usageVisibilityMode"],
   activeOrgId: string,
 ): Promise<BillingAccount> => {
-  const { data: account } = await client.models.BillingAccount.get({ id: accountId });
+  const { data: account } = await getClient().models.BillingAccount.get({ id: accountId });
   if (!account) {
     throw new Error(`Billing account not found: ${accountId}`);
   }
@@ -1019,7 +879,7 @@ export const setBillingVisibility = async (
     throw new Error(`Billing account ${accountId} does not belong to org ${activeOrgId}`);
   }
 
-  const { data, errors } = await client.models.BillingAccount.update({
+  const { data, errors } = await getClient().models.BillingAccount.update({
     id: accountId,
     usageVisibilityMode,
   });

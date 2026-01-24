@@ -216,6 +216,24 @@ export function useStoryboardVersions(orgId: string | null, videoId?: string | n
 }
 
 /**
+ * Hook to load the active storyboard version content for a video
+ */
+export function useActiveStoryboard(orgId: string | null, videoId?: string | null) {
+  const { videos } = useVideos(orgId, null);
+  const video = videos.find(v => v.id === videoId);
+  const { versions, loading, error, refetch } = useStoryboardVersions(orgId, videoId);
+  
+  const activeVersion = versions.find(v => v.id === video?.activeStoryboardVersionId);
+  
+  return {
+    activeVersion,
+    loading,
+    error,
+    refetch
+  };
+}
+
+/**
  * Hook to load jobs for an org (optionally filtered by status)
  */
 export function useJobs(orgId: string | null, status?: JobStatus | null) {
@@ -416,6 +434,46 @@ export function useRenderRuns(orgId: string | null, generationRunId?: string | n
 }
 
 /**
+ * Hook to load render runs for a video
+ */
+export function useVideoRenderRuns(orgId: string | null, videoId?: string | null) {
+  const [state, setState] = useState<AsyncState<RenderRun[]>>({
+    data: null,
+    loading: false,
+    error: null,
+  });
+
+  const load = useCallback(async () => {
+    if (!orgId || !videoId) {
+      setState({ data: [], loading: false, error: null });
+      return;
+    }
+    setState((prev) => ({ ...prev, loading: true, error: null }));
+    try {
+      const data = await getRenderRuns(orgId, null, videoId);
+      setState({ data, loading: false, error: null });
+    } catch (error) {
+      setState({
+        data: null,
+        loading: false,
+        error: error instanceof Error ? error : new Error(String(error)),
+      });
+    }
+  }, [orgId, videoId]);
+
+  useEffect(() => {
+    load();
+  }, [load]);
+
+  return {
+    runs: state.data ?? [],
+    loading: state.loading,
+    error: state.error,
+    refetch: load,
+  };
+}
+
+/**
  * Hook to load usage events for an org
  */
 export function useUsageEvents(
@@ -493,6 +551,47 @@ export function useRenderAgents(orgId: string | null) {
 
   return {
     agents: state.data ?? [],
+    loading: state.loading,
+    error: state.error,
+    refetch: load,
+  };
+}
+
+/**
+ * Hook to load billing account for an org
+ */
+export function useBillingAccount(orgId: string | null) {
+  const [state, setState] = useState<AsyncState<BillingAccount | null>>({
+    data: null,
+    loading: false,
+    error: null,
+  });
+
+  const load = useCallback(async () => {
+    if (!orgId) {
+      setState({ data: null, loading: false, error: null });
+      return;
+    }
+    setState((prev) => ({ ...prev, loading: true, error: null }));
+    try {
+      const accounts = await getBillingAccountsForOrg(orgId);
+      // Return the first account or null
+      setState({ data: accounts[0] ?? null, loading: false, error: null });
+    } catch (error) {
+      setState({
+        data: null,
+        loading: false,
+        error: error instanceof Error ? error : new Error(String(error)),
+      });
+    }
+  }, [orgId]);
+
+  useEffect(() => {
+    load();
+  }, [load]);
+
+  return {
+    account: state.data,
     loading: state.loading,
     error: state.error,
     refetch: load,

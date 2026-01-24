@@ -1,12 +1,12 @@
 "use client";
 
 import { AppLayout } from "@/components/app-layout";
-import { StudioWorkspace } from "@/components/studio-workspace";
+import { StudioDashboard } from "@/components/studio-dashboard";
 
 export default function HomePage() {
   return (
     <AppLayout>
-      <StudioWorkspace />
+      <StudioDashboard />
     </AppLayout>
   );
 }

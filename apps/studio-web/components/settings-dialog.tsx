@@ -15,14 +15,14 @@ export function SettingsDialog() {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="max-w-2xl bg-card border-none shadow-2xl">
-        <DialogHeader>
+      <DialogContent className="max-w-2xl bg-card border-none shadow-2xl p-0 overflow-hidden">
+        <DialogHeader className="p-6 pb-2">
           <DialogTitle>Settings</DialogTitle>
           <DialogDescription>
             Customize your workspace appearance.
           </DialogDescription>
         </DialogHeader>
-        <SettingsContent />
+        <SettingsContent onClose={() => setOpen(false)} />
       </DialogContent>
     </Dialog>
   );

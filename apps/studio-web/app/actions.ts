@@ -48,6 +48,7 @@ import type {
   CreateBillingAccountInput,
   CreateOrgInput,
   CreateOrgMemberInput,
+  CreatePublishedVideoInput,
 } from "@babulus/shared";
 import type { VideoStatus } from "@babulus/shared";
 
@@ -55,6 +56,7 @@ import type { VideoStatus } from "@babulus/shared";
 import { cookies } from "next/headers";
 import { runWithAmplifyServerContext } from "../lib/amplify-server.js";
 import { getCurrentUser } from "aws-amplify/auth/server";
+import { copy } from "aws-amplify/storage/server";
 
 async function getAuthenticatedUserId(): Promise<string> {
   try {
@@ -96,6 +98,14 @@ export async function getVideosForOrg(orgId: string, projectId?: string | null):
   return cp.listVideos(orgId, projectId);
 }
 
+export async function getStoryboardVersion(
+  orgId: string,
+  versionId: string,
+): Promise<StoryboardVersion | null> {
+  const versions = await cp.listStoryboardVersions(orgId);
+  return versions.find(v => v.id === versionId) || null;
+}
+
 export async function getStoryboardVersions(
   orgId: string,
   videoId?: string | null,
@@ -113,8 +123,9 @@ export async function getGenerationRuns(
 export async function getRenderRuns(
   orgId: string,
   generationRunId?: string | null,
+  videoId?: string | null,
 ): Promise<RenderRun[]> {
-  return cp.listRenderRuns(orgId, generationRunId);
+  return cp.listRenderRuns(orgId, generationRunId, videoId);
 }
 
 export async function getAssetsForOrg(orgId: string, projectId?: string | null): Promise<Asset[]> {
@@ -261,6 +272,33 @@ export async function createBillingAccountAction(
   return cp.createBillingAccount(input, orgId);
 }
 
+export async function createPublishedVideoAction(
+  input: CreatePublishedVideoInput,
+  orgId: string,
+): Promise<import("@babulus/shared").PublishedVideo> {
+  const renderRun = await cp.getRenderRun(input.renderRunId);
+  if (!renderRun || !renderRun.mp4ArtifactKey) {
+    throw new Error("Invalid render run for publishing");
+  }
+
+  try {
+    await runWithAmplifyServerContext({
+      nextServerContext: { cookies },
+      operation: async (contextSpec) => {
+        await copy(contextSpec, {
+          source: { path: renderRun.mp4ArtifactKey! },
+          destination: { path: `published/${input.slug}.mp4` },
+        });
+      },
+    });
+  } catch (e) {
+    console.error("Failed to copy published artifact", e);
+    throw new Error("Failed to publish video");
+  }
+
+  return cp.createPublishedVideo(input, orgId);
+}
+
 // Update operations
 
 export async function setVideoStatusAction(
@@ -340,4 +378,11 @@ export async function setBillingVisibilityAction(
   orgId: string,
 ): Promise<BillingAccount> {
   return cp.setBillingVisibility(accountId, usageVisibilityMode, orgId);
+}
+
+export async function updateOrgDomainAction(
+  orgId: string,
+  customDomain: string | null,
+): Promise<Org> {
+  return cp.updateOrgDomain(orgId, customDomain);
 }

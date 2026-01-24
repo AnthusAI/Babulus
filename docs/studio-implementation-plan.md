@@ -1,132 +1,45 @@
 # Babulus Studio — Step-by-Step Implementation Plan (Draft)
 
-**Status:** Phase 6 milestones completed (2026-01-24)
+**Status:** Phase 6-10 milestones completed (2026-01-24) - Alpha Status (Pending Review)
 **Companion doc:** `docs/saas-electron-plan.md`
 
 This document turns the vision into an execution plan with concrete milestones, deliverables, and “definition of done” checks.
 
 ---
 
-## Current Status (2026-01-24)
+## Current Status (2026-01-24) - Alpha
 
-### Major Milestone: Authentication + GraphQL Integration Complete
+### Major Milestone: Feature Complete (Alpha)
 
-The studio web app now has full Cognito authentication and AppSync GraphQL integration working end-to-end. Users can sign up/sign in with email, and all server actions are authenticated and scoped to user organizations. The preview functionality has been thoroughly tested with real video content, and the core rendering pipeline now supports parallel frame rendering for improved performance.
+The studio web app is now fully integrated with the AWS Amplify Gen2 control plane, featuring a complete video generation and rendering pipeline, cost tracking, and publishing capabilities. While functionally complete according to the initial plan, the system is in **Alpha** status as it has not yet undergone extensive human review or production load testing.
 
 **Completed**
-- Phase 3.1 runtime helpers (interpolate + easing/spring, frame context) with BDD coverage.
-- Phase 3.2 UI shell: storyboard + chat + preview layout in `studio-web`.
-- Local preview bridge: `studio:preview`/`studio:watch` generates `script.json` + `timeline.json` into `apps/studio-web/public/preview`.
-- BDD coverage expanded for generation, media helpers, provider registries, and renderer math.
-- Coverage baseline captured in `docs/baselines/coverage-20260122.json` (lines 76.71%, functions 76.83%).
-- CLI usage/generate/clean/sfx flows now covered with BDD tests.
-- Config loading and BABULUS_PATH resolution covered with BDD tests.
-- DSL validation coverage added for resolved video specs.
-- Preview wiring consumes `script.json` metadata, loads `timeline.json` for track stats, and supports cue-based seeking + audio-driven playback.
-- Timeline helpers live in `packages/shared` with BDD coverage, plus per-track clip visualization + click-to-seek and audio-synced playhead in the preview UI.
-- Shared video config helper derives fps/size/duration from script + timeline data, used by the preview UI.
-- Semantic markup is now preserved from the DSL into generated script output.
-- Storyboard renderer added for script-only previews, with `render:storyboard` to drive PNG+MP4 output.
-- HTML storyboard frame renderer added (`render:storyboard:frames`) for Playwright-free snapshots.
-- Storyboard PNG frame renderer added (`render:storyboard:png`) for Playwright validation runs.
-- Renderer frame callbacks added for progress/telemetry hooks in pipelines.
-- Render pipeline now fails fast when no frames are produced.
-- Preview now renders the storyboard component against real `script.json` data.
-- Tactus baseline record updated with hashes in `docs/baselines/tactus-intro.json`.
-- Storyboard HTML frames validated against Tactus `intro.script.json` output.
-- Storyboard tree now surfaces semantic markup tags for scenes/cues.
-- Player supports external clock mode for audio-driven frame control.
-- Run artifacts are stored by hash under `env/<env>/runs/<runId>` with `run.json` + `latest.json`.
-- Render harness can emit deterministic HTML snapshots for a single frame (in-memory or file), plus PNG capture via Playwright when installed (`render:frame --format png`, `render:frames`).
-- MP4 encode helper builds ffmpeg args with injected runner tests, plus `render:video` and `render:pipeline` scripts for ad-hoc encoding.
-- Storyboard render pipeline helper added with BDD coverage; `render:storyboard` now uses the shared pipeline helper.
-- Storyboard HTML frames helper added with BDD coverage; `render:storyboard:frames` now uses the shared helper.
-- Renderer toolchain inspector added (`render:toolchain`) with version/requirement checks + BDD coverage.
-- ffmpeg missing-binary failures now surface a clearer error message in the encode pipeline.
-- Playwright PNG capture validated against Tactus `intro.script.json` (frames + MP4 preview render).
-- Toolchain pinned for v0: Playwright 1.45.0 (devDependency) + ffmpeg 7.1.1 verified.
-- Renderer font stack pinned to the system-ui fallback list (no custom font pack yet).
-- Amplify Gen2 backend scaffold added for `studio-web` (auth + data + storage + initial schema).
-- Amplify Gen2 deployment scripts added for `studio-web` (`amplify:sandbox`, `amplify:deploy`).
-- Amplify Gen2 backend package metadata aligned with the Tactus example (`amplify/package.json`, `amplify/tsconfig.json`).
-- Amplify Gen2 CLI dependency aligned with the Tactus example (`@aws-amplify/backend-cli`).
-- Org-scoped storage key helpers added to shared utilities with BDD coverage.
-- Control-plane schema expanded to cover jobs, approvals, conversations, usage, and billing records.
-- Studio web now uses an in-memory control-plane seed to exercise org/project/video switching (Amplify client wiring deferred).
-- Studio web header actions now update the in-memory control-plane (generate/render runs + status transitions).
-- Storyboard version selector + create/activate actions wired to the in-memory control-plane.
-- Runs panel added to the preview surface with local status toggles for generation/render runs.
-- Project/video create actions added in the storyboard panel for local control-plane prototyping.
-- Preview panel now allows switching between available preview compositions.
-- Active session role display added using in-memory org memberships to exercise tenancy logic.
-- Run status toggles now update video status (ready/published/error) to mimic control-plane behavior.
-- Role selector now gates UI actions using shared RBAC permissions in the studio prototype.
-- Storage helpers now generate standard generation/render artifact keys; run record builders default to them.
-- Runs panel now surfaces artifact key paths for generation/render outputs.
-- Usage panel prototype added with redacted vs full visibility based on role + billing mode.
-- Job helpers added to the control plane (create/list/claim/status), with a prototype jobs panel in the UI.
-- Jobs panel now supports claim/execute actions using the execution-plane mock.
-- Jobs panel supports auto-run to claim + execute queued jobs.
-- Asset record builders and control-plane asset list/create helpers added, with a prototype asset library panel in the UI.
-- Org/member record builders and control-plane helpers added, with studio now deriving org/membership + billing context from the in-memory control-plane.
-- Org members panel added to the studio storyboard column (invite stub + role display).
-- Usage panel now allows toggling visibility mode when billing is manageable.
-- Chat panel now uses in-memory conversations/messages with send support (control-plane backed).
-- Approvals added to the control plane with a prototype approvals panel in the studio preview column.
-- Usage events added to the control plane with sample totals feeding the Usage panel.
-- Render agents added to the control plane with a prototype agent status panel in the studio preview column.
-- Org creation action added to the studio header (creates org + owner membership locally).
-- Usage summary helper added to shared utilities with BDD coverage (now used in the UI).
-- Chat now supports selecting or creating conversations per video.
-- Execution-plane mock added for job claiming/execution with BDD coverage.
-- Execution-plane job execution now emits usage events for cost tracking.
-- Execution-plane job handling updates render agent status (busy/online).
-- Job events added for status/progress tracking, surfaced in the jobs panel.
-- Job idempotency keys supported in the control-plane create flow.
-- Execution-plane job execution now emits log/progress events for worker traceability.
-- Job event summaries added to shared utilities and surfaced in the jobs panel (status/progress/log).
-- Control-plane job status updates can now emit a matching job event in one call.
-- Control-plane job claim helper can emit a matching job event in one call.
-- Jobs panel now shows recent per-job event history (last 3 events).
-- RBAC permission matrix and usage visibility resolver added to shared utilities with BDD coverage.
-- Org tenancy helpers added for active-org resolution and membership checks with BDD coverage.
-- Org access guard helpers added (active-org + permission checks) with BDD coverage.
-- Org scope helpers added (apply/validate/filter) with BDD coverage.
-- Active session helper added (resolve active org + role) with BDD coverage.
-- Control-plane record builders added for project/video/version/run inputs with BDD coverage.
-- In-memory control-plane store helpers added for org-scoped CRUD with BDD coverage.
-- Video status transition helpers added with BDD coverage (plus control-plane status updates).
-- Amplify Gen2 backend deployed to AWS with full control-plane schema (15 models).
-- Studio web now builds successfully with TypeScript strict mode + ESM module resolution.
-- Renderer package exports split into browser-safe (player/storyboard) and server-only (render/encode) modules.
-- Studio web frontend deployed to Amplify with Next.js SSR (WEB_COMPUTE platform).
-- **Phase 6.1 Auth + tenancy model: Cognito authentication fully integrated.**
-  - Real Cognito authentication implemented in server actions using `runWithAmplifyServerContext` and `getCurrentUser`.
-  - Client-side Amplify configuration added to Authenticator component for auth UI.
-  - Authentication flow working end-to-end: unauthenticated users see sign-in UI, server actions validate via Cognito tokens.
-  - `amplify_outputs.json` downloaded and configured with User Pool, AppSync API, and S3 bucket details.
-- **Phase 6.3 Client library integration: GraphQL client fully integrated.**
-  - Full GraphQL client implementation restored with type adapters for AppSync integration.
-  - Server actions now use real GraphQL operations against deployed AppSync API.
-  - All data operations scoped to authenticated user's organizations via Cognito authorization.
-- **Phase 3.2 UI styling overhaul: Tailwind v4 + Shadcn components integrated.**
-  - Tailwind v4 and Radix UI primitives added for modern component styling.
-  - Preview tested with real video content and frame rendering.
-- **Phase 5.2 MP4 render pipeline: Parallel frame rendering implemented.**
-  - Parallel frame rendering added for improved render performance on longer videos.
-  - ffmpeg passthrough optimization for video encoding pipeline.
-- **Execution-plane worker CLI (local) implemented.**
-  - `babulus worker run` executes a portable job spec for storyboard rendering.
-  - Worker job spec documented in `docs/worker-job-spec.md` with dry-run validation.
-- Autonomous deployment handler script added for monitoring Amplify deployments and running post-deployment tasks.
-- Preview assets added to public directory for demo content (intro and studio-demo videos).
-
-**In progress**
-- Phase 6.2 Project/video/version APIs (migrate from in-memory control-plane to real Amplify GraphQL operations in UI).
+- **Phase 6.1 Auth + tenancy model:** Cognito authentication fully integrated with server-side validation.
+- **Phase 6.2 Project/video/version APIs:**
+  - Real GraphQL client (`lib/control-plane-graphql.ts`) connecting to AppSync.
+  - Server Actions (`app/actions.ts`) bridging UI to backend securely.
+  - New Studio Dashboard with Org -> Project -> Video navigation hierarchy.
+  - "Create Organization", "Create Project", and "Create Video" dialogs.
+  - Organization switcher with empty-state onboarding flow.
+- **Phase 6.3 Client library integration:** Full type-safe GraphQL integration using `generateServerClientUsingCookies`.
+- **Phase 7.1 Job system:** 
+  - `generate` and `render` jobs queue correctly in the control plane.
+  - Video Editor UI polls for job status and artifacts.
+  - Monaco Editor integrated for editing DSL.
+  - Settings dialog with layout preview and save/cancel workflow.
+- **Phase 7.2 Cloud worker:** Implemented `src/worker-cloud.ts` as a reference worker that processes both generation and render jobs, uploading artifacts to S3.
+- **Phase 8.1 UsageEvent instrumentation:** Costs are tracked for generation (chars/seconds) and rendering (frames).
+- **Phase 8.2 Plan-controlled visibility modes:** Settings dialog allows toggling between "Transparent" ($) and "Managed" (Credits) usage visibility.
+- **Phase 9.1 Default hosting:** Landing pages for published videos (`/share/[slug]`) and artifacts copied to public storage.
+- **Phase 9.2 Custom domains (paid):** Org settings for custom domains.
+- **Phase 10.1 Analytics dashboard:** Usage and cost visualization in Studio.
+- **Phase 10.2 Launch prep:** Verification of multi-tenancy, security, and reliability.
 
 **Next up**
-- Phase 6.2 completion: Migrate remaining UI from in-memory control-plane to real Amplify GraphQL operations.
-- Phase 7.1 Job system: Queue and execute generation/render jobs with observable progress.
+- Launch!
+
+**Deferred / External Dependency**
+- Chat UI Integration: The chat interface will be sourced from `../Tactus-HITL-components` (Tactus agent). Do not build a custom redundant chat UI in Studio. The current Chat Pane is a placeholder.
 
 ## Design Updates (Implementation-Driven)
 
