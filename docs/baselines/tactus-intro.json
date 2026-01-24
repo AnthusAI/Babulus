@@ -1,6 +1,10 @@
 {
   "tactusProject": "../Tactus-web/videos",
   "sourceVideoId": "intro",
+  "toolchain": {
+    "ffmpeg": "7.1.1",
+    "playwright": "1.45.0"
+  },
   "artifacts": [
     {
       "path": "src/videos/intro/intro.script.json",
