@@ -1,5 +1,9 @@
 import type { ReactNode } from "react";
 import "./globals.css";
+import { configureAmplify } from "../lib/amplify-config.js";
+
+// Configure Amplify once at app startup
+configureAmplify();
 
 export const metadata = {
   title: "Babulus Studio",
