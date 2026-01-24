@@ -1,5 +1,5 @@
 const nextConfig = {
-  transpilePackages: ["@babulus/renderer"],
+  transpilePackages: ["@babulus/renderer", "@babulus/shared"],
 };
 
 export default nextConfig;
