@@ -7,6 +7,7 @@ Babulus turns a `.babulus.ts` file into timing JSON + generated audio for Remoti
 Requirements:
 - Node.js 18+
 - `ffmpeg` + `ffprobe` on PATH
+- Playwright (for PNG/MP4 rendering helpers)
 
 Install (from a project that uses Babulus):
 
@@ -103,6 +104,30 @@ babulus generate --fresh content/intro.babulus.ts
 # Clean (dry run)
 babulus clean
 babulus clean --yes
+```
+
+## Renderer helpers (storyboard previews)
+
+These commands render storyboard frames or MP4 previews from the generated `script.json`/`timeline.json`. PNG/MP4 output uses Playwright + ffmpeg.
+
+```bash
+# Verify toolchain versions
+npm run render:toolchain -- --require-ffmpeg --require-playwright
+
+# Render storyboard HTML frames (no Playwright required)
+npm run render:storyboard:frames -- --script src/videos/intro/intro.script.json --frames out/intro-html
+
+# Render storyboard PNG frames (Playwright required)
+npm run render:storyboard:png -- --script src/videos/intro/intro.script.json --frames out/intro-png --start 0 --end 60
+
+# Render storyboard MP4 (Playwright + ffmpeg required)
+npm run render:storyboard -- --script src/videos/intro/intro.script.json --frames out/intro-frames --out out/intro.mp4
+```
+
+If Playwright is missing, install Chromium once:
+
+```bash
+npx playwright install chromium
 ```
 
 Default outputs (for `content/<video>.babulus.ts`):
