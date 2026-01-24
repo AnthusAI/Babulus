@@ -75,6 +75,20 @@ When("I encode with a null runner", async () => {
   }
 });
 
+When("I encode with a missing ffmpeg runner", async () => {
+  const runner: EncodeRunner = async (command, callArgs) => {
+    runnerCalls.push({ command, args: callArgs });
+    const error = new Error("spawn failed") as NodeJS.ErrnoException;
+    error.code = "ENOENT";
+    throw error;
+  };
+  try {
+    await encodeVideo(encodeConfig, runner);
+  } catch (error) {
+    encodeError = error instanceof Error ? error.message : String(error);
+  }
+});
+
 Then("the args should include {string}", (value: string) => {
   assert.ok(args.includes(value));
 });

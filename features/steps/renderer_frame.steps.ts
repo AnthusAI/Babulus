@@ -34,6 +34,7 @@ let trackPngCallbacks = false;
 let trackHtmlCallbacks = false;
 let autoCloseEnabled = false;
 let browserClosed = false;
+let viewportSizeOnly = false;
 
 const FrameProbe = () => {
   const ctx = useRenderContext();
@@ -67,6 +68,10 @@ Given("the browser auto close is enabled", () => {
   autoCloseEnabled = true;
 });
 
+Given("the viewport size fallback is enabled", () => {
+  viewportSizeOnly = true;
+});
+
 Given("PNG sequence callbacks are tracked", () => {
   trackPngCallbacks = true;
   pngSequenceCallbacks = [];
@@ -90,18 +95,31 @@ When("I render frame {int} to an HTML file", (frame: number) => {
 When("I render frame {int} to a PNG file", async (frame: number) => {
   workspace = mkdtempSync(join(tmpdir(), "babulus-render-"));
   pngPath = join(workspace, "frame.png");
-  const fakePage = {
-    setViewport: async (viewport: { width: number; height: number; deviceScaleFactor?: number }) => {
-      lastViewport = viewport;
-    },
-    setContent: async (_html: string) => {
-      return;
-    },
-    screenshot: async () => Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]),
-    close: async () => {
-      return;
-    },
-  };
+  const fakePage = viewportSizeOnly
+    ? {
+        setViewportSize: async (viewport: { width: number; height: number }) => {
+          lastViewport = { width: viewport.width, height: viewport.height };
+        },
+        setContent: async (_html: string) => {
+          return;
+        },
+        screenshot: async () => Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]),
+        close: async () => {
+          return;
+        },
+      }
+    : {
+        setViewport: async (viewport: { width: number; height: number; deviceScaleFactor?: number }) => {
+          lastViewport = viewport;
+        },
+        setContent: async (_html: string) => {
+          return;
+        },
+        screenshot: async () => Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]),
+        close: async () => {
+          return;
+        },
+      };
   const fakeBrowser = {
     newPage: async () => fakePage,
     close: async () => {
@@ -123,18 +141,31 @@ When("I render frame {int} to a PNG file", async (frame: number) => {
 When("I render frames {int} through {int} to a PNG sequence", async (start: number, end: number) => {
   workspace = mkdtempSync(join(tmpdir(), "babulus-render-"));
   sequenceDir = join(workspace, "frames");
-  const fakePage = {
-    setViewport: async (viewport: { width: number; height: number; deviceScaleFactor?: number }) => {
-      lastViewport = viewport;
-    },
-    setContent: async (_html: string) => {
-      return;
-    },
-    screenshot: async () => Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]),
-    close: async () => {
-      return;
-    },
-  };
+  const fakePage = viewportSizeOnly
+    ? {
+        setViewportSize: async (viewport: { width: number; height: number }) => {
+          lastViewport = { width: viewport.width, height: viewport.height };
+        },
+        setContent: async (_html: string) => {
+          return;
+        },
+        screenshot: async () => Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]),
+        close: async () => {
+          return;
+        },
+      }
+    : {
+        setViewport: async (viewport: { width: number; height: number; deviceScaleFactor?: number }) => {
+          lastViewport = viewport;
+        },
+        setContent: async (_html: string) => {
+          return;
+        },
+        screenshot: async () => Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]),
+        close: async () => {
+          return;
+        },
+      };
   const fakeBrowser = {
     newPage: async () => fakePage,
     close: async () => {
@@ -272,4 +303,5 @@ After(() => {
   trackHtmlCallbacks = false;
   autoCloseEnabled = false;
   browserClosed = false;
+  viewportSizeOnly = false;
 });

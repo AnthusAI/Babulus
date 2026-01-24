@@ -21,6 +21,13 @@ Feature: Renderer frame
     And the render viewport should be 320x180
     And the render scale should be 2
 
+  Scenario: Render frame supports viewport-size-only pages
+    Given a render config fps 12 width 320 height 180 duration 120
+    And the viewport size fallback is enabled
+    When I render frame 6 to a PNG file
+    Then the PNG file should include the PNG header
+    And the render viewport should be 320x180
+
   Scenario: Render frame closes browser when auto-close enabled
     Given a render config fps 12 width 320 height 180 duration 120
     And the browser auto close is enabled

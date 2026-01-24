@@ -51,3 +51,9 @@ Feature: Renderer encode
     And the encode ffmpeg path is "custom-ffmpeg"
     When I encode with a fake runner
     Then the runner should be called with "custom-ffmpeg"
+
+  Scenario: Encode fails when ffmpeg is missing
+    Given an encode config fps 12 frames dir "frames" output "out.mp4"
+    When I encode with a missing ffmpeg runner
+    Then the encode should fail
+    And the encode error should include "ffmpeg not found"
