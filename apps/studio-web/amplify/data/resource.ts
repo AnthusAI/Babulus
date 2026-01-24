@@ -19,7 +19,7 @@ const studioSchema = schema.schema({
     .model({
       orgId: schema.string().required(),
       userId: schema.string().required(),
-      role: schema.enum(["owner", "admin", "editor", "viewer"]).required(),
+      role: schema.enum(["owner", "admin", "editor", "viewer"]),
     })
     .authorization((allow) => [allow.authenticated()]),
   Project: schema
@@ -90,7 +90,7 @@ const studioSchema = schema.schema({
     .model({
       orgId: schema.string().required(),
       conversationId: schema.string().required(),
-      role: schema.enum(["system", "assistant", "user"]).required(),
+      role: schema.enum(["system", "assistant", "user"]),
       content: schema.string().required(),
     })
     .authorization((allow) => [allow.authenticated()]),
@@ -99,7 +99,7 @@ const studioSchema = schema.schema({
       orgId: schema.string().required(),
       videoId: schema.string().required(),
       kind: schema.string().required(),
-      status: schema.enum(["pending", "approved", "rejected"]).required(),
+      status: schema.enum(["pending", "approved", "rejected"]),
       requestedBy: schema.string(),
       decidedBy: schema.string(),
       decidedAt: schema.string(),
@@ -109,15 +109,15 @@ const studioSchema = schema.schema({
     .model({
       orgId: schema.string().required(),
       label: schema.string(),
-      status: schema.enum(["online", "offline", "busy"]).required(),
+      status: schema.enum(["online", "offline", "busy"]),
       lastSeenAt: schema.string(),
     })
     .authorization((allow) => [allow.authenticated()]),
   Job: schema
     .model({
       orgId: schema.string().required(),
-      kind: schema.enum(["resolve", "generate", "render", "publish"]).required(),
-      status: schema.enum(["queued", "claimed", "running", "succeeded", "failed", "canceled"]).required(),
+      kind: schema.enum(["resolve", "generate", "render", "publish"]),
+      status: schema.enum(["queued", "claimed", "running", "succeeded", "failed", "canceled"]),
       claimedByAgentId: schema.string(),
       executionMode: schema.enum(["cloud", "local"]),
       inputJson: schema.json(),
@@ -127,7 +127,7 @@ const studioSchema = schema.schema({
     .model({
       orgId: schema.string().required(),
       jobId: schema.string().required(),
-      type: schema.enum(["status", "progress", "log"]).required(),
+      type: schema.enum(["status", "progress", "log"]),
       message: schema.string(),
       progress: schema.float(),
     })
@@ -138,9 +138,7 @@ const studioSchema = schema.schema({
       videoId: schema.string(),
       runId: schema.string(),
       provider: schema.string(),
-      unitType: schema
-        .enum(["chars", "tokens", "seconds", "frames", "bytes", "gb-seconds"])
-        .required(),
+      unitType: schema.enum(["chars", "tokens", "seconds", "frames", "bytes", "gb-seconds"]),
       quantity: schema.float().required(),
       estimatedCost: schema.float(),
       actualCost: schema.float(),
@@ -150,8 +148,8 @@ const studioSchema = schema.schema({
     .model({
       orgId: schema.string().required(),
       planId: schema.string(),
-      billingMode: schema.enum(["byok", "markup", "flat", "credits"]).required(),
-      usageVisibilityMode: schema.enum(["full", "redacted"]).required(),
+      billingMode: schema.enum(["byok", "markup", "flat", "credits"]),
+      usageVisibilityMode: schema.enum(["full", "redacted"]),
     })
     .authorization((allow) => [allow.authenticated()]),
 });
