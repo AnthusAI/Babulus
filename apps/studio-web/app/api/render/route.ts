@@ -85,20 +85,24 @@ export async function POST(request: Request) {
     }
   }
 
-  const result = await new Promise<{ code: number | null; stderr: string }>((resolve) => {
+  const result = await new Promise<{ code: number | null; stdout: string; stderr: string }>((resolve) => {
     const child = spawn(tsxPath, args, { cwd: process.cwd() });
+    let stdout = "";
     let stderr = "";
+    child.stdout.on("data", (chunk) => {
+      stdout += chunk.toString();
+    });
     child.stderr.on("data", (chunk) => {
       stderr += chunk.toString();
     });
     child.on("error", (error) => {
       stderr += error instanceof Error ? error.message : String(error);
-      resolve({ code: 1, stderr });
+      resolve({ code: 1, stdout, stderr });
     });
-    child.on("close", (code) => resolve({ code, stderr }));
+    child.on("close", (code) => resolve({ code, stdout, stderr }));
   });
   if (result.code !== 0) {
-    const message = result.stderr.trim() || "Render failed.";
+    const message = [result.stderr, result.stdout].filter(Boolean).join("\n").trim() || "Render failed.";
     return Response.json({ error: message }, { status: 500 });
   }
 
