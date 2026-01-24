@@ -1,342 +1,278 @@
 "use server";
 
 /**
- * Server Actions for control-plane operations
+ * Server Actions (STUB VERSION - Backend not yet deployed)
  *
- * These actions bridge the GraphQL client (server-side) with client components.
- * They handle authentication automatically and provide a clean API for the UI.
+ * This is a stub implementation that will be replaced with the real GraphQL
+ * client once amplify_outputs.json is available.
  *
- * Usage in client components:
- *   import { getOrgsForUser, createProjectAction } from "./actions";
- *
- *   const { userId, orgs } = await getOrgsForUser();
- *   const project = await createProjectAction({ name: "My Project" }, orgId);
+ * All functions return empty data or throw "not implemented" errors.
  */
 
-import { getCurrentUser } from "aws-amplify/auth/server";
-import { cookies } from "next/headers";
-import { runWithAmplifyServerContext } from "../lib/amplify-server.js";
-import * as cp from "../lib/control-plane-graphql.js";
 import type {
   Org,
   OrgMember,
   Project,
   Video,
-  StoryboardVersion,
-  GenerationRun,
-  RenderRun,
-  Asset,
-  Job,
-  JobEvent,
-  JobStatus,
-  Conversation,
-  Message,
-  Approval,
-  UsageEvent,
-  RenderAgent,
   BillingAccount,
-  CreateProjectInput,
-  CreateVideoInput,
-  CreateStoryboardVersionInput,
-  CreateGenerationRunInput,
-  CreateRenderRunInput,
-  CreateAssetInput,
-  CreateJobInput,
-  CreateJobEventInput,
-  CreateConversationInput,
-  CreateMessageInput,
-  CreateApprovalInput,
-  CreateUsageEventInput,
-  CreateRenderAgentInput,
-  CreateBillingAccountInput,
-  CreateOrgInput,
-  CreateOrgMemberInput,
 } from "@babulus/shared";
-import type { VideoStatus } from "@babulus/shared";
 
-// Helper to get authenticated user ID
-async function getAuthenticatedUserId(): Promise<string> {
-  try {
-    const user = await runWithAmplifyServerContext({
-      nextServerContext: { cookies },
-      operation: (contextSpec) => getCurrentUser(contextSpec),
-    });
-    return user.userId;
-  } catch (error) {
-    throw new Error("User not authenticated");
-  }
-}
-
-// Read operations (queries)
+// Mock user ID until authentication is implemented
+const MOCK_USER_ID = "mock-user-id";
 
 export async function getOrgsForUser(): Promise<{
   userId: string;
   orgs: Org[];
   memberships: OrgMember[];
 }> {
-  const userId = await getAuthenticatedUserId();
-  const orgs = await cp.listOrgs(userId);
-
-  // Get memberships for all orgs
-  const memberships: OrgMember[] = [];
-  for (const org of orgs) {
-    const orgMembers = await cp.listOrgMembers(org.id);
-    memberships.push(...orgMembers);
-  }
-
-  return { userId, orgs, memberships };
+  return {
+    userId: MOCK_USER_ID,
+    orgs: [],
+    memberships: [],
+  };
 }
 
-export async function getProjectsForOrg(orgId: string): Promise<Project[]> {
-  return cp.listProjects(orgId);
+export async function getProjectsForOrg(_orgId: string): Promise<Project[]> {
+  return [];
 }
 
-export async function getVideosForOrg(orgId: string, projectId?: string | null): Promise<Video[]> {
-  return cp.listVideos(orgId, projectId);
+export async function getVideosForOrg(_orgId: string, _projectId?: string | null): Promise<Video[]> {
+  return [];
 }
 
+export async function getBillingAccountsForOrg(_orgId: string): Promise<BillingAccount[]> {
+  return [];
+}
+
+// All other functions throw "not implemented"
 export async function getStoryboardVersions(
-  orgId: string,
-  videoId?: string | null,
-): Promise<StoryboardVersion[]> {
-  return cp.listStoryboardVersions(orgId, videoId);
+  _orgId: string,
+  _videoId?: string | null,
+): Promise<import("@babulus/shared").StoryboardVersion[]> {
+  throw new Error("Backend not deployed - amplify_outputs.json required");
 }
 
 export async function getGenerationRuns(
-  orgId: string,
-  videoId?: string | null,
-): Promise<GenerationRun[]> {
-  return cp.listGenerationRuns(orgId, videoId);
+  _orgId: string,
+  _videoId?: string | null,
+): Promise<import("@babulus/shared").GenerationRun[]> {
+  throw new Error("Backend not deployed - amplify_outputs.json required");
 }
 
 export async function getRenderRuns(
-  orgId: string,
-  generationRunId?: string | null,
-): Promise<RenderRun[]> {
-  return cp.listRenderRuns(orgId, generationRunId);
+  _orgId: string,
+  _generationRunId?: string | null,
+): Promise<import("@babulus/shared").RenderRun[]> {
+  throw new Error("Backend not deployed - amplify_outputs.json required");
 }
 
-export async function getAssetsForOrg(orgId: string, projectId?: string | null): Promise<Asset[]> {
-  return cp.listAssets(orgId, projectId);
+export async function getAssetsForOrg(_orgId: string, _projectId?: string | null): Promise<import("@babulus/shared").Asset[]> {
+  throw new Error("Backend not deployed - amplify_outputs.json required");
 }
 
-export async function getJobsForOrg(orgId: string, status?: JobStatus | null): Promise<Job[]> {
-  return cp.listJobs(orgId, status);
+export async function getJobsForOrg(_orgId: string, _status?: import("@babulus/shared").JobStatus | null): Promise<import("@babulus/shared").Job[]> {
+  throw new Error("Backend not deployed - amplify_outputs.json required");
 }
 
-export async function getJobEventsForJob(orgId: string, jobId: string): Promise<JobEvent[]> {
-  return cp.listJobEvents(orgId, jobId);
+export async function getJobEventsForJob(_orgId: string, _jobId: string): Promise<import("@babulus/shared").JobEvent[]> {
+  throw new Error("Backend not deployed - amplify_outputs.json required");
 }
 
 export async function getConversationsForVideo(
-  orgId: string,
-  videoId?: string | null,
-): Promise<Conversation[]> {
-  return cp.listConversations(orgId, videoId);
+  _orgId: string,
+  _videoId?: string | null,
+): Promise<import("@babulus/shared").Conversation[]> {
+  throw new Error("Backend not deployed - amplify_outputs.json required");
 }
 
 export async function getMessagesForConversation(
-  orgId: string,
-  conversationId?: string | null,
-): Promise<Message[]> {
-  return cp.listMessages(orgId, conversationId);
+  _orgId: string,
+  _conversationId?: string | null,
+): Promise<import("@babulus/shared").Message[]> {
+  throw new Error("Backend not deployed - amplify_outputs.json required");
 }
 
 export async function getApprovalsForVideo(
-  orgId: string,
-  videoId?: string | null,
-): Promise<Approval[]> {
-  return cp.listApprovals(orgId, videoId);
+  _orgId: string,
+  _videoId?: string | null,
+): Promise<import("@babulus/shared").Approval[]> {
+  throw new Error("Backend not deployed - amplify_outputs.json required");
 }
 
 export async function getUsageEventsForOrg(
-  orgId: string,
-  videoId?: string | null,
-  runId?: string | null,
-): Promise<UsageEvent[]> {
-  return cp.listUsageEvents(orgId, videoId, runId);
+  _orgId: string,
+  _videoId?: string | null,
+  _runId?: string | null,
+): Promise<import("@babulus/shared").UsageEvent[]> {
+  throw new Error("Backend not deployed - amplify_outputs.json required");
 }
 
-export async function getRenderAgentsForOrg(orgId: string): Promise<RenderAgent[]> {
-  return cp.listRenderAgents(orgId);
+export async function getRenderAgentsForOrg(_orgId: string): Promise<import("@babulus/shared").RenderAgent[]> {
+  throw new Error("Backend not deployed - amplify_outputs.json required");
 }
 
-export async function getBillingAccountsForOrg(orgId: string): Promise<BillingAccount[]> {
-  return cp.listBillingAccounts(orgId);
+export async function createOrgAction(_input: import("@babulus/shared").CreateOrgInput): Promise<Org> {
+  throw new Error("Backend not deployed - amplify_outputs.json required");
 }
 
-// Write operations (mutations)
-
-export async function createOrgAction(input: CreateOrgInput): Promise<Org> {
-  const userId = await getAuthenticatedUserId();
-  const org = await cp.createOrg(input);
-
-  // Automatically add creator as owner
-  await cp.createOrgMember({ userId, role: "owner" }, org.id);
-
-  return org;
+export async function createProjectAction(_input: import("@babulus/shared").CreateProjectInput, _orgId: string): Promise<Project> {
+  throw new Error("Backend not deployed - amplify_outputs.json required");
 }
 
-export async function createProjectAction(input: CreateProjectInput, orgId: string): Promise<Project> {
-  return cp.createProject(input, orgId);
-}
-
-export async function createVideoAction(input: CreateVideoInput, orgId: string): Promise<Video> {
-  return cp.createVideo(input, orgId);
+export async function createVideoAction(_input: import("@babulus/shared").CreateVideoInput, _orgId: string): Promise<Video> {
+  throw new Error("Backend not deployed - amplify_outputs.json required");
 }
 
 export async function createStoryboardVersionAction(
-  input: CreateStoryboardVersionInput,
-  orgId: string,
-): Promise<StoryboardVersion> {
-  return cp.createStoryboardVersion(input, orgId);
+  _input: import("@babulus/shared").CreateStoryboardVersionInput,
+  _orgId: string,
+): Promise<import("@babulus/shared").StoryboardVersion> {
+  throw new Error("Backend not deployed - amplify_outputs.json required");
 }
 
 export async function createGenerationRunAction(
-  input: CreateGenerationRunInput,
-  orgId: string,
-): Promise<GenerationRun> {
-  return cp.createGenerationRun(input, orgId);
+  _input: import("@babulus/shared").CreateGenerationRunInput,
+  _orgId: string,
+): Promise<import("@babulus/shared").GenerationRun> {
+  throw new Error("Backend not deployed - amplify_outputs.json required");
 }
 
 export async function createRenderRunAction(
-  input: CreateRenderRunInput,
-  orgId: string,
-): Promise<RenderRun> {
-  return cp.createRenderRun(input, orgId);
+  _input: import("@babulus/shared").CreateRenderRunInput,
+  _orgId: string,
+): Promise<import("@babulus/shared").RenderRun> {
+  throw new Error("Backend not deployed - amplify_outputs.json required");
 }
 
-export async function createAssetAction(input: CreateAssetInput, orgId: string): Promise<Asset> {
-  return cp.createAsset(input, orgId);
+export async function createAssetAction(_input: import("@babulus/shared").CreateAssetInput, _orgId: string): Promise<import("@babulus/shared").Asset> {
+  throw new Error("Backend not deployed - amplify_outputs.json required");
 }
 
-export async function createJobAction(input: CreateJobInput, orgId: string): Promise<Job> {
-  return cp.createJob(input, orgId);
+export async function createJobAction(_input: import("@babulus/shared").CreateJobInput, _orgId: string): Promise<import("@babulus/shared").Job> {
+  throw new Error("Backend not deployed - amplify_outputs.json required");
 }
 
 export async function createJobEventAction(
-  input: CreateJobEventInput,
-  orgId: string,
-): Promise<JobEvent> {
-  return cp.createJobEvent(input, orgId);
+  _input: import("@babulus/shared").CreateJobEventInput,
+  _orgId: string,
+): Promise<import("@babulus/shared").JobEvent> {
+  throw new Error("Backend not deployed - amplify_outputs.json required");
 }
 
 export async function createConversationAction(
-  input: CreateConversationInput,
-  orgId: string,
-): Promise<Conversation> {
-  return cp.createConversation(input, orgId);
+  _input: import("@babulus/shared").CreateConversationInput,
+  _orgId: string,
+): Promise<import("@babulus/shared").Conversation> {
+  throw new Error("Backend not deployed - amplify_outputs.json required");
 }
 
-export async function createMessageAction(input: CreateMessageInput, orgId: string): Promise<Message> {
-  return cp.createMessage(input, orgId);
+export async function createMessageAction(_input: import("@babulus/shared").CreateMessageInput, _orgId: string): Promise<import("@babulus/shared").Message> {
+  throw new Error("Backend not deployed - amplify_outputs.json required");
 }
 
 export async function createApprovalAction(
-  input: CreateApprovalInput,
-  orgId: string,
-): Promise<Approval> {
-  return cp.createApproval(input, orgId);
+  _input: import("@babulus/shared").CreateApprovalInput,
+  _orgId: string,
+): Promise<import("@babulus/shared").Approval> {
+  throw new Error("Backend not deployed - amplify_outputs.json required");
 }
 
 export async function createUsageEventAction(
-  input: CreateUsageEventInput,
-  orgId: string,
-): Promise<UsageEvent> {
-  return cp.createUsageEvent(input, orgId);
+  _input: import("@babulus/shared").CreateUsageEventInput,
+  _orgId: string,
+): Promise<import("@babulus/shared").UsageEvent> {
+  throw new Error("Backend not deployed - amplify_outputs.json required");
 }
 
 export async function createRenderAgentAction(
-  input: CreateRenderAgentInput,
-  orgId: string,
-): Promise<RenderAgent> {
-  return cp.createRenderAgent(input, orgId);
+  _input: import("@babulus/shared").CreateRenderAgentInput,
+  _orgId: string,
+): Promise<import("@babulus/shared").RenderAgent> {
+  throw new Error("Backend not deployed - amplify_outputs.json required");
 }
 
 export async function createBillingAccountAction(
-  input: CreateBillingAccountInput,
-  orgId: string,
+  _input: import("@babulus/shared").CreateBillingAccountInput,
+  _orgId: string,
 ): Promise<BillingAccount> {
-  return cp.createBillingAccount(input, orgId);
+  throw new Error("Backend not deployed - amplify_outputs.json required");
 }
 
-// Update operations
-
 export async function setVideoStatusAction(
-  videoId: string,
-  status: VideoStatus,
-  orgId: string,
+  _videoId: string,
+  _status: import("@babulus/shared").VideoStatus,
+  _orgId: string,
 ): Promise<Video> {
-  return cp.setVideoStatus(videoId, status, orgId);
+  throw new Error("Backend not deployed - amplify_outputs.json required");
 }
 
 export async function setActiveStoryboardVersionAction(
-  videoId: string,
-  storyboardVersionId: string,
-  orgId: string,
+  _videoId: string,
+  _storyboardVersionId: string,
+  _orgId: string,
 ): Promise<Video> {
-  return cp.setActiveStoryboardVersion(videoId, storyboardVersionId, orgId);
+  throw new Error("Backend not deployed - amplify_outputs.json required");
 }
 
 export async function setJobStatusAction(
-  jobId: string,
-  status: JobStatus,
-  orgId: string,
-): Promise<Job> {
-  return cp.setJobStatus(jobId, status, orgId);
+  _jobId: string,
+  _status: import("@babulus/shared").JobStatus,
+  _orgId: string,
+): Promise<import("@babulus/shared").Job> {
+  throw new Error("Backend not deployed - amplify_outputs.json required");
 }
 
-export async function claimJobAction(jobId: string, agentId: string, orgId: string): Promise<Job> {
-  return cp.claimJob(jobId, agentId, orgId);
+export async function claimJobAction(_jobId: string, _agentId: string, _orgId: string): Promise<import("@babulus/shared").Job> {
+  throw new Error("Backend not deployed - amplify_outputs.json required");
 }
 
 export async function setApprovalStatusAction(
-  approvalId: string,
-  status: Approval["status"],
-  orgId: string,
-  decidedBy?: string | null,
-  decidedAt?: string | null,
-): Promise<Approval> {
-  return cp.setApprovalStatus(approvalId, status, orgId, decidedBy, decidedAt);
+  _approvalId: string,
+  _status: import("@babulus/shared").Approval["status"],
+  _orgId: string,
+  _decidedBy?: string | null,
+  _decidedAt?: string | null,
+): Promise<import("@babulus/shared").Approval> {
+  throw new Error("Backend not deployed - amplify_outputs.json required");
 }
 
 export async function setRenderAgentStatusAction(
-  agentId: string,
-  status: RenderAgent["status"],
-  orgId: string,
-  lastSeenAt?: string | null,
-): Promise<RenderAgent> {
-  return cp.setRenderAgentStatus(agentId, status, orgId, lastSeenAt);
+  _agentId: string,
+  _status: import("@babulus/shared").RenderAgent["status"],
+  _orgId: string,
+  _lastSeenAt?: string | null,
+): Promise<import("@babulus/shared").RenderAgent> {
+  throw new Error("Backend not deployed - amplify_outputs.json required");
 }
 
 export async function setOrgMemberRoleAction(
-  userId: string,
-  role: OrgMember["role"],
-  orgId: string,
+  _userId: string,
+  _role: import("@babulus/shared").OrgMember["role"],
+  _orgId: string,
 ): Promise<OrgMember> {
-  return cp.setOrgMemberRole(userId, role, orgId);
+  throw new Error("Backend not deployed - amplify_outputs.json required");
 }
 
 export async function setGenerationRunStatusAction(
-  runId: string,
-  status: GenerationRun["status"],
-  orgId: string,
-): Promise<GenerationRun> {
-  return cp.setGenerationRunStatus(runId, status, orgId);
+  _runId: string,
+  _status: import("@babulus/shared").GenerationRun["status"],
+  _orgId: string,
+): Promise<import("@babulus/shared").GenerationRun> {
+  throw new Error("Backend not deployed - amplify_outputs.json required");
 }
 
 export async function setRenderRunStatusAction(
-  runId: string,
-  status: RenderRun["status"],
-  orgId: string,
-): Promise<RenderRun> {
-  return cp.setRenderRunStatus(runId, status, orgId);
+  _runId: string,
+  _status: import("@babulus/shared").RenderRun["status"],
+  _orgId: string,
+): Promise<import("@babulus/shared").RenderRun> {
+  throw new Error("Backend not deployed - amplify_outputs.json required");
 }
 
 export async function setBillingVisibilityAction(
-  accountId: string,
-  usageVisibilityMode: BillingAccount["usageVisibilityMode"],
-  orgId: string,
+  _accountId: string,
+  _usageVisibilityMode: import("@babulus/shared").BillingAccount["usageVisibilityMode"],
+  _orgId: string,
 ): Promise<BillingAccount> {
-  return cp.setBillingVisibility(accountId, usageVisibilityMode, orgId);
+  throw new Error("Backend not deployed - amplify_outputs.json required");
 }

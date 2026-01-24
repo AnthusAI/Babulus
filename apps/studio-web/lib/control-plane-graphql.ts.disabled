@@ -1,4 +1,5 @@
 import { generateClient } from "aws-amplify/data";
+// @ts-ignore - Schema type is generated after backend deployment
 import type { Schema } from "../amplify/data/resource.js";
 import type {
   Org,
