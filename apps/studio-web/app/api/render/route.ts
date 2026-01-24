@@ -1,8 +1,6 @@
-import { existsSync, mkdirSync, readFileSync } from "fs";
+import { spawn } from "node:child_process";
+import { existsSync, mkdirSync } from "fs";
 import { join } from "path";
-import { renderStoryboardVideo } from "@babulus/renderer/src/storyboard-render.js";
-import type { ScriptData } from "@babulus/shared";
-import type { TimelineData } from "@babulus/shared";
 
 type RenderRequest = {
   id?: string | null;
@@ -38,16 +36,14 @@ export async function POST(request: Request) {
     return Response.json({ error: `Script not found: ${scriptFile}` }, { status: 404 });
   }
 
-  const script = JSON.parse(readFileSync(scriptPath, "utf8")) as ScriptData;
-  const timelineFile = body?.timeline?.trim();
-  const timelinePath = timelineFile ? join(previewDir, timelineFile) : null;
-  const timeline = timelinePath && existsSync(timelinePath)
-    ? (JSON.parse(readFileSync(timelinePath, "utf8")) as TimelineData)
-    : null;
-
   const audioFile = body?.audio?.trim();
   const audioPath = audioFile ? join(previewDir, audioFile) : null;
   const resolvedAudio = audioPath && existsSync(audioPath) ? audioPath : null;
+  const timelineFile = body?.timeline?.trim();
+  const timelinePath = timelineFile ? join(previewDir, timelineFile) : null;
+  if (timelinePath && !existsSync(timelinePath)) {
+    return Response.json({ error: `Timeline not found: ${timelineFile}` }, { status: 404 });
+  }
 
   const renderId = `${body?.id ?? "preview"}-${Date.now()}`;
   const workers = typeof body?.workers === "number" ? body.workers : undefined;
@@ -59,23 +55,50 @@ export async function POST(request: Request) {
   mkdirSync(outputDir, { recursive: true });
   mkdirSync(framesDir, { recursive: true });
 
-  try {
-    await renderStoryboardVideo({
-      script,
-      timeline,
-      title: body?.title ?? undefined,
-      subtitle: body?.subtitle ?? undefined,
-      framesDir,
-      outputPath: join(outputDir, `${renderId}.mp4`),
-      audioPath: resolvedAudio,
-      framePattern: "frame-%06d.png",
-      deviceScaleFactor: 1,
-      workers,
-      ffmpegPath: "ffmpeg",
-      ffmpegArgs,
+  const scriptRelative = join("apps", "studio-web", "public", "preview", scriptFile);
+  const timelineRelative = timelineFile ? join("apps", "studio-web", "public", "preview", timelineFile) : null;
+  const outputPath = join(outputDir, `${renderId}.mp4`);
+  const tsxBin = process.platform === "win32" ? "tsx.cmd" : "tsx";
+  const tsxPath = join(process.cwd(), "node_modules", ".bin", tsxBin);
+  const scriptCliPath = join(process.cwd(), "scripts", "render-storyboard.ts");
+  const args = [
+    scriptCliPath,
+    "--script",
+    scriptRelative,
+    "--frames",
+    framesDir,
+    "--out",
+    outputPath,
+  ];
+  if (timelineRelative) {
+    args.push("--timeline", timelineRelative);
+  }
+  if (resolvedAudio) {
+    args.push("--audio", resolvedAudio);
+  }
+  if (workers != null) {
+    args.push("--workers", String(workers));
+  }
+  if (ffmpegArgs && ffmpegArgs.length) {
+    for (const arg of ffmpegArgs) {
+      args.push("--ffmpeg-arg", arg);
+    }
+  }
+
+  const result = await new Promise<{ code: number | null; stderr: string }>((resolve) => {
+    const child = spawn(tsxPath, args, { cwd: process.cwd() });
+    let stderr = "";
+    child.stderr.on("data", (chunk) => {
+      stderr += chunk.toString();
     });
-  } catch (error) {
-    const message = error instanceof Error ? error.message : "Render failed.";
+    child.on("error", (error) => {
+      stderr += error instanceof Error ? error.message : String(error);
+      resolve({ code: 1, stderr });
+    });
+    child.on("close", (code) => resolve({ code, stderr }));
+  });
+  if (result.code !== 0) {
+    const message = result.stderr.trim() || "Render failed.";
     return Response.json({ error: message }, { status: 500 });
   }
 

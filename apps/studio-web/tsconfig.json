@@ -4,6 +4,8 @@
     "jsx": "preserve",
     "allowJs": true,
     "incremental": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
     "lib": [
       "dom",
       "dom.iterable",
