@@ -339,8 +339,8 @@ export function VideoEditor({ orgId, projectId, videoId, onBack }: VideoEditorPr
   // --- Sub-Components for Panes ---
 
   const OutputPane = (
-    <div className="flex flex-col gap-6 h-full min-h-0">
-      <Card className="border-0 shadow-none bg-muted/30 flex-shrink-0">
+    <div className="flex flex-col gap-6 h-full min-h-0 overflow-y-auto">
+      <Card className="border-0 shadow-none bg-muted/30 flex-shrink-0 max-w-5xl mx-auto w-full">
          <div className="aspect-video bg-black rounded-lg overflow-hidden relative shadow-sm ring-1 ring-border/50">
            <Player
              component={StoryboardRenderer}
@@ -383,7 +383,7 @@ export function VideoEditor({ orgId, projectId, videoId, onBack }: VideoEditorPr
          </div>
       </Card>
 
-      <Card className="flex-1 flex flex-col min-h-0 border-none bg-transparent shadow-none">
+      <Card className="flex-1 flex flex-col min-h-[200px] border-none bg-transparent shadow-none">
          <CardHeader className="py-2 px-0 border-none">
            <CardTitle className="text-sm font-medium uppercase tracking-wider text-muted-foreground">
              Runs
