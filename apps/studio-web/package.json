@@ -7,13 +7,19 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "amplify:sandbox": "npx ampx sandbox",
+    "amplify:deploy": "npx ampx deploy"
   },
   "dependencies": {
+    "@aws-amplify/backend": "^1.19.0",
+    "@aws-amplify/backend-cli": "^1.8.1",
     "@babulus/shared": "file:../../packages/shared",
     "@babulus/renderer": "file:../../packages/renderer",
     "next": "^14.2.8",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
   }
 }
