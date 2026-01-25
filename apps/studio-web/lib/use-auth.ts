@@ -2,6 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { getCurrentUser, signOut as amplifySignOut, fetchAuthSession } from "aws-amplify/auth";
+import { configureAmplify } from "./amplify-config";
+
+// Ensure Amplify is configured before using auth APIs
+configureAmplify();
 
 export type AuthUser = {
   userId: string;

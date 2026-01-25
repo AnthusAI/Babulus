@@ -188,6 +188,19 @@ const studioSchema = schema.schema({
       usageVisibilityMode: schema.enum(["full", "redacted"]),
     })
     .authorization((allow) => [allow.authenticated()]),
+  WaitlistSignup: schema
+    .model({
+      email: schema.string().required(),
+      name: schema.string(),
+      persona: schema.enum(["business", "agency", "marketer", "creator", "developer", "other"]),
+      wantsUpdates: schema.boolean().required(),
+      source: schema.string(),
+      createdAt: schema.string(),
+    })
+    .authorization((allow) => [
+      allow.publicApiKey().to(["create"]),
+      allow.authenticated(),
+    ]),
 });
 
 export const data = defineData({
@@ -201,3 +214,4 @@ export const data = defineData({
 });
 
 export type StudioSchema = typeof studioSchema;
+export type Schema = StudioSchema;

@@ -19,11 +19,16 @@ import { createJobAction, createStoryboardVersionAction, setActiveStoryboardVers
 import { uploadProjectFileAction, readProjectFileAction } from "@/app/actions/project-files";
 import { Button } from "@/components/ui/button";
 import { PublishModal } from "@/components/publish-modal";
+import { AssetManager } from "@/components/asset-manager";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Play, Pause, Loader2, Send, Save } from "lucide-react";
+import { Play, Pause, Loader2, Send, Save, ChevronLeft, ChevronRight, Maximize2, Minimize2, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import Editor from "@monaco-editor/react";
+import { configureAmplify } from "@/lib/amplify-config";
+
+// Ensure Amplify is configured before using storage APIs
+configureAmplify();
 
 const fallbackScript: ScriptData = {
   meta: {
@@ -56,14 +61,58 @@ const fallbackScript: ScriptData = {
   ],
 };
 
-// Default DSL for new videos
+// Default DSL for new videos - Introduction to Babulus
 const DEFAULT_DSL = `import { composition, scene, voice, audio } from '@babulus/dsl';
 
-export default composition('my-video', () => {
-  voice({ provider: 'dry-run' });
-  
-  scene('scene-1', 'Opening', () => {
-    voice.cue('Welcome to your new video.');
+export default composition('introduction', () => {
+  voice({ provider: 'dry-run', leadInSeconds: 0.5 });
+
+  scene('welcome', 'Welcome', () => {
+    voice.cue(() => {
+      voice.say('Welcome to Babulus, the AI-powered video creation platform.');
+      voice.pause(0.4);
+      voice.say('Create professional videos using code, with automatic voiceovers and scene composition.');
+    });
+  });
+
+  scene('features', 'Key Features', () => {
+    voice.cue(() => {
+      voice.say('Babulus combines the power of TypeScript with AI to streamline video production.');
+      voice.pause(0.3);
+      voice.say('Write your video content as code, and we handle voiceover generation, timing, and rendering.');
+    });
+
+    voice.pause(0.5);
+
+    voice.cue(() => {
+      voice.say('Use scenes to organize your content, cues to structure narration, and beats to control timing.');
+      voice.pause(0.3);
+      voice.say('Add background music, sound effects, and visual components to enhance your videos.');
+    });
+  });
+
+  scene('getting-started', 'Getting Started', () => {
+    voice.cue(() => {
+      voice.say('Getting started is simple. Create a project, upload your assets, and start writing your video script.');
+      voice.pause(0.4);
+      voice.say('The editor provides real-time preview, syntax highlighting, and instant feedback as you build.');
+    });
+
+    voice.pause(0.5);
+
+    voice.cue(() => {
+      voice.say('When you are ready, click Generate to process your script and create the final video.');
+      voice.pause(0.3);
+      voice.say('You can iterate quickly, making changes and regenerating until your video is perfect.');
+    });
+  });
+
+  scene('conclusion', 'Conclusion', () => {
+    voice.cue(() => {
+      voice.say('Whether you are creating marketing content, educational videos, or product demos, Babulus makes it fast and easy.');
+      voice.pause(0.4);
+      voice.say('Start creating your first video today and experience the future of video production.');
+    });
   });
 });
 `;
@@ -188,6 +237,9 @@ export function VideoEditor({ orgId, projectId, videoId, onBack }: VideoEditorPr
   const [editorCode, setEditorCode] = useState<string>(DEFAULT_DSL);
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
   const [publishModalOpen, setPublishModalOpen] = useState(false);
+  const [sidebarMode, setSidebarMode] = useState<'chat' | 'assets'>('assets');
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const outerSplitRef = useRef<HTMLDivElement | null>(null);
   const mainSplitRef = useRef<HTMLDivElement | null>(null);
@@ -600,7 +652,7 @@ export function VideoEditor({ orgId, projectId, videoId, onBack }: VideoEditorPr
 
   const OutputPane = (
     <div className="flex flex-col h-full min-h-0">
-      <div className="flex-1 min-h-0 flex items-center justify-center overflow-hidden pt-1">
+      <div className="flex-1 min-h-0 flex items-center justify-center overflow-hidden pt-1 relative">
         <div className="h-full w-full max-w-5xl max-h-full flex items-center justify-center">
           <div
             className="w-full h-full max-w-full max-h-full bg-black overflow-hidden relative"
@@ -620,6 +672,16 @@ export function VideoEditor({ orgId, projectId, videoId, onBack }: VideoEditorPr
             />
           </div>
         </div>
+        {/* Fullscreen Toggle Button */}
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => setIsFullscreen(!isFullscreen)}
+          className="absolute top-2 right-2 h-8 w-8 bg-black/50 hover:bg-black/70 text-white"
+          title={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}
+        >
+          {isFullscreen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
+        </Button>
       </div>
       <div className="flex-shrink-0 pt-2">
         <div className="max-w-5xl mx-auto w-full">
@@ -699,17 +761,77 @@ export function VideoEditor({ orgId, projectId, videoId, onBack }: VideoEditorPr
     </div>
   );
 
+  const AssetPane = (
+    <div className="flex flex-col h-full overflow-hidden p-3">
+      <AssetManager projectId={projectId} />
+    </div>
+  );
+
+  const SidebarPane = (
+    <div className="flex flex-col h-full">
+      {/* Sidebar Header with Toggle and Collapse */}
+      <div className="flex items-center gap-2 px-3 py-2 border-b">
+        <div className="flex gap-4 flex-1">
+          <button
+            onClick={() => setSidebarMode('chat')}
+            className={cn(
+              "text-xs font-medium pb-1 border-b-2 transition-colors",
+              sidebarMode === 'chat'
+                ? "border-primary text-foreground"
+                : "border-transparent text-muted-foreground hover:text-foreground"
+            )}
+          >
+            Chat
+          </button>
+          <button
+            onClick={() => setSidebarMode('assets')}
+            className={cn(
+              "text-xs font-medium pb-1 border-b-2 transition-colors",
+              sidebarMode === 'assets'
+                ? "border-primary text-foreground"
+                : "border-transparent text-muted-foreground hover:text-foreground"
+            )}
+          >
+            Assets
+          </button>
+        </div>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+          className="h-7 w-7"
+          title={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+        >
+          {layout.chatPosition === "left" ? (
+            sidebarCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />
+          ) : (
+            sidebarCollapsed ? <ChevronLeft className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />
+          )}
+        </Button>
+      </div>
+      {/* Sidebar Content */}
+      {!sidebarCollapsed && (
+        <div className="flex-1 min-h-0 overflow-hidden">
+          {sidebarMode === 'chat' ? ChatPane : AssetPane}
+        </div>
+      )}
+    </div>
+  );
+
   const clampedChatPercent = clampPercent(chatPercent, CHAT_MIN_PERCENT, CHAT_MAX_PERCENT);
   const clampedInputPercent = clampPercent(inputPercent, INPUT_MIN_PERCENT, INPUT_MAX_PERCENT);
+
+  // When sidebar is collapsed, use minimal width (just enough for the header)
+  const sidebarWidth = sidebarCollapsed ? 'auto' : `${clampedChatPercent}fr`;
   const chatTemplate = layout.chatPosition === "left"
-    ? `minmax(0, ${clampedChatPercent}fr) ${SPLITTER_SIZE_PX}px minmax(0, ${100 - clampedChatPercent}fr)`
-    : `minmax(0, ${100 - clampedChatPercent}fr) ${SPLITTER_SIZE_PX}px minmax(0, ${clampedChatPercent}fr)`;
+    ? `minmax(0, ${sidebarWidth}) ${SPLITTER_SIZE_PX}px minmax(0, ${sidebarCollapsed ? '1fr' : `${100 - clampedChatPercent}fr`})`
+    : `minmax(0, ${sidebarCollapsed ? '1fr' : `${100 - clampedChatPercent}fr`}) ${SPLITTER_SIZE_PX}px minmax(0, ${sidebarWidth})`;
   const mainOrientation: SplitOrientation = layout.mainAxis === "horizontal" ? "vertical" : "horizontal";
   const mainTemplate = layout.mainAxis === "horizontal"
     ? { gridTemplateColumns: `minmax(0, ${clampedInputPercent}fr) ${SPLITTER_SIZE_PX}px minmax(0, ${100 - clampedInputPercent}fr)` }
     : { gridTemplateRows: `minmax(0, ${clampedInputPercent}fr) ${SPLITTER_SIZE_PX}px minmax(0, ${100 - clampedInputPercent}fr)` };
 
-  const ChatCell = <div className="min-h-0 min-w-0 flex flex-col">{ChatPane}</div>;
+  const SidebarCell = <div className="min-h-0 min-w-0 flex flex-col">{SidebarPane}</div>;
   const InputCell = <div className="min-h-0 min-w-0 flex flex-col">{InputPane}</div>;
   const OutputCell = <div className="min-h-0 min-w-0 flex flex-col">{OutputPane}</div>;
   const MainContent = (
@@ -762,6 +884,94 @@ export function VideoEditor({ orgId, projectId, videoId, onBack }: VideoEditorPr
       setTimeout(() => setSaveStatus('idle'), 3000);
     }
   };
+
+  // Fullscreen Overlay
+  const FullscreenOverlay = (
+    <div className="fixed inset-0 z-50 bg-black flex flex-col">
+      {/* Video Container */}
+      <div className="flex-1 flex items-center justify-center relative">
+        <div className="w-full h-full flex items-center justify-center">
+          <div
+            className="w-full h-full bg-black overflow-hidden relative flex items-center justify-center"
+            style={{ maxWidth: '100%', maxHeight: '100%' }}
+          >
+            <div
+              className="relative"
+              style={{
+                aspectRatio: `${width} / ${height}`,
+                width: '100%',
+                height: '100%',
+                maxWidth: '100vw',
+                maxHeight: '100vh'
+              }}
+            >
+              <Player
+                component={StoryboardRenderer}
+                config={{ fps, width, height, durationFrames }}
+                inputProps={{ script }}
+                frame={currentFrame}
+                onFrameChange={handleFrameChange}
+                playing={playing}
+                onPlayingChange={setPlaying}
+                clock="external"
+                showControls={false}
+                surfaceStyle={{ width: "100%", height: "100%" }}
+              />
+            </div>
+          </div>
+        </div>
+        {/* Exit Fullscreen Button */}
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => setIsFullscreen(false)}
+          className="absolute top-4 right-4 h-10 w-10 bg-black/30 hover:bg-black/50 text-white"
+          title="Exit fullscreen"
+        >
+          <X className="h-5 w-5" />
+        </Button>
+      </div>
+
+      {/* Transport Overlay */}
+      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent pt-16 pb-4">
+        <div className="max-w-4xl mx-auto px-8">
+          <div className="flex flex-col gap-3">
+            <div className="flex items-center justify-between text-white">
+              <div className="flex items-center gap-4">
+                <Button variant="ghost" size="icon" onClick={handleTogglePlayback} className="h-10 w-10 hover:bg-white/20">
+                  {playing ? <Pause className="h-5 w-5 fill-current" /> : <Play className="h-5 w-5 fill-current" />}
+                </Button>
+                <div className="text-sm font-mono">
+                  {formatTime(currentTimeSec)} / {formatTime(durationSec)}
+                </div>
+              </div>
+              <div className="text-sm font-mono">
+                {fps} FPS
+              </div>
+            </div>
+            <input
+              type="range"
+              min={0}
+              max={maxFrame}
+              value={currentFrame}
+              onChange={(e) => handleFrameChange(Number(e.target.value))}
+              className="w-full accent-white h-2 bg-white/20 rounded-lg appearance-none cursor-pointer"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  // If fullscreen, show only the fullscreen overlay
+  if (isFullscreen) {
+    return (
+      <>
+        {FullscreenOverlay}
+        <audio ref={audioRef} />
+      </>
+    );
+  }
 
   return (
     <div className="flex flex-col h-full">
@@ -839,11 +1049,11 @@ export function VideoEditor({ orgId, projectId, videoId, onBack }: VideoEditorPr
       >
         {layout.chatPosition === "left" ? (
           <>
-            {ChatCell}
+            {SidebarCell}
             <SplitterHandle
               orientation="vertical"
               onPointerDown={startChatDrag}
-              label="Resize chat pane"
+              label="Resize sidebar"
               isActive={activeDrag === "chat"}
             />
             {MainContent}
@@ -854,10 +1064,10 @@ export function VideoEditor({ orgId, projectId, videoId, onBack }: VideoEditorPr
             <SplitterHandle
               orientation="vertical"
               onPointerDown={startChatDrag}
-              label="Resize chat pane"
+              label="Resize sidebar"
               isActive={activeDrag === "chat"}
             />
-            {ChatCell}
+            {SidebarCell}
           </>
         )}
       </div>

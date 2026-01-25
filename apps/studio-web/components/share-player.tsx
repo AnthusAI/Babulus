@@ -8,6 +8,10 @@ import type { PublishedVideo } from "@babulus/shared";
 import { Loader2, Download, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { incrementViewCountAction } from "@/app/actions";
+import { configureAmplify } from "@/lib/amplify-config";
+
+// Ensure Amplify is configured before using storage APIs
+configureAmplify();
 
 function formatViewCount(count: number | null | undefined): string {
   if (!count || count === 0) return "0 views";
