@@ -496,6 +496,39 @@ export function VideoEditor({ orgId, projectId, videoId, onBack }: VideoEditorPr
     }
   };
 
+  const handleRender = async () => {
+    if (activeJob) return;
+
+    // Find the latest successful generation run
+    const succeededRuns = runs.filter((r: any) => r.status === 'succeeded');
+    const latestRun = succeededRuns[0];
+
+    if (!latestRun) {
+      console.error("No successful generation run found. Generate first.");
+      return;
+    }
+
+    try {
+      // Queue render job with generation run ID
+      await createJobAction({
+        orgId,
+        kind: 'render',
+        status: 'queued',
+        inputJson: JSON.stringify({
+          videoId,
+          generationRunId: latestRun.id,
+        }),
+      }, orgId);
+      await refetchJobs();
+    } catch (e) {
+      console.error("Failed to queue render job", e);
+    }
+  };
+
+  // Check if we have a successful generation run to enable render
+  const succeededRuns = runs.filter((r: any) => r.status === 'succeeded');
+  const canRender = succeededRuns.length > 0 && !activeJob;
+
   // --- Sub-Components for Panes ---
 
   const OutputPane = (
@@ -691,6 +724,15 @@ export function VideoEditor({ orgId, projectId, videoId, onBack }: VideoEditorPr
             disabled={!!activeJob || !video?.title}
           >
             Generate
+          </Button>
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={handleRender}
+            disabled={!canRender}
+            title={!canRender ? "Generate first to enable rendering" : "Render video to MP4"}
+          >
+            Render
           </Button>
         </div>
         <div className="flex items-center">
