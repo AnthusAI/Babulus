@@ -18,6 +18,8 @@
     "@aws-amplify/backend": "^1.19.0",
     "@aws-amplify/backend-cli": "^1.8.1",
     "@aws-amplify/ui-react": "^6.13.2",
+    "@aws-sdk/client-s3": "^3.975.0",
+    "@aws-sdk/credential-providers": "^3.975.0",
     "@babulus/renderer": "file:../../packages/renderer",
     "@babulus/shared": "file:../../packages/shared",
     "@monaco-editor/react": "^4.7.0",
