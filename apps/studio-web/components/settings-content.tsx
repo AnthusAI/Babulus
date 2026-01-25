@@ -148,11 +148,15 @@ export function SettingsContent({ onClose }: { onClose?: () => void }) {
               <Label className="text-muted-foreground uppercase tracking-wider text-xs">Theme Preview</Label>
               
               {/* Preview Container Wrapper with Theme Variables */}
-              <div 
-                 className={cn("rounded-xl transition-colors duration-200", isDark ? "dark" : "light")} 
-                 data-theme={localColor}
-              >
-                <div className="p-6 rounded-xl bg-background flex flex-col gap-4 border-none transition-colors duration-200 ring-1 ring-border shadow-sm">
+              <div className="rounded-xl">
+                <div
+                  className={cn(
+                    "p-6 rounded-xl bg-background text-foreground flex flex-col gap-4 transition-colors duration-200",
+                    isDark ? "dark" : "light"
+                  )}
+                  data-theme={localColor}
+                  style={{ colorScheme: isDark ? "dark" : "light" }}
+                >
                   <div className="flex items-center justify-between">
                     <div className="flex flex-col gap-1">
                       <div className="h-4 w-32 bg-foreground/10 rounded-full" />
@@ -162,7 +166,7 @@ export function SettingsContent({ onClose }: { onClose?: () => void }) {
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="h-24 rounded-lg bg-muted" />
-                    <div className="h-24 rounded-lg bg-card p-4 flex flex-col justify-end ring-1 ring-border">
+                    <div className="h-24 rounded-lg bg-card p-4 flex flex-col justify-end">
                        <div className="h-2 w-full bg-primary/20 rounded-full" />
                     </div>
                   </div>

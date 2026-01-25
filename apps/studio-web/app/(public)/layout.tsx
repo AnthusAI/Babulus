@@ -9,18 +9,18 @@ export const metadata: Metadata = {
     template: "%s — Babulus",
   },
   description:
-    "Studio-grade automation for video marketing: research, production, rendering, and publishing—powered by AI, portable by design.",
+    "Automation for video marketing: research, production, rendering, and publishing—powered by AI, portable by design.",
   openGraph: {
     title: "Babulus",
     description:
-      "Studio-grade automation for video marketing: research, production, rendering, and publishing—powered by AI, portable by design.",
+      "Automation for video marketing: research, production, rendering, and publishing—powered by AI, portable by design.",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
     title: "Babulus",
     description:
-      "Studio-grade automation for video marketing: research, production, rendering, and publishing—powered by AI, portable by design.",
+      "Automation for video marketing: research, production, rendering, and publishing—powered by AI, portable by design.",
   },
 };
 
