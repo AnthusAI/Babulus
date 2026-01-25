@@ -204,6 +204,9 @@ class MockStorageClient implements StorageClient {
 let testContext: TestContext;
 
 Before(function () {
+  // Ensure test mode for dry-run provider
+  process.env.NODE_ENV = 'test';
+
   testContext = {
     mockClient: new MockGraphQLClient(),
     mockStorage: new MockStorageClient(),
@@ -461,7 +464,11 @@ Then('the job should remain claimed by the other worker', function () {
 });
 
 Then('the DSL should be parsed successfully', function () {
-  assert.ok(testContext.processingResult?.success);
+  if (testContext.processingError) {
+    console.error('Processing error:', testContext.processingError);
+    throw testContext.processingError;
+  }
+  assert.ok(testContext.processingResult?.success, 'Processing should succeed');
 });
 
 Then('TTS audio should be generated using OpenAI', function () {
