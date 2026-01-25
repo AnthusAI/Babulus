@@ -50,7 +50,7 @@ export default function VideoEditorPage() {
         <div className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center px-4 py-0.5 border-b bg-card">
           <button
             onClick={() => router.push('/dashboard')}
-            className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+            className="text-sm font-medium font-heading text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
           >
             Babulus
           </button>

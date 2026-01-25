@@ -15,7 +15,7 @@ export function StudioDashboard() {
     <div className="flex h-full flex-col">
       {/* Header */}
       <div className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center px-4 py-0.5 border-b bg-card">
-        <div className="text-sm font-medium text-muted-foreground">Babulus</div>
+        <div className="text-sm font-medium font-heading text-muted-foreground">Babulus</div>
         <div></div>
         <UserNav />
       </div>
