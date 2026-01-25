@@ -12,7 +12,7 @@ import {
   type TimelineData,
   type GenerationRun,
 } from "@babulus/shared";
-import { useVideos, useGenerationRuns, useJobs, useActiveStoryboard, useOrgs } from "@/lib/use-org-data";
+import { useVideos, useGenerationRuns, useJobs, useActiveStoryboard, useOrgs, useVideoRenderRuns } from "@/lib/use-org-data";
 import { useSettings } from "@/lib/settings-context";
 import { createJobAction, createStoryboardVersionAction, setActiveStoryboardVersionAction } from "@/app/actions";
 import { uploadProjectFileAction, readProjectFileAction } from "@/app/actions/project-files";
@@ -170,12 +170,13 @@ type VideoEditorProps = {
 export function VideoEditor({ orgId, projectId, videoId, onBack }: VideoEditorProps) {
   const { videos } = useVideos(orgId, projectId);
   const { runs, refetch: refetchRuns } = useGenerationRuns(orgId, videoId);
+  const { runs: renderRuns, refetch: refetchRenderRuns } = useVideoRenderRuns(orgId, videoId);
   const { jobs, refetch: refetchJobs } = useJobs(orgId);
   const { activeVersion, refetch: refetchVersion } = useActiveStoryboard(orgId, videoId);
   const { layout, updateLayout } = useSettings();
   const { orgs } = useOrgs();
   const activeOrg = orgs.find(o => o.id === orgId);
-  
+
   const video = useMemo(() => videos.find((v) => v.id === videoId), [videos, videoId]);
   
   const [currentFrame, setCurrentFrame] = useState(0);
@@ -529,6 +530,39 @@ export function VideoEditor({ orgId, projectId, videoId, onBack }: VideoEditorPr
   const succeededRuns = runs.filter((r: any) => r.status === 'succeeded');
   const canRender = succeededRuns.length > 0 && !activeJob;
 
+  // Find the latest successful render run for download
+  const succeededRenderRuns = renderRuns.filter((r: any) => r.status === 'succeeded');
+  const latestRenderRun = succeededRenderRuns[0]; // Already sorted by createdAt desc
+  const canDownload = !!latestRenderRun && !activeJob;
+
+  const handleDownload = async () => {
+    if (!latestRenderRun?.mp4ArtifactKey) {
+      console.error("No MP4 artifact found for download");
+      return;
+    }
+
+    try {
+      // Get signed URL for the MP4
+      const result = await getUrl({
+        path: latestRenderRun.mp4ArtifactKey,
+        options: {
+          validateObjectExistence: true,
+          expiresIn: 3600, // 1 hour
+        },
+      });
+
+      // Trigger browser download
+      const link = document.createElement('a');
+      link.href = result.url.toString();
+      link.download = `${video?.title || 'video'}.mp4`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (e) {
+      console.error("Failed to download MP4", e);
+    }
+  };
+
   // --- Sub-Components for Panes ---
 
   const OutputPane = (
@@ -734,6 +768,16 @@ export function VideoEditor({ orgId, projectId, videoId, onBack }: VideoEditorPr
           >
             Render
           </Button>
+          {canDownload && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleDownload}
+              title="Download rendered MP4"
+            >
+              Download MP4
+            </Button>
+          )}
         </div>
         <div className="flex items-center">
           {activeJob && (
