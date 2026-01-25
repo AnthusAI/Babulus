@@ -184,18 +184,44 @@ This document replaces the old step-by-step plan. It captures what actually exis
 ### HIGH PRIORITY - Storage UI Integration
 
 **1. Video Editor Integration**
-- Save `.babulus.ts` source files to S3 when user creates/edits videos
-- Load source code from S3 when opening existing videos
-- Integrate with existing Monaco editor component
-- Show save status feedback to user
-- **Goal:** Users can persist their work
+
+**Current State:**
+- Video editor: `components/video-editor.tsx` (649 lines, Monaco editor integrated)
+- Source stored in `StoryboardVersion.sourceText` (DynamoDB)
+- Relationship: Video → StoryboardVersion (many versions), `Video.activeStoryboardVersionId` points to current
+- "Generate" button: creates StoryboardVersion → queues generation job
+
+**Implementation:**
+- Dual storage: keep StoryboardVersion AND add S3 ProjectFile (gradual migration)
+- Modify `handleGenerate()` (lines 431-457) to also call `uploadProjectFileAction()`
+- File naming: sanitize video title → `video-title.babulus.ts`
+- Add optional "Save" button (separate from Generate)
+- Load from S3 on mount if ProjectFile exists, fallback to StoryboardVersion
+
+**Files to modify:**
+- `components/video-editor.tsx` (add S3 save/load)
+- `amplify/data/resource.ts` (add `sourceFileRelativePath` to Video model)
+- `app/actions.ts` (export project-file actions)
 
 **2. Project Dashboard Updates**
-- List video files from ProjectFile model (where `fileType = "video"`)
-- Display file metadata (name, size, last modified)
-- Filter out utility files (starting with `_`)
-- Add "New Video", "Open", "Delete" actions
-- **Goal:** Users can see and manage their files
+
+**Current State:**
+- Dashboard: `components/studio-dashboard.tsx`
+- Shows videos from `Video` GraphQL model
+- Uses `useVideos()` hook for selected project
+
+**Implementation:**
+- Add ProjectFile section alongside existing Video list
+- Query: `listProjectFilesAction(selectedProject.id)`, filter `fileType = "video"`
+- Display: filename, size, last modified
+- Actions: Open (navigate to editor), Delete (with confirmation)
+- Create new file: dialog → validate `.babulus.ts` → create ProjectFile → open editor
+- Dual view: "Videos (legacy)" and "Project Files" (transition period)
+
+**Files to modify:**
+- `components/studio-dashboard.tsx` (add file list UI)
+- `lib/use-org-data.ts` (add `useProjectFiles()` hook)
+- Create: `components/project-file-list.tsx` (new component)
 
 ### MEDIUM PRIORITY - Enhanced Capabilities
 
