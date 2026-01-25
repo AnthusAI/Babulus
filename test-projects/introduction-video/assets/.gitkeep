@@ -1,0 +1,10 @@
+# Assets Directory
+
+Place test media assets here:
+- logo.png - Babulus logo
+- background-music.mp3 - Optional background music
+- intro-slide.jpg - Opening slide image
+
+These assets can be referenced in the .babulus.ts file using relative paths like:
+  sfx('./assets/logo.png')
+  music('./assets/background-music.mp3')
