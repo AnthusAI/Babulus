@@ -108,12 +108,19 @@ This document replaces the old step-by-step plan. It captures what actually exis
 - **Permanent URLs:** CloudFront provides permanent, cacheable URLs (no expiration)
 - Asset model separate - reserved for tracking generated artifacts (audio, renders)
 
+**Completed:**
+- ✅ ProjectFile model added to GraphQL schema
+- ✅ Server actions for secure file CRUD (upload, read, delete, list)
+- ✅ AWS SDK S3 Client integration with authenticated credentials
+- ✅ CloudFront + Lambda@Edge for permanent authenticated URLs
+- ✅ Test page validates all file operations
+- ✅ Comprehensive architecture documentation with diagrams
+
 **Gaps / notes**
-- ProjectFile model not yet added to schema
-- Server actions for secure file CRUD not yet implemented
-- Project file listing UI not yet built
-- Import resolution for `_helpers.babulus.ts` style includes not yet built.
-- Some management surfaces are still thin (admin-level org management, deeper settings).
+- Project file listing UI not yet integrated into dashboard
+- Video editor not yet saving/loading from S3
+- Import resolution for `_helpers.babulus.ts` style includes not yet built
+- Some management surfaces are still thin (admin-level org management, deeper settings)
 
 ### Phase 7 — Execution Plane (Cloud Workers + Local Agent)
 **Current state**
@@ -161,21 +168,61 @@ This document replaces the old step-by-step plan. It captures what actually exis
 
 ---
 
-## Open Work Toward Beta (Short List)
+## Current Work: Project Storage UI Integration
 
-- Live preview from editor source or fast local preview pipeline.
-- Proper chat integration and approval workflows.
-- Local/Electron execution path.
-- Deterministic render validation + toolchain pinning tests.
-- **Project filesystem abstraction:**
-  - S3-backed projects for web app (list, read, write via Amplify Storage)
-  - Local filesystem for desktop app (same interface, different implementation)
-  - Unified API: `listProjectFiles()`, `readProjectFile()`, `writeProjectFile()`
-- **File discovery and organization:**
-  - List `.babulus.ts` files (exclude `_*` files from video list)
-  - Support user uploads to `assets/` subfolder
-  - Handle imports from `_helpers.babulus.ts` and similar utilities
-- **Execution model:**
-  - Client-side: Preview with existing artifacts or lightweight parsing
-  - Server-side: Full generation (TTS, audio) and rendering from same source files
+**Status:** Core storage infrastructure complete; UI integration in progress
+
+**Completed Infrastructure:**
+- ✅ ProjectFile GraphQL model deployed
+- ✅ S3 + CloudFront + Lambda@Edge architecture operational
+- ✅ Server actions for file operations with org-level security
+- ✅ All operations tested and validated
+- ✅ Documentation complete with architecture diagrams
+
+**Next Steps (Priority Order):**
+
+### HIGH PRIORITY - Storage UI Integration
+
+**1. Video Editor Integration**
+- Save `.babulus.ts` source files to S3 when user creates/edits videos
+- Load source code from S3 when opening existing videos
+- Integrate with existing Monaco editor component
+- Show save status feedback to user
+- **Goal:** Users can persist their work
+
+**2. Project Dashboard Updates**
+- List video files from ProjectFile model (where `fileType = "video"`)
+- Display file metadata (name, size, last modified)
+- Filter out utility files (starting with `_`)
+- Add "New Video", "Open", "Delete" actions
+- **Goal:** Users can see and manage their files
+
+### MEDIUM PRIORITY - Enhanced Capabilities
+
+**3. Asset Upload UI**
+- Drag-and-drop file upload for images/audio/video
+- Upload to `assets/` subfolder with `fileType = "asset"`
+- Asset browser/gallery with previews
+- Copy asset paths for use in video code
+
+**4. Security Verification**
+- Test cross-org access blocking
+- Test path traversal prevention
+- Test CloudFront/Lambda@Edge authentication
+- Verify GraphQL isolation
+
+### LOWER PRIORITY - Advanced Features
+
+**5. Import/Utility File Support**
+- Create `_helpers.babulus.ts` utility files (`fileType = "utility"`)
+- Parse import statements in video source
+- Fetch and bundle utility file dependencies
+- Show utilities separately in dashboard
+
+## Additional Beta Work (Beyond Storage)
+
+- Live preview from editor source or fast local preview pipeline
+- Proper chat integration and approval workflows
+- Local/Electron execution path
+- Deterministic render validation + toolchain pinning tests
 

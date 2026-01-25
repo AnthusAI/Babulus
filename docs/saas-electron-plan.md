@@ -124,14 +124,45 @@ The `Asset` model tracks **generated artifacts** (audio, renders, etc.) and link
 
 ---
 
-## Beta Objectives (Short List)
+## Project Storage Implementation Status
 
-- **CloudFront + Lambda@Edge** for secure, permanent asset URLs
-- **ProjectFile GraphQL model** for tracking project files with metadata
-- **Server actions** for secure file CRUD with org validation
-- **S3 file operations** via Amplify Storage
-- **Project file UI** - list, upload, delete files in project dashboard
-- **Import resolution** for `_*.babulus.ts` utility files
+### ✅ COMPLETED (Phase 6 Storage Infrastructure)
+
+**Backend Infrastructure:**
+- ✅ CloudFront + Lambda@Edge for secure, permanent asset URLs
+- ✅ ProjectFile GraphQL model deployed and operational
+- ✅ Server actions for secure file CRUD with org validation
+- ✅ S3 file operations via AWS SDK (authenticated credentials)
+- ✅ Multi-layer security model (application + edge + IAM)
+- ✅ All operations tested and validated
+
+**Documentation:**
+- ✅ Comprehensive architecture documentation at `apps/studio-web/docs/project-storage-architecture.md`
+- ✅ Mermaid diagrams for architecture and data flows
+- ✅ Security model, API reference, troubleshooting guide
+- ✅ Updated main README with storage references
+
+**Technical Details:**
+- Uses AWS SDK S3 Client with `fetchAuthSession()` for authenticated Cognito credentials
+- CloudFront domain: `delwevc80vpcd.cloudfront.net`
+- Lambda@Edge validates JWT tokens and org membership at edge
+- Test page at `/test-storage` validates all operations
+
+### 🔄 IN PROGRESS (Storage UI Integration)
+
+**HIGH PRIORITY:**
+1. **Video Editor Integration** - Save/load `.babulus.ts` files to/from S3
+2. **Project Dashboard Updates** - List, open, delete project files
+
+**MEDIUM PRIORITY:**
+3. **Asset Upload UI** - Drag-and-drop for user media files
+4. **Security Verification** - Test multi-tenant isolation end-to-end
+
+**LOWER PRIORITY:**
+5. **Import Resolution** for `_*.babulus.ts` utility files
+
+### 📋 REMAINING BETA OBJECTIVES (Beyond Storage)
+
 - Live preview from editor source or fast local preview path
 - Deterministic render validation (toolchain pinning + reproducibility tests)
 - Real chat integration and approvals
