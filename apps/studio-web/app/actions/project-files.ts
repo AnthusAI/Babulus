@@ -6,6 +6,7 @@ import { getCurrentUser } from 'aws-amplify/auth/server';
 import { generateServerClientUsingCookies } from '@aws-amplify/adapter-nextjs/data';
 // @ts-ignore - Schema type is generated after backend deployment
 import type { Schema } from '../amplify/data/resource.js';
+// @ts-ignore - amplify_outputs.json is generated after backend deployment
 import outputs from '../amplify_outputs.json';
 import * as storage from '@/lib/project-storage';
 
