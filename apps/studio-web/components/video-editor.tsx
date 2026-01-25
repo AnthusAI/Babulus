@@ -14,9 +14,10 @@ import {
 } from "@babulus/shared";
 import { useVideos, useGenerationRuns, useJobs, useActiveStoryboard, useOrgs, useVideoRenderRuns } from "@/lib/use-org-data";
 import { useSettings } from "@/lib/settings-context";
-import { createJobAction, createStoryboardVersionAction, setActiveStoryboardVersionAction } from "@/app/actions";
+import { createJobAction, createStoryboardVersionAction, setActiveStoryboardVersionAction, createPublishedVideoAction } from "@/app/actions";
 import { uploadProjectFileAction, readProjectFileAction } from "@/app/actions/project-files";
 import { Button } from "@/components/ui/button";
+import { PublishModal } from "@/components/publish-modal";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Play, Pause, Loader2, Send, Save } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -185,6 +186,7 @@ export function VideoEditor({ orgId, projectId, videoId, onBack }: VideoEditorPr
   const [audioSrc, setAudioSrc] = useState<string | null>(null);
   const [editorCode, setEditorCode] = useState<string>(DEFAULT_DSL);
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
+  const [publishModalOpen, setPublishModalOpen] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const outerSplitRef = useRef<HTMLDivElement | null>(null);
   const mainSplitRef = useRef<HTMLDivElement | null>(null);
@@ -563,6 +565,30 @@ export function VideoEditor({ orgId, projectId, videoId, onBack }: VideoEditorPr
     }
   };
 
+  const handlePublish = async (params: {
+    slug: string;
+    accessPolicy: "public" | "password" | "org_only";
+    password?: string;
+  }) => {
+    if (!latestRenderRun) {
+      throw new Error("No render run available to publish");
+    }
+
+    const publishedVideo = await createPublishedVideoAction(
+      {
+        videoId,
+        renderRunId: latestRenderRun.id,
+        slug: params.slug,
+        accessPolicy: params.accessPolicy,
+        passwordHash: params.password, // TODO: Hash the password before sending
+        viewCount: 0,
+      },
+      orgId
+    );
+
+    return { slug: publishedVideo.slug };
+  };
+
   // --- Sub-Components for Panes ---
 
   const OutputPane = (
@@ -769,14 +795,24 @@ export function VideoEditor({ orgId, projectId, videoId, onBack }: VideoEditorPr
             Render
           </Button>
           {canDownload && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleDownload}
-              title="Download rendered MP4"
-            >
-              Download MP4
-            </Button>
+            <>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleDownload}
+                title="Download rendered MP4"
+              >
+                Download MP4
+              </Button>
+              <Button
+                variant="default"
+                size="sm"
+                onClick={() => setPublishModalOpen(true)}
+                title="Publish video and create shareable link"
+              >
+                Publish
+              </Button>
+            </>
           )}
         </div>
         <div className="flex items-center">
@@ -821,6 +857,19 @@ export function VideoEditor({ orgId, projectId, videoId, onBack }: VideoEditorPr
       
       {/* Hidden Audio Element */}
       <audio ref={audioRef} />
+
+      {/* Publish Modal */}
+      {canDownload && video && (
+        <PublishModal
+          open={publishModalOpen}
+          onOpenChange={setPublishModalOpen}
+          videoId={videoId}
+          videoTitle={video.title || 'Untitled Video'}
+          renderRunId={latestRenderRun.id}
+          orgId={orgId}
+          onPublish={handlePublish}
+        />
+      )}
     </div>
   );
 }
