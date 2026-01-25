@@ -299,6 +299,19 @@ export async function createPublishedVideoAction(
   return cp.createPublishedVideo(input, orgId);
 }
 
+export async function incrementViewCountAction(publishedVideoId: string): Promise<void> {
+  "use server";
+  const publishedVideo = await cp.getPublishedVideo(publishedVideoId);
+  if (!publishedVideo) {
+    throw new Error("Published video not found");
+  }
+
+  const currentCount = publishedVideo.viewCount || 0;
+  await cp.updatePublishedVideo(publishedVideoId, {
+    viewCount: currentCount + 1,
+  }, publishedVideo.orgId);
+}
+
 // Update operations
 
 export async function setVideoStatusAction(
