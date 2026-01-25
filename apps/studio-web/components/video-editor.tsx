@@ -15,6 +15,7 @@ import {
 import { useVideos, useGenerationRuns, useJobs, useActiveStoryboard, useOrgs } from "@/lib/use-org-data";
 import { useSettings } from "@/lib/settings-context";
 import { createJobAction, createStoryboardVersionAction, setActiveStoryboardVersionAction } from "@/app/actions";
+import { uploadProjectFileAction } from "@/app/actions/project-files";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Play, Pause, Loader2, Send, Save } from "lucide-react";
@@ -443,7 +444,25 @@ export function VideoEditor({ orgId, projectId, videoId, onBack }: VideoEditorPr
       await setActiveStoryboardVersionAction(videoId, version.id, orgId);
       await refetchVersion();
 
-      // 3. Queue job
+      // 3. ALSO save to S3 as ProjectFile (dual storage for gradual migration)
+      if (video?.title) {
+        try {
+          // Generate filename from video title (sanitized)
+          const fileName = `${video.title.replace(/[^a-z0-9]/gi, '-').toLowerCase()}.babulus.ts`;
+          await uploadProjectFileAction(
+            projectId,
+            fileName,
+            editorCode,
+            'video',
+            'text/typescript'
+          );
+        } catch (s3Error) {
+          // Log S3 error but don't fail the generation - dual storage is additive
+          console.warn("Failed to save to S3 (non-fatal):", s3Error);
+        }
+      }
+
+      // 4. Queue job
       await createJobAction({
         orgId,
         kind: 'generate',

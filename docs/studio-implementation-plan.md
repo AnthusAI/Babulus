@@ -183,7 +183,7 @@ This document replaces the old step-by-step plan. It captures what actually exis
 
 ### HIGH PRIORITY - Storage UI Integration
 
-**1. Video Editor Integration**
+**1. Video Editor Integration** - ✅ PARTIALLY COMPLETE
 
 **Current State:**
 - Video editor: `components/video-editor.tsx` (649 lines, Monaco editor integrated)
@@ -191,17 +191,19 @@ This document replaces the old step-by-step plan. It captures what actually exis
 - Relationship: Video → StoryboardVersion (many versions), `Video.activeStoryboardVersionId` points to current
 - "Generate" button: creates StoryboardVersion → queues generation job
 
-**Implementation:**
-- Dual storage: keep StoryboardVersion AND add S3 ProjectFile (gradual migration)
-- Modify `handleGenerate()` (lines 431-457) to also call `uploadProjectFileAction()`
-- File naming: sanitize video title → `video-title.babulus.ts`
-- Add optional "Save" button (separate from Generate)
-- Load from S3 on mount if ProjectFile exists, fallback to StoryboardVersion
+**Implementation Status:**
+- ✅ DONE: Added import for `uploadProjectFileAction` from `app/actions/project-files`
+- ✅ DONE: Modified `handleGenerate()` (lines 432-476) to include S3 upload after StoryboardVersion
+- ✅ DONE: Dual storage implemented - StoryboardVersion (existing) + S3 ProjectFile (new)
+- ✅ DONE: File naming sanitizes video title → `video-title.babulus.ts`
+- ✅ DONE: S3 upload wrapped in try-catch - won't break generation if S3 fails
+- ✅ DONE: TypeScript check passed (no new errors introduced)
+- ⏳ TODO: Add optional "Save" button (separate from Generate)
+- ⏳ TODO: Load from S3 on mount if ProjectFile exists, fallback to StoryboardVersion
+- ⏳ TODO: Add `sourceFileRelativePath` field to Video model
 
-**Files to modify:**
-- `components/video-editor.tsx` (add S3 save/load)
-- `amplify/data/resource.ts` (add `sourceFileRelativePath` to Video model)
-- `app/actions.ts` (export project-file actions)
+**Files Modified:**
+- ✅ `components/video-editor.tsx` (S3 save integrated into handleGenerate)
 
 **2. Project Dashboard Updates**
 
