@@ -148,25 +148,121 @@ The `Asset` model tracks **generated artifacts** (audio, renders, etc.) and link
 - Lambda@Edge validates JWT tokens and org membership at edge
 - Test page at `/test-storage` validates all operations
 
-### 🔄 IN PROGRESS (Storage UI Integration)
+### ✅ COMPLETED (Storage UI Integration - Session 2026-01-25)
 
-**HIGH PRIORITY:**
-1. **Video Editor Integration** - Save/load `.babulus.ts` files to/from S3
-2. **Project Dashboard Updates** - List, open, delete project files
+**Video Editor Integration:**
+- ✅ Save button with visual feedback (saving/saved/error states)
+- ✅ Dual storage: StoryboardVersion (DynamoDB) + ProjectFile (S3)
+- ✅ Load from S3 on mount, fallback to StoryboardVersion
+- ✅ Generate button now also saves to S3
 
-**MEDIUM PRIORITY:**
-3. **Asset Upload UI** - Drag-and-drop for user media files
-4. **Security Verification** - Test multi-tenant isolation end-to-end
+**Project Dashboard:**
+- ✅ useProjectFiles() hook for fetching file list
+- ✅ ProjectFileList component with view/delete actions
+- ✅ Three-column layout (Videos | Files | Assets)
 
-**LOWER PRIORITY:**
-5. **Import Resolution** for `_*.babulus.ts` utility files
+**Asset Management:**
+- ✅ AssetUpload: Drag-and-drop multi-file upload
+- ✅ AssetBrowser: Gallery with image thumbnails
+- ✅ AssetManager: Tabbed Browse/Upload interface
+- ✅ Copy-to-clipboard for asset paths
 
-### 📋 REMAINING BETA OBJECTIVES (Beyond Storage)
+**Quality:**
+- ✅ Fixed all 15 pre-existing TypeScript errors (now 0 errors)
+- ✅ Security verification plan documented
 
-- Live preview from editor source or fast local preview path
-- Deterministic render validation (toolchain pinning + reproducibility tests)
-- Real chat integration and approvals
-- Dual execution model: client-side preview + server-side generation/render
-- Local/Electron workflow (filesystem-backed projects + local render agent)
-- Custom domain support for published videos
+---
+
+## 🔴 CRITICAL ALPHA BLOCKERS - Must Complete Next
+
+**Status:** Storage/UI complete. Core video workflow incomplete.
+
+### Priority 1: Generation Pipeline (CRITICAL)
+
+**Problem:** Users can edit code but can't generate TTS audio.
+
+**Investigation Needed:**
+- Is `worker-cloud.ts` deployed and processing jobs?
+- Are TTS API keys configured?
+- Does preview reload with generated audio?
+
+**Success Criteria:**
+- User clicks Generate → Job created
+- Worker processes job within 10 seconds
+- TTS audio generated for each cue
+- Artifacts uploaded to S3
+- Preview plays with synchronized audio
+
+**Estimated:** 1-2 days if worker exists, 3-4 days if building from scratch
+
+### Priority 2: Render Pipeline (CRITICAL)
+
+**Problem:** No way to produce final MP4 videos.
+
+**What's Missing:**
+- Render worker with headless browser + ffmpeg
+- Video capture and encoding
+- MP4 upload to S3
+
+**Implementation Options:**
+- Option A: Lambda + Layers (15min timeout, complex)
+- Option B: ECS/Fargate (recommended for alpha - no timeout)
+
+**Success Criteria:**
+- User clicks Render → Job created
+- Worker records browser video + audio
+- ffmpeg encodes to MP4
+- User can download rendered video
+
+**Estimated:** 4-5 days
+
+### Priority 3: Publishing (Important)
+
+**Status:** Partially implemented, needs verification
+
+**What's Needed:**
+- Verify artifact copying to public S3 path
+- Polish share page UI
+- Test public access without auth
+
+**Estimated:** 2-3 days
+
+---
+
+## Alpha Testing Readiness
+
+**Current Status:** ~70% ready
+
+**Completed (Infrastructure):**
+- ✅ Auth, orgs, projects, videos
+- ✅ Editor with Monaco
+- ✅ File storage (S3 + CloudFront)
+- ✅ Asset upload/management
+- ✅ Preview player
+
+**Blocking Alpha (Core Workflow):**
+- 🔴 Generation not verified working
+- 🔴 Rendering not implemented
+- 🟡 Publishing partially done
+
+**Alpha Readiness Checklist:**
+- [ ] End-to-end: Edit → Generate → Render → Publish
+- [ ] User can produce and share a video
+- [ ] TTS audio generation working
+- [ ] MP4 rendering working
+- [ ] Public share links working
+
+---
+
+### 📋 REMAINING BETA OBJECTIVES (Post-Alpha)
+
+After alpha validation, focus on:
+
+- Live preview from editor source (client-side execution)
+- Import resolution for `_*.babulus.ts` utility files
+- Asset path resolution in DSL (`./assets/*` → URLs)
+- Real chat integration and agent approvals
+- Deterministic render validation + toolchain pinning
+- Local/Electron workflow (filesystem + local render agent)
+- Custom domains for published videos
 

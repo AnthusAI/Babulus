@@ -212,7 +212,235 @@ This document replaces the old step-by-step plan. It captures what actually exis
 - 15 TypeScript errors fixed (test files, storage, scripts)
 - ✅ ZERO TypeScript errors remaining
 
-**Next Steps (Priority Order):**
+---
+
+## CRITICAL NEXT STEPS - Alpha End-to-End Workflow
+
+**Status:** Project storage UI complete. Now need working generation, rendering, and publishing for alpha testing.
+
+### Phase Priority: Generation → Rendering → Publishing
+
+The UI is ready. Users can edit, save, and manage files. But the core video creation workflow is incomplete:
+
+1. **Generation Pipeline** - Not verified working
+2. **Render Pipeline** - Not implemented
+3. **Publishing** - Partially working
+
+Without these, alpha testers can edit code but can't produce videos.
+
+---
+
+### 🔴 CRITICAL #1: Verify/Fix Generation Pipeline
+
+**Goal:** User clicks "Generate" → Gets TTS audio + artifacts → Preview plays with real audio
+
+**Current State:**
+- Generation jobs are **created** in database when user clicks Generate
+- Worker exists: `apps/studio-web/src/worker-cloud.ts` (reference implementation)
+- Unknown: Is worker deployed? Is it processing jobs? Does TTS actually work?
+
+**What Needs Investigation:**
+1. Is `worker-cloud.ts` actually deployed and running?
+2. Does it poll for jobs or is there a queue mechanism?
+3. Are TTS API keys configured (ElevenLabs, Polly, Azure)?
+4. Does it successfully upload artifacts to S3 after generation?
+5. Does preview reload and play generated audio?
+
+**Files to Examine:**
+- `apps/studio-web/src/worker-cloud.ts` - Worker implementation
+- `apps/studio-web/app/actions.ts` - Job creation logic
+- Look for Lambda/ECS deployment for worker
+- Check Amplify backend for job processing
+
+**Success Criteria:**
+- ✅ User clicks Generate in video editor
+- ✅ Job record created with status "pending"
+- ✅ Worker picks up job within 10 seconds
+- ✅ Worker calls TTS API (ElevenLabs) for each cue
+- ✅ Worker generates script.json with timing data
+- ✅ Worker uploads audio files + script.json to S3
+- ✅ Job status updated to "completed"
+- ✅ Preview automatically reloads with generated audio
+- ✅ Preview plays audio synchronized with timeline
+
+**Implementation Tasks:**
+1. **Audit worker deployment**
+   - Find where/if worker-cloud.ts is deployed (Lambda? ECS? Not at all?)
+   - If not deployed, deploy it (Lambda function triggered by job creation)
+
+2. **Wire up job processing**
+   - Worker needs to poll Job table or subscribe to DynamoDB stream
+   - Process jobs with status="pending" and type="generation"
+
+3. **Implement TTS integration**
+   - Parse DSL to extract cue narration text
+   - Call ElevenLabs API for each cue
+   - Download audio files
+   - Calculate timing based on audio duration
+
+4. **Generate artifacts**
+   - Create script.json with scene/cue timing
+   - Include audio file references
+   - Upload to S3: `org/{orgId}/generated/{videoId}/{versionId}/`
+
+5. **Update job status**
+   - Set status="completed" when done
+   - Set status="failed" with error message on failure
+
+6. **Test end-to-end**
+   - Create test video with 2-3 cues
+   - Click Generate
+   - Wait for completion
+   - Verify preview plays generated audio
+
+**Estimated Effort:** 1-2 days if worker exists, 3-4 days if needs building from scratch
+
+---
+
+### 🔴 CRITICAL #2: Implement Render Pipeline
+
+**Goal:** User clicks "Render" → Gets MP4 video file
+
+**Current State:**
+- Render jobs are **modeled** in GraphQL schema
+- No actual rendering implementation exists
+- Need headless browser + ffmpeg pipeline
+
+**What Needs Building:**
+1. **Render worker** (similar to generation worker)
+   - Picks up jobs with type="render"
+   - Runs headless Chromium with Puppeteer
+   - Loads preview page with generated artifacts
+   - Records video with audio
+
+2. **Video encoding**
+   - Capture browser video frames
+   - Mix audio tracks (narration + background music)
+   - Encode to MP4 with ffmpeg
+
+3. **Artifact storage**
+   - Upload final MP4 to S3
+   - Update render job status
+   - Link video URL in database
+
+**Files to Create/Modify:**
+- `apps/studio-web/src/worker-render.ts` (NEW) - Render worker
+- Deploy as Lambda (with custom runtime for ffmpeg) or ECS task
+- Update job actions to create render jobs
+
+**Success Criteria:**
+- ✅ User clicks Render in video editor
+- ✅ Render job created with status "pending"
+- ✅ Worker picks up job
+- ✅ Worker launches headless browser
+- ✅ Browser loads preview with generated artifacts
+- ✅ Worker records video frames + audio
+- ✅ ffmpeg encodes to MP4
+- ✅ MP4 uploaded to S3
+- ✅ Job status updated to "completed"
+- ✅ User can download/view rendered video
+
+**Implementation Options:**
+
+**Option A: Serverless (Lambda + Layers)**
+- Use Lambda with ffmpeg layer
+- Use chrome-aws-lambda for headless browser
+- Pros: Scales automatically, pay-per-use
+- Cons: 15-minute timeout, complex setup
+
+**Option B: ECS/Fargate Tasks**
+- Run Docker container with Chrome + ffmpeg
+- Trigger via Lambda → ECS RunTask
+- Pros: No timeout, easier to debug
+- Cons: Slower cold start, more expensive
+
+**Recommended:** Start with Option B (ECS) for reliability during alpha.
+
+**Estimated Effort:** 4-5 days for full implementation + testing
+
+---
+
+### 🟡 IMPORTANT #3: Complete Publishing Flow
+
+**Goal:** User clicks "Publish" → Video is publicly accessible via share link
+
+**Current State:**
+- Public share pages exist (`/share/[slug]`)
+- Published video records are created
+- Artifacts copied to public storage
+- Needs verification + polish
+
+**What Needs Verification:**
+1. Does publishing actually copy artifacts to public path?
+2. Do share pages load correctly?
+3. Is public access properly configured (no auth required)?
+4. Can share URLs be customized?
+
+**What Needs Building:**
+1. **Publish workflow UI**
+   - "Publish" button in video editor
+   - Modal for publish settings (title, description, slug)
+   - Progress indicator
+
+2. **Artifact copying**
+   - Copy rendered MP4 from private to public S3 path
+   - Copy thumbnail if exists
+   - Update PublishedVideo record with URLs
+
+3. **Share page polish**
+   - Embed video player
+   - Show title/description
+   - Social meta tags for sharing
+   - View count tracking
+
+**Success Criteria:**
+- ✅ User clicks Publish
+- ✅ Modal shows publish settings
+- ✅ User enters title, slug
+- ✅ Artifacts copied to `published/{slug}/`
+- ✅ PublishedVideo record created
+- ✅ Share URL generated: `https://studio.babulus.ai/share/{slug}`
+- ✅ Anyone can view video without login
+- ✅ Video plays correctly on share page
+
+**Estimated Effort:** 2-3 days
+
+---
+
+## Alpha Testing Readiness Checklist
+
+Before inviting alpha testers:
+
+### Core Workflow (Must Have)
+- [ ] ✅ User can create account and org
+- [ ] ✅ User can create project
+- [ ] ✅ User can write Babulus code in editor
+- [ ] ✅ User can save code to S3
+- [ ] ✅ User can upload assets (images, audio)
+- [ ] 🔴 User can generate TTS audio + artifacts
+- [ ] 🔴 Preview plays with generated audio
+- [ ] 🔴 User can render video to MP4
+- [ ] 🔴 User can download rendered video
+- [ ] 🟡 User can publish video publicly
+- [ ] 🟡 Share link works without auth
+
+### Secondary Features (Nice to Have)
+- [ ] Live preview from editor (without generation)
+- [ ] Import from utility files (`_helpers.babulus.ts`)
+- [ ] Asset path resolution in DSL
+- [ ] Video versioning UI
+- [ ] Job progress indicators
+- [ ] Error messages for failed jobs
+
+### Testing & Validation
+- [ ] End-to-end smoke test (create → edit → generate → render → publish)
+- [ ] Multi-tenant security test (cross-org access blocked)
+- [ ] Performance test (generation time for 60s video)
+- [ ] Cost tracking works for all operations
+
+---
+
+### Previous Work - Storage UI Integration (Completed)
 
 ### HIGH PRIORITY - Storage UI Integration
 
