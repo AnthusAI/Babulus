@@ -7,6 +7,7 @@ Babulus projects use a multi-layered storage architecture that combines S3 for f
 ## High-Level Architecture
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#f0f0f0','primaryTextColor':'#333','primaryBorderColor':'#999','lineColor':'#666','secondaryColor':'#fafafa','tertiaryColor':'#f5f5f5','background':'#ffffff','mainBkg':'#f0f0f0','secondBkg':'#fafafa'}}}%%
 graph TB
     subgraph "Browser (Client)"
         UI[Web UI]
@@ -19,12 +20,12 @@ graph TB
     end
 
     subgraph "AWS Amplify Backend"
-        COGNITO[Cognito Auth]
-        APPSYNC[AppSync GraphQL]
-        DDB[(DynamoDB)]
-        S3[(S3 Bucket)]
-        CF[CloudFront CDN]
-        LAMBDA[Lambda@Edge]
+        COGNITO["Cognito Auth"]
+        APPSYNC["AppSync GraphQL"]
+        DDB[("DynamoDB")]
+        S3[("S3 Bucket")]
+        CF["CloudFront CDN"]
+        LAMBDA["Lambda@Edge"]
     end
 
     UI -->|"uploadProjectFileAction()"| SA
@@ -40,10 +41,16 @@ graph TB
     LAMBDA -->|"Check org membership"| LAMBDA
     LAMBDA -->|"Serve file"| S3
 
-    style SA fill:#e1f5ff
-    style SDK fill:#e1f5ff
-    style CF fill:#fff4e1
-    style LAMBDA fill:#fff4e1
+    style SA fill:#e8f4f8,stroke:#666,color:#333
+    style SDK fill:#e8f4f8,stroke:#666,color:#333
+    style CF fill:#fff8e8,stroke:#666,color:#333
+    style LAMBDA fill:#fff8e8,stroke:#666,color:#333
+    style UI fill:#f5f5f5,stroke:#666,color:#333
+    style IMG fill:#f5f5f5,stroke:#666,color:#333
+    style COGNITO fill:#f5f5f5,stroke:#666,color:#333
+    style APPSYNC fill:#f5f5f5,stroke:#666,color:#333
+    style DDB fill:#f5f5f5,stroke:#666,color:#333
+    style S3 fill:#f5f5f5,stroke:#666,color:#333
 ```
 
 ## Data Flow
@@ -51,6 +58,7 @@ graph TB
 ### File Upload Flow
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': { 'actorBkg':'#f5f5f5','actorBorder':'#999','actorTextColor':'#333','actorLineColor':'#666','signalColor':'#666','signalTextColor':'#333','labelBoxBkgColor':'#e8f4f8','labelBoxBorderColor':'#999','labelTextColor':'#333','loopTextColor':'#333','noteBkgColor':'#fff8e8','noteBorderColor':'#999','noteTextColor':'#333','activationBkgColor':'#e0e0e0','activationBorderColor':'#999','sequenceNumberColor':'#333'}}}%%
 sequenceDiagram
     participant Browser
     participant ServerAction as Server Action
@@ -78,6 +86,7 @@ sequenceDiagram
 ### File Access Flow (CloudFront)
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': { 'actorBkg':'#f5f5f5','actorBorder':'#999','actorTextColor':'#333','actorLineColor':'#666','signalColor':'#666','signalTextColor':'#333','labelBoxBkgColor':'#e8f4f8','labelBoxBorderColor':'#999','labelTextColor':'#333','loopTextColor':'#333','noteBkgColor':'#fff8e8','noteBorderColor':'#999','noteTextColor':'#333','activationBkgColor':'#e0e0e0','activationBorderColor':'#999','sequenceNumberColor':'#333','altLabelBkgColor':'#f0f0f0'}}}%%
 sequenceDiagram
     participant Browser
     participant CloudFront as CloudFront CDN
