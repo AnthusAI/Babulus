@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
 import { useThemeConfig, type ThemeColor } from "@/lib/theme-config";
 import { useSettings, type LayoutSettings } from "@/lib/settings-context";
-import { Check, Moon, Sun, Laptop, LayoutTemplate, MessageSquare, Code2, MonitorPlay } from "lucide-react";
+import { Moon, Sun, Laptop, LayoutTemplate, MessageSquare, Code2, MonitorPlay } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
@@ -77,7 +77,14 @@ export function SettingsContent({ onClose }: { onClose?: () => void }) {
   };
 
   // Determine preview classes
-  const previewMode = localTheme === "system" ? (resolvedTheme || systemTheme || theme || "light") : localTheme;
+  const previewMode =
+    localTheme === "system"
+      ? (systemTheme ||
+          resolvedTheme ||
+          (typeof document !== "undefined" && document.documentElement.classList.contains("dark")
+            ? "dark"
+            : "light"))
+      : localTheme;
   const isDark = previewMode === 'dark';
 
   return (
@@ -149,7 +156,10 @@ export function SettingsContent({ onClose }: { onClose?: () => void }) {
               
               {/* Preview Container Wrapper with Theme Variables */}
               <div
-                className={cn("rounded-xl transition-colors duration-200", isDark ? "dark" : "light")}
+                className={cn(
+                  "rounded-xl transition-colors duration-200 theme-scope",
+                  isDark ? "dark" : "light"
+                )}
                 data-theme={localColor}
                 style={{ colorScheme: isDark ? "dark" : "light" }}
               >
@@ -379,7 +389,6 @@ function ThemeColorCard({ label, active, onClick, previewColors }: { label: stri
         </div>
         <span className="text-sm font-medium">{label}</span>
       </div>
-      {active && <Check className="w-4 h-4 text-primary" />}
     </button>
   );
 }
