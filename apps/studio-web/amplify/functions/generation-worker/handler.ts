@@ -22,8 +22,18 @@
 import type { EventBridgeEvent } from 'aws-lambda';
 import { Amplify } from 'aws-amplify';
 import { generateClient } from 'aws-amplify/data';
+import { uploadData, downloadData } from 'aws-amplify/storage';
 import type { Schema } from '../../data/resource.js';
 import amplifyConfig from '../../../amplify_outputs.json';
+import {
+  claimNextJob,
+  processGenerationJob,
+  updateJobStatus,
+  emitJobEvent,
+  type StorageClient,
+} from '../../../../../src/worker-lib.js';
+import { join } from 'path';
+import { mkdirSync, rmSync } from 'fs';
 
 // Configure Amplify for Lambda execution
 Amplify.configure(amplifyConfig, {
@@ -34,6 +44,12 @@ const client = generateClient<Schema>({
   authMode: 'iam', // Lambda uses IAM role, not user pool
 });
 
+// Storage client wrapper
+const storage: StorageClient = {
+  uploadData: (params) => uploadData(params),
+  downloadData: (params) => downloadData(params),
+};
+
 /**
  * Lambda handler function
  * Invoked by EventBridge scheduler every 30 seconds
@@ -41,83 +57,84 @@ const client = generateClient<Schema>({
 export const handler = async (event: EventBridgeEvent<string, any>) => {
   console.log('Generation worker triggered', { event });
 
+  const agentId = `lambda-${process.env.AWS_LAMBDA_LOG_STREAM_NAME || 'unknown'}`;
+  let job: any = null;
+
   try {
-    // Query for queued generation jobs
-    const { data: jobs, errors } = await client.models.Job.list({
-      filter: {
-        status: { eq: 'queued' },
-        kind: { eq: 'generate' },
-      },
-      limit: 1, // Process one at a time
-    });
+    // Claim next queued generation job
+    job = await claimNextJob(client, agentId, 'generate');
 
-    if (errors) {
-      console.error('Failed to list jobs:', errors);
-      return { statusCode: 500, body: 'Failed to list jobs' };
-    }
-
-    if (!jobs || jobs.length === 0) {
+    if (!job) {
       console.log('No queued generation jobs found');
       return { statusCode: 200, body: 'No jobs to process' };
     }
 
-    const job = jobs[0];
-    console.log('Found queued job:', { jobId: job.id, kind: job.kind });
+    console.log('Claimed job:', { jobId: job.id, kind: job.kind, agentId });
 
-    // TODO: Import and call actual worker logic from src/worker-cloud.ts
-    // For now, this is a placeholder that will be implemented next
+    // Create temporary working directory
+    const workDir = join('/tmp', 'worker', job.id);
+    mkdirSync(workDir, { recursive: true });
 
-    // Claim the job
-    const agentId = `lambda-${process.env.AWS_LAMBDA_LOG_STREAM_NAME}`;
-    const { data: claimedJob, errors: claimErrors } = await client.models.Job.update({
-      id: job.id,
-      status: 'claimed',
-      claimedByAgentId: agentId,
-    });
+    try {
+      // Process the generation job
+      const result = await processGenerationJob(job, client, storage, workDir);
 
-    if (claimErrors) {
-      console.error('Failed to claim job (may have been claimed by another worker):', claimErrors);
-      return { statusCode: 409, body: 'Job already claimed' };
+      if (result.success) {
+        await updateJobStatus(client, job.id, 'succeeded');
+        console.log('Job succeeded:', { jobId: job.id });
+      } else {
+        await updateJobStatus(client, job.id, 'failed', result.error);
+        console.error('Job failed:', { jobId: job.id, error: result.error });
+      }
+
+      return {
+        statusCode: 200,
+        body: JSON.stringify({
+          message: result.success ? 'Job processed successfully' : 'Job failed',
+          jobId: job.id,
+          artifacts: result.artifactKeys,
+        }),
+      };
+    } finally {
+      // Clean up temp directory
+      try {
+        rmSync(workDir, { recursive: true, force: true });
+      } catch (e) {
+        console.warn('Failed to clean up work directory:', e);
+      }
     }
-
-    console.log('Claimed job:', { jobId: job.id, agentId });
-
-    // Process the job
-    // await processGenerationJob(claimedJob, client);
-
-    return {
-      statusCode: 200,
-      body: JSON.stringify({
-        message: 'Job processed successfully',
-        jobId: job.id,
-      }),
-    };
   } catch (error) {
     console.error('Worker error:', error);
+
+    // Update job status if we claimed one
+    if (job) {
+      try {
+        await updateJobStatus(
+          client,
+          job.id,
+          'failed',
+          error instanceof Error ? error.message : String(error)
+        );
+        await emitJobEvent(
+          client,
+          job.id,
+          job.orgId,
+          'error',
+          error instanceof Error ? error.message : String(error)
+        );
+      } catch (updateError) {
+        console.error('Failed to update job status:', updateError);
+      }
+    }
+
     return {
       statusCode: 500,
       body: JSON.stringify({
         message: 'Worker error',
         error: error instanceof Error ? error.message : String(error),
+        jobId: job?.id,
       }),
     };
   }
 };
 
-/**
- * Process a generation job
- *
- * This function will be extracted from src/worker-cloud.ts and refactored
- * to be more testable and reusable between local and Lambda execution.
- *
- * @param job - The claimed job to process
- * @param client - AppSync GraphQL client
- */
-async function processGenerationJob(
-  job: any,
-  client: ReturnType<typeof generateClient<Schema>>
-): Promise<void> {
-  // Implementation will be added in next commit
-  // This will call the refactored worker logic
-  throw new Error('Not implemented yet');
-}
