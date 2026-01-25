@@ -101,6 +101,16 @@ export function SharePlayer({ video }: { video: PublishedVideo }) {
           Download
         </Button>
       </div>
+      <div className="flex items-center justify-center pt-4 pb-2 border-t border-border">
+        <a
+          href="https://babulus.ai"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-xs text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
+        >
+          Powered by <span className="font-semibold">Babulus</span>
+        </a>
+      </div>
     </div>
   );
 }

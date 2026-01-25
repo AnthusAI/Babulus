@@ -8,6 +8,7 @@ import outputs from "../../../amplify_outputs.json";
 import type { Schema } from "../../../amplify/data/resource";
 import { cookies } from "next/headers";
 import bcrypt from "bcryptjs";
+import type { Metadata } from "next";
 
 Amplify.configure(outputs);
 
@@ -16,6 +17,80 @@ const client = generateClient<Schema>({
 });
 
 export const dynamic = "force-dynamic";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: { slug: string };
+}): Promise<Metadata> {
+  const { slug } = params;
+
+  try {
+    const { data: videos } = await client.models.PublishedVideo.list({
+      filter: { slug: { eq: slug } },
+      authMode: "apiKey",
+    });
+
+    const video = videos[0];
+
+    if (!video) {
+      return {
+        title: "Video Not Found",
+        description: "The requested video could not be found.",
+      };
+    }
+
+    const title = `Video - ${slug}`;
+    const description = "Watch this video shared on Babulus";
+    const videoUrl = `${process.env.NEXT_PUBLIC_BASE_URL || "https://studio.babulus.ai"}/share/${slug}`;
+    const thumbnailUrl = `${process.env.NEXT_PUBLIC_BASE_URL || "https://studio.babulus.ai"}/og-image.png`;
+
+    return {
+      title,
+      description,
+      openGraph: {
+        title,
+        description,
+        url: videoUrl,
+        type: "video.other",
+        videos: [
+          {
+            url: `${process.env.NEXT_PUBLIC_CDN_URL || "https://studio.babulus.ai"}/published/${slug}.mp4`,
+            type: "video/mp4",
+          },
+        ],
+        images: [
+          {
+            url: thumbnailUrl,
+            width: 1200,
+            height: 630,
+            alt: title,
+          },
+        ],
+      },
+      twitter: {
+        card: "player",
+        title,
+        description,
+        images: [thumbnailUrl],
+        players: [
+          {
+            playerUrl: videoUrl,
+            streamUrl: `${process.env.NEXT_PUBLIC_CDN_URL || "https://studio.babulus.ai"}/published/${slug}.mp4`,
+            width: 1280,
+            height: 720,
+          },
+        ],
+      },
+    };
+  } catch (error) {
+    console.error("Failed to generate metadata", error);
+    return {
+      title: "Babulus Video",
+      description: "Watch video on Babulus",
+    };
+  }
+}
 
 export default async function SharePage({
   params,
