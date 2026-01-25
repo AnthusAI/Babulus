@@ -4,15 +4,33 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Lock } from "lucide-react";
+import { Lock, Loader2 } from "lucide-react";
+import { verifyVideoPasswordAction } from "@/app/actions";
+import { useRouter } from "next/navigation";
 
-export function PasswordPrompt({ slug, error }: { slug: string; error?: string }) {
+export function PasswordPrompt({ slug, error: initialError }: { slug: string; error?: string }) {
   const [password, setPassword] = useState("");
+  const [error, setError] = useState(initialError);
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Submit form with password as query parameter
-    window.location.href = `/share/${slug}?password=${encodeURIComponent(password)}`;
+    setLoading(true);
+    setError(undefined);
+
+    try {
+      const result = await verifyVideoPasswordAction(slug, password);
+      if (result.success) {
+        router.refresh();
+      } else {
+        setError(result.error || "Incorrect password");
+      }
+    } catch (e) {
+      setError("An error occurred. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -39,14 +57,22 @@ export function PasswordPrompt({ slug, error }: { slug: string; error?: string }
               placeholder="Enter password"
               autoFocus
               required
+              disabled={loading}
             />
             {error && (
               <p className="text-sm text-red-500">{error}</p>
             )}
           </div>
 
-          <Button type="submit" className="w-full" disabled={!password}>
-            Access Video
+          <Button type="submit" className="w-full" disabled={!password || loading}>
+            {loading ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Verifying...
+              </>
+            ) : (
+              "Access Video"
+            )}
           </Button>
         </form>
       </div>

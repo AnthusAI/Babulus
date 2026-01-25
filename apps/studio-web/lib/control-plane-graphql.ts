@@ -39,7 +39,8 @@ import type {
   CreateRenderAgentInput,
   CreateBillingAccountInput,
   CreateUserProfileInput,
-  CreatePublishedVideoInput, // Add this
+  CreatePublishedVideoInput,
+  PublishedVideo,
 } from "@babulus/shared";
 import {
   buildOrgRecord,
@@ -60,7 +61,7 @@ import {
   buildRenderAgentRecord,
   buildBillingAccountRecord,
   buildUserProfileRecord,
-  buildPublishedVideoRecord, // Add this
+  buildPublishedVideoRecord,
 } from "@babulus/shared";
 import { updateVideoStatus, type VideoStatus } from "@babulus/shared";
 
@@ -83,7 +84,7 @@ type GraphQLModel<T extends keyof Schema> = any;
 export const createPublishedVideo = async (
   input: CreatePublishedVideoInput,
   activeOrgId: string,
-): Promise<import("@babulus/shared").PublishedVideo> => {
+): Promise<PublishedVideo> => {
   const record = buildPublishedVideoRecord(input, activeOrgId);
   const { data, errors } = await getClient().models.PublishedVideo.create({
     orgId: record.orgId,
@@ -97,6 +98,39 @@ export const createPublishedVideo = async (
   });
   if (errors || !data) {
     throw new Error(`Failed to create published video: ${errors?.map((e) => e.message).join(", ")}`);
+  }
+  return data as any;
+};
+
+export const getPublishedVideo = async (
+  publishedVideoId: string,
+): Promise<PublishedVideo | null> => {
+  const { data } = await getClient().models.PublishedVideo.get({ id: publishedVideoId });
+  return data as any;
+};
+
+export const updatePublishedVideo = async (
+  publishedVideoId: string,
+  updates: Partial<PublishedVideo>,
+  activeOrgId: string,
+): Promise<PublishedVideo> => {
+  // Verify access/existence first
+  const { data: current } = await getClient().models.PublishedVideo.get({ id: publishedVideoId });
+  if (!current) {
+    throw new Error(`Published video not found: ${publishedVideoId}`);
+  }
+  
+  if ((current as any).orgId !== activeOrgId) {
+    throw new Error(`Published video ${publishedVideoId} does not belong to org ${activeOrgId}`);
+  }
+
+  const { data, errors } = await getClient().models.PublishedVideo.update({
+    id: publishedVideoId,
+    ...updates,
+  });
+  
+  if (errors || !data) {
+    throw new Error(`Failed to update published video: ${errors?.map((e) => e.message).join(", ")}`);
   }
   return data as any;
 };

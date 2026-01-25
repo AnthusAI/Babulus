@@ -1,7 +1,6 @@
 import type { ReactNode } from "react";
 import "./globals.css";
 import { configureAmplify } from "../lib/amplify-config.js";
-import { Authenticator } from "../components/authenticator.js";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ThemeConfigProvider } from "@/lib/theme-config";
 import { SettingsProvider } from "@/lib/settings-context";
@@ -11,8 +10,8 @@ import { SettingsDialog } from "@/components/settings-dialog";
 configureAmplify();
 
 export const metadata = {
-  title: "Babulus Studio",
-  description: "Core rendering preview",
+  title: "Babulus - The AI Video Factory",
+  description: "Automated video production for modern brands.",
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
@@ -29,7 +28,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           <ThemeConfigProvider>
             <SettingsProvider>
               <SettingsDialog />
-              <Authenticator>{children}</Authenticator>
+              {children}
             </SettingsProvider>
           </ThemeConfigProvider>
         </ThemeProvider>

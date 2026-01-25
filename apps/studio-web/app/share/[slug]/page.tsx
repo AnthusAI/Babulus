@@ -7,7 +7,6 @@ import outputs from "../../../amplify_outputs.json";
 // @ts-ignore
 import type { Schema } from "../../../amplify/data/resource";
 import { cookies } from "next/headers";
-import bcrypt from "bcryptjs";
 import type { Metadata } from "next";
 
 Amplify.configure(outputs);
@@ -94,13 +93,10 @@ export async function generateMetadata({
 
 export default async function SharePage({
   params,
-  searchParams
 }: {
   params: { slug: string };
-  searchParams: { password?: string };
 }) {
   const { slug } = params;
-  const { password } = searchParams;
 
   try {
     const { data: videos } = await client.models.PublishedVideo.list({
@@ -116,23 +112,15 @@ export default async function SharePage({
 
     // Handle access control based on policy
     if (video.accessPolicy === "password") {
-      // Check if password is provided in URL (from form submission)
-      if (!password) {
+      // Check for access cookie
+      const cookieStore = cookies();
+      const accessCookie = cookieStore.get(`video_access_${slug}`);
+
+      if (accessCookie?.value !== "granted") {
         return <PasswordPrompt slug={slug} />;
       }
 
-      // Verify password
-      if (!video.passwordHash) {
-        console.error("Password policy set but no password hash found");
-        return notFound();
-      }
-
-      const passwordMatches = await bcrypt.compare(password, video.passwordHash);
-      if (!passwordMatches) {
-        return <PasswordPrompt slug={slug} error="Incorrect password" />;
-      }
-
-      // Password is correct, continue to show video
+      // Password is correct (verified by cookie), continue to show video
     } else if (video.accessPolicy === "org_only") {
       // For org-only videos, we would need to check authentication
       // For now, show a message that the user needs to log in

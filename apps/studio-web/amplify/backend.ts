@@ -105,11 +105,16 @@ const alertTopic = new sns.Topic(backend.stack, 'GenerationWorkerAlerts', {
 const errorRateAlarm = new cloudwatch.Alarm(backend.stack, 'WorkerHighErrorRate', {
   alarmName: 'babulus-worker-high-error-rate',
   alarmDescription: 'Generation worker error rate exceeds 10%',
-  metric: workerLambda.metricErrors({
+  metric: new cloudwatch.MathExpression({
+    expression: "100 * errors / invocations",
+    usingMetrics: {
+      errors: workerLambda.metricErrors({ period: Duration.minutes(5) }),
+      invocations: workerLambda.metricInvocations({ period: Duration.minutes(5) }),
+    },
     period: Duration.minutes(5),
-    statistic: 'Average',
+    label: "Error Rate (%)",
   }),
-  threshold: 0.1, // 10% error rate
+  threshold: 10, // 10% error rate
   evaluationPeriods: 2,
   comparisonOperator: cloudwatch.ComparisonOperator.GREATER_THAN_THRESHOLD,
   treatMissingData: cloudwatch.TreatMissingData.NOT_BREACHING,

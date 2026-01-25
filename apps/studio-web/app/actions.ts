@@ -57,6 +57,15 @@ import { cookies } from "next/headers";
 import { runWithAmplifyServerContext } from "../lib/amplify-server.js";
 import { getCurrentUser } from "aws-amplify/auth/server";
 import { copy } from "aws-amplify/storage/server";
+import { generateClient } from "aws-amplify/data";
+import outputs from "../amplify_outputs.json";
+// @ts-ignore
+import type { Schema } from "../amplify/data/resource";
+import bcrypt from "bcryptjs";
+
+const client = generateClient<Schema>({
+  authMode: "apiKey",
+});
 
 async function getAuthenticatedUserId(): Promise<string> {
   try {
@@ -310,6 +319,45 @@ export async function incrementViewCountAction(publishedVideoId: string): Promis
   await cp.updatePublishedVideo(publishedVideoId, {
     viewCount: currentCount + 1,
   }, publishedVideo.orgId);
+}
+
+export async function verifyVideoPasswordAction(slug: string, password: string): Promise<{ success: boolean; error?: string }> {
+  "use server";
+  
+  try {
+    const { data: videos } = await client.models.PublishedVideo.list({
+      filter: { slug: { eq: slug } },
+      authMode: "apiKey",
+    });
+    const video = videos[0];
+
+    if (!video) {
+      return { success: false, error: "Video not found" };
+    }
+
+    if (!video.passwordHash) {
+      return { success: false, error: "Video is not password protected" };
+    }
+
+    const matches = await bcrypt.compare(password, video.passwordHash);
+    if (!matches) {
+      return { success: false, error: "Incorrect password" };
+    }
+
+    // Set a cookie to authorize access to this video
+    // Use a simple token for now. In a real app, sign this token.
+    cookies().set(`video_access_${slug}`, "granted", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 60 * 60 * 24, // 1 day
+      path: `/share/${slug}`,
+    });
+
+    return { success: true };
+  } catch (e) {
+    console.error("Password verification failed", e);
+    return { success: false, error: "Verification failed" };
+  }
 }
 
 // Update operations
