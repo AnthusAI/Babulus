@@ -9,8 +9,13 @@ import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as events from 'aws-cdk-lib/aws-events';
 import * as targets from 'aws-cdk-lib/aws-events-targets';
 import * as cloudwatch from 'aws-cdk-lib/aws-cloudwatch';
+import * as logs from 'aws-cdk-lib/aws-logs';
 import * as sns from 'aws-cdk-lib/aws-sns';
 import * as cloudwatchActions from 'aws-cdk-lib/aws-cloudwatch-actions';
+import * as ecs from 'aws-cdk-lib/aws-ecs';
+import * as ec2 from 'aws-cdk-lib/aws-ec2';
+import * as iam from 'aws-cdk-lib/aws-iam';
+import * as ecr from 'aws-cdk-lib/aws-ecr';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
 import { Duration } from 'aws-cdk-lib';
@@ -199,3 +204,157 @@ console.log('CloudWatch monitoring configured:');
 console.log('- SNS Topic:', alertTopic.topicArn);
 console.log('- Dashboard:', dashboard.dashboardName);
 console.log('- Alarms: error rate, long execution, no completions');
+
+// ==========================================
+// Render Worker ECS Fargate Configuration
+// ==========================================
+
+// Create ECR repository for render worker Docker image
+const renderWorkerEcr = new ecr.Repository(backend.stack, 'RenderWorkerRepository', {
+  repositoryName: 'babulus-render-worker',
+  removalPolicy: backend.stack.platform.RemovalPolicy.RETAIN, // Keep images on stack deletion
+  imageScanOnPush: true,
+});
+
+// Create VPC for ECS tasks (or use default VPC)
+const vpc = new ec2.Vpc(backend.stack, 'RenderWorkerVPC', {
+  maxAzs: 2, // Use 2 availability zones
+  natGateways: 1, // One NAT gateway for cost optimization
+});
+
+// Create ECS cluster
+const renderCluster = new ecs.Cluster(backend.stack, 'RenderWorkerCluster', {
+  vpc,
+  clusterName: 'babulus-render-cluster',
+  containerInsights: true, // Enable CloudWatch Container Insights
+});
+
+// Create task execution role (for pulling images and logging)
+const taskExecutionRole = new iam.Role(backend.stack, 'RenderTaskExecutionRole', {
+  assumedBy: new iam.ServicePrincipal('ecs-tasks.amazonaws.com'),
+  managedPolicies: [
+    iam.ManagedPolicy.fromAwsManagedPolicyName('service-role/AmazonECSTaskExecutionRolePolicy'),
+  ],
+});
+
+// Create task role (for accessing AWS services from the container)
+const taskRole = new iam.Role(backend.stack, 'RenderTaskRole', {
+  assumedBy: new iam.ServicePrincipal('ecs-tasks.amazonaws.com'),
+});
+
+// Grant task role access to AppSync GraphQL API
+taskRole.addToPolicy(
+  new iam.PolicyStatement({
+    actions: ['appsync:GraphQL'],
+    resources: [backend.data.resources.graphqlApi.arn + '/*'],
+  })
+);
+
+// Grant task role access to S3 bucket
+bucket.grantReadWrite(taskRole);
+
+// Define Fargate task definition
+const renderTaskDefinition = new ecs.FargateTaskDefinition(backend.stack, 'RenderTaskDefinition', {
+  cpu: 4096, // 4 vCPU (needed for video rendering)
+  memoryLimitMiB: 16384, // 16 GB (needed for Playwright + ffmpeg)
+  executionRole: taskExecutionRole,
+  taskRole: taskRole,
+});
+
+// Add container to task definition
+const renderContainer = renderTaskDefinition.addContainer('RenderWorkerContainer', {
+  image: ecs.ContainerImage.fromEcrRepository(renderWorkerEcr, 'latest'),
+  logging: ecs.LogDrivers.awsLogs({
+    streamPrefix: 'render-worker',
+    logRetention: logs.RetentionDays.ONE_WEEK,
+  }),
+  environment: {
+    AWS_REGION: backend.stack.region,
+    NODE_ENV: 'production',
+  },
+  // Secrets would be added here for API keys
+  // secrets: {
+  //   OPENAI_API_KEY: ecs.Secret.fromSecretsManager(openAiSecret),
+  // },
+});
+
+// Create Lambda function to trigger ECS task when render job is created
+const renderTriggerLambda = new lambda.Function(backend.stack, 'RenderTriggerFunction', {
+  runtime: lambda.Runtime.NODEJS_20_X,
+  handler: 'index.handler',
+  code: lambda.Code.fromInline(`
+    const { ECSClient, RunTaskCommand } = require('@aws-sdk/client-ecs');
+    const ecs = new ECSClient({});
+
+    exports.handler = async (event) => {
+      console.log('Render trigger invoked', { event });
+
+      // This Lambda would poll for render jobs and start ECS tasks
+      // For now, it's a placeholder for the trigger mechanism
+
+      const command = new RunTaskCommand({
+        cluster: process.env.CLUSTER_ARN,
+        taskDefinition: process.env.TASK_DEFINITION_ARN,
+        launchType: 'FARGATE',
+        networkConfiguration: {
+          awsvpcConfiguration: {
+            subnets: process.env.SUBNETS.split(','),
+            assignPublicIp: 'ENABLED',
+          },
+        },
+      });
+
+      try {
+        const response = await ecs.send(command);
+        console.log('ECS task started', { response });
+        return { statusCode: 200, body: 'Task started' };
+      } catch (error) {
+        console.error('Failed to start ECS task', { error });
+        return { statusCode: 500, body: error.message };
+      }
+    };
+  `),
+  timeout: Duration.seconds(30),
+  environment: {
+    CLUSTER_ARN: renderCluster.clusterArn,
+    TASK_DEFINITION_ARN: renderTaskDefinition.taskDefinitionArn,
+    SUBNETS: vpc.privateSubnets.map(subnet => subnet.subnetId).join(','),
+  },
+});
+
+// Grant Lambda permission to run ECS tasks
+renderTriggerLambda.addToRolePolicy(
+  new iam.PolicyStatement({
+    actions: ['ecs:RunTask', 'ecs:DescribeTasks'],
+    resources: [renderTaskDefinition.taskDefinitionArn],
+  })
+);
+
+renderTriggerLambda.addToRolePolicy(
+  new iam.PolicyStatement({
+    actions: ['iam:PassRole'],
+    resources: [taskExecutionRole.roleArn, taskRole.roleArn],
+  })
+);
+
+// Create EventBridge rule to trigger render worker periodically
+const renderWorkerRule = new events.Rule(backend.stack, 'RenderWorkerSchedule', {
+  schedule: events.Schedule.rate({ minutes: 1 }), // Poll every minute
+  description: 'Poll for queued render jobs every minute',
+});
+
+renderWorkerRule.addTarget(new targets.LambdaFunction(renderTriggerLambda));
+
+// Export ECR repository URI for Docker build/push
+backend.addOutput({
+  custom: {
+    renderWorkerEcrUri: renderWorkerEcr.repositoryUri,
+    renderClusterName: renderCluster.clusterName,
+  },
+});
+
+console.log('Render worker ECS Fargate configured:');
+console.log('- ECR Repository:', renderWorkerEcr.repositoryName);
+console.log('- ECS Cluster:', renderCluster.clusterName);
+console.log('- Task Definition: 4 vCPU, 16 GB RAM');
+console.log('- Trigger: EventBridge rule every 1 minute');
