@@ -6,16 +6,26 @@ import { getCurrentUser } from 'aws-amplify/auth/server';
 import { generateServerClientUsingCookies } from '@aws-amplify/adapter-nextjs/data';
 // @ts-ignore - Schema type is generated after backend deployment
 import type { Schema } from '../amplify/data/resource.js';
-// @ts-ignore - amplify_outputs.json is generated after backend deployment
-import outputs from '../amplify_outputs.json';
 import * as storage from '@/lib/project-storage';
 
-const getClient = () => {
+// Load outputs dynamically to handle missing file gracefully
+let outputs: any = null;
+
+function getOutputs() {
   if (!outputs) {
-    throw new Error('Amplify outputs not found');
+    try {
+      // @ts-ignore
+      outputs = require('../../amplify_outputs.json');
+    } catch (e) {
+      throw new Error('amplify_outputs.json not found. Run: npx ampx generate outputs');
+    }
   }
+  return outputs;
+}
+
+const getClient = () => {
   return generateServerClientUsingCookies<Schema>({
-    config: outputs,
+    config: getOutputs(),
     cookies,
   });
 };

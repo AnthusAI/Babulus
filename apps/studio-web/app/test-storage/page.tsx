@@ -18,11 +18,16 @@ export default function TestStoragePage() {
   };
 
   const runTests = async () => {
+    alert('runTests called! projectId: ' + projectId);
+    console.log('runTests called, projectId:', projectId);
+
     if (!projectId.trim()) {
+      console.log('No project ID provided');
       addResult('❌ Please enter a project ID');
       return;
     }
 
+    console.log('Starting tests...');
     setLoading(true);
     setResults([]);
 
@@ -107,6 +112,12 @@ export default function TestVideo() {
               placeholder="Enter a project ID you have access to"
             />
           </div>
+          <button
+            onClick={() => alert('Test button clicked!')}
+            className="px-4 py-2 bg-secondary text-secondary-foreground rounded hover:bg-secondary/90 mr-2"
+          >
+            Test Click
+          </button>
           <button
             onClick={runTests}
             disabled={loading || !projectId.trim()}
