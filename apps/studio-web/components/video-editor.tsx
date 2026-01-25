@@ -4,6 +4,7 @@
 import { getUrl, downloadData } from "aws-amplify/storage";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { PointerEvent as ReactPointerEvent } from "react";
+import bcrypt from "bcryptjs";
 import { Player, StoryboardRenderer } from "@babulus/renderer";
 import {
   deriveVideoConfig,
@@ -574,13 +575,19 @@ export function VideoEditor({ orgId, projectId, videoId, onBack }: VideoEditorPr
       throw new Error("No render run available to publish");
     }
 
+    // Hash password if provided
+    let passwordHash: string | undefined;
+    if (params.password && params.accessPolicy === "password") {
+      passwordHash = await bcrypt.hash(params.password, 10);
+    }
+
     const publishedVideo = await createPublishedVideoAction(
       {
         videoId,
         renderRunId: latestRenderRun.id,
         slug: params.slug,
         accessPolicy: params.accessPolicy,
-        passwordHash: params.password, // TODO: Hash the password before sending
+        passwordHash,
         viewCount: 0,
       },
       orgId
