@@ -1,4 +1,5 @@
 import { brandingDoc } from "@/lib/docs-content/branding";
+import { componentsGuideDoc } from "@/lib/docs-content/components-guide";
 import { configSetupDoc } from "@/lib/docs-content/config-setup";
 import { roadmapNextStepsDoc } from "@/lib/docs-content/roadmap-next-steps";
 import { roadmapStatusDoc } from "@/lib/docs-content/roadmap-status";
@@ -99,6 +100,7 @@ function normalizeDocHtml(html: string) {
 
 const RAW_DOCS: readonly DocsEntry[] = [
   brandingDoc,
+  componentsGuideDoc,
   configSetupDoc,
   roadmapNextStepsDoc,
   roadmapStatusDoc,
