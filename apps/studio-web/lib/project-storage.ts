@@ -1,5 +1,5 @@
 import { S3Client, PutObjectCommand, GetObjectCommand, DeleteObjectCommand, ListObjectsV2Command } from '@aws-sdk/client-s3';
-import { fromCognitoIdentityPool } from '@aws-sdk/credential-providers';
+
 import { cookies } from 'next/headers';
 import { runWithAmplifyServerContext } from './amplify-server';
 import { fetchAuthSession } from 'aws-amplify/auth/server';
@@ -57,7 +57,8 @@ export async function uploadProjectFile(
   orgId: string,
   projectId: string,
   relativePath: string,
-  data: File | string | Blob
+  data: File | string | Blob,
+  contentType?: string
 ): Promise<string> {
   const config = getBucketConfig();
   const storageKey = `org/${orgId}/projects/${projectId}/${relativePath}`;
@@ -79,11 +80,19 @@ export async function uploadProjectFile(
 
       const client = await getS3Client(contextSpec);
 
+      // Determine content type
+      let finalContentType = 'text/plain';
+      if (contentType) {
+        finalContentType = contentType;
+      } else if (data instanceof Blob) {
+        finalContentType = (data as any).type || 'text/plain';
+      }
+
       await client.send(new PutObjectCommand({
         Bucket: config.bucketName,
         Key: storageKey,
         Body: body,
-        ContentType: data instanceof Blob ? (data as any).type : 'text/plain'
+        ContentType: finalContentType
       }));
 
       return storageKey;

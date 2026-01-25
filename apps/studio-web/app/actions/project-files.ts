@@ -103,7 +103,8 @@ export async function uploadProjectFileAction(
     project.orgId,
     projectId,
     relativePath,
-    content
+    content,
+    contentType
   );
 
   // Calculate size
