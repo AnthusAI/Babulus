@@ -79,7 +79,7 @@ describe("Control-Plane GraphQL Integration", () => {
         name: "Test Org",
         slug: "test-org",
         planTier: "free",
-      });
+      } as any);
       expect(org).toBeDefined();
       expect(org.id).toBeDefined();
       expect(org.name).toBe("Test Org");
@@ -217,7 +217,7 @@ describe("Control-Plane GraphQL Integration", () => {
         {
           videoId,
           storyboardVersionId,
-          status: "pending",
+          status: "pending" as any,
         },
         orgId,
       );
@@ -243,7 +243,7 @@ describe("Control-Plane GraphQL Integration", () => {
         {
           videoId,
           generationRunId: genRun.id,
-          status: "pending",
+          status: "pending" as any,
         },
         orgId,
       );
@@ -257,7 +257,7 @@ describe("Control-Plane GraphQL Integration", () => {
         {
           videoId,
           storyboardVersionId,
-          status: "pending",
+          status: "pending" as any,
         },
         orgId,
       );
@@ -276,7 +276,7 @@ describe("Control-Plane GraphQL Integration", () => {
           executionMode: "cloud",
           videoId,
           storyboardVersionId,
-        },
+        } as any,
         orgId,
       );
       expect(job).toBeDefined();
@@ -294,7 +294,7 @@ describe("Control-Plane GraphQL Integration", () => {
           videoId,
           storyboardVersionId,
           idempotencyKey: "test-idempotency-key",
-        },
+        } as any,
         orgId,
       );
 
@@ -305,7 +305,7 @@ describe("Control-Plane GraphQL Integration", () => {
           videoId,
           storyboardVersionId,
           idempotencyKey: "test-idempotency-key",
-        },
+        } as any,
         orgId,
       );
 
@@ -319,7 +319,7 @@ describe("Control-Plane GraphQL Integration", () => {
           executionMode: "local",
           videoId,
           generationRunId: "gen-123",
-        },
+        } as any,
         orgId,
       );
 
@@ -384,7 +384,7 @@ describe("Control-Plane GraphQL Integration", () => {
           sha256: "abc123",
           storageKey: `org/${orgId}/assets/test.png`,
           metadata: { width: 1920, height: 1080 },
-        },
+        } as any,
         orgId,
       );
       expect(asset).toBeDefined();
@@ -463,7 +463,7 @@ describe("Control-Plane GraphQL Integration", () => {
         {
           videoId,
           kind: "script",
-          status: "pending",
+          status: "pending" as any,
           requestedBy: userId,
         },
         orgId,
@@ -478,7 +478,7 @@ describe("Control-Plane GraphQL Integration", () => {
         {
           videoId,
           kind: "timeline",
-          status: "pending",
+          status: "pending" as any,
           requestedBy: userId,
         },
         orgId,

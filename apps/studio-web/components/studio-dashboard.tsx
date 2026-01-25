@@ -6,6 +6,8 @@ import { ProjectList } from "./project-list";
 import { VideoList } from "./video-list";
 import { VideoEditor } from "./video-editor";
 import { AnalyticsView } from "./analytics-view";
+import { ProjectFileList } from "./project-file-list";
+import { AssetManager } from "./asset-manager";
 import { Button } from "@/components/ui/button";
 import { ChevronRight, Plus, Building2, FolderKanban, Film, FileInput } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -196,12 +198,28 @@ export function StudioDashboard() {
             </div>
            </div>
          ) : !selectedVideoId ? (
-            <VideoList 
-              orgId={selectedOrgId} 
-              projectId={selectedProjectId} 
-              onSelectVideo={handleSelectVideo}
-              selectedVideoId={selectedVideoId}
-            />
+          <div className="grid h-full min-h-0 grid-cols-1 lg:grid-cols-3 gap-4 p-4 overflow-auto">
+            <div className="min-h-0">
+              <VideoList
+                orgId={selectedOrgId}
+                projectId={selectedProjectId}
+                onSelectVideo={handleSelectVideo}
+                selectedVideoId={selectedVideoId}
+              />
+            </div>
+            <div className="min-h-0">
+              <ProjectFileList
+                projectId={selectedProjectId}
+                onSelectFile={(relativePath) => {
+                  // TODO: Navigate to file editor
+                  console.log('Selected file:', relativePath);
+                }}
+              />
+            </div>
+            <div className="min-h-0">
+              <AssetManager projectId={selectedProjectId} />
+            </div>
+          </div>
          ) : (
            <VideoEditor
              orgId={selectedOrgId}

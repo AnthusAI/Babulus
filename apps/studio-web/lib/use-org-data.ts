@@ -597,3 +597,44 @@ export function useBillingAccount(orgId: string | null) {
     refetch: load,
   };
 }
+
+/**
+ * Hook to load project files for a project
+ */
+export function useProjectFiles(projectId: string | null) {
+  const [state, setState] = useState<AsyncState<any[]>>({
+    data: null,
+    loading: false,
+    error: null,
+  });
+
+  const load = useCallback(async () => {
+    if (!projectId) {
+      setState({ data: [], loading: false, error: null });
+      return;
+    }
+    setState((prev) => ({ ...prev, loading: true, error: null }));
+    try {
+      const { listProjectFilesAction } = await import("../app/actions/project-files");
+      const data = await listProjectFilesAction(projectId);
+      setState({ data, loading: false, error: null });
+    } catch (error) {
+      setState({
+        data: null,
+        loading: false,
+        error: error instanceof Error ? error : new Error(String(error)),
+      });
+    }
+  }, [projectId]);
+
+  useEffect(() => {
+    load();
+  }, [load]);
+
+  return {
+    files: state.data ?? [],
+    loading: state.loading,
+    error: state.error,
+    refetch: load,
+  };
+}

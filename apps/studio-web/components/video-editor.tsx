@@ -15,7 +15,7 @@ import {
 import { useVideos, useGenerationRuns, useJobs, useActiveStoryboard, useOrgs } from "@/lib/use-org-data";
 import { useSettings } from "@/lib/settings-context";
 import { createJobAction, createStoryboardVersionAction, setActiveStoryboardVersionAction } from "@/app/actions";
-import { uploadProjectFileAction } from "@/app/actions/project-files";
+import { uploadProjectFileAction, readProjectFileAction } from "@/app/actions/project-files";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Play, Pause, Loader2, Send, Save } from "lucide-react";
@@ -183,6 +183,7 @@ export function VideoEditor({ orgId, projectId, videoId, onBack }: VideoEditorPr
   const [script, setScript] = useState<ScriptData>(fallbackScript);
   const [audioSrc, setAudioSrc] = useState<string | null>(null);
   const [editorCode, setEditorCode] = useState<string>(DEFAULT_DSL);
+  const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const outerSplitRef = useRef<HTMLDivElement | null>(null);
   const mainSplitRef = useRef<HTMLDivElement | null>(null);
@@ -299,12 +300,32 @@ export function VideoEditor({ orgId, projectId, videoId, onBack }: VideoEditorPr
     [handlePointerMove, handlePointerUp, layout.inputPosition, layout.mainAxis],
   );
 
-  // Sync editor with active version
+  // Sync editor with active version (prefer S3, fallback to StoryboardVersion)
   useEffect(() => {
-    if (activeVersion?.sourceText) {
-      setEditorCode(activeVersion.sourceText);
-    }
-  }, [activeVersion]);
+    const loadEditorCode = async () => {
+      if (!video?.title) return;
+
+      // Try loading from S3 first
+      try {
+        const fileName = `${video.title.replace(/[^a-z0-9]/gi, '-').toLowerCase()}.babulus.ts`;
+        const content = await readProjectFileAction(projectId, fileName);
+        if (content) {
+          setEditorCode(content);
+          return; // Success - don't fallback
+        }
+      } catch (error) {
+        // ProjectFile doesn't exist or error loading - fallback to StoryboardVersion
+        console.log('ProjectFile not found, falling back to StoryboardVersion');
+      }
+
+      // Fallback to StoryboardVersion
+      if (activeVersion?.sourceText) {
+        setEditorCode(activeVersion.sourceText);
+      }
+    };
+
+    loadEditorCode();
+  }, [activeVersion, video?.title, projectId]);
 
   // Load artifacts from the latest succeeded run
   useEffect(() => {
@@ -619,15 +640,67 @@ export function VideoEditor({ orgId, projectId, videoId, onBack }: VideoEditorPr
     </div>
   );
 
+  const handleSave = async () => {
+    if (!video?.title || saveStatus === 'saving') return;
+    setSaveStatus('saving');
+    try {
+      const fileName = `${video.title.replace(/[^a-z0-9]/gi, '-').toLowerCase()}.babulus.ts`;
+      await uploadProjectFileAction(
+        projectId,
+        fileName,
+        editorCode,
+        'video',
+        'text/typescript'
+      );
+      setSaveStatus('saved');
+      // Reset to idle after 2 seconds
+      setTimeout(() => setSaveStatus('idle'), 2000);
+    } catch (error) {
+      console.error('Failed to save to S3:', error);
+      setSaveStatus('error');
+      // Reset to idle after 3 seconds
+      setTimeout(() => setSaveStatus('idle'), 3000);
+    }
+  };
+
   return (
     <div className="flex flex-col h-full">
-      <div className="flex items-center justify-end flex-shrink-0">
-        {activeJob && (
-          <div className="flex items-center gap-2 text-xs text-muted-foreground mr-2 bg-muted px-2 py-1 rounded-full animate-pulse">
-            <Loader2 className="h-3 w-3 animate-spin" />
-            {activeJob.status === 'queued' ? 'Queued...' : (activeJob.kind === 'render' ? 'Rendering...' : 'Generating...')}
-          </div>
-        )}
+      <div className="flex items-center justify-between gap-2 px-2 py-1 flex-shrink-0 border-b">
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleSave}
+            disabled={!video?.title || saveStatus === 'saving'}
+            className={cn(
+              saveStatus === 'saved' && 'border-green-500 text-green-600',
+              saveStatus === 'error' && 'border-red-500 text-red-600'
+            )}
+          >
+            {saveStatus === 'saving' ? (
+              <Loader2 className="h-4 w-4 mr-1 animate-spin" />
+            ) : (
+              <Save className="h-4 w-4 mr-1" />
+            )}
+            {saveStatus === 'saving' ? 'Saving...' : saveStatus === 'saved' ? 'Saved!' : saveStatus === 'error' ? 'Error' : 'Save'}
+          </Button>
+          <Button
+            variant="default"
+            size="sm"
+            onClick={handleGenerate}
+            disabled={!!activeJob || !video?.title}
+          >
+            Generate
+          </Button>
+        </div>
+        <div className="flex items-center">
+          {activeJob && (
+            <div className="flex items-center gap-2 text-xs text-muted-foreground bg-muted px-2 py-1 rounded-full animate-pulse">
+              <Loader2 className="h-3 w-3 animate-spin" />
+              {activeJob.status === 'queued' ? 'Queued...' : (activeJob.kind === 'render' ? 'Rendering...' : 'Generating...')}
+            </div>
+          )}
+        </div>
       </div>
 
       <div

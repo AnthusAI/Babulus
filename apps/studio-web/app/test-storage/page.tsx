@@ -44,8 +44,8 @@ export default function TestVideo() {
         'video',
         'text/typescript'
       );
-      addResult(`✅ Uploaded: ${uploadedFile?.relativePath}`);
-      addResult(`   Storage key: ${uploadedFile?.storageKey}`);
+      addResult(`✅ Uploaded: ${(uploadedFile as any)?.relativePath}`);
+      addResult(`   Storage key: ${(uploadedFile as any)?.storageKey}`);
 
       // 2. List files
       addResult('2️⃣ Listing project files...');

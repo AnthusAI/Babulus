@@ -70,11 +70,9 @@ export async function uploadProjectFile(
       let body: Buffer;
       if (typeof data === 'string') {
         body = Buffer.from(data, 'utf-8');
-      } else if (data instanceof Blob) {
-        const arrayBuffer = await data.arrayBuffer();
-        body = Buffer.from(arrayBuffer);
       } else {
-        const arrayBuffer = await data.arrayBuffer();
+        // data is File or Blob - both have arrayBuffer()
+        const arrayBuffer = await (data as Blob).arrayBuffer();
         body = Buffer.from(arrayBuffer);
       }
 
