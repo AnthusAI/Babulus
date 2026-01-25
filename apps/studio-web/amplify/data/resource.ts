@@ -82,6 +82,18 @@ const studioSchema = schema.schema({
       metadataJson: schema.json(),
     })
     .authorization((allow) => [allow.authenticated()]),
+  ProjectFile: schema
+    .model({
+      orgId: schema.string().required(),
+      projectId: schema.string().required(),
+      relativePath: schema.string().required(),
+      storageKey: schema.string().required(),
+      fileType: schema.enum(["video", "utility", "asset"]),
+      contentType: schema.string(),
+      sizeBytes: schema.integer(),
+      sha256: schema.string(),
+    })
+    .authorization((allow) => [allow.authenticated()]),
   Conversation: schema
     .model({
       orgId: schema.string().required(),
