@@ -8,5 +8,9 @@ export default function AuthenticatedLayout({
 }: {
   children: ReactNode;
 }) {
-  return <Authenticator>{children}</Authenticator>;
+  return (
+    <div className="app-viewport">
+      <Authenticator>{children}</Authenticator>
+    </div>
+  );
 }

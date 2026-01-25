@@ -68,17 +68,29 @@
 @layer base {
   html, body {
     height: 100%;
+    /* Default to scrollable for marketing pages */
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  /* Utility class for the fixed Studio App viewport */
+  .app-viewport {
+    height: 100vh;
+    width: 100vw;
     overflow: hidden;
     overscroll-behavior: none;
+    display: flex;
+    flex-direction: column;
   }
 
   :root, .light, [data-theme="cool"] {
     /* Radix Slate Light Theme Approximation (COOL) */
     --background: 210 40% 98%;      /* Slate 1 */
-    --foreground: 222.2 47.4% 11.2%; /* Slate 12 */
+    /* Softened Black for Text (~20% Lightness instead of 11%) */
+    --foreground: 215 25% 20%;      
     --recess: 210 40% 99.4%;
     --card: 210 40% 96.1%;          /* Slate 2 */
-    --card-foreground: 222.2 47.4% 11.2%;
+    --card-foreground: 215 25% 20%;
     --popover: 210 40% 98%;
     --popover-foreground: 222.2 47.4% 11.2%;
     --primary: 222.2 47.4% 11.2%;
@@ -99,15 +111,17 @@
 
   .dark, [data-theme="cool"].dark, [data-theme="cool"] .dark {
     /* Radix Slate Dark Theme Approximation (COOL) */
-    --background: 200 7% 8.8%;      /* Slate 1 */
-    --foreground: 210 40% 98%;      /* Slate 12 */
-    --recess: 200 7% 6.5%;
-    --card: 195 7% 11%;             /* Slate 2 */
-    --card-foreground: 210 40% 98%;
-    --popover: 200 7% 8.8%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    /* Softened Background (~15% Lightness instead of 9%) */
+    --background: 200 10% 15%;      
+    /* Softened White for Text (~90% Lightness) */
+    --foreground: 210 20% 90%;      
+    --recess: 200 10% 12%;
+    --card: 200 10% 18%;             
+    --card-foreground: 210 20% 90%;
+    --popover: 200 10% 15%;
+    --popover-foreground: 210 20% 90%;
+    --primary: 210 20% 90%;
+    --primary-foreground: 215 25% 20%;
     --secondary: 197 6.8% 13.6%;    /* Slate 3 */
     --secondary-foreground: 210 40% 98%;
     --muted: 195 7% 11%;            /* Slate 2 */
