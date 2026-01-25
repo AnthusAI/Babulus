@@ -80,7 +80,10 @@ export async function uploadProjectFileAction(
   const userId = await getAuthenticatedUserId();
   const client = getClient();
 
-  const { data: project } = await client.models.Project.get({ id: projectId });
+  const { data: projects } = await client.models.Project.list({
+    filter: { id: { eq: projectId } }
+  });
+  const project = projects?.[0];
   if (!project) throw new Error('Project not found');
 
   await verifyOrgAccess(userId, project.orgId);
@@ -119,7 +122,10 @@ export async function readProjectFileAction(projectId: string, relativePath: str
   const userId = await getAuthenticatedUserId();
   const client = getClient();
 
-  const { data: project } = await client.models.Project.get({ id: projectId });
+  const { data: projects } = await client.models.Project.list({
+    filter: { id: { eq: projectId } }
+  });
+  const project = projects?.[0];
   if (!project) throw new Error('Project not found');
 
   await verifyOrgAccess(userId, project.orgId);
@@ -133,7 +139,10 @@ export async function deleteProjectFileAction(projectId: string, relativePath: s
   const userId = await getAuthenticatedUserId();
   const client = getClient();
 
-  const { data: project } = await client.models.Project.get({ id: projectId });
+  const { data: projects } = await client.models.Project.list({
+    filter: { id: { eq: projectId } }
+  });
+  const project = projects?.[0];
   if (!project) throw new Error('Project not found');
 
   await verifyOrgAccess(userId, project.orgId);

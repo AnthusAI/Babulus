@@ -36,10 +36,10 @@ export async function readProjectFile(
   relativePath: string
 ): Promise<string> {
   const storageKey = `org/${orgId}/projects/${projectId}/${relativePath}`;
-  const { body } = await downloadData({ path: storageKey });
+  const result = await downloadData({ path: storageKey }).result;
 
   // Convert body to text
-  const text = await body.text();
+  const text = await result.body.text();
   return text;
 }
 
