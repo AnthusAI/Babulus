@@ -72,6 +72,15 @@ BABULUS_ENV=production npm run babulus -- generate content/<video>.babulus.ts
 - `src/sfx-workflow.ts` - SFX variant selection/archiving
 - `.babulus/config.yml` - API keys (ElevenLabs, OpenAI, AWS, Azure)
 
+## Official documentation (HTML source of truth)
+
+The documentation source of truth lives in the Studio Web app (branded HTML, served at `/docs`).
+
+- Docs landing page route: `apps/studio-web/app/(public)/docs/page.tsx`
+- Docs router + link rewrite: `apps/studio-web/app/(public)/docs/[...slug]/page.tsx`
+- Docs registry (slugs, categories): `apps/studio-web/lib/docs-registry.ts`
+- Docs content (HTML strings): `apps/studio-web/lib/docs-content`
+
 ## Inputs/Outputs
 
 **Inputs**:

@@ -25,7 +25,15 @@ export async function generateMetadata({
   const { slug } = params;
 
   try {
-    const { data: videos } = await client.models.PublishedVideo.list({
+    const publishedVideoModel = (client.models as unknown as Record<string, any>)["PublishedVideo"];
+    if (!publishedVideoModel?.list) {
+      return {
+        title: "Babulus Video",
+        description: "Watch video on Babulus",
+      };
+    }
+
+    const { data: videos } = await publishedVideoModel.list({
       filter: { slug: { eq: slug } },
       authMode: "apiKey",
     });
@@ -99,7 +107,12 @@ export default async function SharePage({
   const { slug } = params;
 
   try {
-    const { data: videos } = await client.models.PublishedVideo.list({
+    const publishedVideoModel = (client.models as unknown as Record<string, any>)["PublishedVideo"];
+    if (!publishedVideoModel?.list) {
+      return notFound();
+    }
+
+    const { data: videos } = await publishedVideoModel.list({
       filter: { slug: { eq: slug } },
       authMode: "apiKey",
     });

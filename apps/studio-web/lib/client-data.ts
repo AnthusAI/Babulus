@@ -6,7 +6,6 @@
  */
 
 import { generateClient } from "aws-amplify/data";
-import type { Schema } from "../amplify/data/resource";
 import type {
   Org,
   Project,
@@ -22,10 +21,10 @@ configureAmplify();
 
 // Create client-side GraphQL client lazily
 // Note: Amplify is configured by the Authenticator component
-let _client: ReturnType<typeof generateClient<Schema>> | null = null;
+let _client: ReturnType<typeof generateClient<any>> | null = null;
 function getClient() {
   if (!_client) {
-    _client = generateClient<Schema>({
+    _client = generateClient<any>({
       authMode: "userPool",
     });
   }

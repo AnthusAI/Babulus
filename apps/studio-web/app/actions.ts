@@ -329,7 +329,12 @@ export async function verifyVideoPasswordAction(slug: string, password: string):
   "use server";
   
   try {
-    const { data: videos } = await client.models.PublishedVideo.list({
+    const publishedVideoModel = (client.models as unknown as Record<string, any>)["PublishedVideo"];
+    if (!publishedVideoModel?.list) {
+      return { success: false, error: "Published videos are not available" };
+    }
+
+    const { data: videos } = await publishedVideoModel.list({
       filter: { slug: { eq: slug } },
       authMode: "apiKey",
     });

@@ -28,6 +28,14 @@ Generate:
 babulus generate content/intro.babulus.ts
 ```
 
+## Documentation
+
+Branded documentation lives in the Studio Web app:
+
+- Web docs (local dev): `apps/studio-web` at `/docs`
+- Source of truth (HTML): `apps/studio-web/lib/docs-content`
+- Docs landing page route: `apps/studio-web/app/(public)/docs/page.tsx`
+
 ## The DSL (TypeScript)
 
 A `.babulus.ts` file exports a composition (or multiple). Because it is TypeScript, you can use imperative code, imports, and async setup.

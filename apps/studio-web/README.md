@@ -21,7 +21,9 @@ Next.js application for the Babulus Studio - a frame-driven video preview and ge
 
 ### 📚 Detailed Architecture Documentation
 
-- **[Project Storage Architecture](docs/project-storage-architecture.md)** - Complete guide to S3 storage, CloudFront CDN, Lambda@Edge authentication, and multi-tenant security model
+- **Project Storage Architecture** - Complete guide to S3 storage, CloudFront CDN, Lambda@Edge authentication, and multi-tenant security model
+  - Web docs: `/docs/project-storage/architecture`
+  - Source: `lib/docs-content/project-storage-architecture.ts`
 
 ## Setup
 
@@ -147,7 +149,9 @@ apps/studio-web/
 - **[app/actions/project-files.ts](app/actions/project-files.ts)** - Secure server actions for file operations
   - Verifies org membership before any S3 operation
   - Tracks file metadata in ProjectFile GraphQL model
-  - See [📚 Project Storage Architecture](docs/project-storage-architecture.md) for details
+  - See Project Storage Architecture docs:
+    - Web docs: `/docs/project-storage/architecture`
+    - Source: `lib/docs-content/project-storage-architecture.ts`
 
 ### CloudFront + Lambda@Edge
 
@@ -216,7 +220,9 @@ const content = await readProjectFileAction(projectId, 'video-001.babulus.ts');
 await deleteProjectFileAction(projectId, 'video-001.babulus.ts');
 ```
 
-See [Project Storage Architecture](docs/project-storage-architecture.md) for complete API documentation.
+See Project Storage Architecture docs for complete API documentation:
+- Web docs: `/docs/project-storage/architecture`
+- Source: `lib/docs-content/project-storage-architecture.ts`
 
 ## Environment Variables
 

@@ -1,7 +1,5 @@
 import { generateServerClientUsingCookies } from "@aws-amplify/adapter-nextjs/data";
 import { cookies } from "next/headers";
-// @ts-ignore - Schema type is generated after backend deployment
-import type { Schema } from "../amplify/data/resource.js";
 import outputs from "../amplify_outputs.json";
 import type {
   Org,
@@ -70,15 +68,11 @@ const getClient = () => {
   if (!outputs) {
     throw new Error("Amplify outputs not found. Ensure amplify_outputs.json exists.");
   }
-  return generateServerClientUsingCookies<Schema>({
+  return generateServerClientUsingCookies<any>({
     config: outputs,
     cookies,
   });
 };
-
-// Type adapters to convert from GraphQL schema types to control-plane types
-// Using any for now - the Amplify client types are complex and need refinement
-type GraphQLModel<T extends keyof Schema> = any;
 
 // Control-plane operations using GraphQL client
 export const createPublishedVideo = async (
