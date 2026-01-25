@@ -7,9 +7,10 @@ Next.js application for the Babulus Studio - a frame-driven video preview and ge
 ### Backend (AWS Amplify Gen2)
 
 - **Auth:** Cognito User Pool with email/password authentication
-- **Data:** AppSync GraphQL API with 15 models (Org, Project, Video, Job, Asset, etc.)
-- **Storage:** S3 bucket with org-scoped access patterns
+- **Data:** AppSync GraphQL API with 16 models (Org, Project, Video, Job, Asset, **ProjectFile**, etc.)
+- **Storage:** S3 bucket with org-scoped access patterns + CloudFront CDN
 - **Database:** DynamoDB tables (auto-provisioned per model)
+- **CDN:** CloudFront distribution with Lambda@Edge for authenticated asset delivery
 
 ### Frontend (Next.js 14)
 
@@ -17,6 +18,10 @@ Next.js application for the Babulus Studio - a frame-driven video preview and ge
 - **UI:** React with Amplify UI components
 - **Rendering:** Browser-based video preview with @babulus/renderer
 - **State:** Server Actions for data fetching, React hooks for UI state
+
+### 📚 Detailed Architecture Documentation
+
+- **[Project Storage Architecture](docs/project-storage-architecture.md)** - Complete guide to S3 storage, CloudFront CDN, Lambda@Edge authentication, and multi-tenant security model
 
 ## Setup
 
@@ -135,10 +140,21 @@ apps/studio-web/
 
 ### Storage Operations
 
-- **[lib/storage-client.ts](lib/storage-client.ts)** - S3 operations via Amplify Storage
-  - Upload/download files, JSON, text
-  - Generate signed URLs
-  - Org-scoped paths: `org/{orgId}/assets/...`
+- **[lib/project-storage.ts](lib/project-storage.ts)** - S3 operations via AWS SDK
+  - Upload/download files using authenticated credentials
+  - Server-side only (uses Next.js server actions)
+  - Org-scoped paths: `org/{orgId}/projects/{projectId}/...`
+- **[app/actions/project-files.ts](app/actions/project-files.ts)** - Secure server actions for file operations
+  - Verifies org membership before any S3 operation
+  - Tracks file metadata in ProjectFile GraphQL model
+  - See [📚 Project Storage Architecture](docs/project-storage-architecture.md) for details
+
+### CloudFront + Lambda@Edge
+
+- **[amplify/edge-functions/auth/](amplify/edge-functions/auth/)** - Lambda@Edge for authenticated asset delivery
+  - Validates JWT tokens at CloudFront edge
+  - Checks org membership before serving files
+  - Enables permanent URLs with edge security
 
 ## Usage Examples
 
@@ -170,23 +186,37 @@ function MyComponent() {
 }
 ```
 
-### Storage Operations
+### Project File Storage
 
 ```typescript
-import { uploadAsset, getDownloadUrl } from "../lib/storage-client";
+import {
+  uploadProjectFileAction,
+  listProjectFilesAction,
+  readProjectFileAction,
+  deleteProjectFileAction
+} from "../app/actions/project-files";
 
-// Upload an asset
-const { storageKey, metadata } = await uploadAsset(
-  orgId,
+// Upload a file
+const file = await uploadProjectFileAction(
   projectId,
-  file,
-  "image",
-  sha256Hash
+  'video-001.babulus.ts',
+  '// Babulus source code...',
+  'video',
+  'text/typescript'
 );
 
-// Get signed URL for download
-const url = await getDownloadUrl(storageKey);
+// List files in a project
+const files = await listProjectFilesAction(projectId);
+// Returns files with CloudFront URLs
+
+// Read file content
+const content = await readProjectFileAction(projectId, 'video-001.babulus.ts');
+
+// Delete file
+await deleteProjectFileAction(projectId, 'video-001.babulus.ts');
 ```
+
+See [Project Storage Architecture](docs/project-storage-architecture.md) for complete API documentation.
 
 ## Environment Variables
 
