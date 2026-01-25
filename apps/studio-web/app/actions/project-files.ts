@@ -4,8 +4,9 @@ import { cookies } from 'next/headers';
 import { runWithAmplifyServerContext } from '@/lib/amplify-server';
 import { getCurrentUser } from 'aws-amplify/auth/server';
 import { generateServerClientUsingCookies } from '@aws-amplify/adapter-nextjs/data';
-import type { Schema } from '@/amplify/data/resource';
-import outputs from '@/amplify_outputs.json';
+// @ts-ignore - Schema type is generated after backend deployment
+import type { Schema } from '../amplify/data/resource.js';
+import outputs from '../amplify_outputs.json';
 import * as storage from '@/lib/project-storage';
 
 const getClient = () => {
