@@ -115,3 +115,29 @@ Feature: Generation Worker Job Processing
     When updating job status to "failed" with reason "Network timeout"
     Then the job status field should be "failed"
     And the failureReason field should be "Network timeout"
+
+  Scenario: Retry failed job when retryCount < maxRetries
+    Given a claimed generation job that will fail
+    And the job has retryCount 0 and maxRetries 3
+    When the job fails with error "TTS API timeout"
+    Then the job should be re-queued
+    And the retryCount should be 1
+    And the failureReason should contain "Retry 1/3: TTS API timeout"
+    And the claimedByAgentId should be cleared
+
+  Scenario: Permanent failure when retryCount >= maxRetries
+    Given a claimed generation job that will fail
+    And the job has retryCount 2 and maxRetries 3
+    When the job fails with error "TTS API timeout"
+    Then the job status should be "failed"
+    And the retryCount should be 3
+    And the failureReason should contain "Failed after 3 attempts"
+    And the failureReason should contain "TTS API timeout"
+
+  Scenario: Retry after transient network error
+    Given a claimed generation job with valid DSL source
+    And the TTS provider returns a transient error
+    When the worker processes the generation job
+    Then the job should be re-queued for retry
+    And the retryCount should be incremented
+    And a JobEvent should be emitted indicating retry

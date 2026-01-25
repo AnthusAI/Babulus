@@ -11,6 +11,7 @@ import {
   claimNextJob,
   processGenerationJob,
   updateJobStatus,
+  handleJobFailure,
   emitJobEvent,
   DEFAULT_DSL,
   type GraphQLClient,
@@ -27,6 +28,7 @@ interface TestContext {
   claimedJob: any | null;
   processingResult: ProcessingResult | null;
   processingError: Error | null;
+  retryResult: { shouldRetry: boolean; retryCount: number } | null;
   workDir: string;
   jobEvents: Array<{
     type: string;
@@ -135,6 +137,10 @@ class MockGraphQLClient {
     this.claimedJobs.add(jobId);
   }
 
+  getAllJobs() {
+    return this.jobs;
+  }
+
   reset() {
     this.jobs = [];
     this.videos.clear();
@@ -213,6 +219,7 @@ Before(function () {
     claimedJob: null,
     processingResult: null,
     processingError: null,
+    retryResult: null,
     workDir: join(process.cwd(), '.babulus', 'test-worker'),
     jobEvents: [],
     usageEvents: [],
@@ -634,4 +641,93 @@ Then('no failureReason should be set', function () {
 Then('the failureReason field should be {string}', function (expectedReason: string) {
   // Mock client tracks this
   assert.ok(true);
+});
+
+// Retry logic step definitions
+
+Given('a claimed generation job that will fail', function () {
+  const job = {
+    id: 'job-fail-123',
+    kind: 'generate',
+    status: 'claimed',
+    orgId: 'org-123',
+    inputJson: JSON.stringify({ videoId: 'video-123' }),
+    claimedByAgentId: 'worker-1',
+    retryCount: 0,
+    maxRetries: 3,
+  };
+
+  testContext.mockClient.addJob(job);
+  testContext.claimedJob = job;
+});
+
+Given('the job has retryCount {int} and maxRetries {int}', function (retryCount: number, maxRetries: number) {
+  if (!testContext.claimedJob) {
+    throw new Error('No claimed job exists');
+  }
+
+  testContext.claimedJob.retryCount = retryCount;
+  testContext.claimedJob.maxRetries = maxRetries;
+
+  // Update in mock client too
+  testContext.mockClient.addJob(testContext.claimedJob);
+});
+
+When('the job fails with error {string}', async function (errorMessage: string) {
+  testContext.retryResult = await handleJobFailure(
+    testContext.mockClient as any,
+    testContext.claimedJob.id,
+    errorMessage
+  );
+});
+
+Then('the job should be re-queued', function () {
+  assert.ok(testContext.retryResult?.shouldRetry, 'Job should be marked for retry');
+
+  // Verify the job status in mock client
+  const jobs = testContext.mockClient.getAllJobs();
+  const job = jobs.find((j: any) => j.id === testContext.claimedJob.id);
+  assert.strictEqual(job?.status, 'queued', 'Job status should be queued');
+});
+
+Then('the retryCount should be {int}', function (expectedCount: number) {
+  assert.strictEqual(testContext.retryResult?.retryCount, expectedCount);
+
+  // Also verify in mock client
+  const jobs = testContext.mockClient.getAllJobs();
+  const job = jobs.find((j: any) => j.id === testContext.claimedJob.id);
+  assert.strictEqual(job?.retryCount, expectedCount);
+});
+
+Then('the failureReason should contain {string}', function (expectedSubstring: string) {
+  const jobs = testContext.mockClient.getAllJobs();
+  const job = jobs.find((j: any) => j.id === testContext.claimedJob.id);
+  assert.ok(
+    job?.failureReason?.includes(expectedSubstring),
+    `failureReason "${job?.failureReason}" should contain "${expectedSubstring}"`
+  );
+});
+
+Then('the claimedByAgentId should be cleared', function () {
+  const jobs = testContext.mockClient.getAllJobs();
+  const job = jobs.find((j: any) => j.id === testContext.claimedJob.id);
+  assert.strictEqual(job?.claimedByAgentId, null, 'claimedByAgentId should be null');
+});
+
+Given('the TTS provider returns a transient error', function () {
+  // This would require mocking the TTS provider to throw an error
+  // For now, mark as pending
+  return 'pending';
+});
+
+Then('the job should be re-queued for retry', function () {
+  return 'pending';
+});
+
+Then('the retryCount should be incremented', function () {
+  return 'pending';
+});
+
+Then('a JobEvent should be emitted indicating retry', function () {
+  return 'pending';
 });

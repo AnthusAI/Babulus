@@ -135,6 +135,9 @@ const studioSchema = schema.schema({
       claimedByAgentId: schema.string(),
       executionMode: schema.enum(["cloud", "local"]),
       inputJson: schema.json(),
+      retryCount: schema.integer().default(0),
+      maxRetries: schema.integer().default(3),
+      failureReason: schema.string(),
     })
     .authorization((allow) => [allow.authenticated(), allow.publicApiKey()]), // Allow publish jobs to be read publicly? No, better to have a separate PublishedVideo model.
 

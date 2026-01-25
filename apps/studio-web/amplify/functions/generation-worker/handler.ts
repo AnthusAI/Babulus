@@ -29,6 +29,7 @@ import {
   claimNextJob,
   processGenerationJob,
   updateJobStatus,
+  handleJobFailure,
   emitJobEvent,
   type StorageClient,
 } from '../../../../../src/worker-lib.js';
@@ -83,8 +84,13 @@ export const handler = async (event: EventBridgeEvent<string, any>) => {
         await updateJobStatus(client, job.id, 'succeeded');
         console.log('Job succeeded:', { jobId: job.id });
       } else {
-        await updateJobStatus(client, job.id, 'failed', result.error);
-        console.error('Job failed:', { jobId: job.id, error: result.error });
+        const retryResult = await handleJobFailure(client, job.id, result.error || 'Unknown error');
+        console.error('Job failed:', {
+          jobId: job.id,
+          error: result.error,
+          willRetry: retryResult.shouldRetry,
+          retryCount: retryResult.retryCount,
+        });
       }
 
       return {
@@ -106,24 +112,23 @@ export const handler = async (event: EventBridgeEvent<string, any>) => {
   } catch (error) {
     console.error('Worker error:', error);
 
-    // Update job status if we claimed one
+    // Handle job failure with retry logic if we claimed one
     if (job) {
       try {
-        await updateJobStatus(
-          client,
-          job.id,
-          'failed',
-          error instanceof Error ? error.message : String(error)
-        );
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        const retryResult = await handleJobFailure(client, job.id, errorMessage);
+
         await emitJobEvent(
           client,
           job.id,
           job.orgId,
           'error',
-          error instanceof Error ? error.message : String(error)
+          retryResult.shouldRetry
+            ? `Error (will retry ${retryResult.retryCount}): ${errorMessage}`
+            : `Permanent failure: ${errorMessage}`
         );
       } catch (updateError) {
-        console.error('Failed to update job status:', updateError);
+        console.error('Failed to handle job failure:', updateError);
       }
     }
 
