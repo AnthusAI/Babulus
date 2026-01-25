@@ -47,7 +47,10 @@ export async function listProjectFilesAction(projectId: string) {
   const client = getClient();
 
   // Get project to find orgId
-  const { data: project } = await client.models.Project.get({ id: projectId });
+  const { data: projects } = await client.models.Project.list({
+    filter: { id: { eq: projectId } }
+  });
+  const project = projects?.[0];
   if (!project) throw new Error('Project not found');
 
   // Verify access
