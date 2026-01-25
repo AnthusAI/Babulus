@@ -1,0 +1,43 @@
+# Render Worker Docker Image
+#
+# This image runs the render worker for processing render jobs.
+# It includes Playwright (with Chrome browser) and ffmpeg for video encoding.
+#
+# Build: docker build -f Dockerfile.render-worker -t babulus-render-worker .
+# Run locally: docker run -e AWS_REGION=us-east-1 babulus-render-worker
+
+FROM mcr.microsoft.com/playwright:v1.45.0-jammy
+
+# Install ffmpeg for video encoding
+RUN apt-get update && apt-get install -y \
+    ffmpeg \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set working directory
+WORKDIR /app
+
+# Copy package files for dependency installation
+COPY package.json package-lock.json tsconfig.json ./
+
+# Install all dependencies (including dev dependencies for tsx)
+RUN npm ci
+
+# Copy source code
+COPY src/ ./src/
+COPY packages/ ./packages/
+COPY apps/studio-web/amplify/ ./apps/studio-web/amplify/
+
+# Install Playwright browsers (Chrome already included in base image)
+ENV PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
+
+# Set production environment
+ENV NODE_ENV=production
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD node -e "process.exit(0)"
+
+# Entry point: run render worker
+# Note: Actual implementation will poll for render jobs and process them
+CMD ["npx", "tsx", "--", "src/worker-cloud.ts", "--kind", "render"]
+
