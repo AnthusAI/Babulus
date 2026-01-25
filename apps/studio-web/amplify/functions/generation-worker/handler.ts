@@ -23,7 +23,7 @@ import type { EventBridgeEvent } from 'aws-lambda';
 import { Amplify } from 'aws-amplify';
 import { generateClient } from 'aws-amplify/data';
 import { uploadData, downloadData } from 'aws-amplify/storage';
-import type { Schema } from '../../data/resource.js';
+import type { StudioSchema } from '../../data/resource.js';
 import amplifyConfig from '../../../amplify_outputs.json';
 import {
   claimNextJob,
@@ -41,9 +41,11 @@ Amplify.configure(amplifyConfig, {
   ssr: true,
 });
 
-const client = generateClient<Schema>({
+const client = generateClient<StudioSchema>({
   authMode: 'iam', // Lambda uses IAM role, not user pool
 });
+
+const workerClient = client as any;
 
 // Storage client wrapper
 const storage: StorageClient = {
@@ -63,7 +65,7 @@ export const handler = async (event: EventBridgeEvent<string, any>) => {
 
   try {
     // Claim next queued generation job
-    job = await claimNextJob(client, agentId, 'generate');
+    job = await claimNextJob(workerClient, agentId, 'generate');
 
     if (!job) {
       console.log('No queued generation jobs found');
@@ -78,13 +80,17 @@ export const handler = async (event: EventBridgeEvent<string, any>) => {
 
     try {
       // Process the generation job
-      const result = await processGenerationJob(job, client, storage, workDir);
+      const result = await processGenerationJob(job, workerClient, storage, workDir);
 
       if (result.success) {
-        await updateJobStatus(client, job.id, 'succeeded');
+        await updateJobStatus(workerClient, job.id, 'succeeded');
         console.log('Job succeeded:', { jobId: job.id });
       } else {
-        const retryResult = await handleJobFailure(client, job.id, result.error || 'Unknown error');
+        const retryResult = await handleJobFailure(
+          workerClient,
+          job.id,
+          result.error || 'Unknown error'
+        );
         console.error('Job failed:', {
           jobId: job.id,
           error: result.error,
@@ -116,10 +122,10 @@ export const handler = async (event: EventBridgeEvent<string, any>) => {
     if (job) {
       try {
         const errorMessage = error instanceof Error ? error.message : String(error);
-        const retryResult = await handleJobFailure(client, job.id, errorMessage);
+        const retryResult = await handleJobFailure(workerClient, job.id, errorMessage);
 
         await emitJobEvent(
-          client,
+          workerClient,
           job.id,
           job.orgId,
           'error',
@@ -142,4 +148,3 @@ export const handler = async (event: EventBridgeEvent<string, any>) => {
     };
   }
 };
-

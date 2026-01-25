@@ -18,7 +18,7 @@ import * as iam from 'aws-cdk-lib/aws-iam';
 import * as ecr from 'aws-cdk-lib/aws-ecr';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
-import { Duration } from 'aws-cdk-lib';
+import { Duration, RemovalPolicy } from 'aws-cdk-lib';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -67,7 +67,7 @@ backend.addOutput({
 
 // Grant generation worker access to AppSync GraphQL API
 backend.generationWorker.resources.lambda.addToRolePolicy(
-  new backend.stack.platform.Statement({
+  new iam.PolicyStatement({
     actions: ['appsync:GraphQL'],
     resources: [backend.data.resources.graphqlApi.arn + '/*'],
   })
@@ -78,7 +78,7 @@ bucket.grantReadWrite(backend.generationWorker.resources.lambda);
 
 // Create EventBridge rule to trigger generation worker every 30 seconds
 const generationWorkerRule = new events.Rule(backend.stack, 'GenerationWorkerSchedule', {
-  schedule: events.Schedule.rate({ seconds: 30 }),
+  schedule: events.Schedule.rate(Duration.seconds(30)),
   description: 'Poll for queued generation jobs every 30 seconds',
 });
 
@@ -217,7 +217,7 @@ console.log('- Alarms: error rate, long execution, no completions');
 // Create ECR repository for render worker Docker image
 const renderWorkerEcr = new ecr.Repository(backend.stack, 'RenderWorkerRepository', {
   repositoryName: 'babulus-render-worker',
-  removalPolicy: backend.stack.platform.RemovalPolicy.RETAIN, // Keep images on stack deletion
+  removalPolicy: RemovalPolicy.RETAIN, // Keep images on stack deletion
   imageScanOnPush: true,
 });
 
@@ -344,7 +344,7 @@ renderTriggerLambda.addToRolePolicy(
 
 // Create EventBridge rule to trigger render worker periodically
 const renderWorkerRule = new events.Rule(backend.stack, 'RenderWorkerSchedule', {
-  schedule: events.Schedule.rate({ minutes: 1 }), // Poll every minute
+  schedule: events.Schedule.rate(Duration.minutes(1)), // Poll every minute
   description: 'Poll for queued render jobs every minute',
 });
 

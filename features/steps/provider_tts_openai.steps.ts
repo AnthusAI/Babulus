@@ -2,6 +2,7 @@ import { Given, When, Then, Before } from '@cucumber/cucumber';
 import { strict as assert } from 'assert';
 import { OpenAITTSProvider } from '../../src/providers/tts/openai.js';
 import type { TTSRequest } from '../../src/providers/tts/types.js';
+import { loadConfig, getProviderConfig } from '../../src/config.js';
 
 interface TestContext {
   provider: OpenAITTSProvider;
@@ -18,6 +19,10 @@ interface TestContext {
 let testContext: TestContext;
 
 Before(function () {
+  // Load API key from ~/.babulus/config.yml
+  const config = loadConfig();
+  const openaiConfig = getProviderConfig(config, 'openai');
+
   testContext = {
     provider: null as any,
     text: '',
@@ -27,7 +32,7 @@ Before(function () {
     error: null,
     tokens: null,
     cost: null,
-    apiKey: process.env.OPENAI_API_KEY || 'test-key-for-dry-run',
+    apiKey: process.env.OPENAI_API_KEY || String(openaiConfig.api_key ?? '') || 'test-key-for-dry-run',
   };
 });
 

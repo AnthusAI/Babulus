@@ -25,9 +25,11 @@ Because we use lower contrast ratios (soft blacks/whites), we compensate with ty
 -   **Fatter Fonts:** Avoid thin/light fonts.
 -   **Structure:** Use "Eyebrows" (uppercase, tracked out, small caps) above headlines to create hierarchy.
 
-### Font Pairings (To be determined via Playground)
-We are currently evaluating pairings that balance "Technical/Code" with "Creative/Video".
-See `apps/studio-web/app/(public)/fonts/page.tsx` for the live playground.
+### Selected Font Pairing: "Impactful Studio"
+-   **Headlines:** Bebas Neue
+-   **Body:** Montserrat
+
+These balance bold, cinematic impact (headlines) with modern geometric clarity (body), while staying legible at lower contrast.
 
 ## Layout
 -   **Public/Marketing:** Standard scrolling web layout.
