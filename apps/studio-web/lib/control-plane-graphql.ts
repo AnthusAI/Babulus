@@ -474,6 +474,15 @@ export const listProjects = async (activeOrgId: string): Promise<Project[]> => {
   return (data ?? [])as any;
 };
 
+export const getProject = async (projectId: string): Promise<Project | null> => {
+  const { data, errors } = await getClient().models.Project.get({ id: projectId });
+  if (errors) {
+    console.error('Error fetching project:', errors);
+    return null;
+  }
+  return data as any;
+};
+
 export const listVideos = async (activeOrgId: string, projectId?: string | null): Promise<Video[]> => {
   const filter: { orgId: { eq: string }; projectId?: { eq: string } } = {
     orgId: { eq: activeOrgId },

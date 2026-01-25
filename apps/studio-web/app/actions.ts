@@ -103,6 +103,10 @@ export async function getProjectsForOrg(orgId: string): Promise<Project[]> {
   return cp.listProjects(orgId);
 }
 
+export async function getProjectById(projectId: string): Promise<Project | null> {
+  return cp.getProject(projectId);
+}
+
 export async function getVideosForOrg(orgId: string, projectId?: string | null): Promise<Video[]> {
   return cp.listVideos(orgId, projectId);
 }

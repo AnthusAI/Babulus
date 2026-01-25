@@ -27,7 +27,7 @@ export function VideoList({ orgId, projectId, selectedVideoId, onSelectVideo }: 
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold tracking-tight">Videos</h3>
+        <h3 className="studio-panel-title">Videos</h3>
         <CreateVideoDialog orgId={orgId} projectId={projectId} onVideoCreated={refetch} />
       </div>
 

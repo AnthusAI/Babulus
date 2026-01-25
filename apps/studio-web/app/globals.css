@@ -77,12 +77,6 @@
     font-family: var(--font-body), ui-sans-serif, system-ui, sans-serif;
   }
 
-  :where(h1, h2, h3) {
-    font-family: var(--font-heading), var(--font-body), ui-sans-serif, system-ui,
-      sans-serif;
-    letter-spacing: 0.01em;
-  }
-
   /* Utility class for the fixed Studio App viewport */
   .app-viewport {
     height: 100vh;
@@ -231,6 +225,21 @@
     --accent-foreground: 50 20% 99%;
     --input: 50 2% 14%;
     --ring: 50 20% 99%;
+  }
+}
+
+@layer utilities {
+  .font-heading {
+    letter-spacing: 0.01em;
+  }
+
+  .studio-panel-title {
+    font-size: 0.75rem;
+    line-height: 1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    color: hsl(var(--foreground) / 0.55);
   }
 }
 

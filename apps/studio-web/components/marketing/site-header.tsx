@@ -9,7 +9,7 @@ export function SiteHeader() {
   const { setTheme, theme } = useTheme();
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-50 w-full bg-recess/95 backdrop-blur supports-[backdrop-filter]:bg-recess/70">
       <div className="container flex h-14 items-center">
         <div className="mr-4 flex">
           <Link href="/" className="mr-6 flex items-center space-x-2">
@@ -17,22 +17,22 @@ export function SiteHeader() {
           </Link>
           <nav className="flex items-center space-x-6 text-sm font-medium">
             <Link
-              href="#features"
+              href="#how-it-works"
               className="transition-colors hover:text-foreground/80 text-foreground/60"
             >
-              Features
+              How it works
             </Link>
             <Link
-              href="#pricing"
+              href="#translations"
               className="transition-colors hover:text-foreground/80 text-foreground/60"
             >
-              Pricing
+              Translations
             </Link>
             <Link
-              href="/docs"
+              href="#control"
               className="transition-colors hover:text-foreground/80 text-foreground/60"
             >
-              Docs
+              Control
             </Link>
           </nav>
         </div>
@@ -50,11 +50,11 @@ export function SiteHeader() {
             </Button>
             <Link href="/dashboard">
               <Button variant="ghost" size="sm">
-                Login
+                Sign in
               </Button>
             </Link>
-            <Link href="/dashboard">
-              <Button size="sm">Get Started</Button>
+            <Link href="/waitlist">
+              <Button size="sm">Join waitlist</Button>
             </Link>
           </nav>
         </div>

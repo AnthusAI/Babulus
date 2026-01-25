@@ -32,14 +32,16 @@ import type {
   JobStatus,
 } from "@babulus/shared";
 import {
-  getOrgsForUser,
-  getProjectsForOrg,
-  getVideosForOrg,
+  fetchOrgs,
+  fetchProjects,
+  fetchVideos,
+  fetchGenerationRuns,
+  fetchJobs,
+} from "./client-data";
+import {
   getStoryboardVersions,
-  getGenerationRuns,
   getRenderRuns,
   getAssetsForOrg,
-  getJobsForOrg,
   getJobEventsForJob,
   getConversationsForVideo,
   getMessagesForConversation,
@@ -59,9 +61,7 @@ type AsyncState<T> = {
  * Hook to load orgs for the current user
  */
 export function useOrgs() {
-  const [state, setState] = useState<
-    AsyncState<{ userId: string; orgs: Org[]; memberships: import("@babulus/shared").OrgMember[] }>
-  >({
+  const [state, setState] = useState<AsyncState<Org[]>>({
     data: null,
     loading: true,
     error: null,
@@ -70,8 +70,8 @@ export function useOrgs() {
   const load = useCallback(async () => {
     setState((prev) => ({ ...prev, loading: true, error: null }));
     try {
-      const data = await getOrgsForUser();
-      setState({ data, loading: false, error: null });
+      const orgs = await fetchOrgs();
+      setState({ data: orgs, loading: false, error: null });
     } catch (error) {
       setState({
         data: null,
@@ -86,9 +86,9 @@ export function useOrgs() {
   }, [load]);
 
   return {
-    userId: state.data?.userId ?? null,
-    orgs: state.data?.orgs ?? [],
-    memberships: state.data?.memberships ?? [],
+    userId: null, // Not needed for client-side fetching
+    orgs: state.data ?? [],
+    memberships: [], // Not needed for client-side fetching
     loading: state.loading,
     error: state.error,
     refetch: load,
@@ -112,7 +112,7 @@ export function useProjects(orgId: string | null) {
     }
     setState((prev) => ({ ...prev, loading: true, error: null }));
     try {
-      const data = await getProjectsForOrg(orgId);
+      const data = await fetchProjects(orgId);
       setState({ data, loading: false, error: null });
     } catch (error) {
       setState({
@@ -152,7 +152,7 @@ export function useVideos(orgId: string | null, projectId?: string | null) {
     }
     setState((prev) => ({ ...prev, loading: true, error: null }));
     try {
-      const data = await getVideosForOrg(orgId, projectId);
+      const data = await fetchVideos(orgId, projectId ?? undefined);
       setState({ data, loading: false, error: null });
     } catch (error) {
       setState({
@@ -250,7 +250,7 @@ export function useJobs(orgId: string | null, status?: JobStatus | null) {
     }
     setState((prev) => ({ ...prev, loading: true, error: null }));
     try {
-      const data = await getJobsForOrg(orgId, status);
+      const data = await fetchJobs(orgId, status ?? undefined);
       setState({ data, loading: false, error: null });
     } catch (error) {
       setState({
@@ -370,7 +370,7 @@ export function useGenerationRuns(orgId: string | null, videoId?: string | null)
     }
     setState((prev) => ({ ...prev, loading: true, error: null }));
     try {
-      const data = await getGenerationRuns(orgId, videoId);
+      const data = await fetchGenerationRuns(orgId, videoId ?? undefined);
       setState({ data, loading: false, error: null });
     } catch (error) {
       setState({

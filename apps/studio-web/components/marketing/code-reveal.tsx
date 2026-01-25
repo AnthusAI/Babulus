@@ -2,14 +2,12 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-
 export function CodeReveal() {
   const [mode, setMode] = useState<"preview" | "code">("preview");
 
   return (
-    <div className="w-full max-w-4xl mx-auto rounded-lg border bg-card text-card-foreground shadow-sm">
-      <div className="flex items-center justify-between p-4 border-b">
+    <div className="w-full max-w-4xl mx-auto overflow-hidden rounded-2xl bg-card text-card-foreground">
+      <div className="flex items-center justify-between bg-recess p-4">
         <div className="flex space-x-2">
           <div className="h-3 w-3 rounded-full bg-red-500" />
           <div className="h-3 w-3 rounded-full bg-yellow-500" />
@@ -34,16 +32,16 @@ export function CodeReveal() {
       </div>
       <div className="p-0 overflow-hidden min-h-[400px] relative">
         {mode === "preview" ? (
-          <div className="absolute inset-0 flex items-center justify-center bg-zinc-900">
+          <div className="absolute inset-0 flex items-center justify-center bg-[#6a6a6a]">
             <div className="text-center space-y-4">
-              <div className="text-6xl font-bold text-white tracking-tighter">
+              <div className="text-6xl font-bold text-white/90 tracking-tighter">
                 HELLO WORLD
               </div>
-              <p className="text-zinc-400">Generated from TypeScript</p>
+              <p className="text-white/70">Generated from TypeScript</p>
             </div>
           </div>
         ) : (
-          <div className="absolute inset-0 bg-[#1e1e1e] p-6 overflow-auto text-sm font-mono text-zinc-300">
+          <div className="absolute inset-0 bg-[#1e1e1e] p-6 overflow-auto text-sm font-mono text-white/80">
             <pre>
               {`import { Composition, Scene, Audio } from "@babulus/dsl";
 

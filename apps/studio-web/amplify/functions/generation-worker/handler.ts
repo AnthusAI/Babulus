@@ -23,7 +23,6 @@ import type { EventBridgeEvent } from 'aws-lambda';
 import { Amplify } from 'aws-amplify';
 import { generateClient } from 'aws-amplify/data';
 import { uploadData, downloadData } from 'aws-amplify/storage';
-import type { StudioSchema } from '../../data/resource.js';
 import amplifyConfig from '../../../amplify_outputs.json';
 import {
   claimNextJob,
@@ -41,7 +40,7 @@ Amplify.configure(amplifyConfig, {
   ssr: true,
 });
 
-const client = generateClient<StudioSchema>({
+const client = generateClient<any>({
   authMode: 'iam', // Lambda uses IAM role, not user pool
 });
 

@@ -51,7 +51,7 @@ export function ProjectFileList({ projectId, selectedFileId, onSelectFile }: Pro
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold tracking-tight">Project Files</h3>
+        <h3 className="studio-panel-title">Project Files</h3>
         <Button variant="outline" size="sm" disabled>
           <File className="h-4 w-4 mr-1" />
           New File
