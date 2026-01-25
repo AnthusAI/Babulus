@@ -10,12 +10,16 @@ export interface LayoutSettings {
   chatPosition: ChatPosition;
   mainAxis: PanelLayout;
   inputPosition: PanelPosition;
+  chatPercent: number;
+  inputPercent: number;
 }
 
 const DEFAULT_LAYOUT: LayoutSettings = {
   chatPosition: "right",
   mainAxis: "horizontal",
   inputPosition: "first",
+  chatPercent: 24,
+  inputPercent: 50,
 };
 
 interface SettingsContextType {

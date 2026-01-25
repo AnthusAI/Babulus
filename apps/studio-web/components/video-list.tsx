@@ -2,8 +2,7 @@
 
 import { useVideos } from "@/lib/use-org-data";
 import { CreateVideoDialog } from "./create-video-dialog";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { FileVideo, Clock } from "lucide-react";
+import { Film, Clock } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { formatDistanceToNow } from "date-fns";
 
@@ -37,29 +36,23 @@ export function VideoList({ orgId, projectId, selectedVideoId, onSelectVideo }: 
           No videos found. Create one to get started.
         </div>
       ) : (
-        <div className="grid gap-2">
+        <div className="grid gap-1">
           {videos.map((video) => (
-            <Card
+            <button
               key={video.id}
               className={cn(
-                "cursor-pointer transition-colors hover:bg-accent/50",
-                selectedVideoId === video.id && "bg-accent border-primary"
+                "flex items-center gap-2 rounded-md px-2 py-1 text-left transition-colors hover:bg-accent/40",
+                selectedVideoId === video.id && "bg-accent/60"
               )}
               onClick={() => onSelectVideo(video.id)}
             >
-              <CardHeader className="p-4 space-y-1">
-                <div className="flex items-center gap-2">
-                  <FileVideo className="h-4 w-4 text-muted-foreground" />
-                  <CardTitle className="text-sm font-medium leading-none">
-                    {video.title}
-                  </CardTitle>
-                </div>
-                <CardDescription className="text-xs flex items-center gap-1">
-                  <Clock className="h-3 w-3" />
-                  {video.createdAt ? formatDistanceToNow(new Date(video.createdAt), { addSuffix: true }) : "Unknown date"}
-                </CardDescription>
-              </CardHeader>
-            </Card>
+              <Film className="h-4 w-4 text-muted-foreground" />
+              <span className="text-sm font-medium leading-none">{video.title}</span>
+              <span className="text-xs text-muted-foreground flex items-center gap-1">
+                <Clock className="h-3 w-3" />
+                {video.createdAt ? formatDistanceToNow(new Date(video.createdAt), { addSuffix: true }) : "Unknown date"}
+              </span>
+            </button>
           ))}
         </div>
       )}

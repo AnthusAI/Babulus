@@ -8,6 +8,7 @@
   --color-ring: hsl(var(--ring));
   --color-background: hsl(var(--background));
   --color-foreground: hsl(var(--foreground));
+  --color-recess: hsl(var(--recess));
 
   --color-primary: hsl(var(--primary));
   --color-primary-foreground: hsl(var(--primary-foreground));
@@ -75,6 +76,7 @@
     /* Radix Slate Light Theme Approximation (COOL) */
     --background: 210 40% 98%;      /* Slate 1 */
     --foreground: 222.2 47.4% 11.2%; /* Slate 12 */
+    --recess: 210 40% 99.4%;
     --card: 210 40% 96.1%;          /* Slate 2 */
     --card-foreground: 222.2 47.4% 11.2%;
     --popover: 210 40% 98%;
@@ -99,6 +101,7 @@
     /* Radix Slate Dark Theme Approximation (COOL) */
     --background: 200 7% 8.8%;      /* Slate 1 */
     --foreground: 210 40% 98%;      /* Slate 12 */
+    --recess: 200 7% 6.5%;
     --card: 195 7% 11%;             /* Slate 2 */
     --card-foreground: 210 40% 98%;
     --popover: 200 7% 8.8%;
@@ -123,6 +126,7 @@
     /* Radix Mauve Light */
     --background: 300 20% 99%;      /* Mauve 1 */
     --foreground: 280 25% 12%;      /* Mauve 12 */
+    --recess: 300 20% 99.4%;
     --card: 300 7% 97%;             /* Mauve 2 */
     --card-foreground: 280 25% 12%;
     --popover: 300 20% 99%;
@@ -144,6 +148,7 @@
     /* Radix Mauve Dark */
     --background: 280 6% 9%;        /* Mauve 1 */
     --foreground: 300 20% 99%;      /* Mauve 12 */
+    --recess: 280 6% 6.5%;
     --card: 280 5% 11%;             /* Mauve 2 */
     --card-foreground: 300 20% 99%;
     --popover: 280 6% 9%;
@@ -165,6 +170,7 @@
     /* Radix Sand Light */
     --background: 50 20% 99%;       /* Sand 1 */
     --foreground: 50 10% 12%;       /* Sand 12 */
+    --recess: 50 20% 99.4%;
     --card: 60 10% 97%;             /* Sand 2 */
     --card-foreground: 50 10% 12%;
     --popover: 50 20% 99%;
@@ -186,6 +192,7 @@
     /* Radix Sand Dark */
     --background: 50 4% 9%;         /* Sand 1 */
     --foreground: 50 20% 99%;       /* Sand 12 */
+    --recess: 50 4% 6.5%;
     --card: 50 3% 11%;              /* Sand 2 */
     --card-foreground: 50 20% 99%;
     --popover: 50 4% 9%;

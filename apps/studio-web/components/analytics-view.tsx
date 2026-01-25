@@ -27,15 +27,15 @@ export function AnalyticsView({ orgId }: { orgId: string }) {
   }
 
   return (
-    <div className="flex flex-col gap-6 max-w-5xl mx-auto">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div className="flex flex-col gap-4">
+      <div className="grid grid-cols-2 gap-2">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Cost</CardTitle>
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-lg font-semibold">
                 {isRedacted ? `${Math.ceil(totalCost * 100)} Credits` : `$${totalCost.toFixed(4)}`}
             </div>
             <p className="text-xs text-muted-foreground">Estimated usage cost</p>
@@ -47,7 +47,7 @@ export function AnalyticsView({ orgId }: { orgId: string }) {
             <Activity className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{totalGenerations}</div>
+            <div className="text-lg font-semibold">{totalGenerations}</div>
             <p className="text-xs text-muted-foreground">AI asset generations</p>
           </CardContent>
         </Card>
@@ -57,62 +57,46 @@ export function AnalyticsView({ orgId }: { orgId: string }) {
             <HardDrive className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{totalRenders}</div>
+            <div className="text-lg font-semibold">{totalRenders}</div>
             <p className="text-xs text-muted-foreground">Video render jobs</p>
           </CardContent>
         </Card>
       </div>
 
       <Card>
-        <CardHeader>
-          <CardTitle>Usage History</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Date</TableHead>
-                <TableHead>Event Type</TableHead>
-                <TableHead>Provider</TableHead>
-                <TableHead>Quantity</TableHead>
-                <TableHead className="text-right">Cost</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {events.length === 0 ? (
-                <TableRow>
-                    <TableCell colSpan={5} className="text-center text-muted-foreground h-24">
-                        No usage events recorded.
-                    </TableCell>
-                </TableRow>
-              ) : (
-                events.slice(0, 50).map((event) => (
-                    <TableRow key={event.id}>
-                    <TableCell className="font-mono text-xs">
-                        {format(new Date(event.createdAt), "MMM d, HH:mm:ss")}
-                    </TableCell>
-                    <TableCell>
-                        <Badge variant="outline" className="text-xs font-normal">
-                            {event.unitType}
-                        </Badge>
-                    </TableCell>
-                    <TableCell className="text-muted-foreground text-sm">
-                        {event.provider || "System"}
-                    </TableCell>
-                    <TableCell className="font-mono text-sm">
-                        {event.quantity}
-                    </TableCell>
-                    <TableCell className="text-right font-mono text-sm">
-                        {isRedacted 
-                            ? `${Math.ceil((event.actualCost || event.estimatedCost || 0) * 100)} Credits`
-                            : `$${(event.actualCost || event.estimatedCost || 0).toFixed(6)}`
-                        }
-                    </TableCell>
-                    </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
+        <CardContent className="p-0">
+          <div className="flex flex-col divide-y">
+            {events.length === 0 ? (
+              <div className="p-4 text-center text-sm text-muted-foreground">
+                No usage events recorded.
+              </div>
+            ) : (
+              events.slice(0, 50).map((event) => (
+                <div key={event.id} className="flex flex-col gap-1 py-2 px-0 hover:bg-muted/50 transition-colors">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Badge variant="outline" className="text-[10px] px-1 py-0 h-4 font-normal">
+                        {event.unitType}
+                      </Badge>
+                      <span className="text-[10px] text-muted-foreground font-mono">
+                        {format(new Date(event.createdAt), "MMM d, HH:mm")}
+                      </span>
+                    </div>
+                    <span className="text-xs font-mono font-medium">
+                      {isRedacted 
+                        ? `${Math.ceil((event.actualCost || event.estimatedCost || 0) * 100)}`
+                        : `$${(event.actualCost || event.estimatedCost || 0).toFixed(4)}`
+                      }
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between text-xs text-muted-foreground">
+                    <span>{event.provider || "System"}</span>
+                    <span className="font-mono">x{event.quantity}</span>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
         </CardContent>
       </Card>
     </div>

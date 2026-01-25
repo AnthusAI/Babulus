@@ -24,9 +24,9 @@ export function ProjectList({ orgId, selectedProjectId, onSelectProject }: Proje
   }
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold tracking-tight">Projects</h3>
+    <div className="space-y-2">
+      <div className="flex items-center justify-between h-8">
+        <h3 className="text-xs uppercase tracking-wider text-muted-foreground font-medium">Projects</h3>
         <CreateProjectDialog orgId={orgId} onProjectCreated={refetch} />
       </div>
       
@@ -41,11 +41,11 @@ export function ProjectList({ orgId, selectedProjectId, onSelectProject }: Proje
               key={project.id}
               className={cn(
                 "cursor-pointer transition-colors hover:bg-accent/50",
-                selectedProjectId === project.id && "bg-accent border-primary"
+                selectedProjectId === project.id && "bg-accent"
               )}
               onClick={() => onSelectProject(project.id)}
             >
-              <CardHeader className="p-4 flex flex-row items-center gap-2 space-y-0">
+              <CardHeader className="py-2 pr-2 pl-0 flex flex-row items-center gap-2 space-y-0">
                 <Folder className="h-4 w-4 text-muted-foreground" />
                 <CardTitle className="text-sm font-medium leading-none">
                   {project.name}
