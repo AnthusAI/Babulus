@@ -60,7 +60,7 @@ export default function TestVideo() {
 
     // 4. Check CloudFront domain
     console.log('4. CloudFront configuration...');
-    const assetsDomain = outputs.custom?.assetsDomain;
+    const assetsDomain = (outputs.custom as any)?.assetsDomain;
     if (assetsDomain) {
       const url = `https://${assetsDomain}/${storageKey}`;
       console.log(`   ✓ CloudFront domain: ${assetsDomain}`);
@@ -68,7 +68,7 @@ export default function TestVideo() {
       console.log(`   Note: URL requires authentication via Lambda@Edge\n`);
     } else {
       console.log(`   ✗ CloudFront domain not found in amplify_outputs.json`);
-      console.log(`   Check outputs.custom.assetsDomain\n`);
+      console.log(`   Check outputs.custom.assetsDomain (currently disabled)\n`);
     }
 
     // 5. Delete file
