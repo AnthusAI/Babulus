@@ -19,6 +19,7 @@ import type {
   OrgMember,
   Project,
   Video,
+  StoryboardVersion,
   GenerationRun,
   RenderRun,
   Asset,
