@@ -170,6 +170,8 @@ export function PreviewPlayer({
   const transportHeight = overlayControls ? 72 : 64;
   const overlayWidth = Math.max(240, Math.min(previewSize.width * 0.9, 960));
   const controlsVisible = overlayControls ? (showOverlayControls || !isPlaying) : true;
+  const sceneBackground = script?.scenes?.[0]?.styles?.background;
+  const backgroundColor = typeof sceneBackground === 'string' ? sceneBackground : '#000000';
 
   return (
     <div
@@ -183,7 +185,7 @@ export function PreviewPlayer({
           style={{
             width: displayWidth,
             height: displayHeight,
-            backgroundColor: '#ff00ff', // Bright magenta test background
+            backgroundColor,
           }}
         >
           <div

@@ -484,7 +484,7 @@ export function StudioWorkspace() {
               <div className="moment-meta">{formatTime(currentTimeSec)} into composition</div>
             </div>
             <div className="scene-list">
-              {(previewScript.scenes ?? []).map((scene) => (
+              {(previewScript?.scenes ?? []).map((scene) => (
                 <div key={scene.id ?? scene.title} className="scene-item">
                   <button type="button" className="scene-title" onClick={() => jumpToTime(scene.startSec)}>
                     {scene.title ?? scene.id ?? "Scene"}
@@ -551,7 +551,7 @@ export function StudioWorkspace() {
                 height,
                 durationFrames,
               }}
-              inputProps={{ script: previewScript }}
+              inputProps={{ script: previewScript ?? {} }}
               frame={currentFrame}
               onFrameChange={handleFrameChange}
               playing={playing}
