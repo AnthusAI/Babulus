@@ -1,0 +1,11 @@
+{
+  "name": "render-trigger",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Lambda function to trigger ECS render tasks",
+  "main": "handler.js",
+  "dependencies": {
+    "@aws-sdk/client-ecs": "^3.709.0",
+    "aws-amplify": "^6.10.4"
+  }
+}

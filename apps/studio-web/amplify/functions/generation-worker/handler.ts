@@ -23,7 +23,6 @@ import type { EventBridgeEvent } from 'aws-lambda';
 import { Amplify } from 'aws-amplify';
 import { generateClient } from 'aws-amplify/data';
 import { uploadData, downloadData } from 'aws-amplify/storage';
-import amplifyConfig from '../../../amplify_outputs.json';
 import {
   claimNextJob,
   processGenerationJob,
@@ -32,8 +31,14 @@ import {
   emitJobEvent,
   type StorageClient,
 } from '../../../../../src/worker-lib.js';
-import { join } from 'path';
-import { mkdirSync, rmSync } from 'fs';
+import { join, dirname } from 'path';
+import { mkdirSync, rmSync, readFileSync } from 'fs';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+const amplifyConfig = loadAmplifyOutputs();
 
 // Configure Amplify for Lambda execution
 Amplify.configure(amplifyConfig, {
@@ -147,3 +152,21 @@ export const handler = async (event: EventBridgeEvent<string, any>) => {
     };
   }
 };
+
+function loadAmplifyOutputs(): Record<string, unknown> {
+  if (process.env.AMPLIFY_OUTPUTS) {
+    try {
+      return JSON.parse(process.env.AMPLIFY_OUTPUTS);
+    } catch (error) {
+      console.warn('Failed to parse AMPLIFY_OUTPUTS env var:', error);
+    }
+  }
+
+  try {
+    const outputsPath = join(__dirname, '../../../amplify_outputs.json');
+    return JSON.parse(readFileSync(outputsPath, 'utf8'));
+  } catch (error) {
+    console.warn('Amplify outputs not found. Using empty config.');
+    return {};
+  }
+}
