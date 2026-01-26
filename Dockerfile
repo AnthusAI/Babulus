@@ -50,9 +50,6 @@ RUN npx playwright install chromium --with-deps
 # Copy application code
 COPY . .
 
-# Build TypeScript
-RUN npm run build
-
 # Create working directory for renders
 RUN mkdir -p /app/.babulus/worker
 
@@ -65,4 +62,4 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
   CMD node -e "console.log('healthy')" || exit 1
 
 # Entrypoint: Run ECS worker (processes one job and exits)
-CMD ["node", "dist/worker-ecs.js"]
+CMD ["npx", "tsx", "src/worker-ecs.ts"]
