@@ -13,7 +13,7 @@ export function SiteHeader() {
           </Link>
           <nav className="flex items-center space-x-6 text-sm font-medium">
             <Link
-              href="#how-it-works"
+              href="/how-it-works"
               className="transition-colors hover:text-foreground/80 text-foreground/60"
             >
               How it works
@@ -23,12 +23,6 @@ export function SiteHeader() {
               className="transition-colors hover:text-foreground/80 text-foreground/60"
             >
               Translations
-            </Link>
-            <Link
-              href="#control"
-              className="transition-colors hover:text-foreground/80 text-foreground/60"
-            >
-              Control
             </Link>
             <Link
               href="/docs"
