@@ -5,42 +5,42 @@ Feature: OpenAI TTS Provider
 
   Background:
     Given OpenAI TTS provider is available
-    And a valid API key is configured
+    And a valid OpenAI API key is configured
 
   Scenario: Generate speech with default voice
-    Given a text "Hello world"
+    Given an OpenAI text "Hello world"
     When I generate speech with OpenAI TTS
-    Then the audio should be generated successfully
-    And the audio format should be MP3
-    And usage should be tracked
+    Then the OpenAI audio should be generated successfully
+    And the OpenAI audio format should be MP3
+    And OpenAI usage should be tracked
 
   Scenario: Generate speech with specific voice
-    Given a text "Welcome to the show"
-    And voice "alloy" is selected
+    Given an OpenAI text "Welcome to the show"
+    And OpenAI voice "alloy" is selected
     When I generate speech with OpenAI TTS
-    Then the audio should be generated with voice "alloy"
+    Then the OpenAI audio should be generated with voice "alloy"
 
   Scenario: Generate speech with custom speed
-    Given a text "This is a test"
-    And speed 1.25 is selected
+    Given an OpenAI text "This is a test"
+    And OpenAI speed 1.25 is selected
     When I generate speech with OpenAI TTS
-    Then the audio should be generated at speed 1.25
+    Then the OpenAI audio should be generated at speed 1.25
 
   Scenario: Handle API error gracefully
-    Given a text "Test"
+    Given an OpenAI text "Test"
     And the OpenAI API returns an error
-    When I attempt to generate speech
-    Then it should throw an error
-    And the error should contain API failure details
+    When I attempt to generate OpenAI speech
+    Then the OpenAI request should throw an error
+    And the OpenAI error should contain API failure details
 
   Scenario: Estimate token usage
-    Given a text "The quick brown fox jumps over the lazy dog"
+    Given an OpenAI text "The quick brown fox jumps over the lazy dog"
     When I estimate token usage
-    Then tokens should be estimated based on character count
-    And the estimate should be positive
+    Then OpenAI tokens should be estimated based on character count
+    And the OpenAI estimate should be positive
 
   Scenario: Calculate cost from usage
     Given 1000 characters were processed
-    When I calculate the cost
-    Then the cost should match OpenAI pricing
-    And the cost should be in USD
+    When I calculate the OpenAI cost
+    Then the OpenAI cost should match pricing
+    And the OpenAI cost should be in USD

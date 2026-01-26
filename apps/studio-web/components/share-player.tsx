@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 // @ts-ignore
 import { getUrl } from "aws-amplify/storage";
-import { Player, StoryboardRenderer } from "@babulus/renderer";
 import type { PublishedVideo } from "@babulus/shared";
 import { Loader2, Download, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";

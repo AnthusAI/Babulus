@@ -3,15 +3,15 @@
 import { Command } from "commander";
 import { readFileSync } from "fs";
 import { resolve } from "path";
-import { renderStoryboardFramesHtml } from "../packages/renderer/src/storyboard-frames.js";
+import { renderFramesFromScript } from "../packages/renderer/src/video-frames.js";
 import type { ScriptData } from "../packages/shared/src/video.js";
 import type { TimelineData } from "../packages/shared/src/timeline.js";
 
 const program = new Command();
 
 program
-  .name("babulus-render-storyboard-frames")
-  .description("Render storyboard HTML frames from script.json without Playwright")
+  .name("babulus-render-video-frames")
+  .description("Render HTML frames from script.json without Playwright")
   .requiredOption("--script <path>", "Path to script.json")
   .requiredOption("--frames <dir>", "Output directory for HTML frames")
   .option("--timeline <path>", "Optional timeline.json for duration data")
@@ -33,7 +33,7 @@ program
     const timeline = timelinePath ? (JSON.parse(readFileSync(timelinePath, "utf8")) as TimelineData) : null;
     const endFrame = opts.end == null ? undefined : Number(opts.end);
 
-    const result = renderStoryboardFramesHtml({
+    const result = renderFramesFromScript({
       script,
       timeline,
       title: opts.title,

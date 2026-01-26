@@ -14,7 +14,7 @@ export default function OrganizationPage() {
   const router = useRouter();
   const orgId = params.orgId as string;
   const { orgs, loading: orgsLoading } = useOrgs();
-  const { projects, loading: projectsLoading } = useProjects(orgId);
+  const { loading: projectsLoading } = useProjects(orgId);
 
   const org = orgs.find((o) => o.id === orgId);
   const loading = orgsLoading || projectsLoading;

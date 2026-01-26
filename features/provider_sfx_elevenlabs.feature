@@ -5,32 +5,32 @@ Feature: ElevenLabs SFX Provider
 
   Background:
     Given ElevenLabs SFX provider is available
-    And a valid API key is configured
+    And a valid ElevenLabs SFX API key is configured
 
   Scenario: Generate sound effect with default settings
-    Given a prompt "door slam"
-    And duration 3 seconds
+    Given a SFX prompt "door slam"
+    And SFX duration 3 seconds
     When I generate SFX with ElevenLabs
-    Then the audio should be generated successfully
-    And the audio format should be MP3
-    And usage should be tracked
+    Then the SFX audio should be generated successfully
+    And the SFX audio format should be MP3
+    And SFX usage should be tracked
 
   Scenario: Generate sound effect with specific duration
-    Given a prompt "car horn"
-    And duration 5 seconds
+    Given a SFX prompt "car horn"
+    And SFX duration 5 seconds
     When I generate SFX with ElevenLabs
-    Then the audio should be generated with duration 5 seconds
+    Then the SFX audio should be generated with duration 5 seconds
 
   Scenario: Handle API error gracefully
     Given the ElevenLabs SFX API returns an error
-    And a prompt "This will fail"
-    And duration 2 seconds
+    And a SFX prompt "This will fail"
+    And SFX duration 2 seconds
     When I attempt to generate SFX
-    Then it should throw an error
-    And the error should contain API failure details
+    Then the SFX request should throw an error
+    And the SFX error should contain API failure details
 
   Scenario: Calculate cost from usage
-    Given a duration of 3 seconds
+    Given a SFX duration of 3 seconds
     When I calculate the SFX generation cost
-    Then the cost should match ElevenLabs SFX pricing
-    And the cost should be in USD
+    Then the SFX cost should match ElevenLabs pricing
+    And the SFX cost should be in USD

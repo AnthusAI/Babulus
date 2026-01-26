@@ -33,15 +33,12 @@ export async function GET(request: NextRequest) {
 
     let project: any = null;
     let targetProjectId = projectId;
-    let targetVideoId = videoId;
-
     // If videoId provided, fetch video to get projectId
     if (videoId && !projectId) {
       const { data: videoRaw } = await client.models.Video.get({ id: videoId });
       const video = videoRaw as any;
       if (video) {
         targetProjectId = video.projectId;
-        targetVideoId = video.id;
       }
     }
 

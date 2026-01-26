@@ -1,10 +1,5 @@
 "use client";
 
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -28,13 +23,9 @@ export function UserNav() {
       <DropdownMenuTrigger asChild>
         <Button
           variant="secondary"
-          className="h-9 gap-2 rounded-xl bg-background px-2.5 text-foreground/90 hover:bg-background/80"
+          className="h-9 gap-2 rounded-xl bg-background px-3 text-foreground/90 hover:bg-background/80"
         >
-          <Avatar className="h-7 w-7">
-            <AvatarImage src="/avatars/01.png" alt={loginId} />
-            <AvatarFallback>{loginId.substring(0, 2).toUpperCase()}</AvatarFallback>
-          </Avatar>
-          <span className="max-w-[14ch] truncate text-sm font-medium">{loginId}</span>
+          <span className="max-w-[18ch] truncate text-sm font-medium">{loginId}</span>
           <ChevronDown className="h-4 w-4 text-muted-foreground" />
         </Button>
       </DropdownMenuTrigger>

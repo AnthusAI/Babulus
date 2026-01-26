@@ -1,4 +1,4 @@
-import type { CloudFrontRequestHandler, CloudFrontRequestEvent, CloudFrontRequest } from 'aws-lambda';
+import type { CloudFrontRequestHandler, CloudFrontRequestEvent } from 'aws-lambda';
 
 export const handler: CloudFrontRequestHandler = async (event: CloudFrontRequestEvent) => {
   const request = event.Records[0].cf.request;

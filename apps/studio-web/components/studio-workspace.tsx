@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState, type ChangeEvent } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type ChangeEvent } from "react";
 import { Player, StoryboardRenderer } from "@babulus/renderer";
 import {
   buildTimelineLayout,
@@ -33,36 +33,6 @@ type RenderResult = {
   createdAt: string;
 };
 
-const fallbackScript: ScriptData = {
-  meta: {
-    fps: 30,
-    width: 1280,
-    height: 720,
-    durationSeconds: 14,
-  },
-  scenes: [
-    {
-      id: "scene-1",
-      title: "Opening",
-      startSec: 0,
-      endSec: 6,
-      cues: [
-        { id: "cue-1", label: "Hook", startSec: 0, endSec: 2 },
-        { id: "cue-2", label: "Setup", startSec: 2, endSec: 6 },
-      ],
-    },
-    {
-      id: "scene-2",
-      title: "Reveal",
-      startSec: 6,
-      endSec: 14,
-      cues: [
-        { id: "cue-3", label: "Capability", startSec: 6, endSec: 10 },
-        { id: "cue-4", label: "CTA", startSec: 10, endSec: 14 },
-      ],
-    },
-  ],
-};
 
 const formatTime = (seconds: number) => {
   if (!Number.isFinite(seconds) || seconds < 0) {
@@ -126,7 +96,7 @@ export function StudioWorkspace() {
   }, [activeId, previewIndex]);
 
   const audioSrc = activeEntry?.audio ? `/preview/${activeEntry.audio}` : null;
-  const previewScript = script ?? fallbackScript;
+  const previewScript = script;
   const timelineSummary = useMemo(() => summarizeTimeline(timeline), [timeline]);
   const { fps, width, height, durationSec, durationFrames } = useMemo(
     () =>
@@ -268,9 +238,12 @@ export function StudioWorkspace() {
     setCurrentFrame((prev) => Math.min(prev, maxFrame));
   }, [maxFrame]);
 
-  const clampFrame = (value: number) => Math.max(0, Math.min(maxFrame, Math.round(value)));
+  const clampFrame = useCallback(
+    (value: number) => Math.max(0, Math.min(maxFrame, Math.round(value))),
+    [maxFrame],
+  );
 
-  const syncAudioToFrame = (frame: number) => {
+  const syncAudioToFrame = useCallback((frame: number) => {
     const audio = audioRef.current;
     if (!audio || !audioSrc) {
       return;
@@ -286,7 +259,7 @@ export function StudioWorkspace() {
         return;
       }
     }
-  };
+  }, [audioSrc, fps]);
 
   useEffect(() => {
     if (!audioSrc) {
@@ -302,13 +275,13 @@ export function StudioWorkspace() {
     } else {
       audio.pause();
     }
-  }, [audioSrc, playing, currentFrame, fps]);
+  }, [audioSrc, currentFrame, fps, playing, syncAudioToFrame]);
 
   useEffect(() => {
     if (!playing) {
       syncAudioToFrame(currentFrame);
     }
-  }, [currentFrame, playing, audioSrc]);
+  }, [audioSrc, currentFrame, playing, syncAudioToFrame]);
 
   useEffect(() => {
     if (!playing) {
@@ -355,7 +328,7 @@ export function StudioWorkspace() {
     return () => {
       cancelAnimationFrame(raf);
     };
-  }, [audioSrc, fps, maxFrame, playing]);
+  }, [audioSrc, clampFrame, fps, maxFrame, playing]);
 
   const handleFrameChange = (value: number) => {
     const clamped = clampFrame(value);

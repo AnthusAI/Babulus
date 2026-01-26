@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useOrgs } from "@/lib/use-org-data";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
-import { Plus, Building2 } from "lucide-react";
+import { Building2 } from "lucide-react";
 import { CreateOrgDialog } from "./create-org-dialog";
 import { UserNav } from "./user-nav";
 

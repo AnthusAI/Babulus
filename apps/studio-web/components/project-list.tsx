@@ -2,7 +2,7 @@
 
 import { useProjects } from "@/lib/use-org-data";
 import { CreateProjectDialog } from "./create-project-dialog";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { Folder } from "lucide-react";
 import { cn } from "@/lib/utils";
 

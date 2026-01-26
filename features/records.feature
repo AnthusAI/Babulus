@@ -104,7 +104,7 @@ Feature: Control plane record helpers
     Given a job input with org "none" kind "render" status "none"
     When I build a job input with active org "acme"
     Then the job org should be "acme"
-    And the job status should be "queued"
+    And the record job status should be "queued"
 
   Scenario: Job input accepts idempotency key
     Given a job input with org "none" kind "render" status "none" idempotency "render-vid-1"
@@ -171,7 +171,7 @@ Feature: Control plane record helpers
     When I build a job record with active org "acme"
     Then the record id should be "job-1"
     And the job org should be "acme"
-    And the job status should be "queued"
+    And the record job status should be "queued"
     And the job createdAt should be "2026-01-22T10:00:00.000Z"
 
   Scenario: Job event record uses context

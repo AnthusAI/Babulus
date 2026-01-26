@@ -5,42 +5,42 @@ Feature: AWS Polly TTS Provider
 
   Background:
     Given AWS Polly TTS provider is available
-    And AWS credentials are configured
+    And AWS Polly credentials are configured
 
   Scenario: Generate speech with default voice
-    Given a text "Hello from AWS Polly"
+    Given a Polly text "Hello from AWS Polly"
     When I generate speech with AWS Polly
-    Then the audio should be generated successfully
-    And the audio format should be MP3
-    And usage should be tracked
+    Then the Polly audio should be generated successfully
+    And the Polly audio format should be MP3
+    And Polly usage should be tracked
 
   Scenario: Generate speech with specific voice
-    Given a text "Testing voice selection"
-    And voice "Joanna" is selected
+    Given a Polly text "Testing voice selection"
+    And Polly voice "Joanna" is selected
     When I generate speech with AWS Polly
-    Then the audio should be generated with voice "Joanna"
+    Then the Polly audio should be generated with voice "Joanna"
 
   Scenario: Generate speech with neural engine
-    Given a text "Testing neural engine"
-    And engine "neural" is selected
+    Given a Polly text "Testing neural engine"
+    And Polly engine "neural" is selected
     When I generate speech with AWS Polly
-    Then the audio should be generated with engine "neural"
+    Then the Polly audio should be generated with engine "neural"
 
   Scenario: Handle API error gracefully
     Given the AWS Polly API returns an error
-    And a text "This will fail"
-    When I attempt to generate speech
-    Then it should throw an error
-    And the error should contain API failure details
+    And a Polly text "This will fail"
+    When I attempt to generate Polly speech
+    Then the Polly request should throw an error
+    And the Polly error should contain API failure details
 
   Scenario: Estimate character usage
-    Given a text "The quick brown fox jumps over the lazy dog"
-    When I estimate character usage
-    Then characters should be estimated based on text length
-    And the estimate should be positive
+    Given a Polly text "The quick brown fox jumps over the lazy dog"
+    When I estimate Polly character usage
+    Then Polly characters should be estimated based on text length
+    And the Polly estimate should be positive
 
   Scenario: Calculate cost from usage
-    Given a text is provided
-    When I calculate the cost for 1000 characters
-    Then the cost should match AWS Polly pricing
-    And the cost should be in USD
+    Given a Polly text is provided
+    When I calculate the Polly cost for 1000 characters
+    Then the Polly cost should match AWS Polly pricing
+    And the Polly cost should be in USD

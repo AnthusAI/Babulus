@@ -6,8 +6,8 @@ import {
   listProjects, 
   createVideo, 
   listVideos 
-} from '../packages/shared/src/control-plane';
-import { assertOrgScope } from '../packages/shared/src/org-scope';
+} from '../packages/shared/src/control-plane.js';
+import { assertOrgScope } from '../packages/shared/src/org-scope.js';
 
 async function verifyTenancy() {
   console.log('Starting Multi-Tenancy Verification...');

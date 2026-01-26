@@ -19,7 +19,6 @@ import type {
   OrgMember,
   Project,
   Video,
-  StoryboardVersion,
   GenerationRun,
   RenderRun,
   Asset,
@@ -34,7 +33,6 @@ import type {
   BillingAccount,
   CreateProjectInput,
   CreateVideoInput,
-  CreateStoryboardVersionInput,
   CreateGenerationRunInput,
   CreateRenderRunInput,
   CreateAssetInput,
@@ -47,7 +45,6 @@ import type {
   CreateRenderAgentInput,
   CreateBillingAccountInput,
   CreateOrgInput,
-  CreateOrgMemberInput,
   CreatePublishedVideoInput,
 } from "@babulus/shared";
 import type { VideoStatus } from "@babulus/shared";
@@ -58,7 +55,6 @@ import { runWithAmplifyServerContext } from "../lib/amplify-server.js";
 import { getCurrentUser } from "aws-amplify/auth/server";
 import { copy } from "aws-amplify/storage/server";
 import { generateClient } from "aws-amplify/data";
-import outputs from "../amplify_outputs.json";
 // @ts-ignore
 import type { Schema } from "../amplify/data/resource";
 import bcrypt from "bcryptjs";
@@ -119,12 +115,6 @@ export async function getStoryboardVersion(
   return versions.find(v => v.id === versionId) || null;
 }
 
-export async function getStoryboardVersions(
-  orgId: string,
-  videoId?: string | null,
-): Promise<StoryboardVersion[]> {
-  return cp.listStoryboardVersions(orgId, videoId);
-}
 
 export async function getGenerationRuns(
   orgId: string,
@@ -210,12 +200,6 @@ export async function createVideoAction(input: CreateVideoInput, orgId: string):
   return cp.createVideo(input, orgId);
 }
 
-export async function createStoryboardVersionAction(
-  input: CreateStoryboardVersionInput,
-  orgId: string,
-): Promise<StoryboardVersion> {
-  return cp.createStoryboardVersion(input, orgId);
-}
 
 export async function createGenerationRunAction(
   input: CreateGenerationRunInput,
@@ -377,14 +361,6 @@ export async function setVideoStatusAction(
   orgId: string,
 ): Promise<Video> {
   return cp.setVideoStatus(videoId, status, orgId);
-}
-
-export async function setActiveStoryboardVersionAction(
-  videoId: string,
-  storyboardVersionId: string,
-  orgId: string,
-): Promise<Video> {
-  return cp.setActiveStoryboardVersion(videoId, storyboardVersionId, orgId);
 }
 
 export async function setJobStatusAction(

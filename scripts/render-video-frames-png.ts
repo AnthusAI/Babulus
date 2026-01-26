@@ -3,20 +3,18 @@
 import { Command } from "commander";
 import { readFileSync } from "fs";
 import { resolve } from "path";
-import { renderStoryboardVideo } from "../packages/renderer/src/storyboard-render.js";
+import { renderFramesPngFromScript } from "../packages/renderer/src/video-frames-png.js";
 import type { ScriptData } from "../packages/shared/src/video.js";
 import type { TimelineData } from "../packages/shared/src/timeline.js";
 
 const program = new Command();
 
 program
-  .name("babulus-render-storyboard")
-  .description("Render a storyboard MP4 from a script.json using the built-in storyboard renderer")
+  .name("babulus-render-video-frames-png")
+  .description("Render PNG frames from script.json using Playwright")
   .requiredOption("--script <path>", "Path to script.json")
   .requiredOption("--frames <dir>", "Output directory for PNG frames")
-  .requiredOption("--out <path>", "Output MP4 path")
   .option("--timeline <path>", "Optional timeline.json for duration data")
-  .option("--audio <path>", "Optional audio file path")
   .option("--title <text>", "Storyboard title")
   .option("--subtitle <text>", "Storyboard subtitle")
   .option("--start <number>", "Start frame", (value) => Number(value), 0)
@@ -24,49 +22,36 @@ program
   .option("--pattern <pattern>", "Frame filename pattern", "frame-%06d.png")
   .option("--scale <number>", "Device scale factor", (value) => Number(value), 1)
   .option("--workers <number>", "Parallel frame workers (set 1 to disable)", (value) => Number(value))
-  .option(
-    "--ffmpeg-arg <arg>",
-    "Extra ffmpeg argument (repeat for multiple)",
-    (value: string, previous: string[]) => [...previous, value],
-    [],
-  )
   .option("--fps <number>", "Override fps")
   .option("--width <number>", "Override width")
   .option("--height <number>", "Override height")
   .option("--duration <number>", "Override duration frames")
-  .option("--ffmpeg <path>", "ffmpeg binary path", "ffmpeg")
   .action(async (opts) => {
     const scriptPath = resolve(process.cwd(), opts.script);
     const framesDir = resolve(process.cwd(), opts.frames);
-    const outputPath = resolve(process.cwd(), opts.out);
-    const audioPath = opts.audio ? resolve(process.cwd(), opts.audio) : null;
     const timelinePath = opts.timeline ? resolve(process.cwd(), opts.timeline) : null;
 
     const script = JSON.parse(readFileSync(scriptPath, "utf8")) as ScriptData;
     const timeline = timelinePath ? (JSON.parse(readFileSync(timelinePath, "utf8")) as TimelineData) : null;
     const endFrame = opts.end == null ? undefined : Number(opts.end);
 
-    await renderStoryboardVideo({
+    const result = await renderFramesPngFromScript({
       script,
       timeline,
       title: opts.title,
       subtitle: opts.subtitle,
-      framesDir,
-      outputPath,
-      audioPath,
-      framePattern: opts.pattern,
+      outDir: framesDir,
       startFrame: opts.start,
       endFrame,
+      framePattern: opts.pattern,
       deviceScaleFactor: opts.scale,
       workers: opts.workers,
-      ffmpegPath: opts.ffmpeg,
-      ffmpegArgs: opts.ffmpegArg,
       fps: opts.fps,
       width: opts.width,
       height: opts.height,
       durationFrames: opts.duration,
     });
-    console.error(`write: ${outputPath}`);
+    console.error(`write: ${result.frames.length} frame(s) to ${framesDir}`);
   });
 
 program.parse(process.argv);

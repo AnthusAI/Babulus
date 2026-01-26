@@ -15,7 +15,7 @@ Feature: PublishedVideo Management
     Then the published video should be created successfully
     And the video should reference render run "render-123"
     And the access policy should be "public"
-    And the slug should be "my-awesome-video"
+    And the video slug should be "my-awesome-video"
 
   Scenario: Create a published video with password protection
     When I create a published video with slug "private-video"

@@ -717,7 +717,7 @@ Then("the job org should be {string}", (expected: string) => {
   assert.equal(lastRecord?.orgId, expected);
 });
 
-Then("the job status should be {string}", (expected: string) => {
+Then("the record job status should be {string}", (expected: string) => {
   assert.equal(lastRecord?.status, expected);
 });
 

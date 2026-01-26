@@ -20,16 +20,13 @@ export type AuthenticatorProps = {
  */
 export function Authenticator({ children }: AuthenticatorProps) {
   const [isChecking, setIsChecking] = useState(true);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
     // Quick session check using cached credentials
     async function checkAuth() {
       try {
         await getCurrentUser();
-        setIsAuthenticated(true);
       } catch {
-        setIsAuthenticated(false);
       } finally {
         setIsChecking(false);
       }

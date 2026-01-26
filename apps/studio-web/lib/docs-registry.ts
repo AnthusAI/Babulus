@@ -1,19 +1,17 @@
 import { brandingDoc } from "@/lib/docs-content/branding";
 import { componentsGuideDoc } from "@/lib/docs-content/components-guide";
 import { configSetupDoc } from "@/lib/docs-content/config-setup";
-import { roadmapNextStepsDoc } from "@/lib/docs-content/roadmap-next-steps";
-import { roadmapStatusDoc } from "@/lib/docs-content/roadmap-status";
+import { introductionDoc } from "@/lib/docs-content/introduction";
+import { roadmapDoc } from "@/lib/docs-content/roadmap";
 import { ttsAwsPollyQuickstartDoc } from "@/lib/docs-content/tts-aws-polly-quickstart";
 import { ttsAzureSpeechQuickstartDoc } from "@/lib/docs-content/tts-azure-speech-quickstart";
 import { babulusLanguageDesignDoc } from "@/lib/docs-content/babulus-language-design";
 import { ttsElevenlabsGuideDoc } from "@/lib/docs-content/tts-elevenlabs-guide";
+import { technicalDoc } from "@/lib/docs-content/technical";
 import { environmentsDoc } from "@/lib/docs-content/environments";
 import { projectStorageArchitectureDoc } from "@/lib/docs-content/project-storage-architecture";
 import { projectStorageQuickstartDoc } from "@/lib/docs-content/project-storage-quickstart";
-import { roadmapSaasElectronPlanDoc } from "@/lib/docs-content/roadmap-saas-electron-plan";
 import { securityVerificationDoc } from "@/lib/docs-content/security-verification";
-import { roadmapSession20260125SummaryDoc } from "@/lib/docs-content/roadmap-session-2026-01-25-summary";
-import { roadmapStudioImplementationPlanDoc } from "@/lib/docs-content/roadmap-studio-implementation-plan";
 import { testCoverageDoc } from "@/lib/docs-content/test-coverage";
 import { workerJobSpecDoc } from "@/lib/docs-content/worker-job-spec";
 
@@ -62,27 +60,27 @@ const legacyLinkMap: ReadonlyMap<string, string> = new Map([
   ["test-coverage.md", "/docs/test-coverage"],
   ["./BRANDING.md", "/docs/branding"],
   ["BRANDING.md", "/docs/branding"],
-  ["./NEXT-STEPS.md", "/docs/roadmap/next-steps"],
-  ["NEXT-STEPS.md", "/docs/roadmap/next-steps"],
-  ["./STATUS.md", "/docs/roadmap/status"],
-  ["STATUS.md", "/docs/roadmap/status"],
-  ["./studio-implementation-plan.md", "/docs/roadmap/studio-implementation-plan"],
-  ["studio-implementation-plan.md", "/docs/roadmap/studio-implementation-plan"],
-  ["./saas-electron-plan.md", "/docs/roadmap/saas-electron-plan"],
-  ["saas-electron-plan.md", "/docs/roadmap/saas-electron-plan"],
-  ["./session-2026-01-25-summary.md", "/docs/roadmap/session-2026-01-25-summary"],
-  ["session-2026-01-25-summary.md", "/docs/roadmap/session-2026-01-25-summary"],
+  ["./NEXT-STEPS.md", "/docs/roadmap"],
+  ["NEXT-STEPS.md", "/docs/roadmap"],
+  ["./STATUS.md", "/docs/roadmap"],
+  ["STATUS.md", "/docs/roadmap"],
+  ["./studio-implementation-plan.md", "/docs/roadmap"],
+  ["studio-implementation-plan.md", "/docs/roadmap"],
+  ["./saas-electron-plan.md", "/docs/technical"],
+  ["saas-electron-plan.md", "/docs/technical"],
+  ["./session-2026-01-25-summary.md", "/docs/roadmap"],
+  ["session-2026-01-25-summary.md", "/docs/roadmap"],
 
   ["docs/project-storage-architecture.md", "/docs/project-storage/architecture"],
   ["docs/project-storage-quickstart.md", "/docs/project-storage/quickstart"],
   ["apps/studio-web/docs/project-storage-architecture.md", "/docs/project-storage/architecture"],
   ["apps/studio-web/docs/security-verification.md", "/docs/security-verification"],
   ["docs/security-verification.md", "/docs/security-verification"],
-  ["docs/session-2026-01-25-summary.md", "/docs/roadmap/session-2026-01-25-summary"],
-  ["docs/STATUS.md", "/docs/roadmap/status"],
-  ["docs/NEXT-STEPS.md", "/docs/roadmap/next-steps"],
-  ["docs/studio-implementation-plan.md", "/docs/roadmap/studio-implementation-plan"],
-  ["docs/saas-electron-plan.md", "/docs/roadmap/saas-electron-plan"],
+  ["docs/session-2026-01-25-summary.md", "/docs/roadmap"],
+  ["docs/STATUS.md", "/docs/roadmap"],
+  ["docs/NEXT-STEPS.md", "/docs/roadmap"],
+  ["docs/studio-implementation-plan.md", "/docs/roadmap"],
+  ["docs/saas-electron-plan.md", "/docs/technical"],
 ]);
 
 function normalizeDocHtml(html: string) {
@@ -99,11 +97,12 @@ function normalizeDocHtml(html: string) {
 }
 
 const RAW_DOCS: readonly DocsEntry[] = [
+  introductionDoc,
+  technicalDoc,
+  roadmapDoc,
   brandingDoc,
   componentsGuideDoc,
   configSetupDoc,
-  roadmapNextStepsDoc,
-  roadmapStatusDoc,
   ttsAwsPollyQuickstartDoc,
   ttsAzureSpeechQuickstartDoc,
   babulusLanguageDesignDoc,
@@ -111,10 +110,7 @@ const RAW_DOCS: readonly DocsEntry[] = [
   environmentsDoc,
   projectStorageArchitectureDoc,
   projectStorageQuickstartDoc,
-  roadmapSaasElectronPlanDoc,
   securityVerificationDoc,
-  roadmapSession20260125SummaryDoc,
-  roadmapStudioImplementationPlanDoc,
   testCoverageDoc,
   workerJobSpecDoc,
 ];
@@ -137,9 +133,11 @@ export function findDocBySlug(slug: readonly string[]) {
   return DOCS.find((doc) => docsKey(doc.slug) === key) ?? null;
 }
 
-export function listDocsByCategory() {
+export function listDocsByCategory(options?: { includeInternal?: boolean }) {
+  const includeInternal = options?.includeInternal ?? false;
   const categories = new Map<DocsCategory, DocsEntry[]>();
   for (const doc of DOCS) {
+    if (!includeInternal && doc.internal) continue;
     const existing = categories.get(doc.category) ?? [];
     existing.push(doc);
     categories.set(doc.category, existing);

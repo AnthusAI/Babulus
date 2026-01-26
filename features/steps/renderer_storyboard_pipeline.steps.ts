@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { Before, Given, Then, When } from "@cucumber/cucumber";
-import { renderStoryboardVideo } from "../../packages/renderer/src/storyboard-render.js";
-import { StoryboardRenderer } from "../../packages/renderer/src/storyboard.js";
+import { renderStoryboardVideo } from "../../packages/renderer/src/video-render.js";
+import { ComposableRenderer } from "../../packages/renderer/src/ComposableRenderer.js";
 import type { RenderFramesPngOptions, RenderFramesResult } from "../../packages/renderer/src/render.js";
 import type { EncodeVideoOptions, EncodeRunner } from "../../packages/renderer/src/encode.js";
 import type { ScriptData } from "../../packages/shared/src/video.js";
@@ -135,7 +135,7 @@ Then(
 
 Then("the storyboard pipeline should render the storyboard component", () => {
   assert.ok(renderCall);
-  assert.equal(renderCall?.component, StoryboardRenderer);
+  assert.equal(renderCall?.component, ComposableRenderer);
 });
 
 Then("the storyboard pipeline should pass title {string} subtitle {string}", (title: string, subtitle: string) => {

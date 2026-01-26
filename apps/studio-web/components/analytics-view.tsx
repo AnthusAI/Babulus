@@ -2,7 +2,6 @@
 
 import { useUsageEvents, useBillingAccount } from "@/lib/use-org-data";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
 import { Loader2, DollarSign, Activity, HardDrive } from "lucide-react";

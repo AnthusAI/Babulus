@@ -37,23 +37,12 @@ const studioSchema = schema.schema({
       projectId: schema.string().required(),
       title: schema.string().required(),
       status: schema.string(),
-      activeStoryboardVersionId: schema.string(),
-    })
-    .authorization((allow) => [allow.authenticated()]),
-  StoryboardVersion: schema
-    .model({
-      orgId: schema.string().required(),
-      videoId: schema.string().required(),
-      sourceText: schema.string().required(),
-      parentVersionId: schema.string(),
-      createdBy: schema.string(),
     })
     .authorization((allow) => [allow.authenticated()]),
   GenerationRun: schema
     .model({
       orgId: schema.string().required(),
       videoId: schema.string().required(),
-      storyboardVersionId: schema.string().required(),
       status: schema.string().required(),
       scriptArtifactKey: schema.string(),
       timelineArtifactKey: schema.string(),

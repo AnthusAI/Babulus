@@ -80,6 +80,9 @@ The documentation source of truth lives in the Studio Web app (branded HTML, ser
 - Docs router + link rewrite: `apps/studio-web/app/(public)/docs/[...slug]/page.tsx`
 - Docs registry (slugs, categories): `apps/studio-web/lib/docs-registry.ts`
 - Docs content (HTML strings): `apps/studio-web/lib/docs-content`
+- “What is Babulus?” overview: `/docs/introduction` (`apps/studio-web/lib/docs-content/introduction.ts`)
+- Technical overview: `/docs/technical` (`apps/studio-web/lib/docs-content/technical.ts`)
+- Roadmap: `/docs/roadmap` (`apps/studio-web/lib/docs-content/roadmap.ts`)
 
 ## Inputs/Outputs
 

@@ -5,42 +5,42 @@ Feature: ElevenLabs TTS Provider
 
   Background:
     Given ElevenLabs TTS provider is available
-    And a valid API key is configured
+    And a valid ElevenLabs TTS API key is configured
 
   Scenario: Generate speech with default voice
-    Given a text "Hello world"
+    Given an ElevenLabs TTS text "Hello world"
     When I generate speech with ElevenLabs TTS
-    Then the audio should be generated successfully
-    And the audio format should be MP3
-    And usage should be tracked
+    Then the ElevenLabs TTS audio should be generated successfully
+    And the ElevenLabs TTS audio format should be MP3
+    And ElevenLabs TTS usage should be tracked
 
   Scenario: Generate speech with specific voice
-    Given a text "Testing voice selection"
-    And voice "Rachel" is selected
+    Given an ElevenLabs TTS text "Testing voice selection"
+    And ElevenLabs TTS voice "Rachel" is selected
     When I generate speech with ElevenLabs TTS
-    Then the audio should be generated with voice "Rachel"
+    Then the ElevenLabs TTS audio should be generated with voice "Rachel"
 
   Scenario: Generate speech with custom stability
-    Given a text "Testing stability control"
-    And stability 0.75 is selected
+    Given an ElevenLabs TTS text "Testing stability control"
+    And ElevenLabs TTS stability 0.75 is selected
     When I generate speech with ElevenLabs TTS
-    Then the audio should be generated at stability 0.75
+    Then the ElevenLabs TTS audio should be generated at stability 0.75
 
   Scenario: Handle API error gracefully
     Given the ElevenLabs API returns an error
-    And a text "This will fail"
-    When I attempt to generate speech
-    Then it should throw an error
-    And the error should contain API failure details
+    And an ElevenLabs TTS text "This will fail"
+    When I attempt to generate ElevenLabs TTS speech
+    Then the ElevenLabs TTS request should throw an error
+    And the ElevenLabs TTS error should contain API failure details
 
   Scenario: Estimate character usage
-    Given a text "The quick brown fox jumps over the lazy dog"
-    When I estimate character usage
-    Then characters should be estimated based on text length
-    And the estimate should be positive
+    Given an ElevenLabs TTS text "The quick brown fox jumps over the lazy dog"
+    When I estimate ElevenLabs TTS character usage
+    Then ElevenLabs TTS characters should be estimated based on text length
+    And the ElevenLabs TTS estimate should be positive
 
   Scenario: Calculate cost from usage
-    Given a text is provided
-    When I calculate the cost for 1000 characters
-    Then the cost should match ElevenLabs pricing
-    And the cost should be in USD
+    Given an ElevenLabs TTS text is provided
+    When I calculate the ElevenLabs TTS cost for 1000 characters
+    Then the ElevenLabs TTS cost should match pricing
+    And the ElevenLabs TTS cost should be in USD

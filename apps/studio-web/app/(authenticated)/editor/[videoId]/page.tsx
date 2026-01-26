@@ -101,7 +101,6 @@ export default function VideoEditorPage() {
               videoId={videoId}
               orgId={video.orgId}
               projectId={video.projectId}
-              onBack={() => router.push(`/projects/${video.projectId}`)}
             />
           )}
         </div>

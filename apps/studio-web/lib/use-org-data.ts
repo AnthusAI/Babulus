@@ -17,15 +17,11 @@ import type {
   Org,
   Project,
   Video,
-  StoryboardVersion,
   GenerationRun,
   RenderRun,
   Asset,
   Job,
   JobEvent,
-  Conversation,
-  Message,
-  Approval,
   UsageEvent,
   RenderAgent,
   BillingAccount,
@@ -39,13 +35,9 @@ import {
   fetchJobs,
 } from "./client-data";
 import {
-  getStoryboardVersions,
   getRenderRuns,
   getAssetsForOrg,
   getJobEventsForJob,
-  getConversationsForVideo,
-  getMessagesForConversation,
-  getApprovalsForVideo,
   getUsageEventsForOrg,
   getRenderAgentsForOrg,
   getBillingAccountsForOrg,
@@ -175,63 +167,6 @@ export function useVideos(orgId: string | null, projectId?: string | null) {
   };
 }
 
-/**
- * Hook to load storyboard versions for a video
- */
-export function useStoryboardVersions(orgId: string | null, videoId?: string | null) {
-  const [state, setState] = useState<AsyncState<StoryboardVersion[]>>({
-    data: null,
-    loading: false,
-    error: null,
-  });
-
-  const load = useCallback(async () => {
-    if (!orgId) {
-      setState({ data: [], loading: false, error: null });
-      return;
-    }
-    setState((prev) => ({ ...prev, loading: true, error: null }));
-    try {
-      const data = await getStoryboardVersions(orgId, videoId);
-      setState({ data, loading: false, error: null });
-    } catch (error) {
-      setState({
-        data: null,
-        loading: false,
-        error: error instanceof Error ? error : new Error(String(error)),
-      });
-    }
-  }, [orgId, videoId]);
-
-  useEffect(() => {
-    load();
-  }, [load]);
-
-  return {
-    versions: state.data ?? [],
-    loading: state.loading,
-    error: state.error,
-    refetch: load,
-  };
-}
-
-/**
- * Hook to load the active storyboard version content for a video
- */
-export function useActiveStoryboard(orgId: string | null, videoId?: string | null) {
-  const { videos } = useVideos(orgId, null);
-  const video = videos.find(v => v.id === videoId);
-  const { versions, loading, error, refetch } = useStoryboardVersions(orgId, videoId);
-  
-  const activeVersion = versions.find(v => v.id === video?.activeStoryboardVersionId);
-  
-  return {
-    activeVersion,
-    loading,
-    error,
-    refetch
-  };
-}
 
 /**
  * Hook to load jobs for an org (optionally filtered by status)

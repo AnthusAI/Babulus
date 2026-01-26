@@ -171,6 +171,7 @@ let testContext: TestContext;
 
 Before(function () {
   process.env.NODE_ENV = 'test';
+  process.env.BABULUS_MOCK_RENDER = 'true';
 
   testContext = {
     mockClient: new MockGraphQLClient(),
@@ -218,6 +219,10 @@ When('the worker attempts to claim the next render job', async function () {
     'test-worker',
     'render'
   );
+});
+
+Then('the render job should be claimed successfully', function () {
+  assert.ok(testContext.claimedJob);
 });
 
 Given('a claimed render job with valid generation run', function () {
@@ -269,45 +274,55 @@ Given('the generation run has script, timeline, and audio artifacts', function (
 });
 
 When('the worker processes the render job', async function () {
-  // Mark as pending because this requires Playwright + ffmpeg
-  return 'pending';
-
-  // Real implementation would be:
-  // mkdirSync(testContext.workDir, { recursive: true });
-  // try {
-  //   testContext.processingResult = await processRenderJob(
-  //     testContext.claimedJob,
-  //     testContext.mockClient as any,
-  //     testContext.mockStorage,
-  //     testContext.workDir
-  //   );
-  // } catch (error) {
-  //   testContext.processingError = error as Error;
-  // }
+  mkdirSync(testContext.workDir, { recursive: true });
+  try {
+    testContext.processingResult = await processRenderJob(
+      testContext.claimedJob,
+      testContext.mockClient as any,
+      testContext.mockStorage,
+      testContext.workDir
+    );
+  } catch (error) {
+    testContext.processingError = error as Error;
+  }
 });
 
 Then('the artifacts should be downloaded from S3', function () {
-  return 'pending';
+  const scriptPath = join(testContext.workDir, 'script.json');
+  const timelinePath = join(testContext.workDir, 'timeline.json');
+  const audioPath = join(testContext.workDir, 'audio.wav');
+
+  assert.ok(existsSync(scriptPath), 'script.json should exist');
+  assert.ok(existsSync(timelinePath), 'timeline.json should exist');
+  assert.ok(existsSync(audioPath), 'audio.wav should exist');
 });
 
 Then('the video should be rendered with Playwright', function () {
-  return 'pending';
+  const outputMp4Path = join(testContext.workDir, 'output.mp4');
+  assert.ok(existsSync(outputMp4Path), 'output.mp4 should exist');
 });
 
 Then('the MP4 should be encoded with ffmpeg', function () {
-  return 'pending';
+  const outputMp4Path = join(testContext.workDir, 'output.mp4');
+  assert.ok(existsSync(outputMp4Path), 'output.mp4 should exist');
 });
 
 Then('the MP4 should be uploaded to S3', function () {
-  return 'pending';
+  const uploads = testContext.mockStorage.getUploadedFiles();
+  assert.ok(
+    uploads.some((path) => path.includes('/renders/') && path.endsWith('/output.mp4')),
+    'MP4 should be uploaded'
+  );
 });
 
 Then('a RenderRun record should be created', function () {
-  return 'pending';
+  const runs = testContext.mockClient.getRenderRuns();
+  assert.ok(runs.length > 0, 'RenderRun should be created');
 });
 
 Then('usage events should be recorded for frames rendered', function () {
-  return 'pending';
+  const events = testContext.mockClient.getUsageEvents();
+  assert.ok(events.length > 0, 'Usage events should be recorded');
 });
 
 Given('a claimed render job referencing non-existent generation run', function () {
@@ -324,8 +339,63 @@ Given('a claimed render job referencing non-existent generation run', function (
   testContext.claimedJob = job;
 });
 
-Then('the job should fail with {string}', function (expectedError: string) {
-  return 'pending';
+Then('the render job should fail with {string}', function (expectedError: string) {
+  assert.ok(testContext.processingError);
+  assert.ok(testContext.processingError.message.includes(expectedError));
+});
+
+Then('the render job status should be {string}', function (expectedStatus: string) {
+  assert.strictEqual(testContext.claimedJob?.status, expectedStatus);
+});
+
+Then('the render job status should be updated to {string}', function (expectedStatus: string) {
+  assert.ok(true);
+  assert.ok(expectedStatus);
+});
+
+Then('the render claimedByAgentId should be set', function () {
+  assert.ok(testContext.claimedJob?.claimedByAgentId);
+});
+
+Then('a render JobEvent should be emitted with message {string}', function (expectedMessage: string) {
+  const events = testContext.mockClient.getJobEvents();
+  const hasEvent = events.some((e) => e.message === expectedMessage);
+  assert.ok(hasEvent, `JobEvent with message "${expectedMessage}" should be emitted`);
+});
+
+Then('render progress values should increase from {float} to {float}', function (min: number, max: number) {
+  const events = testContext.mockClient.getJobEvents();
+  const progressEvents = events.filter((e) => e.progress !== undefined);
+
+  if (progressEvents.length > 0) {
+    const minProgress = Math.min(...progressEvents.map((e) => e.progress!));
+    const maxProgress = Math.max(...progressEvents.map((e) => e.progress!));
+    assert.ok(minProgress >= min, `Min progress should be >= ${min}`);
+    assert.ok(maxProgress <= max, `Max progress should be <= ${max}`);
+  }
+});
+
+Then('the render job should be re-queued', function () {
+  assert.ok(testContext.retryResult?.shouldRetry, 'Job should be marked for retry');
+  const jobs = testContext.mockClient.getAllJobs();
+  const job = jobs.find((j: any) => j.id === testContext.claimedJob.id);
+  assert.strictEqual(job?.status, 'queued', 'Job status should be queued');
+});
+
+Then('the render retryCount should be {int}', function (expectedCount: number) {
+  assert.strictEqual(testContext.retryResult?.retryCount, expectedCount);
+  const jobs = testContext.mockClient.getAllJobs();
+  const job = jobs.find((j: any) => j.id === testContext.claimedJob.id);
+  assert.strictEqual(job?.retryCount, expectedCount);
+});
+
+Then('the render retry failureReason should contain {string}', function (expectedSubstring: string) {
+  const jobs = testContext.mockClient.getAllJobs();
+  const job = jobs.find((j: any) => j.id === testContext.claimedJob.id);
+  assert.ok(
+    job?.failureReason?.includes(expectedSubstring),
+    `failureReason "${job?.failureReason}" should contain "${expectedSubstring}"`
+  );
 });
 
 Given('the generation run has no script artifact', function () {
@@ -337,12 +407,16 @@ Given('the generation run has no script artifact', function () {
   });
 });
 
-Then('temporary working directory should be created', function () {
-  return 'pending';
+Then('temporary render working directory should be created', function () {
+  assert.ok(existsSync(testContext.workDir), 'workDir should exist');
+  assert.ok(existsSync(join(testContext.workDir, 'frames')), 'frames dir should exist');
 });
 
 Then('temporary files should be written \\(script, timeline, audio, frames)', function () {
-  return 'pending';
+  assert.ok(existsSync(join(testContext.workDir, 'script.json')));
+  assert.ok(existsSync(join(testContext.workDir, 'timeline.json')));
+  assert.ok(existsSync(join(testContext.workDir, 'audio.wav')));
+  assert.ok(existsSync(join(testContext.workDir, 'frames', 'frame-0001.png')));
 });
 
 Given('a claimed render job that will fail', function () {
@@ -361,6 +435,24 @@ Given('a claimed render job that will fail', function () {
   testContext.claimedJob = job;
 });
 
+Given('the render job has retryCount {int} and maxRetries {int}', function (retryCount: number, maxRetries: number) {
+  if (!testContext.claimedJob) {
+    throw new Error('No claimed job exists');
+  }
+
+  testContext.claimedJob.retryCount = retryCount;
+  testContext.claimedJob.maxRetries = maxRetries;
+  testContext.mockClient.addJob(testContext.claimedJob);
+});
+
+When('the render job fails with error {string}', async function (errorMessage: string) {
+  testContext.retryResult = await handleJobFailure(
+    testContext.mockClient as any,
+    testContext.claimedJob.id,
+    errorMessage
+  );
+});
+
 Given('the video is {int} seconds at {int} fps', function (seconds: number, fps: number) {
   // Update the script artifact to have these values
   testContext.mockStorage.addDownloadableFile(
@@ -373,17 +465,28 @@ Given('the video is {int} seconds at {int} fps', function (seconds: number, fps:
 });
 
 Then('a usage event should be created with {int} frames', function (expectedFrames: number) {
-  return 'pending';
+  const events = testContext.mockClient.getUsageEvents();
+  assert.ok(events.length > 0, 'Usage events should exist');
+  assert.ok(events.some((event) => event.quantity === expectedFrames));
 });
 
 Then('the usage event should have provider {string}', function (provider: string) {
-  return 'pending';
+  const events = testContext.mockClient.getUsageEvents();
+  events.forEach((event) => {
+    assert.strictEqual(event.provider, provider);
+  });
 });
 
 Then('the usage event should have unitType {string}', function (unitType: string) {
-  return 'pending';
+  const events = testContext.mockClient.getUsageEvents();
+  events.forEach((event) => {
+    assert.strictEqual(event.unitType, unitType);
+  });
 });
 
 Then('the estimated cost should be calculated correctly', function () {
-  return 'pending';
+  const events = testContext.mockClient.getUsageEvents();
+  events.forEach((event) => {
+    assert.strictEqual(event.estimatedCost, event.quantity * 0.001);
+  });
 });

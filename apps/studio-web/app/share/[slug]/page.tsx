@@ -1,6 +1,6 @@
 import { Amplify } from "aws-amplify";
 import { generateClient } from "aws-amplify/data";
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import { SharePlayer } from "@/components/share-player";
 import { PasswordPrompt } from "@/components/password-prompt";
 import outputs from "../../../amplify_outputs.json";

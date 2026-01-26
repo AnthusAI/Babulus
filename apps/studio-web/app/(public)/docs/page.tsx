@@ -7,7 +7,7 @@ export const metadata = {
 };
 
 export default function DocsLandingPage() {
-  const sections = listDocsByCategory();
+  const sections = listDocsByCategory({ includeInternal: false });
 
   return (
     <DocsShell>
@@ -18,11 +18,11 @@ export default function DocsLandingPage() {
               Documentation
             </p>
             <h1 className="mt-3 font-heading text-3xl md:text-5xl leading-[1.05] tracking-tight">
-              Babulus docs, in one place.
+              How it works and how to use it.
             </h1>
             <p className="mt-4 max-w-[58ch] text-muted-foreground leading-7">
-              Guides for configuring providers, environment-aware caching, project storage, and the
-              Babulus DSL.
+              Start with the introduction, skim the roadmap, or dive into technical details and
+              configuration guides.
             </p>
           </div>
         </div>
@@ -56,4 +56,3 @@ export default function DocsLandingPage() {
     </DocsShell>
   );
 }
-

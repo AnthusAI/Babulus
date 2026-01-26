@@ -25,7 +25,12 @@ export function DocsShell({
   children: ReactNode;
 }) {
   const activeKey = activeSlug?.join("/") ?? null;
-  const sections = listDocsByCategory();
+  const sections = listDocsByCategory({ includeInternal: false });
+  const internalDocs = activeSlug
+    ? listDocsByCategory({ includeInternal: true })
+        .flatMap((section) => section.docs)
+        .filter((doc) => doc.internal)
+    : [];
 
   return (
     <div className="bg-recess">
@@ -51,6 +56,22 @@ export function DocsShell({
                       </div>
                     </div>
                   ))}
+                  {internalDocs.length ? (
+                    <div className="space-y-2 pt-2">
+                      <div className="px-3 text-xs font-semibold uppercase tracking-[0.2em] text-foreground/50">
+                        Internal
+                      </div>
+                      <div className="flex flex-col gap-1">
+                        {internalDocs.map((doc) => (
+                          <DocsNavItem
+                            key={doc.slug.join("/")}
+                            doc={doc}
+                            isActive={activeKey === doc.slug.join("/")}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  ) : null}
                 </div>
               </div>
             </div>
@@ -61,4 +82,3 @@ export function DocsShell({
     </div>
   );
 }
-

@@ -1,7 +1,8 @@
 "use client";
 
 import { useProjectFiles } from "@/lib/use-org-data";
-import { Image, Music, Film, File as FileIcon, Trash2, Copy, Eye, Upload, FolderOpen } from "lucide-react";
+import NextImage from "next/image";
+import { Image as ImageIcon, Music, Film, File as FileIcon, Trash2, Copy, Eye, Upload, FolderOpen } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { deleteProjectFileAction, uploadProjectFileAction } from "@/app/actions/project-files";
@@ -91,7 +92,7 @@ export function AssetManager({ projectId }: AssetManagerProps) {
   const getFileIcon = (filename: string) => {
     const ext = filename.split('.').pop()?.toLowerCase();
     if (['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp'].includes(ext || '')) {
-      return <Image className="h-4 w-4 text-blue-500" />;
+      return <ImageIcon className="h-4 w-4 text-blue-500" />;
     }
     if (['mp3', 'wav', 'ogg', 'm4a', 'aac'].includes(ext || '')) {
       return <Music className="h-4 w-4 text-purple-500" />;
@@ -193,13 +194,16 @@ export function AssetManager({ projectId }: AssetManagerProps) {
               >
                 {/* Icon or Thumbnail */}
                 {isImage && file.url ? (
-                  <div className="w-5 h-5 rounded flex-shrink-0 overflow-hidden bg-muted border">
-                    <img
+                  <div className="w-5 h-5 rounded flex-shrink-0 overflow-hidden bg-muted border relative">
+                    <NextImage
                       src={file.url}
                       alt={displayName}
-                      className="w-full h-full object-cover"
-                      onError={(e) => {
-                        e.currentTarget.style.display = 'none';
+                      fill
+                      sizes="20px"
+                      className="object-cover"
+                      unoptimized
+                      onError={(event) => {
+                        event.currentTarget.style.display = 'none';
                       }}
                     />
                   </div>

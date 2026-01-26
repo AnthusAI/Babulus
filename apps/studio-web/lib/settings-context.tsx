@@ -34,10 +34,8 @@ const SettingsContext = createContext<SettingsContextType | undefined>(undefined
 export function SettingsProvider({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false);
   const [layout, setLayout] = useState<LayoutSettings>(DEFAULT_LAYOUT);
-  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
     const stored = localStorage.getItem("babulus-layout-settings");
     if (stored) {
       try {

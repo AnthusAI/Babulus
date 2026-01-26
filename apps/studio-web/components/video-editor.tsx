@@ -1,131 +1,35 @@
 "use client";
 
 // @ts-ignore
-import { getUrl, downloadData } from "aws-amplify/storage";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { getUrl } from "aws-amplify/storage";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { PointerEvent as ReactPointerEvent } from "react";
 import bcrypt from "bcryptjs";
-import { Player, StoryboardRenderer } from "@babulus/renderer";
 import {
   deriveVideoConfig,
   summarizeTimeline,
   type ScriptData,
   type TimelineData,
-  type GenerationRun,
 } from "@babulus/shared";
-import { useVideos, useGenerationRuns, useJobs, useActiveStoryboard, useOrgs, useVideoRenderRuns } from "@/lib/use-org-data";
+import { useVideos, useGenerationRuns, useJobs, useVideoRenderRuns } from "@/lib/use-org-data";
 import { useSettings } from "@/lib/settings-context";
-import { createJobAction, createStoryboardVersionAction, setActiveStoryboardVersionAction, createPublishedVideoAction } from "@/app/actions";
+import { createJobAction, createPublishedVideoAction } from "@/app/actions";
 import { uploadProjectFileAction, readProjectFileAction } from "@/app/actions/project-files";
 import { Button } from "@/components/ui/button";
 import { PublishModal } from "@/components/publish-modal";
 import { AssetManager } from "@/components/asset-manager";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Play, Pause, Loader2, Send, Save, ChevronLeft, ChevronRight, Maximize2, Minimize2, X } from "lucide-react";
+import { Send, Save, ChevronLeft, ChevronRight, Maximize2, Minimize2, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import Editor from "@monaco-editor/react";
 import { configureAmplify } from "@/lib/amplify-config";
+import { PreviewPlayer } from "@/components/preview-player";
+import { dslToScriptData } from "@babulus/shared/dsl-to-script";
+import { executeDslFile } from "@/lib/dsl-executor";
 
 // Ensure Amplify is configured before using storage APIs
 configureAmplify();
-
-const fallbackScript: ScriptData = {
-  meta: {
-    fps: 30,
-    width: 1280,
-    height: 720,
-    durationSeconds: 14,
-  },
-  scenes: [
-    {
-      id: "scene-1",
-      title: "Opening",
-      startSec: 0,
-      endSec: 6,
-      cues: [
-        { id: "cue-1", label: "Hook", startSec: 0, endSec: 2 },
-        { id: "cue-2", label: "Setup", startSec: 2, endSec: 6 },
-      ],
-    },
-    {
-      id: "scene-2",
-      title: "Reveal",
-      startSec: 6,
-      endSec: 14,
-      cues: [
-        { id: "cue-3", label: "Capability", startSec: 6, endSec: 10 },
-        { id: "cue-4", label: "CTA", startSec: 10, endSec: 14 },
-      ],
-    },
-  ],
-};
-
-// Default DSL for new videos - Introduction to Babulus
-const DEFAULT_DSL = `import { composition, scene, voice, audio } from '@babulus/dsl';
-
-export default composition('introduction', () => {
-  voice({ provider: 'dry-run', leadInSeconds: 0.5 });
-
-  scene('welcome', 'Welcome', () => {
-    voice.cue(() => {
-      voice.say('Welcome to Babulus, the AI-powered video creation platform.');
-      voice.pause(0.4);
-      voice.say('Create professional videos using code, with automatic voiceovers and scene composition.');
-    });
-  });
-
-  scene('features', 'Key Features', () => {
-    voice.cue(() => {
-      voice.say('Babulus combines the power of TypeScript with AI to streamline video production.');
-      voice.pause(0.3);
-      voice.say('Write your video content as code, and we handle voiceover generation, timing, and rendering.');
-    });
-
-    voice.pause(0.5);
-
-    voice.cue(() => {
-      voice.say('Use scenes to organize your content, cues to structure narration, and beats to control timing.');
-      voice.pause(0.3);
-      voice.say('Add background music, sound effects, and visual components to enhance your videos.');
-    });
-  });
-
-  scene('getting-started', 'Getting Started', () => {
-    voice.cue(() => {
-      voice.say('Getting started is simple. Create a project, upload your assets, and start writing your video script.');
-      voice.pause(0.4);
-      voice.say('The editor provides real-time preview, syntax highlighting, and instant feedback as you build.');
-    });
-
-    voice.pause(0.5);
-
-    voice.cue(() => {
-      voice.say('When you are ready, click Generate to process your script and create the final video.');
-      voice.pause(0.3);
-      voice.say('You can iterate quickly, making changes and regenerating until your video is perfect.');
-    });
-  });
-
-  scene('conclusion', 'Conclusion', () => {
-    voice.cue(() => {
-      voice.say('Whether you are creating marketing content, educational videos, or product demos, Babulus makes it fast and easy.');
-      voice.pause(0.4);
-      voice.say('Start creating your first video today and experience the future of video production.');
-    });
-  });
-});
-`;
-
-const formatTime = (seconds: number) => {
-  if (!Number.isFinite(seconds) || seconds < 0) {
-    return "0:00";
-  }
-  const total = Math.floor(seconds);
-  const mins = Math.floor(total / 60);
-  const secs = total % 60;
-  return `${mins}:${secs.toString().padStart(2, "0")}`;
-};
 
 const SPLITTER_SIZE_PX = 1;
 const CHAT_MIN_PERCENT = 18;
@@ -156,25 +60,6 @@ type DragState = {
   maxPercent: number;
 };
 
-function SplitThumb({
-  orientation,
-  isActive,
-}: {
-  orientation: SplitOrientation;
-  isActive: boolean;
-}) {
-  return (
-    <div
-      className={cn(
-        "absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border border-muted-foreground/40 bg-background transition-colors",
-        orientation === "vertical" ? "h-7 w-1.5" : "h-1.5 w-7",
-        "group-hover:border-muted-foreground/60 group-hover:bg-card",
-        isActive && "border-muted-foreground/70 bg-foreground/10",
-      )}
-    />
-  );
-}
-
 function SplitterHandle({
   orientation,
   onPointerDown,
@@ -196,8 +81,13 @@ function SplitterHandle({
         orientation === "vertical" ? "w-px h-full" : "h-px w-full",
       )}
     >
-      <div className="absolute inset-0 bg-muted-foreground/30" />
-      <SplitThumb orientation={orientation} isActive={isActive} />
+      <div
+        className={cn(
+          "absolute inset-0 origin-center bg-muted-foreground/30 transition-transform transition-colors",
+          orientation === "vertical" ? "scale-x-[1] group-hover:scale-x-[5]" : "scale-y-[1] group-hover:scale-y-[5]",
+          isActive && "bg-foreground/60",
+        )}
+      />
       <div
         onPointerDown={onPointerDown}
         className={cn(
@@ -215,32 +105,29 @@ type VideoEditorProps = {
   orgId: string;
   projectId: string;
   videoId: string;
-  onBack: () => void;
 };
 
-export function VideoEditor({ orgId, projectId, videoId, onBack }: VideoEditorProps) {
+export function VideoEditor({ orgId, projectId, videoId }: VideoEditorProps) {
   const { videos } = useVideos(orgId, projectId);
   const { runs, refetch: refetchRuns } = useGenerationRuns(orgId, videoId);
-  const { runs: renderRuns, refetch: refetchRenderRuns } = useVideoRenderRuns(orgId, videoId);
+  const { runs: renderRuns } = useVideoRenderRuns(orgId, videoId);
   const { jobs, refetch: refetchJobs } = useJobs(orgId);
-  const { activeVersion, refetch: refetchVersion } = useActiveStoryboard(orgId, videoId);
   const { layout, updateLayout } = useSettings();
-  const { orgs } = useOrgs();
-  const activeOrg = orgs.find(o => o.id === orgId);
 
   const video = useMemo(() => videos.find((v) => v.id === videoId), [videos, videoId]);
   
-  const [currentFrame, setCurrentFrame] = useState(0);
-  const [playing, setPlaying] = useState(false);
-  const [script, setScript] = useState<ScriptData>(fallbackScript);
-  const [audioSrc, setAudioSrc] = useState<string | null>(null);
-  const [editorCode, setEditorCode] = useState<string>(DEFAULT_DSL);
+  const [script, setScript] = useState<ScriptData | null>(null);
+  const [editorCode, setEditorCode] = useState<string>('');
+  const [isLoadingCode, setIsLoadingCode] = useState(true);
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
   const [publishModalOpen, setPublishModalOpen] = useState(false);
   const [sidebarMode, setSidebarMode] = useState<'chat' | 'assets'>('assets');
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  // Preview state (instant preview only - no fallbacks)
+  const [_previewError, setPreviewError] = useState<string | null>(null);
+  const [_isGeneratingPreview, setIsGeneratingPreview] = useState(false);
   const outerSplitRef = useRef<HTMLDivElement | null>(null);
   const mainSplitRef = useRef<HTMLDivElement | null>(null);
   const [chatPercent, setChatPercent] = useState(() => clampPercent(layout.chatPercent, CHAT_MIN_PERCENT, CHAT_MAX_PERCENT));
@@ -249,6 +136,7 @@ export function VideoEditor({ orgId, projectId, videoId, onBack }: VideoEditorPr
   const dragStateRef = useRef<DragState | null>(null);
   const chatPercentRef = useRef(chatPercent);
   const inputPercentRef = useRef(inputPercent);
+  const handlePointerUpRef = useRef<() => void>(() => {});
 
   useEffect(() => {
     chatPercentRef.current = chatPercent;
@@ -265,6 +153,10 @@ export function VideoEditor({ orgId, projectId, videoId, onBack }: VideoEditorPr
   }, [layout.chatPercent, layout.inputPercent, activeDrag]);
 
   const handlePointerMove = useCallback((event: PointerEvent) => {
+    if (event.buttons === 0) {
+      handlePointerUpRef.current();
+      return;
+    }
     const state = dragStateRef.current;
     if (!state) return;
     const delta = state.axis === "x" ? event.clientX - state.startX : event.clientY - state.startY;
@@ -296,12 +188,28 @@ export function VideoEditor({ orgId, projectId, videoId, onBack }: VideoEditorPr
   }, [handlePointerMove, updateLayout]);
 
   useEffect(() => {
+    handlePointerUpRef.current = handlePointerUp;
+  }, [handlePointerUp]);
+
+  useEffect(() => {
     return () => {
       window.removeEventListener("pointermove", handlePointerMove);
       window.removeEventListener("pointerup", handlePointerUp);
       window.removeEventListener("pointercancel", handlePointerUp);
     };
   }, [handlePointerMove, handlePointerUp]);
+
+  useEffect(() => {
+    const handleWindowBlur = () => {
+      handlePointerUpRef.current();
+    };
+    window.addEventListener("blur", handleWindowBlur);
+    document.addEventListener("visibilitychange", handleWindowBlur);
+    return () => {
+      window.removeEventListener("blur", handleWindowBlur);
+      document.removeEventListener("visibilitychange", handleWindowBlur);
+    };
+  }, []);
 
   const startChatDrag = useCallback(
     (event: ReactPointerEvent<HTMLDivElement>) => {
@@ -356,62 +264,74 @@ export function VideoEditor({ orgId, projectId, videoId, onBack }: VideoEditorPr
     [handlePointerMove, handlePointerUp, layout.inputPosition, layout.mainAxis],
   );
 
-  // Sync editor with active version (prefer S3, fallback to StoryboardVersion)
+  // Load editor code from S3 only (no fallbacks)
   useEffect(() => {
     const loadEditorCode = async () => {
-      if (!video?.title) return;
+      if (!video?.title) {
+        setIsLoadingCode(false);
+        return;
+      }
 
-      // Try loading from S3 first
+      setIsLoadingCode(true);
       try {
         const fileName = `${video.title.replace(/[^a-z0-9]/gi, '-').toLowerCase()}.babulus.ts`;
         const content = await readProjectFileAction(projectId, fileName);
         if (content) {
           setEditorCode(content);
-          return; // Success - don't fallback
         }
       } catch (error) {
-        // ProjectFile doesn't exist or error loading - fallback to StoryboardVersion
-        console.log('ProjectFile not found, falling back to StoryboardVersion');
-      }
-
-      // Fallback to StoryboardVersion
-      if (activeVersion?.sourceText) {
-        setEditorCode(activeVersion.sourceText);
+        console.log('ProjectFile not found in S3');
+        // No fallback - leave editor empty
+      } finally {
+        setIsLoadingCode(false);
       }
     };
 
     loadEditorCode();
-  }, [activeVersion, video?.title, projectId]);
+  }, [video?.title, projectId]);
 
-  // Load artifacts from the latest succeeded run
-  useEffect(() => {
-    const succeededRuns = runs.filter(r => r.status === 'succeeded').sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-    const latestRun = succeededRuns[0];
+  // Moved handlePreview definition here so it can be used in useEffect below
 
-    if (latestRun) {
-      // Load Script
-      if (latestRun.scriptArtifactKey) {
-        downloadData({ path: latestRun.scriptArtifactKey }).result
-          .then(result => result.body.json())
-          .then(data => setScript(data as ScriptData))
-          .catch(e => console.error("Failed to load script", e));
+  const handlePreview = useCallback(async () => {
+    setIsGeneratingPreview(true);
+    setPreviewError(null);
+
+    try {
+      // 1. Execute DSL code from Monaco editor
+      const videoSpec = await executeDslFile(editorCode);
+
+      // 2. Get first composition
+      const composition = videoSpec.compositions?.[0];
+      if (!composition) {
+        throw new Error('No composition found in video. Make sure your DSL exports a composition.');
       }
 
-      // Load Audio
-      if (latestRun.audioArtifactKey) {
-        getUrl({ path: latestRun.audioArtifactKey }).then(res => {
-          setAudioSrc(res.url.toString());
-        }).catch(e => console.error("Failed to load audio URL", e));
-      }
+      // 3. Transform to ScriptData with placeholder timing
+      const previewScript = dslToScriptData(composition, {
+        type: 'cue-count',
+        secondsPerCue: 3
+      });
+
+      setScript(previewScript);
+    } catch (error) {
+      console.error('[Preview] Preview failed:', error);
+      setPreviewError(error instanceof Error ? error.message : 'Failed to generate preview');
+    } finally {
+      setIsGeneratingPreview(false);
     }
-  }, [runs]);
+  }, [editorCode]);
 
-  // TODO: Fetch actual artifacts from S3 using signed URLs
-  // For now, we use fallback data or empty state
+  // Auto-preview when editor code changes
+  useEffect(() => {
+    if (editorCode) {
+      handlePreview();
+    }
+  }, [editorCode, handlePreview]);
+
   const timeline: TimelineData | null = null;
 
   const timelineSummary = useMemo(() => summarizeTimeline(timeline), [timeline]);
-  const { fps, width, height, durationSec, durationFrames } = useMemo(
+  const { width, height } = useMemo(
     () =>
       deriveVideoConfig({
         script,
@@ -420,9 +340,6 @@ export function VideoEditor({ orgId, projectId, videoId, onBack }: VideoEditorPr
       }),
     [script, timelineSummary],
   );
-
-  const maxFrame = Math.max(0, durationFrames - 1);
-  const currentTimeSec = currentFrame / fps;
 
   const activeJob = useMemo(() => {
     return jobs.find(j => {
@@ -448,80 +365,11 @@ export function VideoEditor({ orgId, projectId, videoId, onBack }: VideoEditorPr
     }
   }, [activeJob, refetchJobs, refetchRuns]);
 
-  // Sync audio with frame
-  useEffect(() => {
-    if (!audioSrc) return;
-    const audio = audioRef.current;
-    if (!audio) return;
-
-    if (playing) {
-      if (Math.abs(audio.currentTime - currentTimeSec) > 0.1) {
-        audio.currentTime = currentTimeSec;
-      }
-      void audio.play().catch(() => {});
-    } else {
-      audio.pause();
-    }
-  }, [playing, audioSrc, currentTimeSec]);
-
-  // Playback loop
-  useEffect(() => {
-    if (!playing) return;
-
-    let raf = 0;
-    let lastTime = performance.now();
-    let accumulator = 0;
-
-    const tick = (time: number) => {
-      const frameDurationMs = 1000 / fps;
-      const delta = time - lastTime;
-      
-      if (delta > 0) {
-        accumulator += delta / frameDurationMs;
-        const advance = Math.floor(accumulator);
-        
-        if (advance > 0) {
-          accumulator -= advance;
-          setCurrentFrame((prev) => {
-            const next = prev + advance;
-            if (next >= maxFrame) {
-              setPlaying(false);
-              return maxFrame;
-            }
-            return next;
-          });
-        }
-        lastTime = time;
-      }
-      raf = requestAnimationFrame(tick);
-    };
-
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [playing, fps, maxFrame]);
-
-  const handleTogglePlayback = () => setPlaying(!playing);
-
-  const handleFrameChange = (frame: number) => {
-    setCurrentFrame(Math.max(0, Math.min(maxFrame, Math.round(frame))));
-  };
 
   const handleGenerate = async () => {
     if (activeJob) return;
     try {
-      // 1. Save current code as new version
-      const version = await createStoryboardVersionAction({
-        orgId,
-        videoId,
-        sourceText: editorCode,
-        parentVersionId: video?.activeStoryboardVersionId || undefined,
-      }, orgId);
-
-      // 2. Update video to use this version
-      await setActiveStoryboardVersionAction(videoId, version.id, orgId);
-      await refetchVersion();
-
-      // 3. ALSO save to S3 as ProjectFile (dual storage for gradual migration)
+      // 1. Save to S3 as ProjectFile
       if (video?.title) {
         try {
           // Generate filename from video title (sanitized)
@@ -534,12 +382,12 @@ export function VideoEditor({ orgId, projectId, videoId, onBack }: VideoEditorPr
             'text/typescript'
           );
         } catch (s3Error) {
-          // Log S3 error but don't fail the generation - dual storage is additive
-          console.warn("Failed to save to S3 (non-fatal):", s3Error);
+          console.error("Failed to save to S3:", s3Error);
+          throw s3Error;
         }
       }
 
-      // 4. Queue job
+      // 2. Queue job
       await createJobAction({
         orgId,
         kind: 'generate',
@@ -652,65 +500,31 @@ export function VideoEditor({ orgId, projectId, videoId, onBack }: VideoEditorPr
 
   const OutputPane = (
     <div className="flex flex-col h-full min-h-0">
-      <div className="flex-1 min-h-0 flex items-center justify-center overflow-hidden pt-1 relative">
-        <div className="h-full w-full max-w-5xl max-h-full flex items-center justify-center">
-          <div
-            className="w-full h-full max-w-full max-h-full bg-black overflow-hidden relative"
-            style={{ aspectRatio: `${width} / ${height}` }}
-          >
-            <Player
-              component={StoryboardRenderer}
-              config={{ fps, width, height, durationFrames }}
-              inputProps={{ script }}
-              frame={currentFrame}
-              onFrameChange={handleFrameChange}
-              playing={playing}
-              onPlayingChange={setPlaying}
-              clock="external"
-              showControls={false}
-              surfaceStyle={{ width: "100%", height: "100%" }}
-            />
+      <div className="flex-1 min-h-0 flex items-center justify-center overflow-hidden relative">
+        {script ? (
+          <div className="h-full w-full flex items-center justify-center">
+            <PreviewPlayer script={script} width={width} height={height} />
           </div>
-        </div>
-        {/* Fullscreen Toggle Button */}
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => setIsFullscreen(!isFullscreen)}
-          className="absolute top-2 right-2 h-8 w-8 bg-black/50 hover:bg-black/70 text-white"
-          title={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}
-        >
-          {isFullscreen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
-        </Button>
-      </div>
-      <div className="flex-shrink-0 pt-2">
-        <div className="max-w-5xl mx-auto w-full">
-          <div className="flex flex-col gap-2 px-2 py-2">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <Button variant="secondary" size="icon" onClick={handleTogglePlayback} className="h-8 w-8">
-                  {playing ? <Pause className="h-4 w-4 fill-current" /> : <Play className="h-4 w-4 fill-current" />}
-                </Button>
-                <div className="text-xs font-mono text-muted-foreground">
-                  {formatTime(currentTimeSec)} / {formatTime(durationSec)}
-                  <span className="mx-2 opacity-50">|</span>
-                  {currentFrame} / {maxFrame} f
-                </div>
-              </div>
-              <div className="text-xs text-muted-foreground font-mono">
-                {fps} FPS
-              </div>
+        ) : (
+          <div className="flex items-center justify-center h-full text-muted-foreground">
+            <div className="text-center space-y-2">
+              <p>No preview available</p>
+              <p className="text-sm">Preview will update automatically as you type</p>
             </div>
-            <input
-              type="range"
-              min={0}
-              max={maxFrame}
-              value={currentFrame}
-              onChange={(e) => handleFrameChange(Number(e.target.value))}
-              className="w-full accent-primary h-2 bg-muted rounded-lg appearance-none cursor-pointer"
-            />
           </div>
-        </div>
+        )}
+        {/* Fullscreen Toggle Button */}
+        {script && (
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setIsFullscreen(!isFullscreen)}
+            className="absolute top-2 right-2 h-8 w-8 bg-black/50 hover:bg-black/70 text-white"
+            title={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}
+          >
+            {isFullscreen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
+          </Button>
+        )}
       </div>
     </div>
   );
@@ -718,20 +532,29 @@ export function VideoEditor({ orgId, projectId, videoId, onBack }: VideoEditorPr
   const InputPane = (
     <div className="flex-1 flex flex-col min-h-0 h-full overflow-hidden">
       <div className="flex-1 min-h-0 relative">
-        <Editor
-          height="100%"
-          defaultLanguage="typescript"
-          theme="vs-dark" // We can make this dynamic later
-          value={editorCode}
-          onChange={(value) => setEditorCode(value || "")}
-          options={{
-            minimap: { enabled: false },
-            fontSize: 13,
-            padding: { top: 16 },
-            scrollBeyondLastLine: false,
-            automaticLayout: true,
-          }}
-        />
+        {isLoadingCode ? (
+          <div className="flex items-center justify-center h-full bg-[#1e1e1e]">
+            <div className="flex flex-col items-center gap-3">
+              <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+              <p className="text-sm text-muted-foreground">Loading code...</p>
+            </div>
+          </div>
+        ) : (
+          <Editor
+            height="100%"
+            defaultLanguage="typescript"
+            theme="vs-dark" // We can make this dynamic later
+            value={editorCode}
+            onChange={(value) => setEditorCode(value || "")}
+            options={{
+              minimap: { enabled: false },
+              fontSize: 13,
+              padding: { top: 16 },
+              scrollBeyondLastLine: false,
+              automaticLayout: true,
+            }}
+          />
+        )}
       </div>
     </div>
   );
@@ -886,91 +709,24 @@ export function VideoEditor({ orgId, projectId, videoId, onBack }: VideoEditorPr
   };
 
   // Fullscreen Overlay
-  const FullscreenOverlay = (
+  const FullscreenOverlay = script ? (
     <div className="fixed inset-0 z-50 bg-black flex flex-col">
       {/* Video Container */}
       <div className="flex-1 flex items-center justify-center relative">
-        <div className="w-full h-full flex items-center justify-center">
-          <div
-            className="w-full h-full bg-black overflow-hidden relative flex items-center justify-center"
-            style={{ maxWidth: '100%', maxHeight: '100%' }}
-          >
-            <div
-              className="relative"
-              style={{
-                aspectRatio: `${width} / ${height}`,
-                width: '100%',
-                height: '100%',
-                maxWidth: '100vw',
-                maxHeight: '100vh'
-              }}
-            >
-              <Player
-                component={StoryboardRenderer}
-                config={{ fps, width, height, durationFrames }}
-                inputProps={{ script }}
-                frame={currentFrame}
-                onFrameChange={handleFrameChange}
-                playing={playing}
-                onPlayingChange={setPlaying}
-                clock="external"
-                showControls={false}
-                surfaceStyle={{ width: "100%", height: "100%" }}
-              />
-            </div>
-          </div>
-        </div>
-        {/* Exit Fullscreen Button */}
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => setIsFullscreen(false)}
-          className="absolute top-4 right-4 h-10 w-10 bg-black/30 hover:bg-black/50 text-white"
-          title="Exit fullscreen"
-        >
-          <X className="h-5 w-5" />
-        </Button>
-      </div>
-
-      {/* Transport Overlay */}
-      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent pt-16 pb-4">
-        <div className="max-w-4xl mx-auto px-8">
-          <div className="flex flex-col gap-3">
-            <div className="flex items-center justify-between text-white">
-              <div className="flex items-center gap-4">
-                <Button variant="ghost" size="icon" onClick={handleTogglePlayback} className="h-10 w-10 hover:bg-white/20">
-                  {playing ? <Pause className="h-5 w-5 fill-current" /> : <Play className="h-5 w-5 fill-current" />}
-                </Button>
-                <div className="text-sm font-mono">
-                  {formatTime(currentTimeSec)} / {formatTime(durationSec)}
-                </div>
-              </div>
-              <div className="text-sm font-mono">
-                {fps} FPS
-              </div>
-            </div>
-            <input
-              type="range"
-              min={0}
-              max={maxFrame}
-              value={currentFrame}
-              onChange={(e) => handleFrameChange(Number(e.target.value))}
-              className="w-full accent-white h-2 bg-white/20 rounded-lg appearance-none cursor-pointer"
-            />
-          </div>
-        </div>
+        <PreviewPlayer
+          script={script}
+          width={width}
+          height={height}
+          overlayControls
+          onExitFullscreen={() => setIsFullscreen(false)}
+        />
       </div>
     </div>
-  );
+  ) : null;
 
   // If fullscreen, show only the fullscreen overlay
-  if (isFullscreen) {
-    return (
-      <>
-        {FullscreenOverlay}
-        <audio ref={audioRef} />
-      </>
-    );
+  if (isFullscreen && FullscreenOverlay) {
+    return FullscreenOverlay;
   }
 
   return (
@@ -1032,14 +788,7 @@ export function VideoEditor({ orgId, projectId, videoId, onBack }: VideoEditorPr
             </>
           )}
         </div>
-        <div className="flex items-center">
-          {activeJob && (
-            <div className="flex items-center gap-2 text-xs text-muted-foreground bg-muted px-2 py-1 rounded-full animate-pulse">
-              <Loader2 className="h-3 w-3 animate-spin" />
-              {activeJob.status === 'queued' ? 'Queued...' : (activeJob.kind === 'render' ? 'Rendering...' : 'Generating...')}
-            </div>
-          )}
-        </div>
+        <div className="flex items-center" />
       </div>
 
       <div
@@ -1071,19 +820,13 @@ export function VideoEditor({ orgId, projectId, videoId, onBack }: VideoEditorPr
           </>
         )}
       </div>
-      
-      {/* Hidden Audio Element */}
-      <audio ref={audioRef} />
 
       {/* Publish Modal */}
       {canDownload && video && (
         <PublishModal
           open={publishModalOpen}
           onOpenChange={setPublishModalOpen}
-          videoId={videoId}
           videoTitle={video.title || 'Untitled Video'}
-          renderRunId={latestRenderRun.id}
-          orgId={orgId}
           onPublish={handlePublish}
         />
       )}

@@ -57,12 +57,17 @@ Given('a video {string} exists for organization {string}', function (videoId: st
 
   const project = testContext.store.projects.find(p => p.orgId === orgId);
 
-  createVideo(testContext.store, {
+  createVideo(
+    testContext.store,
+    {
+      orgId,
+      projectId: project!.id,
+      id: videoId,
+      title: 'Test Video',
+    },
     orgId,
-    projectId: project!.id,
-    id: videoId,
-    title: 'Test Video',
-  }, orgId);
+    { id: () => videoId }
+  );
 });
 
 Given('a render run {string} exists for video {string}', function (renderRunId: string, videoId: string) {
@@ -90,7 +95,7 @@ Given('a render run {string} exists for video {string}', function (renderRunId: 
     id: renderRunId,
     status: 'succeeded',
     mp4ArtifactKey: `org/${video.orgId}/videos/${videoId}/renders/${renderRunId}.mp4`,
-  }, video.orgId);
+  }, video.orgId, { id: () => renderRunId });
 });
 
 When('I create a published video with slug {string}', function (slug: string) {
@@ -168,7 +173,7 @@ Then('the access policy should be {string}', function (accessPolicy: string) {
   assert.strictEqual(testContext.publishedVideo!.accessPolicy, accessPolicy);
 });
 
-Then('the slug should be {string}', function (slug: string) {
+Then('the video slug should be {string}', function (slug: string) {
   assert.strictEqual(testContext.publishedVideo!.slug, slug);
 });
 
@@ -190,7 +195,8 @@ Given('a published video exists with id {string}', function (pubId: string) {
       accessPolicy: 'public',
       viewCount: 0,
     },
-    testContext.activeOrgId
+    testContext.activeOrgId,
+    { id: () => pubId }
   );
 });
 
@@ -293,14 +299,39 @@ Given('{int} published videos exist for video {string}', function (count: number
 Given('{int} published video exists for video {string}', function (count: number, videoId: string) {
   // Create a new video first
   const org = testContext.store.orgs[0];
-  const project = testContext.store.projects[0];
+  const project = createProject(
+    testContext.store,
+    {
+      orgId: org.id,
+      name: 'Video Project',
+    },
+    org.id
+  );
 
-  createVideo(testContext.store, {
-    orgId: org.id,
-    projectId: project.id,
-    id: videoId,
-    title: 'Another Video',
-  }, org.id);
+  createVideo(
+    testContext.store,
+    {
+      orgId: org.id,
+      projectId: project.id,
+      id: videoId,
+      title: 'Another Video',
+    },
+    org.id,
+    { id: () => videoId }
+  );
+
+  createGenerationRun(
+    testContext.store,
+    {
+      orgId: org.id,
+      videoId,
+      storyboardVersionId: 'storyboard-456',
+      status: 'succeeded',
+      scriptArtifactKey: `org/${org.id}/videos/${videoId}/runs/gen-456/script.json`,
+    },
+    org.id,
+    { id: () => 'gen-456' }
+  );
 
   createRenderRun(testContext.store, {
     orgId: org.id,
@@ -308,7 +339,7 @@ Given('{int} published video exists for video {string}', function (count: number
     generationRunId: 'gen-456',
     status: 'succeeded',
     mp4ArtifactKey: `org/${org.id}/videos/${videoId}/renders/render-456.mp4`,
-  }, org.id);
+  }, org.id, { id: () => 'render-456' });
 
   const renderRun = testContext.store.renderRuns.find(r => r.videoId === videoId);
 
@@ -341,14 +372,39 @@ Given('a published video exists with id {string} in organization {string}', func
     ownerId: 'user-456',
   });
 
-  const project = testContext.store.projects[0];
+  const project = createProject(
+    testContext.store,
+    {
+      orgId,
+      name: 'Other Project',
+    },
+    orgId
+  );
 
-  createVideo(testContext.store, {
+  createVideo(
+    testContext.store,
+    {
+      orgId,
+      projectId: project.id,
+      id: 'video-other',
+      title: 'Other Video',
+    },
     orgId,
-    projectId: project.id,
-    id: 'video-other',
-    title: 'Other Video',
-  }, orgId);
+    { id: () => 'video-other' }
+  );
+
+  createGenerationRun(
+    testContext.store,
+    {
+      orgId,
+      videoId: 'video-other',
+      storyboardVersionId: 'storyboard-other',
+      status: 'succeeded',
+      scriptArtifactKey: `org/${orgId}/videos/video-other/runs/gen-other/script.json`,
+    },
+    orgId,
+    { id: () => 'gen-other' }
+  );
 
   createRenderRun(testContext.store, {
     orgId,
@@ -356,7 +412,7 @@ Given('a published video exists with id {string} in organization {string}', func
     generationRunId: 'gen-other',
     status: 'succeeded',
     mp4ArtifactKey: `org/${orgId}/videos/video-other/renders/render-other.mp4`,
-  }, orgId);
+  }, orgId, { id: () => 'render-other' });
 
   const video = testContext.store.videos.find(v => v.orgId === orgId);
   const renderRun = testContext.store.renderRuns.find(r => r.videoId === video!.id);
@@ -371,7 +427,8 @@ Given('a published video exists with id {string} in organization {string}', func
       accessPolicy: 'public',
       viewCount: 0,
     },
-    orgId
+    orgId,
+    { id: () => pubId }
   );
 });
 
@@ -407,4 +464,3 @@ Given("the access policy is {string}", function (accessPolicy: string) {
     assert.strictEqual(testContext.publishedVideo.accessPolicy, accessPolicy);
   }
 });
-

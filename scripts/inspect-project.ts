@@ -7,7 +7,12 @@
 import { Amplify } from 'aws-amplify';
 import { generateClient } from 'aws-amplify/data';
 import { fetchAuthSession } from 'aws-amplify/auth';
-import amplifyConfig from '../apps/studio-web/amplify_outputs.json';
+import { readFileSync } from 'fs';
+import { join } from 'path';
+
+const amplifyConfig = JSON.parse(
+  readFileSync(join(process.cwd(), 'apps', 'studio-web', 'amplify_outputs.json'), 'utf8')
+);
 
 Amplify.configure(amplifyConfig);
 
@@ -20,7 +25,7 @@ async function inspectProjects() {
 
   try {
     // List all projects
-    const { data: projects, errors: projectErrors } = await client.models.Project.list();
+    const { data: projects, errors: projectErrors } = await client.models.Project.list({});
 
     if (projectErrors) {
       console.error('❌ Error fetching projects:', projectErrors);
@@ -120,7 +125,7 @@ async function inspectProjects() {
     }
 
     // Check for published videos
-    const { data: published } = await client.models.PublishedVideo.list();
+    const { data: published } = await client.models.PublishedVideo.list({});
 
     if (published && published.length > 0) {
       console.log(`\n🌐 Published Videos (${published.length}):`);

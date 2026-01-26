@@ -35,6 +35,9 @@ Branded documentation lives in the Studio Web app:
 - Web docs (local dev): `apps/studio-web` at `/docs`
 - Source of truth (HTML): `apps/studio-web/lib/docs-content`
 - Docs landing page route: `apps/studio-web/app/(public)/docs/page.tsx`
+- “What is Babulus?”: `/docs/introduction` (source: `apps/studio-web/lib/docs-content/introduction.ts`)
+- Technical overview: `/docs/technical` (source: `apps/studio-web/lib/docs-content/technical.ts`)
+- Roadmap: `/docs/roadmap` (source: `apps/studio-web/lib/docs-content/roadmap.ts`)
 
 ## The DSL (TypeScript)
 

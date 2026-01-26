@@ -2,7 +2,7 @@
 
 import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
-import { Upload, X, Image, Music, Film, File as FileIcon, Loader2 } from "lucide-react";
+import { Upload, X, Image as ImageIcon, Music, Film, File as FileIcon, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { uploadProjectFileAction } from "@/app/actions/project-files";
 
@@ -84,7 +84,7 @@ export function AssetUpload({ projectId, onUploadComplete }: AssetUploadProps) {
   const getFileIcon = (filename: string) => {
     const ext = filename.split('.').pop()?.toLowerCase();
     if (['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp'].includes(ext || '')) {
-      return <Image className="h-4 w-4" />;
+      return <ImageIcon className="h-4 w-4" />;
     }
     if (['mp3', 'wav', 'ogg', 'm4a', 'aac'].includes(ext || '')) {
       return <Music className="h-4 w-4" />;

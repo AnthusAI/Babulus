@@ -1,7 +1,8 @@
 "use client";
 
 import { useProjectFiles } from "@/lib/use-org-data";
-import { Image, Music, Film, File as FileIcon, Trash2, Copy, Eye } from "lucide-react";
+import NextImage from "next/image";
+import { Image as ImageIcon, Music, Film, File as FileIcon, Trash2, Copy, Eye } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { deleteProjectFileAction } from "@/app/actions/project-files";
@@ -46,7 +47,7 @@ export function AssetBrowser({ projectId }: AssetBrowserProps) {
   const getFileIcon = (filename: string) => {
     const ext = filename.split('.').pop()?.toLowerCase();
     if (['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp'].includes(ext || '')) {
-      return <Image className="h-4 w-4" />;
+      return <ImageIcon className="h-4 w-4" />;
     }
     if (['mp3', 'wav', 'ogg', 'm4a', 'aac'].includes(ext || '')) {
       return <Music className="h-4 w-4" />;
@@ -82,13 +83,16 @@ export function AssetBrowser({ projectId }: AssetBrowserProps) {
                 className="flex items-start gap-2 rounded-md px-2 py-2 transition-colors hover:bg-accent/40 border"
               >
                 {isImage && file.url ? (
-                  <div className="w-12 h-12 rounded border flex-shrink-0 overflow-hidden bg-muted">
-                    <img
+                  <div className="w-12 h-12 rounded border flex-shrink-0 overflow-hidden bg-muted relative">
+                    <NextImage
                       src={file.url}
                       alt={file.relativePath}
-                      className="w-full h-full object-cover"
-                      onError={(e) => {
-                        e.currentTarget.style.display = 'none';
+                      fill
+                      sizes="48px"
+                      className="object-cover"
+                      unoptimized
+                      onError={(event) => {
+                        event.currentTarget.style.display = 'none';
                       }}
                     />
                   </div>

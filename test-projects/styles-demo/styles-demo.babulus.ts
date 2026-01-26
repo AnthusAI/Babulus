@@ -1,12 +1,13 @@
 import { defineVideo } from "../../src/dsl/builder.js";
 
-export default defineVideo((video) => {
-  video.composition("Cascading Styles Demo", (composition) => {
-    composition.meta({ fps: 30, width: 1280, height: 720, durationSeconds: 15 });
-    composition.voiceover({ provider: "dry-run", leadInSeconds: 0.5 });
+export default defineVideo(
+  "Cascading Styles Demo",
+  { fps: 30, width: 1280, height: 720, durationSeconds: 15 },
+  (video) => {
+    video.voiceover({ provider: "dry-run", leadInSeconds: 0.5 });
 
-    // Scene 1: Blank slate with transparent background
-    composition.scene("Blank Scene", (scene) => {
+  // Scene 1: Blank slate with transparent background
+  video.scene("Blank Scene", (scene) => {
       scene.styles({
         background: "transparent", // Transparent background
       });
@@ -17,7 +18,7 @@ export default defineVideo((video) => {
     });
 
     // Scene 2: Scene-level styles with layers
-    composition.scene("Layered Scene", (scene) => {
+    video.scene("Layered Scene", (scene) => {
       // Scene-level styles (cascade to all layers/components)
       scene.styles({
         background: "#1a1a2e",
@@ -48,14 +49,24 @@ export default defineVideo((video) => {
           fontSize: 64,
           fontWeight: 800,
           color: "#ffffff",
+          textAlign: "center",
           position: { x: 640, y: 200 },
         });
 
         layer.subtitle({
-          text: "Layers • Styles • Components",
-          fontSize: 32,
+          text: "This scene demonstrates cascading styles and layers.",
+          fontSize: 24,
           color: "#e0e7ff",
+          textAlign: "center",
           position: { x: 640, y: 300 },
+        });
+
+        layer.subtitle({
+          text: "Notice the gradient background, layered text, and progress bar.",
+          fontSize: 24,
+          color: "#e0e7ff",
+          textAlign: "center",
+          position: { x: 640, y: 340 },
         });
       });
 
@@ -75,14 +86,14 @@ export default defineVideo((video) => {
       scene.cue("intro", (cue) => {
         cue.voice((v) => {
           v.say("This scene demonstrates cascading styles and layers.");
-          v.pause(0.3);
+          v.pause(0.2);
           v.say("Notice the gradient background, layered text, and progress bar.");
         });
       });
     });
 
     // Scene 3: Opacity multiplication demo
-    composition.scene("Opacity Demo", (scene) => {
+    video.scene("Opacity Demo", (scene) => {
       scene.styles({
         background: "#000000",
         opacity: 0.8, // Scene opacity: 0.8
@@ -142,7 +153,7 @@ export default defineVideo((video) => {
     });
 
     // Scene 4: Component positioning demo
-    composition.scene("Positioning Demo", (scene) => {
+    video.scene("Positioning Demo", (scene) => {
       scene.styles({
         background: "#f0f0f0",
       });
@@ -198,7 +209,8 @@ export default defineVideo((video) => {
           text: "Positioned Rectangles",
           fontSize: 36,
           fontWeight: 700,
-          color: "#ffffff",
+          color: "#000000",
+          textAlign: "center",
           position: { x: 640, y: 350 },
         });
       });
@@ -211,5 +223,5 @@ export default defineVideo((video) => {
         });
       });
     });
-  });
-});
+  }
+);

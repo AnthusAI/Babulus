@@ -1,7 +1,7 @@
 #!/usr/bin/env tsx
 
 import { Command } from "commander";
-import { detectRendererToolchain } from "../packages/renderer/src/index.js";
+import { detectRendererToolchain } from "../packages/renderer/src/toolchain.js";
 
 const program = new Command();
 

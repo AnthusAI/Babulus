@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
 import { useThemeConfig, type ThemeColor } from "@/lib/theme-config";
 import { useSettings, type LayoutSettings } from "@/lib/settings-context";
-import { Moon, Sun, Laptop, LayoutTemplate, MessageSquare, Code2, MonitorPlay } from "lucide-react";
+import { Moon, Sun, Laptop, MessageSquare, Code2, MonitorPlay } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";

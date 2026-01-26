@@ -26,10 +26,7 @@ type AccessPolicy = "public" | "password" | "org_only";
 type PublishModalProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  videoId: string;
   videoTitle: string;
-  renderRunId: string;
-  orgId: string;
   onPublish: (params: {
     slug: string;
     accessPolicy: AccessPolicy;
@@ -40,10 +37,7 @@ type PublishModalProps = {
 export function PublishModal({
   open,
   onOpenChange,
-  videoId,
   videoTitle,
-  renderRunId,
-  orgId,
   onPublish,
 }: PublishModalProps) {
   const [slug, setSlug] = useState(() => {
