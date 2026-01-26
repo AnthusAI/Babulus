@@ -76,10 +76,10 @@ backend.generationWorker.resources.lambda.addToRolePolicy(
 // Grant generation worker access to S3 bucket for artifact upload
 bucket.grantReadWrite(backend.generationWorker.resources.lambda);
 
-// Create EventBridge rule to trigger generation worker every 30 seconds
+// Create EventBridge rule to trigger generation worker every minute
 const generationWorkerRule = new events.Rule(backend.stack, 'GenerationWorkerSchedule', {
-  schedule: events.Schedule.rate(Duration.seconds(30)),
-  description: 'Poll for queued generation jobs every 30 seconds',
+  schedule: events.Schedule.rate(Duration.minutes(1)),
+  description: 'Poll for queued generation jobs every minute',
 });
 
 // Add generation worker Lambda as target
