@@ -12,6 +12,9 @@ export function Hero() {
         <h1 className="font-heading text-3xl sm:text-5xl md:text-6xl lg:text-7xl">
           Your AI Video CMS
         </h1>
+        <div className="rounded-full bg-muted/40 px-4 py-2 text-sm font-semibold text-foreground/80">
+          Videos produced for you, not by you.
+        </div>
         <p className="max-w-[42rem] leading-normal text-muted-foreground sm:text-xl sm:leading-8">
           Babulus runs the research, scripting, and production loop so you can publish
           consistently without being the bottleneck. Use the cloud app, sync local folders,
