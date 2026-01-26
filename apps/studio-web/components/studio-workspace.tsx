@@ -372,7 +372,7 @@ export function StudioWorkspace() {
           timeline: activeEntry.timeline,
           audio: activeEntry.audio,
           title: activeEntry.title ?? activeEntry.id,
-          subtitle: previewScript.scenes?.[0]?.title ?? null,
+          subtitle: previewScript?.scenes?.[0]?.title ?? null,
           workers,
           ffmpegArgs,
         }),
