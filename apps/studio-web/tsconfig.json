@@ -19,7 +19,8 @@
     ],
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./*"],
+      "babulus/dsl": ["../../src/dsl/index.ts"]
     }
   },
   "include": [
