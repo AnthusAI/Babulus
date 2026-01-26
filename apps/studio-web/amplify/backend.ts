@@ -3,9 +3,10 @@ import { auth } from "./auth/resource.js";
 import { data } from "./data/resource.js";
 import { storage } from "./storage/resource.js";
 import { generationWorker } from "./functions/generation-worker/resource.js";
-import * as cloudfront from 'aws-cdk-lib/aws-cloudfront';
-import * as origins from 'aws-cdk-lib/aws-cloudfront-origins';
+// import * as cloudfront from 'aws-cdk-lib/aws-cloudfront';
+// import * as origins from 'aws-cdk-lib/aws-cloudfront-origins';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
+// import { experimental } from 'aws-cdk-lib/aws-cloudfront';
 import * as events from 'aws-cdk-lib/aws-events';
 import * as targets from 'aws-cdk-lib/aws-events-targets';
 import * as cloudwatch from 'aws-cdk-lib/aws-cloudwatch';
@@ -18,7 +19,8 @@ import * as iam from 'aws-cdk-lib/aws-iam';
 import * as ecr from 'aws-cdk-lib/aws-ecr';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
-import { Duration, RemovalPolicy } from 'aws-cdk-lib';
+import { readFileSync, existsSync } from 'fs';
+import { Duration, RemovalPolicy, Stack } from 'aws-cdk-lib';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -33,33 +35,42 @@ const backend = defineBackend({
 // Get the S3 bucket from Amplify Storage
 const bucket = backend.storage.resources.bucket;
 
-// Create Lambda@Edge function for authorization
-const edgeAuth = new lambda.Function(backend.stack, 'EdgeAuthFunction', {
-  runtime: lambda.Runtime.NODEJS_20_X,
-  handler: 'index.handler',
-  code: lambda.Code.fromAsset(path.join(__dirname, 'edge-functions/auth')),
-});
-
-// Create CloudFront distribution
-const distribution = new cloudfront.Distribution(backend.stack, 'AssetCDN', {
-  defaultBehavior: {
-    origin: new origins.S3Origin(bucket),
-    allowedMethods: cloudfront.AllowedMethods.ALLOW_GET_HEAD,
-    viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
-    cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED,
-    edgeLambdas: [{
-      eventType: cloudfront.LambdaEdgeEventType.VIEWER_REQUEST,
-      functionVersion: edgeAuth.currentVersion,
-    }],
-  },
-});
-
-// Export CloudFront domain for use in app
-backend.addOutput({
-  custom: {
-    assetsDomain: distribution.distributionDomainName,
-  },
-});
+// TODO: Re-enable CloudFront distribution with Lambda@Edge
+// Currently disabled to avoid cross-region deployment issues in Amplify sandbox
+// See: https://github.com/aws-amplify/amplify-category-api/issues/xxxx
+//
+// To re-enable:
+// 1. Ensure us-east-1 region is bootstrapped: npx cdk bootstrap aws://ACCOUNT/us-east-1
+// 2. Uncomment the EdgeFunction and CloudFront distribution code below
+//
+// // Create Lambda@Edge function for authorization
+// const edgeAuth = new experimental.EdgeFunction(backend.stack, 'EdgeAuthFunction', {
+//   runtime: lambda.Runtime.NODEJS_20_X,
+//   handler: 'index.handler',
+//   code: lambda.Code.fromAsset(path.join(__dirname, 'edge-functions/auth')),
+//   stackId: 'EdgeAuth',
+// });
+//
+// // Create CloudFront distribution
+// const distribution = new cloudfront.Distribution(backend.stack, 'AssetCDN', {
+//   defaultBehavior: {
+//     origin: new origins.S3Origin(bucket),
+//     allowedMethods: cloudfront.AllowedMethods.ALLOW_GET_HEAD,
+//     viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+//     cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED,
+//     edgeLambdas: [{
+//       eventType: cloudfront.LambdaEdgeEventType.VIEWER_REQUEST,
+//       functionVersion: edgeAuth.currentVersion,
+//     }],
+//   },
+// });
+//
+// // Export CloudFront domain for use in app
+// backend.addOutput({
+//   custom: {
+//     assetsDomain: distribution.distributionDomainName,
+//   },
+// });
 
 // ==========================================
 // Generation Worker Lambda Configuration
@@ -227,6 +238,13 @@ const vpc = new ec2.Vpc(backend.stack, 'RenderWorkerVPC', {
   natGateways: 1, // One NAT gateway for cost optimization
 });
 
+// Create security group for ECS tasks
+const ecsSecurityGroup = new ec2.SecurityGroup(backend.stack, 'EcsSecurityGroup', {
+  vpc,
+  description: 'Security group for Babulus render worker tasks',
+  allowAllOutbound: true // Allow tasks to reach S3, DynamoDB, AppSync
+});
+
 // Create ECS cluster
 const renderCluster = new ecs.Cluster(backend.stack, 'RenderWorkerCluster', {
   vpc,
@@ -266,8 +284,14 @@ const renderTaskDefinition = new ecs.FargateTaskDefinition(backend.stack, 'Rende
   taskRole: taskRole,
 });
 
+// Load amplify_outputs.json for runtime configuration
+const amplifyOutputsPath = path.join(__dirname, '..', 'amplify_outputs.json');
+const amplifyOutputs = existsSync(amplifyOutputsPath)
+  ? JSON.parse(readFileSync(amplifyOutputsPath, 'utf8'))
+  : {};
+
 // Add container to task definition
-const renderContainer = renderTaskDefinition.addContainer('RenderWorkerContainer', {
+const renderContainer = renderTaskDefinition.addContainer('render-worker', {
   image: ecs.ContainerImage.fromEcrRepository(renderWorkerEcr, 'latest'),
   logging: ecs.LogDrivers.awsLogs({
     streamPrefix: 'render-worker',
@@ -276,54 +300,28 @@ const renderContainer = renderTaskDefinition.addContainer('RenderWorkerContainer
   environment: {
     AWS_REGION: backend.stack.region,
     NODE_ENV: 'production',
+    AMPLIFY_OUTPUTS: JSON.stringify(amplifyOutputs) // Pass Amplify config to container
   },
-  // Secrets would be added here for API keys
+  // TODO: Add worker credentials from Secrets Manager
   // secrets: {
-  //   OPENAI_API_KEY: ecs.Secret.fromSecretsManager(openAiSecret),
+  //   WORKER_EMAIL: ecs.Secret.fromSecretsManager(...),
+  //   WORKER_PASSWORD: ecs.Secret.fromSecretsManager(...)
   // },
 });
 
 // Create Lambda function to trigger ECS task when render job is created
 const renderTriggerLambda = new lambda.Function(backend.stack, 'RenderTriggerFunction', {
   runtime: lambda.Runtime.NODEJS_20_X,
-  handler: 'index.handler',
-  code: lambda.Code.fromInline(`
-    const { ECSClient, RunTaskCommand } = require('@aws-sdk/client-ecs');
-    const ecs = new ECSClient({});
-
-    exports.handler = async (event) => {
-      console.log('Render trigger invoked', { event });
-
-      // This Lambda would poll for render jobs and start ECS tasks
-      // For now, it's a placeholder for the trigger mechanism
-
-      const command = new RunTaskCommand({
-        cluster: process.env.CLUSTER_ARN,
-        taskDefinition: process.env.TASK_DEFINITION_ARN,
-        launchType: 'FARGATE',
-        networkConfiguration: {
-          awsvpcConfiguration: {
-            subnets: process.env.SUBNETS.split(','),
-            assignPublicIp: 'ENABLED',
-          },
-        },
-      });
-
-      try {
-        const response = await ecs.send(command);
-        console.log('ECS task started', { response });
-        return { statusCode: 200, body: 'Task started' };
-      } catch (error) {
-        console.error('Failed to start ECS task', { error });
-        return { statusCode: 500, body: error.message };
-      }
-    };
-  `),
+  handler: 'handler.handler',
+  code: lambda.Code.fromAsset(path.join(__dirname, 'functions/render-trigger')),
   timeout: Duration.seconds(30),
   environment: {
     CLUSTER_ARN: renderCluster.clusterArn,
     TASK_DEFINITION_ARN: renderTaskDefinition.taskDefinitionArn,
-    SUBNETS: vpc.privateSubnets.map(subnet => subnet.subnetId).join(','),
+    SUBNET_IDS: vpc.privateSubnets.map(subnet => subnet.subnetId).join(','),
+    SECURITY_GROUP_ID: ecsSecurityGroup.securityGroupId,
+    CONTAINER_NAME: 'render-worker',
+    MAX_CONCURRENT_TASKS: '10'
   },
 });
 
@@ -331,7 +329,7 @@ const renderTriggerLambda = new lambda.Function(backend.stack, 'RenderTriggerFun
 renderTriggerLambda.addToRolePolicy(
   new iam.PolicyStatement({
     actions: ['ecs:RunTask', 'ecs:DescribeTasks'],
-    resources: [renderTaskDefinition.taskDefinitionArn],
+    resources: ['*'], // Allow running any task (tasks are created dynamically with unique ARNs)
   })
 );
 
@@ -339,6 +337,14 @@ renderTriggerLambda.addToRolePolicy(
   new iam.PolicyStatement({
     actions: ['iam:PassRole'],
     resources: [taskExecutionRole.roleArn, taskRole.roleArn],
+  })
+);
+
+// Grant Lambda permission to query AppSync for jobs
+renderTriggerLambda.addToRolePolicy(
+  new iam.PolicyStatement({
+    actions: ['appsync:GraphQL'],
+    resources: [backend.data.resources.graphqlApi.arn + '/*'],
   })
 );
 
