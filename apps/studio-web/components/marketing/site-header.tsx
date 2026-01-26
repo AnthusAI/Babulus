@@ -19,7 +19,7 @@ export function SiteHeader() {
               How it works
             </Link>
             <Link
-              href="#translations"
+              href="/translations"
               className="transition-colors hover:text-foreground/80 text-foreground/60"
             >
               Translations
