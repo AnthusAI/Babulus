@@ -139,6 +139,22 @@ export default defineVideo((video) => {
                 </p>
 
                 <h3 className="text-xl font-semibold text-foreground pt-4">
+                  Built for AI agents, not just humans
+                </h3>
+                <p>
+                  There's a deeper reason why Babulus uses code as the source of truth: <strong className="text-foreground">AI agents are exceptionally good at working with code</strong>. By representing videos as TypeScript files, we give AI models direct access to the complete structure and content of a video in a format they understand natively.
+                </p>
+                <p>
+                  This is fundamentally different from traditional video production tools that require AI agents to work through human-centric interfaces. Imagine trying to build a video by making dozens of tool calls to add scenes, adjust parameters, upload assets, and tweak timing—each operation requiring a separate API call through an abstraction layer designed for human users.
+                </p>
+                <p>
+                  With Babulus, an AI agent can <strong className="text-foreground">read, understand, and modify an entire video production</strong> in a single pass. It can analyze the structure, refactor scenes, adjust pacing, update content, and generate variations—all by working directly with the source code. The code <em>is</em> the video, not a description of operations to perform in a database-backed system.
+                </p>
+                <p>
+                  This design choice means AI agents have first-class access to video production. They can collaborate on video projects just like they collaborate on software projects—with the same tools, the same workflows, and the same level of control. Code isn't just a convenient interface; it's the <strong className="text-foreground">single source of truth</strong> that both humans and AI can read, write, and reason about effectively.
+                </p>
+
+                <h3 className="text-xl font-semibold text-foreground pt-4">
                   From code to video
                 </h3>
                 <p>
