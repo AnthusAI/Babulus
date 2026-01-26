@@ -300,13 +300,10 @@ const renderContainer = renderTaskDefinition.addContainer('render-worker', {
   environment: {
     AWS_REGION: backend.stack.region,
     NODE_ENV: 'production',
-    AMPLIFY_OUTPUTS: JSON.stringify(amplifyOutputs) // Pass Amplify config to container
+    AMPLIFY_OUTPUTS: JSON.stringify(amplifyOutputs), // Pass Amplify config to container
+    WORKER_EMAIL: 'render-worker@babulus.internal',
+    WORKER_PASSWORD: 'BabulusRenderWorker2026!' // TODO: Move to Secrets Manager
   },
-  // TODO: Add worker credentials from Secrets Manager
-  // secrets: {
-  //   WORKER_EMAIL: ecs.Secret.fromSecretsManager(...),
-  //   WORKER_PASSWORD: ecs.Secret.fromSecretsManager(...)
-  // },
 });
 
 // Create Lambda function to trigger ECS task when render job is created
