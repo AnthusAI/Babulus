@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { DocsShell } from "@/components/docs/docs-shell";
 import { DocsContent } from "@/components/docs/docs-content";
@@ -19,12 +20,59 @@ export function generateStaticParams() {
   }));
 }
 
-export function generateMetadata({ params }: { params: { slug: string[] } }) {
-  if (params.slug.length > 1 && params.slug[0] === "roadmap") return { title: "Babulus — Roadmap" };
-  if (params.slug[0] === "vision") return { title: "Babulus — Introduction" };
+export function generateMetadata({ params }: { params: { slug: string[] } }): Metadata {
+  if (params.slug.length > 1 && params.slug[0] === "roadmap") {
+    const doc = findDocBySlug(["roadmap"]);
+    const description = doc?.description ?? "Roadmap updates and progress notes for Babulus.";
+    return {
+      title: "Babulus — Roadmap",
+      description,
+      openGraph: {
+        title: "Babulus — Roadmap",
+        description,
+        type: "article",
+      },
+      twitter: {
+        card: "summary",
+        title: "Babulus — Roadmap",
+        description,
+      },
+    };
+  }
+  if (params.slug[0] === "vision") {
+    const doc = findDocBySlug(["introduction"]);
+    const description = doc?.description ?? "Product overview for the Babulus AI Video CMS.";
+    return {
+      title: "Babulus — Introduction",
+      description,
+      openGraph: {
+        title: "Babulus — Introduction",
+        description,
+        type: "article",
+      },
+      twitter: {
+        card: "summary",
+        title: "Babulus — Introduction",
+        description,
+      },
+    };
+  }
   const doc = findDocBySlug(params.slug);
   if (!doc) return {};
-  return { title: doc.title };
+  return {
+    title: doc.title,
+    description: doc.description,
+    openGraph: {
+      title: doc.title,
+      description: doc.description,
+      type: "article",
+    },
+    twitter: {
+      card: "summary",
+      title: doc.title,
+      description: doc.description,
+    },
+  };
 }
 
 export default function DocsPage({ params }: { params: { slug: string[] } }) {

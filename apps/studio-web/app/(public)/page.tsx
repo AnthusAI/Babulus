@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { Hero } from "@/components/marketing/hero";
 import { FeatureCard } from "@/components/marketing/feature-grid";
 import { CodeReveal } from "@/components/marketing/code-reveal";
@@ -14,6 +15,23 @@ import {
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { WaitlistExpectations } from "@/components/marketing/waitlist-expectations";
+
+export const metadata: Metadata = {
+  title: {
+    absolute: "Babulus: AI Video CMS",
+  },
+  description: "Your AI Video CMS for automated research, scripting, rendering, and publishing.",
+  openGraph: {
+    title: "Babulus: AI Video CMS",
+    description: "Your AI Video CMS for automated research, scripting, rendering, and publishing.",
+    type: "website",
+  },
+  twitter: {
+    card: "summary",
+    title: "Babulus: AI Video CMS",
+    description: "Your AI Video CMS for automated research, scripting, rendering, and publishing.",
+  },
+};
 
 export default function LandingPage() {
   return (

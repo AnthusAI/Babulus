@@ -1,5 +1,18 @@
-export const metadata = {
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
   title: "Typography",
+  description: "Typography preview for the Babulus marketing site.",
+  openGraph: {
+    title: "Typography",
+    description: "Typography preview for the Babulus marketing site.",
+    type: "website",
+  },
+  twitter: {
+    card: "summary",
+    title: "Typography",
+    description: "Typography preview for the Babulus marketing site.",
+  },
 };
 
 export default function FontsPage() {
@@ -75,4 +88,3 @@ export default function FontsPage() {
     </div>
   );
 }
-

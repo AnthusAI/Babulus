@@ -1,3 +1,20 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Privacy",
+  description: "How Babulus handles waitlist information and updates.",
+  openGraph: {
+    title: "Privacy",
+    description: "How Babulus handles waitlist information and updates.",
+    type: "website",
+  },
+  twitter: {
+    card: "summary",
+    title: "Privacy",
+    description: "How Babulus handles waitlist information and updates.",
+  },
+};
+
 export default function PrivacyPage() {
   return (
     <div className="container py-10 md:py-16">
@@ -14,4 +31,3 @@ export default function PrivacyPage() {
     </div>
   );
 }
-

@@ -1,9 +1,21 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { DocsShell } from "@/components/docs/docs-shell";
 import { docsHref, listDocsByCategory } from "@/lib/docs-registry";
 
-export const metadata = {
+export const metadata: Metadata = {
   title: "Docs",
+  description: "Product and technical documentation for Babulus.",
+  openGraph: {
+    title: "Docs",
+    description: "Product and technical documentation for Babulus.",
+    type: "website",
+  },
+  twitter: {
+    card: "summary",
+    title: "Docs",
+    description: "Product and technical documentation for Babulus.",
+  },
 };
 
 export default function DocsLandingPage() {

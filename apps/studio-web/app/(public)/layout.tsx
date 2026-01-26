@@ -5,22 +5,22 @@ import { Footer } from "@/components/marketing/footer";
 
 export const metadata: Metadata = {
   title: {
-    default: "Babulus",
+    default: "Babulus: AI Video CMS",
     template: "%s — Babulus",
   },
   description:
-    "Automation for video marketing: research, production, rendering, and publishing—powered by AI, portable by design.",
+    "Your AI Video CMS for automated research, scripting, rendering, and publishing.",
   openGraph: {
-    title: "Babulus",
+    title: "Babulus: AI Video CMS",
     description:
-      "Automation for video marketing: research, production, rendering, and publishing—powered by AI, portable by design.",
+      "Your AI Video CMS for automated research, scripting, rendering, and publishing.",
     type: "website",
   },
   twitter: {
-    card: "summary_large_image",
-    title: "Babulus",
+    card: "summary",
+    title: "Babulus: AI Video CMS",
     description:
-      "Automation for video marketing: research, production, rendering, and publishing—powered by AI, portable by design.",
+      "Your AI Video CMS for automated research, scripting, rendering, and publishing.",
   },
 };
 

@@ -1,6 +1,22 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { WaitlistForm } from "@/components/marketing/waitlist-form";
 import { WaitlistExpectations } from "@/components/marketing/waitlist-expectations";
+
+export const metadata: Metadata = {
+  title: "Waitlist",
+  description: "Join the waitlist for early access to Babulus, the AI Video CMS.",
+  openGraph: {
+    title: "Waitlist",
+    description: "Join the waitlist for early access to Babulus, the AI Video CMS.",
+    type: "website",
+  },
+  twitter: {
+    card: "summary",
+    title: "Waitlist",
+    description: "Join the waitlist for early access to Babulus, the AI Video CMS.",
+  },
+};
 
 export default function WaitlistPage() {
   return (
