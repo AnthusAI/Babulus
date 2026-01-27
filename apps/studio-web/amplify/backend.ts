@@ -326,7 +326,7 @@ const renderTriggerLambda = new NodejsFunction(backend.stack, 'RenderTriggerFunc
     SECURITY_GROUP_ID: ecsSecurityGroup.securityGroupId,
     CONTAINER_NAME: 'render-worker',
     MAX_CONCURRENT_TASKS: '10',
-    AMPLIFY_OUTPUTS: JSON.stringify(amplifyOutputs), // Pass Amplify config for AppSync access
+    GRAPHQL_ENDPOINT: backend.data.resources.graphqlApi.graphqlUrl,
   },
 });
 

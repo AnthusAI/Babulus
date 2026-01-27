@@ -16,11 +16,17 @@
 import { ECSClient, RunTaskCommand } from '@aws-sdk/client-ecs';
 import { Amplify } from 'aws-amplify';
 import { generateClient } from 'aws-amplify/data';
-import { getAmplifyDataClientConfig } from '@aws-amplify/backend/function';
 
-// Get Amplify config from CDK-generated resource access
-const { resourceConfig } = getAmplifyDataClientConfig();
-Amplify.configure(resourceConfig);
+// Configure Amplify with environment variables set by CDK
+Amplify.configure({
+  API: {
+    GraphQL: {
+      endpoint: process.env.GRAPHQL_ENDPOINT!,
+      region: process.env.AWS_REGION!,
+      defaultAuthMode: 'iam'
+    }
+  }
+});
 
 const ecs = new ECSClient({});
 const client = generateClient<any>({ authMode: 'iam' });
