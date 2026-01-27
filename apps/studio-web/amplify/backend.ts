@@ -309,8 +309,22 @@ const renderContainer = renderTaskDefinition.addContainer('render-worker', {
 // Create Lambda function to trigger ECS task when render job is created
 const renderTriggerLambda = new lambda.Function(backend.stack, 'RenderTriggerFunction', {
   runtime: lambda.Runtime.NODEJS_20_X,
-  handler: 'handler.handler',
-  code: lambda.Code.fromAsset(path.join(__dirname, 'functions/render-trigger')),
+  handler: 'index.handler',
+  code: lambda.Code.fromAsset(path.join(__dirname, 'functions/render-trigger'), {
+    bundling: {
+      image: lambda.Runtime.NODEJS_20_X.bundlingImage,
+      environment: {
+        NPM_CONFIG_CACHE: '/tmp/.npm',
+        npm_config_cache: '/tmp/.npm',
+      },
+      command: [
+        'bash', '-c', [
+          'npm install',
+          'npx esbuild handler.ts --bundle --platform=node --target=node20 --external:@aws-sdk/* --outfile=/asset-output/index.js',
+        ].join(' && ')
+      ],
+    },
+  }),
   timeout: Duration.seconds(30),
   environment: {
     CLUSTER_ARN: renderCluster.clusterArn,
