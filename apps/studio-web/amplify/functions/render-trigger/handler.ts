@@ -16,10 +16,11 @@
 import { ECSClient, RunTaskCommand } from '@aws-sdk/client-ecs';
 import { Amplify } from 'aws-amplify';
 import { generateClient } from 'aws-amplify/data';
+import { getAmplifyDataClientConfig } from '@aws-amplify/backend/function';
 
-// Load Amplify config (injected by CDK)
-const outputs = JSON.parse(process.env.AMPLIFY_OUTPUTS || '{}');
-Amplify.configure(outputs);
+// Get Amplify config from CDK-generated resource access
+const { resourceConfig } = getAmplifyDataClientConfig();
+Amplify.configure(resourceConfig);
 
 const ecs = new ECSClient({});
 const client = generateClient<any>({ authMode: 'iam' });
