@@ -6,6 +6,7 @@ import { generationWorker } from "./functions/generation-worker/resource.js";
 // import * as cloudfront from 'aws-cdk-lib/aws-cloudfront';
 // import * as origins from 'aws-cdk-lib/aws-cloudfront-origins';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
+import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 // import { experimental } from 'aws-cdk-lib/aws-cloudfront';
 import * as events from 'aws-cdk-lib/aws-events';
 import * as targets from 'aws-cdk-lib/aws-events-targets';
@@ -308,7 +309,7 @@ const renderContainer = renderTaskDefinition.addContainer('render-worker', {
 
 // Create Lambda function to trigger ECS task when render job is created
 // Use NodejsFunction for automatic TypeScript bundling without Docker
-const renderTriggerLambda = new lambda.NodejsFunction(backend.stack, 'RenderTriggerFunction', {
+const renderTriggerLambda = new NodejsFunction(backend.stack, 'RenderTriggerFunction', {
   runtime: lambda.Runtime.NODEJS_20_X,
   handler: 'handler',
   entry: path.join(__dirname, 'functions/render-trigger/handler.ts'),
