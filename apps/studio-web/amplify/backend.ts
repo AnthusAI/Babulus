@@ -33,9 +33,6 @@ const backend = defineBackend({
   generationWorker,
 });
 
-// Create separate stacks for custom resources
-const renderStack = backend.createStack('render-worker-stack');
-
 // Get the S3 bucket from Amplify Storage
 const bucket = backend.storage.resources.bucket;
 
@@ -48,7 +45,7 @@ const bucket = backend.storage.resources.bucket;
 // 2. Uncomment the EdgeFunction and CloudFront distribution code below
 //
 // // Create Lambda@Edge function for authorization
-// const edgeAuth = new experimental.EdgeFunction(renderStack, 'EdgeAuthFunction', {
+// const edgeAuth = new experimental.EdgeFunction(backend.stack, 'EdgeAuthFunction', {
 //   runtime: lambda.Runtime.NODEJS_20_X,
 //   handler: 'index.handler',
 //   code: lambda.Code.fromAsset(path.join(__dirname, 'edge-functions/auth')),
@@ -56,7 +53,7 @@ const bucket = backend.storage.resources.bucket;
 // });
 //
 // // Create CloudFront distribution
-// const distribution = new cloudfront.Distribution(renderStack, 'AssetCDN', {
+// const distribution = new cloudfront.Distribution(backend.stack, 'AssetCDN', {
 //   defaultBehavior: {
 //     origin: new origins.S3Origin(bucket),
 //     allowedMethods: cloudfront.AllowedMethods.ALLOW_GET_HEAD,
@@ -230,34 +227,34 @@ console.log('- Alarms: error rate, long execution, no completions');
 // ==========================================
 
 // Create ECR repository for render worker Docker image
-const renderWorkerEcr = new ecr.Repository(renderStack, 'RenderWorkerRepository', {
+const renderWorkerEcr = new ecr.Repository(backend.stack, 'RenderWorkerRepository', {
   repositoryName: 'babulus-render-worker',
   removalPolicy: RemovalPolicy.RETAIN, // Keep images on stack deletion
   imageScanOnPush: true,
 });
 
 // Create VPC for ECS tasks (or use default VPC)
-const vpc = new ec2.Vpc(renderStack, 'RenderWorkerVPC', {
+const vpc = new ec2.Vpc(backend.stack, 'RenderWorkerVPC', {
   maxAzs: 2, // Use 2 availability zones
   natGateways: 1, // One NAT gateway for cost optimization
 });
 
 // Create security group for ECS tasks
-const ecsSecurityGroup = new ec2.SecurityGroup(renderStack, 'EcsSecurityGroup', {
+const ecsSecurityGroup = new ec2.SecurityGroup(backend.stack, 'EcsSecurityGroup', {
   vpc,
   description: 'Security group for Babulus render worker tasks',
   allowAllOutbound: true // Allow tasks to reach S3, DynamoDB, AppSync
 });
 
 // Create ECS cluster
-const renderCluster = new ecs.Cluster(renderStack, 'RenderWorkerCluster', {
+const renderCluster = new ecs.Cluster(backend.stack, 'RenderWorkerCluster', {
   vpc,
   clusterName: 'babulus-render-cluster',
   containerInsights: true, // Enable CloudWatch Container Insights
 });
 
 // Create task execution role (for pulling images and logging)
-const taskExecutionRole = new iam.Role(renderStack, 'RenderTaskExecutionRole', {
+const taskExecutionRole = new iam.Role(backend.stack, 'RenderTaskExecutionRole', {
   assumedBy: new iam.ServicePrincipal('ecs-tasks.amazonaws.com'),
   managedPolicies: [
     iam.ManagedPolicy.fromAwsManagedPolicyName('service-role/AmazonECSTaskExecutionRolePolicy'),
@@ -265,7 +262,7 @@ const taskExecutionRole = new iam.Role(renderStack, 'RenderTaskExecutionRole', {
 });
 
 // Create task role (for accessing AWS services from the container)
-const taskRole = new iam.Role(renderStack, 'RenderTaskRole', {
+const taskRole = new iam.Role(backend.stack, 'RenderTaskRole', {
   assumedBy: new iam.ServicePrincipal('ecs-tasks.amazonaws.com'),
 });
 
@@ -281,7 +278,7 @@ taskRole.addToPolicy(
 bucket.grantReadWrite(taskRole);
 
 // Define Fargate task definition
-const renderTaskDefinition = new ecs.FargateTaskDefinition(renderStack, 'RenderTaskDefinition', {
+const renderTaskDefinition = new ecs.FargateTaskDefinition(backend.stack, 'RenderTaskDefinition', {
   cpu: 4096, // 4 vCPU (needed for video rendering)
   memoryLimitMiB: 16384, // 16 GB (needed for Playwright + ffmpeg)
   executionRole: taskExecutionRole,
@@ -302,7 +299,7 @@ const renderContainer = renderTaskDefinition.addContainer('render-worker', {
     logRetention: logs.RetentionDays.ONE_WEEK,
   }),
   environment: {
-    AWS_REGION: renderStack.region,
+    AWS_REGION: backend.stack.region,
     NODE_ENV: 'production',
     AMPLIFY_OUTPUTS: JSON.stringify(amplifyOutputs), // Pass Amplify config to container
     WORKER_EMAIL: 'render-worker@babulus.internal',
@@ -312,7 +309,7 @@ const renderContainer = renderTaskDefinition.addContainer('render-worker', {
 
 // Create Lambda function to trigger ECS task when render job is created
 // Use NodejsFunction for automatic TypeScript bundling without Docker
-const renderTriggerLambda = new NodejsFunction(renderStack, 'RenderTriggerFunction', {
+const renderTriggerLambda = new NodejsFunction(backend.stack, 'RenderTriggerFunction', {
   runtime: lambda.Runtime.NODEJS_20_X,
   handler: 'handler',
   entry: path.join(__dirname, 'functions/render-trigger/handler.ts'),
@@ -329,7 +326,7 @@ const renderTriggerLambda = new NodejsFunction(renderStack, 'RenderTriggerFuncti
     SECURITY_GROUP_ID: ecsSecurityGroup.securityGroupId,
     CONTAINER_NAME: 'render-worker',
     MAX_CONCURRENT_TASKS: '10',
-    GRAPHQL_ENDPOINT: `https://${backend.data.resources.graphqlApi.apiId}.appsync-api.${renderStack.region}.amazonaws.com/graphql`,
+    GRAPHQL_ENDPOINT: `https://${backend.data.resources.graphqlApi.apiId}.appsync-api.${backend.stack.region}.amazonaws.com/graphql`,
   },
 });
 
@@ -357,7 +354,7 @@ renderTriggerLambda.addToRolePolicy(
 );
 
 // Create EventBridge rule to trigger render worker periodically
-const renderWorkerRule = new events.Rule(renderStack, 'RenderWorkerSchedule', {
+const renderWorkerRule = new events.Rule(backend.stack, 'RenderWorkerSchedule', {
   schedule: events.Schedule.rate(Duration.minutes(1)), // Poll every minute
   description: 'Poll for queued render jobs every minute',
 });
