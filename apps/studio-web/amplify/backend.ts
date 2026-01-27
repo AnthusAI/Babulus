@@ -325,7 +325,8 @@ const renderTriggerLambda = new NodejsFunction(backend.stack, 'RenderTriggerFunc
     SUBNET_IDS: vpc.privateSubnets.map(subnet => subnet.subnetId).join(','),
     SECURITY_GROUP_ID: ecsSecurityGroup.securityGroupId,
     CONTAINER_NAME: 'render-worker',
-    MAX_CONCURRENT_TASKS: '10'
+    MAX_CONCURRENT_TASKS: '10',
+    AMPLIFY_OUTPUTS: JSON.stringify(amplifyOutputs), // Pass Amplify config for AppSync access
   },
 });
 
