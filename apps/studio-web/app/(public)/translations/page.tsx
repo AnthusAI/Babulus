@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Languages, Sparkles, ShieldCheck, Globe, Type, Volume2 } from "lucide-react";
+import { Languages, Sparkles, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { FeatureCard } from "@/components/marketing/feature-grid";
 
