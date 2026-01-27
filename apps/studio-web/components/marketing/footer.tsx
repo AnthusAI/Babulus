@@ -1,3 +1,5 @@
+import { Github } from "lucide-react";
+
 export function Footer() {
   return (
     <footer className="bg-recess py-10">
@@ -17,15 +19,10 @@ export function Footer() {
             href="https://github.com/anthusai/babulus"
             target="_blank"
             rel="noreferrer"
-            className="underline underline-offset-4"
+            className="flex items-center gap-1.5 underline underline-offset-4 hover:text-foreground transition-colors"
           >
-            Open source
-          </a>
-          <a href="/privacy" className="underline underline-offset-4">
-            Privacy
-          </a>
-          <a href="/terms" className="underline underline-offset-4">
-            Terms
+            <Github className="h-4 w-4" />
+            View Source
           </a>
         </div>
       </div>

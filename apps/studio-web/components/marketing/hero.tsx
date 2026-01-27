@@ -21,9 +21,9 @@ export function Hero() {
           <Link href="/waitlist">
             <Button size="lg">Join waitlist</Button>
           </Link>
-          <Link href="#how-it-works">
+          <Link href="/code-to-video">
             <Button variant="outline" size="lg">
-              See How It Works
+              Code to Video
             </Button>
           </Link>
         </div>

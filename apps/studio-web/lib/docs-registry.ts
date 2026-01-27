@@ -14,11 +14,16 @@ import { projectStorageQuickstartDoc } from "@/lib/docs-content/project-storage-
 import { securityVerificationDoc } from "@/lib/docs-content/security-verification";
 import { testCoverageDoc } from "@/lib/docs-content/test-coverage";
 import { workerJobSpecDoc } from "@/lib/docs-content/worker-job-spec";
+import { renderingOverviewDoc } from "@/lib/docs-content/rendering-overview";
+import { renderingMode1Doc } from "@/lib/docs-content/rendering-mode-1-local";
+import { renderingMode2Doc } from "@/lib/docs-content/rendering-mode-2-container";
+import { renderingMode3Doc } from "@/lib/docs-content/rendering-mode-3-cloud";
 
 export type DocsCategory =
   | "Getting Started"
   | "TTS Providers"
   | "Project Storage"
+  | "Rendering"
   | "Reference"
   | "Security"
   | "Quality"
@@ -98,8 +103,11 @@ function normalizeDocHtml(html: string) {
 
 const RAW_DOCS: readonly DocsEntry[] = [
   introductionDoc,
+  renderingOverviewDoc,
+  renderingMode1Doc,
+  renderingMode2Doc,
+  renderingMode3Doc,
   technicalDoc,
-  roadmapDoc,
   brandingDoc,
   componentsGuideDoc,
   configSetupDoc,
@@ -113,6 +121,7 @@ const RAW_DOCS: readonly DocsEntry[] = [
   securityVerificationDoc,
   testCoverageDoc,
   workerJobSpecDoc,
+  roadmapDoc,
 ];
 
 export const DOCS: readonly DocsEntry[] = RAW_DOCS.map((doc) => ({
@@ -144,6 +153,6 @@ export function listDocsByCategory(options?: { includeInternal?: boolean }) {
   }
   return Array.from(categories.entries()).map(([category, docs]) => ({
     category,
-    docs: docs.slice().sort((a, b) => a.title.localeCompare(b.title)),
+    docs: docs.slice(), // Keep original order from RAW_DOCS array
   }));
 }

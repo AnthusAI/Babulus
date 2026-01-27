@@ -38,8 +38,8 @@ export default function LandingPage() {
     <div className="flex flex-col min-h-screen">
       <Hero />
 
-      {/* How it works */}
-      <section id="how-it-works" className="bg-recess py-12 md:py-16 lg:py-24">
+      {/* Workflow overview */}
+      <section id="workflow" className="bg-recess py-12 md:py-16 lg:py-24">
         <div className="container space-y-6">
           <div className="mx-auto flex max-w-[58rem] flex-col items-center space-y-4 text-center">
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-foreground/60">
