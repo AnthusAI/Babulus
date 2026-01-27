@@ -15,7 +15,7 @@
 
 import { ECSClient, RunTaskCommand } from '@aws-sdk/client-ecs';
 import { Amplify } from 'aws-amplify';
-import { generateClient } from 'aws-amplify/data';
+import { generateClient } from 'aws-amplify/api';
 
 // Configure Amplify with environment variables set by CDK
 Amplify.configure({
@@ -29,7 +29,7 @@ Amplify.configure({
 });
 
 const ecs = new ECSClient({});
-const client = generateClient<any>({ authMode: 'iam' });
+const client = generateClient();
 
 // Environment variables set by CDK (backend.ts)
 const CLUSTER_ARN = process.env.CLUSTER_ARN!;
@@ -45,23 +45,34 @@ export const handler = async (event: any) => {
 
   try {
     // 1. Query for queued render jobs
-    const { data: jobs, errors } = await client.models.Job.list({
-      filter: {
-        kind: { eq: 'render' },
-        status: { eq: 'queued' }
-      },
-      limit: MAX_CONCURRENT_TASKS
+    const listJobsQuery = /* GraphQL */ `
+      query ListJobs($filter: ModelJobFilterInput, $limit: Int) {
+        listJobs(filter: $filter, limit: $limit) {
+          items {
+            id
+            kind
+            status
+            orgId
+            inputJson
+          }
+        }
+      }
+    `;
+
+    const response: any = await client.graphql({
+      query: listJobsQuery,
+      variables: {
+        filter: {
+          kind: { eq: 'render' },
+          status: { eq: 'queued' }
+        },
+        limit: MAX_CONCURRENT_TASKS
+      }
     });
 
-    if (errors) {
-      console.error('Error querying jobs:', errors);
-      return {
-        statusCode: 500,
-        body: JSON.stringify({ error: 'Failed to query jobs', details: errors })
-      };
-    }
+    const jobs = response.data?.listJobs?.items || [];
 
-    if (!jobs || jobs.length === 0) {
+    if (jobs.length === 0) {
       console.log('No queued render jobs found');
       return {
         statusCode: 200,
