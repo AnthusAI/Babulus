@@ -326,7 +326,7 @@ const renderTriggerLambda = new NodejsFunction(backend.stack, 'RenderTriggerFunc
     SECURITY_GROUP_ID: ecsSecurityGroup.securityGroupId,
     CONTAINER_NAME: 'render-worker',
     MAX_CONCURRENT_TASKS: '10',
-    GRAPHQL_ENDPOINT: `https://${backend.data.resources.graphqlApi.apiId}.appsync-api.${backend.stack.region}.amazonaws.com/graphql`,
+    GRAPHQL_ENDPOINT: backend.data.resources.cfnResources.cfnGraphqlApi.attrGraphQlUrl,
   },
 });
 
