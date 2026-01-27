@@ -16,6 +16,7 @@
 import { ECSClient, RunTaskCommand } from '@aws-sdk/client-ecs';
 import { Amplify } from 'aws-amplify';
 import { generateClient } from 'aws-amplify/api';
+import { fetchAuthSession } from 'aws-amplify/auth';
 
 // Configure Amplify with environment variables set by CDK
 Amplify.configure({
@@ -24,6 +25,19 @@ Amplify.configure({
       endpoint: process.env.GRAPHQL_ENDPOINT!,
       region: process.env.AWS_REGION!,
       defaultAuthMode: 'iam'
+    }
+  }
+}, {
+  Auth: {
+    credentialsProvider: {
+      getCredentialsAndIdentityId: async () => ({
+        credentials: {
+          accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
+          secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
+          sessionToken: process.env.AWS_SESSION_TOKEN
+        }
+      }),
+      clearCredentialsAndIdentityId: () => {}
     }
   }
 });
