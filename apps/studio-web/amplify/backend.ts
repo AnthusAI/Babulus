@@ -333,7 +333,7 @@ const renderTriggerLambda = new NodejsFunction(backend.stack, 'RenderTriggerFunc
 // Grant Lambda permission to run ECS tasks
 renderTriggerLambda.addToRolePolicy(
   new iam.PolicyStatement({
-    actions: ['ecs:RunTask', 'ecs:DescribeTasks'],
+    actions: ['ecs:RunTask', 'ecs:DescribeTasks', 'ecs:TagResource'],
     resources: ['*'], // Allow running any task (tasks are created dynamically with unique ARNs)
   })
 );
