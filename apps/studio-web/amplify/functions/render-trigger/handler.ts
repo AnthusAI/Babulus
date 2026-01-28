@@ -128,7 +128,7 @@ export const handler = async (event: any) => {
           tags: [
             { key: 'JobId', value: job.id },
             { key: 'VideoId', value: job.inputJson ? JSON.parse(job.inputJson).videoId : 'unknown' },
-            { key: 'OrgId', value: job.orgId }
+            ...(job.orgId ? [{ key: 'OrgId', value: job.orgId }] : [])
           ]
         });
 
