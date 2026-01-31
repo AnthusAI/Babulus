@@ -32,18 +32,19 @@ async function testContainerLocal() {
   const mode = isPreview ? 'Preview' : 'Full';
   console.log(`=== Test Container Render (Mode 2 - ${mode}) ===\n`);
 
-  // Load script and timeline from Tactus-web (mounted at /tactus-web)
-  const scriptPath = '/tactus-web/intro.script.json';
-  const timelinePath = '/tactus-web/intro.timeline.json';
-  const audioPath = '/tactus-web/intro.wav';
-  const browserBundlePath = '/tactus-web/browser-components.js';
+  // Load script and timeline from workspace
+  const videoName = 'introduction-to-babulus';
+  const scriptPath = `src/videos/${videoName}/${videoName}.script.json`;
+  const timelinePath = `src/videos/${videoName}/${videoName}.timeline.json`;
+  const audioPath = `public/babulus/${videoName}.wav`;
+  const browserBundlePath = 'public/browser-components.js'; // If it exists
 
   // Output path
   const outputSuffix = isPreview ? '-preview' : '';
-  const outputPath = `public/babulus/intro-container${outputSuffix}.mp4`;
-  const framesDir = `.babulus/temp/frames/intro-container${outputSuffix}`;
+  const outputPath = `public/babulus/${videoName}-container${outputSuffix}.mp4`;
+  const framesDir = `.babulus/temp/frames/${videoName}-container${outputSuffix}`;
 
-  console.log('Loading intro video assets from mounted Tactus-web...');
+  console.log(`Loading video assets for ${videoName}...`);
   console.log(`  Script: ${scriptPath}`);
   console.log(`  Timeline: ${timelinePath}`);
   console.log(`  Audio: ${audioPath}`);

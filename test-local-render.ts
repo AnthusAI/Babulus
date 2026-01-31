@@ -32,17 +32,18 @@ async function testLocalRender() {
   const mode = isPreview ? 'Preview' : 'Full';
   console.log(`=== Test Local Render (Mode 1 - ${mode}) ===\n`);
 
-  // Load script and timeline from Tactus-web
-  const scriptPath = '../Tactus-web/intro.script.json';
-  const timelinePath = '../Tactus-web/intro.timeline.json';
-  const audioPath = '../Tactus-web/intro.wav';
-  const browserBundlePath = '../Tactus-web/browser-components.js';
+  // Load script and timeline from existing video
+  const videoName = 'introduction-to-babulus';
+  const scriptPath = `src/videos/${videoName}/${videoName}.script.json`;
+  const timelinePath = `src/videos/${videoName}/${videoName}.timeline.json`;
+  const audioPath = `public/babulus/${videoName}.wav`;
+  const browserBundlePath = 'public/browser-components.js'; // If it exists
 
   // Output path
   const outputSuffix = isPreview ? '-preview' : '';
-  const outputPath = `public/babulus/intro${outputSuffix}.mp4`;
+  const outputPath = `public/babulus/${videoName}${outputSuffix}.mp4`;
 
-  console.log('Loading intro video assets from Tactus-web...');
+  console.log(`Loading video assets for ${videoName}...`);
   console.log(`  Script: ${scriptPath}`);
   console.log(`  Timeline: ${timelinePath}`);
   console.log(`  Audio: ${audioPath}`);
@@ -56,7 +57,7 @@ async function testLocalRender() {
   console.log(`✓ Audio file: ${audioPath}`);
 
   // Render the video
-  const framesDir = `.babulus/temp/frames/intro${outputSuffix}`;
+  const framesDir = `.babulus/temp/frames/${videoName}${outputSuffix}`;
   console.log(`\nRendering video to: ${outputPath}`);
   console.log(`Frames directory: ${framesDir}`);
 
