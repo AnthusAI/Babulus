@@ -25,6 +25,10 @@ program
   .option("--scale <number>", "Device scale factor", (value) => Number(value), 1)
   .option("--workers <number>", "Parallel frame workers (set 1 to disable)", (value) => Number(value))
   .option(
+    "--browser-bundle <path>",
+    "Path to browser bundle (defaults to BABULUS_BROWSER_BUNDLE or public/browser-components.js)",
+  )
+  .option(
     "--ffmpeg-arg <arg>",
     "Extra ffmpeg argument (repeat for multiple)",
     (value: string, previous: string[]) => [...previous, value],
@@ -46,6 +50,14 @@ program
     const script = JSON.parse(readFileSync(scriptPath, "utf8")) as ScriptData;
     const timeline = timelinePath ? (JSON.parse(readFileSync(timelinePath, "utf8")) as TimelineData) : null;
     const endFrame = opts.end == null ? undefined : Number(opts.end);
+    const fps = opts.fps == null ? undefined : Number(opts.fps);
+    const width = opts.width == null ? undefined : Number(opts.width);
+    const height = opts.height == null ? undefined : Number(opts.height);
+    const duration = opts.duration == null ? undefined : Number(opts.duration);
+    const startFrame = opts.start == null ? undefined : Number(opts.start);
+    const workers = opts.workers == null ? undefined : Number(opts.workers);
+    const scale = opts.scale == null ? undefined : Number(opts.scale);
+    const browserBundlePath = opts.browserBundle ? resolve(process.cwd(), opts.browserBundle) : undefined;
 
     await renderVideoFromScript({
       script,
@@ -56,16 +68,17 @@ program
       outputPath,
       audioPath,
       framePattern: opts.pattern,
-      startFrame: opts.start,
+      startFrame,
       endFrame,
-      deviceScaleFactor: opts.scale,
-      workers: opts.workers,
+      deviceScaleFactor: scale,
+      workers,
+      browserBundlePath,
       ffmpegPath: opts.ffmpeg,
       ffmpegArgs: opts.ffmpegArg,
-      fps: opts.fps,
-      width: opts.width,
-      height: opts.height,
-      durationFrames: opts.duration,
+      fps,
+      width,
+      height,
+      durationFrames: duration,
       cleanFrames: opts.clean !== false, // Commander's --no-clean sets opts.clean to false
     });
     console.error(`write: ${outputPath}`);
