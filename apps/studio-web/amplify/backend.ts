@@ -287,9 +287,13 @@ const renderTaskDefinition = new ecs.FargateTaskDefinition(backend.stack, 'Rende
 
 // Load amplify_outputs.json for runtime configuration
 const amplifyOutputsPath = path.join(__dirname, '..', 'amplify_outputs.json');
-const amplifyOutputs = existsSync(amplifyOutputsPath)
-  ? JSON.parse(readFileSync(amplifyOutputsPath, 'utf8'))
-  : {};
+let amplifyOutputs = {};
+if (existsSync(amplifyOutputsPath)) {
+  amplifyOutputs = JSON.parse(readFileSync(amplifyOutputsPath, 'utf8'));
+  console.log('✓ Loaded existing amplify_outputs.json for ECS task');
+} else {
+  console.warn('⚠ amplify_outputs.json not found - first deployment, outputs will be empty');
+}
 
 // Add container to task definition
 const renderContainer = renderTaskDefinition.addContainer('render-worker', {
@@ -311,7 +315,7 @@ const renderContainer = renderTaskDefinition.addContainer('render-worker', {
 // Use NodejsFunction for automatic TypeScript bundling without Docker
 const renderTriggerLambda = new NodejsFunction(backend.stack, 'RenderTriggerFunction', {
   runtime: lambda.Runtime.NODEJS_20_X,
-  handler: 'handler',
+  handler: 'index.handler', // Handler after esbuild bundling
   entry: path.join(__dirname, 'functions/render-trigger/handler.ts'),
   bundling: {
     externalModules: ['@aws-sdk/*'], // AWS SDK is provided by Lambda runtime
