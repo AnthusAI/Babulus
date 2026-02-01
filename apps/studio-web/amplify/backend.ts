@@ -286,7 +286,8 @@ const renderTaskDefinition = new ecs.FargateTaskDefinition(backend.stack, 'Rende
 });
 
 // Build amplify_outputs.json structure from backend resources at CDK synthesis time
-// This approach works during CI/CD without needing the amplify_outputs.json file
+// For the GraphQL URL, we use the ARN and construct the URL pattern since the direct property isn't available
+const graphqlApiArn = backend.data.resources.graphqlApi.arn;
 const amplifyOutputs = {
   version: '1.1',
   auth: {
@@ -309,7 +310,7 @@ const amplifyOutputs = {
     unauthenticated_identities_enabled: true
   },
   data: {
-    url: backend.data.resources.graphqlApi.graphqlUrl,
+    url: `https://${backend.data.resources.graphqlApi.apiId}.appsync-api.${backend.stack.region}.amazonaws.com/graphql`,
     aws_region: backend.stack.region,
     default_authorization_type: 'AMAZON_COGNITO_USER_POOLS',
     authorization_types: ['AWS_IAM']
