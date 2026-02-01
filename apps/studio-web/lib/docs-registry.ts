@@ -11,7 +11,6 @@ import { technicalDoc } from "@/lib/docs-content/technical";
 import { environmentsDoc } from "@/lib/docs-content/environments";
 import { projectStorageArchitectureDoc } from "@/lib/docs-content/project-storage-architecture";
 import { projectStorageQuickstartDoc } from "@/lib/docs-content/project-storage-quickstart";
-import { securityVerificationDoc } from "@/lib/docs-content/security-verification";
 import { testCoverageDoc } from "@/lib/docs-content/test-coverage";
 import { workerJobSpecDoc } from "@/lib/docs-content/worker-job-spec";
 import { renderingOverviewDoc } from "@/lib/docs-content/rendering-overview";
@@ -128,7 +127,6 @@ const RAW_DOCS: readonly DocsEntry[] = [
   environmentsDoc,
   projectStorageArchitectureDoc,
   projectStorageQuickstartDoc,
-  securityVerificationDoc,
   testCoverageDoc,
   workerJobSpecDoc,
   roadmapDoc,
