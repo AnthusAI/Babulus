@@ -307,7 +307,8 @@ const renderContainer = renderTaskDefinition.addContainer('render-worker', {
   environment: {
     AWS_REGION: backend.stack.region,
     NODE_ENV: 'production',
-    AMPLIFY_OUTPUTS: JSON.stringify(amplifyOutputs), // Pass Amplify config to container
+    AMPLIFY_OUTPUTS: JSON.stringify(amplifyOutputs), // Pass Amplify config to container (may be empty on first deploy)
+    S3_BUCKET: bucket.bucketName, // For downloading amplify_outputs.json from S3 if env var is empty
     WORKER_EMAIL: 'render-worker@babulus.internal',
     WORKER_PASSWORD: 'BabulusRenderWorker2026!' // TODO: Move to Secrets Manager
   },
