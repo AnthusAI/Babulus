@@ -285,15 +285,48 @@ const renderTaskDefinition = new ecs.FargateTaskDefinition(backend.stack, 'Rende
   taskRole: taskRole,
 });
 
-// Load amplify_outputs.json for runtime configuration
-const amplifyOutputsPath = path.join(__dirname, '..', 'amplify_outputs.json');
-let amplifyOutputs = {};
-if (existsSync(amplifyOutputsPath)) {
-  amplifyOutputs = JSON.parse(readFileSync(amplifyOutputsPath, 'utf8'));
-  console.log('✓ Loaded existing amplify_outputs.json for ECS task');
-} else {
-  console.warn('⚠ amplify_outputs.json not found - first deployment, outputs will be empty');
-}
+// Build amplify_outputs.json structure from backend resources at CDK synthesis time
+// This approach works during CI/CD without needing the amplify_outputs.json file
+const amplifyOutputs = {
+  version: '1.1',
+  auth: {
+    user_pool_id: backend.auth.resources.userPool.userPoolId,
+    aws_region: backend.stack.region,
+    user_pool_client_id: backend.auth.resources.userPoolClient.userPoolClientId,
+    identity_pool_id: backend.auth.resources.cfnResources.cfnIdentityPool.ref,
+    mfa_methods: [],
+    standard_required_attributes: ['email'],
+    username_attributes: ['email'],
+    user_verification_types: ['email'],
+    mfa_configuration: 'NONE',
+    password_policy: {
+      min_length: 8,
+      require_lowercase: true,
+      require_uppercase: true,
+      require_numbers: true,
+      require_symbols: true
+    },
+    unauthenticated_identities_enabled: true
+  },
+  data: {
+    url: backend.data.resources.graphqlApi.graphqlUrl,
+    aws_region: backend.stack.region,
+    default_authorization_type: 'AMAZON_COGNITO_USER_POOLS',
+    authorization_types: ['AWS_IAM']
+  },
+  storage: {
+    aws_region: backend.stack.region,
+    bucket_name: backend.storage.resources.bucket.bucketName,
+    buckets: [
+      {
+        name: 'studioAssets',
+        bucket_name: backend.storage.resources.bucket.bucketName,
+        aws_region: backend.stack.region
+      }
+    ]
+  }
+};
+console.log('✓ Built Amplify outputs from backend resources for ECS task');
 
 // Add container to task definition
 const renderContainer = renderTaskDefinition.addContainer('render-worker', {
