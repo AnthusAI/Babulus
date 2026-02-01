@@ -106,6 +106,6 @@ export const renderingOverviewDoc: DocsEntry = {
   slug: ["rendering", "overview"],
   title: "Overview",
   description: "Understand how Babulus turns generated compositions into final MP4 videos",
-  category: "Rendering",
+  category: "Guides",
   html: marked.parse(content, { async: false }) as string,
 };

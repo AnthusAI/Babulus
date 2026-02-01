@@ -2,8 +2,8 @@ export const introductionDoc = {
   slug: ["introduction"],
   title: "Babulus — Introduction",
   description:
-    "A high-level overview of what Babulus is and why it exists (for creators, marketers, and non-technical stakeholders).",
-  category: "Getting Started",
+    "What Babulus is, what problems it solves, and who should use it",
+  category: "Overview",
   html: `
 <h1 id="babulus-introduction">Babulus — Introduction</h1>
 <p><strong>Status:</strong> Alpha</p>

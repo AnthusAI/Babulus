@@ -18,16 +18,17 @@ import { renderingOverviewDoc } from "@/lib/docs-content/rendering-overview";
 import { renderingMode1Doc } from "@/lib/docs-content/rendering-mode-1-local";
 import { renderingMode2Doc } from "@/lib/docs-content/rendering-mode-2-container";
 import { renderingMode3Doc } from "@/lib/docs-content/rendering-mode-3-cloud";
+import { configurationContent } from "@/lib/docs-content/configuration";
+import { marked } from "marked";
 
 export type DocsCategory =
-  | "Getting Started"
-  | "TTS Providers"
-  | "Project Storage"
+  | "Overview"
+  | "Guides"
+  | "Roadmap"
   | "Rendering"
-  | "Reference"
-  | "Security"
-  | "Quality"
-  | "Roadmap & Notes";
+  | "Developer Reference"
+  | "TTS Providers"
+  | "Project Storage";
 
 export type DocsEntry = Readonly<{
   slug: readonly string[];
@@ -101,8 +102,17 @@ function normalizeDocHtml(html: string) {
   return normalized;
 }
 
+const configurationDoc: DocsEntry = {
+  slug: ["configuration"],
+  title: "Configuration",
+  description: "Configure API keys, TTS providers, and global settings",
+  category: "Guides",
+  html: marked.parse(configurationContent) as string,
+};
+
 const RAW_DOCS: readonly DocsEntry[] = [
   introductionDoc,
+  configurationDoc,
   renderingOverviewDoc,
   renderingMode1Doc,
   renderingMode2Doc,
@@ -142,6 +152,19 @@ export function findDocBySlug(slug: readonly string[]) {
   return DOCS.find((doc) => docsKey(doc.slug) === key) ?? null;
 }
 
+// Category order for landing page: accessible content first, then developer docs
+const CATEGORY_ORDER: readonly DocsCategory[] = [
+  // Accessible content (no section header)
+  "Overview",
+  "Guides",
+  "Roadmap",
+  // Developer documentation (with section header)
+  "Rendering",
+  "Developer Reference",
+  "TTS Providers",
+  "Project Storage",
+] as const;
+
 export function listDocsByCategory(options?: { includeInternal?: boolean }) {
   const includeInternal = options?.includeInternal ?? false;
   const categories = new Map<DocsCategory, DocsEntry[]>();
@@ -151,8 +174,12 @@ export function listDocsByCategory(options?: { includeInternal?: boolean }) {
     existing.push(doc);
     categories.set(doc.category, existing);
   }
-  return Array.from(categories.entries()).map(([category, docs]) => ({
-    category,
-    docs: docs.slice(), // Keep original order from RAW_DOCS array
-  }));
+
+  // Return categories in the defined order, filtering out empty categories
+  return CATEGORY_ORDER.filter((category) => categories.has(category)).map(
+    (category) => ({
+      category,
+      docs: categories.get(category)!,
+    })
+  );
 }

@@ -2,8 +2,8 @@ export const roadmapDoc = {
   slug: ["roadmap"],
   title: "Babulus — Roadmap (Alpha → Beta)",
   description:
-    "Where we are in Alpha, what we’re validating, and what comes next (for both technical and non-technical readers).",
-  category: "Roadmap & Notes",
+    "Current status, priorities, and what's coming next",
+  category: "Roadmap",
   html: `
 <h1 id="babulus-roadmap-alpha-to-beta">Babulus — Roadmap (Alpha → Beta)</h1>
 <p><strong>Audience:</strong> mixed (technical + non-technical)</p>

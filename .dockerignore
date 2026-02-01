@@ -1,0 +1,43 @@
+# Dependencies
+node_modules
+**/node_modules
+.pnpm-store
+
+# Build outputs
+dist
+build
+*.tsbuildinfo
+
+# Development files
+.env
+.env.local
+.git
+.gitignore
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Test and temp files
+.babulus/temp
+public/babulus/*.mp4
+test-output.mp4
+coverage
+
+# CI/CD
+.github
+
+# Documentation (not needed in container)
+*.md
+!README.md
+
+# Docker
+Dockerfile
+.dockerignore

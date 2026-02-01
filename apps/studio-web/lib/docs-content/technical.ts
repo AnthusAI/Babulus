@@ -2,8 +2,8 @@ export const technicalDoc = {
   slug: ["technical"],
   title: "Babulus — Technical Overview",
   description:
-    "Architecture, source-of-truth decisions, storage model, execution plane, and how the system stays deterministic and portable.",
-  category: "Reference",
+    "System architecture: control plane, execution plane, and how they connect",
+  category: "Developer Reference",
   html: `
 <h1 id="babulus-technical-overview">Babulus — Technical Overview</h1>
 <p><strong>Status:</strong> Alpha</p>

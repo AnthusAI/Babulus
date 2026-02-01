@@ -41,21 +41,23 @@ COPY package.json package-lock.json ./
 COPY packages/renderer/package.json ./packages/renderer/
 COPY packages/shared/package.json ./packages/shared/
 
-# Install dependencies (production only)
-RUN npm ci --omit=dev
+# Install dependencies (including dev for playwright)
+RUN npm ci
 
-# Install Playwright browsers (Chromium only)
-RUN npx playwright install chromium --with-deps
+# Set Playwright browser path before installing browsers
+ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
 
 # Copy application code
 COPY . .
+
+# Install Playwright browsers (Chromium only) - must be after npm ci to get correct version
+RUN npx playwright install chromium --with-deps
 
 # Create working directory for renders
 RUN mkdir -p /app/.babulus/worker
 
 # Set environment variables
 ENV NODE_ENV=production
-ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
 
 # Health check (optional - checks if Node.js can start)
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
