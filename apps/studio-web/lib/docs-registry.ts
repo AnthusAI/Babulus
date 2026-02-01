@@ -11,8 +11,6 @@ import { technicalDoc } from "@/lib/docs-content/technical";
 import { environmentsDoc } from "@/lib/docs-content/environments";
 import { projectStorageArchitectureDoc } from "@/lib/docs-content/project-storage-architecture";
 import { projectStorageQuickstartDoc } from "@/lib/docs-content/project-storage-quickstart";
-import { testCoverageDoc } from "@/lib/docs-content/test-coverage";
-import { workerJobSpecDoc } from "@/lib/docs-content/worker-job-spec";
 import { renderingOverviewDoc } from "@/lib/docs-content/rendering-overview";
 import { renderingMode1Doc } from "@/lib/docs-content/rendering-mode-1-local";
 import { renderingMode2Doc } from "@/lib/docs-content/rendering-mode-2-container";
@@ -127,8 +125,6 @@ const RAW_DOCS: readonly DocsEntry[] = [
   environmentsDoc,
   projectStorageArchitectureDoc,
   projectStorageQuickstartDoc,
-  testCoverageDoc,
-  workerJobSpecDoc,
   roadmapDoc,
 ];
 
