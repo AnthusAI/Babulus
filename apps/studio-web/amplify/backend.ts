@@ -375,7 +375,7 @@ jobTableWrapper.streamSpecification = {
 };
 
 // Access the stream ARN via the underlying CFN resource
-const streamArn = (jobTableWrapper as any).resource.getAtt('StreamArn');
+const streamArn = (jobTableWrapper as any).resource.getAtt('StreamArn').toString();
 
 // Create event source mapping for DynamoDB Streams
 new lambda.EventSourceMapping(backend.stack, 'JobTableStreamMapping', {
