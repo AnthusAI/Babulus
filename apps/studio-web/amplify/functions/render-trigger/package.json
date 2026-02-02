@@ -6,6 +6,7 @@
   "main": "handler.js",
   "dependencies": {
     "@aws-sdk/client-ecs": "^3.709.0",
-    "aws-amplify": "^6.10.4"
+    "@aws-sdk/util-dynamodb": "^3.709.0",
+    "@types/aws-lambda": "^8.10.145"
   }
 }

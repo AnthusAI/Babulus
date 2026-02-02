@@ -18,6 +18,7 @@ import * as ecs from 'aws-cdk-lib/aws-ecs';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import * as ecr from 'aws-cdk-lib/aws-ecr';
+import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
 import { readFileSync, existsSync } from 'fs';
@@ -360,13 +361,48 @@ renderTriggerLambda.addToRolePolicy(
   })
 );
 
-// Create EventBridge rule to trigger render worker periodically
-const renderWorkerRule = new events.Rule(backend.stack, 'RenderWorkerSchedule', {
-  schedule: events.Schedule.rate(Duration.minutes(1)), // Poll every minute
-  description: 'Poll for queued render jobs every minute',
-});
+// Use DynamoDB Streams to trigger render worker immediately when jobs are created
+// This eliminates the 1-minute polling delay and reduces Lambda invocation costs
+const jobTable = backend.data.resources.tables['Job'];
 
-renderWorkerRule.addTarget(new targets.LambdaFunction(renderTriggerLambda));
+// Enable DynamoDB Streams on the Job table
+const cfnTable = jobTable.node.defaultChild as dynamodb.CfnTable;
+cfnTable.streamSpecification = {
+  streamViewType: dynamodb.StreamViewType.NEW_AND_OLD_IMAGES,
+};
+
+// Create event source mapping for DynamoDB Streams
+new lambda.EventSourceMapping(backend.stack, 'JobTableStreamMapping', {
+  target: renderTriggerLambda,
+  eventSourceArn: jobTable.tableStreamArn!,
+  startingPosition: lambda.StartingPosition.LATEST,
+  batchSize: 10, // Process up to 10 stream records at once
+  bisectBatchOnError: true, // Retry individual records on error
+  retryAttempts: 2,
+  filters: [
+    // Only process events where:
+    // 1. A new Job is created (INSERT) with status='queued' and kind='render'
+    // 2. An existing Job is updated (MODIFY) to status='queued' and kind='render'
+    lambda.FilterCriteria.filter({
+      eventName: lambda.FilterRule.isEqual('INSERT'),
+      dynamodb: {
+        NewImage: {
+          status: { S: lambda.FilterRule.isEqual('queued') },
+          kind: { S: lambda.FilterRule.isEqual('render') },
+        },
+      },
+    }),
+    lambda.FilterCriteria.filter({
+      eventName: lambda.FilterRule.isEqual('MODIFY'),
+      dynamodb: {
+        NewImage: {
+          status: { S: lambda.FilterRule.isEqual('queued') },
+          kind: { S: lambda.FilterRule.isEqual('render') },
+        },
+      },
+    }),
+  ],
+});
 
 // Export ECR repository URI for Docker build/push
 backend.addOutput({
@@ -380,4 +416,4 @@ console.log('Render worker ECS Fargate configured:');
 console.log('- ECR Repository:', renderWorkerEcr.repositoryName);
 console.log('- ECS Cluster:', renderCluster.clusterName);
 console.log('- Task Definition: 4 vCPU, 16 GB RAM');
-console.log('- Trigger: EventBridge rule every 1 minute');
+console.log('- Trigger: DynamoDB Streams (instant, event-driven)');

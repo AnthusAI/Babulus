@@ -1,8 +1,8 @@
 /**
  * Render Trigger Lambda
  *
- * This Lambda is triggered by EventBridge every 1 minute.
- * It polls for queued render jobs and starts ECS Fargate tasks to process them.
+ * This Lambda is triggered by DynamoDB Streams when render jobs are created or updated to 'queued' status.
+ * It immediately starts ECS Fargate tasks to process them - no polling delay.
  *
  * Each render job gets its own Fargate task, which:
  * - Downloads generation artifacts from S3
@@ -13,37 +13,11 @@
  * - Exits
  */
 
+import { DynamoDBStreamEvent, DynamoDBRecord } from 'aws-lambda';
 import { ECSClient, RunTaskCommand } from '@aws-sdk/client-ecs';
-import { Amplify } from 'aws-amplify';
-import { generateClient } from 'aws-amplify/api';
-import { fetchAuthSession } from 'aws-amplify/auth';
-
-// Configure Amplify with environment variables set by CDK
-Amplify.configure({
-  API: {
-    GraphQL: {
-      endpoint: process.env.GRAPHQL_ENDPOINT!,
-      region: process.env.AWS_REGION!,
-      defaultAuthMode: 'iam'
-    }
-  }
-}, {
-  Auth: {
-    credentialsProvider: {
-      getCredentialsAndIdentityId: async () => ({
-        credentials: {
-          accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
-          secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
-          sessionToken: process.env.AWS_SESSION_TOKEN
-        }
-      }),
-      clearCredentialsAndIdentityId: () => {}
-    }
-  }
-});
+import { unmarshall } from '@aws-sdk/util-dynamodb';
 
 const ecs = new ECSClient({});
-const client = generateClient();
 
 // Environment variables set by CDK (backend.ts)
 const CLUSTER_ARN = process.env.CLUSTER_ARN!;
@@ -51,118 +25,123 @@ const TASK_DEFINITION_ARN = process.env.TASK_DEFINITION_ARN!;
 const SUBNET_IDS = process.env.SUBNET_IDS!.split(',');
 const SECURITY_GROUP_ID = process.env.SECURITY_GROUP_ID!;
 const CONTAINER_NAME = process.env.CONTAINER_NAME || 'render-worker';
-const MAX_CONCURRENT_TASKS = parseInt(process.env.MAX_CONCURRENT_TASKS || '10', 10);
 
-export const handler = async (event: any) => {
-  console.log('Render trigger Lambda invoked by EventBridge');
-  console.log('Event:', JSON.stringify(event, null, 2));
+/**
+ * Extract Job record from DynamoDB Stream event
+ */
+function extractJobFromRecord(record: DynamoDBRecord): any | null {
+  if (!record.dynamodb?.NewImage) {
+    return null;
+  }
 
   try {
-    // 1. Query for queued render jobs
-    const listJobsQuery = /* GraphQL */ `
-      query ListJobs($filter: ModelJobFilterInput, $limit: Int) {
-        listJobs(filter: $filter, limit: $limit) {
-          items {
-            id
-            kind
-            status
-            orgId
-            inputJson
-          }
-        }
-      }
-    `;
+    const job = unmarshall(record.dynamodb.NewImage as any);
 
-    const response: any = await client.graphql({
-      query: listJobsQuery,
-      variables: {
-        filter: {
-          kind: { eq: 'render' },
-          status: { eq: 'queued' }
-        },
-        limit: MAX_CONCURRENT_TASKS
-      }
+    // Validate it's a render job
+    if (job.kind !== 'render' || job.status !== 'queued') {
+      console.log(`Skipping non-render or non-queued job: ${job.id} (kind=${job.kind}, status=${job.status})`);
+      return null;
+    }
+
+    return job;
+  } catch (error) {
+    console.error('Failed to unmarshall DynamoDB record:', error);
+    return null;
+  }
+}
+
+/**
+ * Start ECS Fargate task for a render job
+ */
+async function startRenderTask(job: any) {
+  try {
+    console.log(`Starting ECS task for job ${job.id}...`);
+
+    const command = new RunTaskCommand({
+      cluster: CLUSTER_ARN,
+      taskDefinition: TASK_DEFINITION_ARN,
+      launchType: 'FARGATE',
+      networkConfiguration: {
+        awsvpcConfiguration: {
+          subnets: SUBNET_IDS,
+          securityGroups: [SECURITY_GROUP_ID],
+          assignPublicIp: 'DISABLED' // Use NAT gateway for internet access
+        }
+      },
+      overrides: {
+        containerOverrides: [
+          {
+            name: CONTAINER_NAME,
+            environment: [
+              { name: 'JOB_ID', value: job.id },
+              { name: 'WORKER_ID', value: `ecs-task-${Date.now()}` },
+              // Worker credentials come from task definition environment
+            ]
+          }
+        ]
+      },
+      tags: [
+        { key: 'JobId', value: job.id },
+        { key: 'VideoId', value: (job.inputJson ? JSON.parse(job.inputJson).videoId : null) || 'unknown' },
+        ...(job.orgId ? [{ key: 'OrgId', value: job.orgId }] : [])
+      ]
     });
 
-    const jobs = response.data?.listJobs?.items || [];
+    const response = await ecs.send(command);
+    const taskArn = response.tasks?.[0]?.taskArn;
+
+    if (!taskArn) {
+      throw new Error('ECS task ARN not returned');
+    }
+
+    console.log(`✓ ECS task started: ${taskArn} for job ${job.id}`);
+
+    return {
+      jobId: job.id,
+      taskArn,
+      status: 'started'
+    };
+  } catch (error) {
+    console.error(`✗ Failed to start ECS task for job ${job.id}:`, error);
+    return {
+      jobId: job.id,
+      error: error instanceof Error ? error.message : 'Unknown error',
+      status: 'failed'
+    };
+  }
+}
+
+/**
+ * Lambda handler - processes DynamoDB Stream events
+ */
+export const handler = async (event: DynamoDBStreamEvent) => {
+  console.log(`Render trigger Lambda invoked by DynamoDB Stream (${event.Records.length} records)`);
+
+  try {
+    // Extract render jobs from stream records
+    const jobs = event.Records
+      .map(extractJobFromRecord)
+      .filter(Boolean);
 
     if (jobs.length === 0) {
-      console.log('No queued render jobs found');
+      console.log('No queued render jobs in stream records');
       return {
         statusCode: 200,
-        body: JSON.stringify({ message: 'No jobs to process' })
+        body: JSON.stringify({ message: 'No render jobs to process' })
       };
     }
 
-    console.log(`Found ${jobs.length} queued render job(s)`);
+    console.log(`Found ${jobs.length} queued render job(s) in stream`);
 
-    // 2. Start ECS task for each job
-    const taskPromises = jobs.map(async (job: any) => {
-      try {
-        console.log(`Starting ECS task for job ${job.id}...`);
+    // Start ECS task for each job
+    const results = await Promise.all(
+      jobs.map(job => startRenderTask(job))
+    );
 
-        const command = new RunTaskCommand({
-          cluster: CLUSTER_ARN,
-          taskDefinition: TASK_DEFINITION_ARN,
-          launchType: 'FARGATE',
-          networkConfiguration: {
-            awsvpcConfiguration: {
-              subnets: SUBNET_IDS,
-              securityGroups: [SECURITY_GROUP_ID],
-              assignPublicIp: 'DISABLED' // Use NAT gateway for internet access
-            }
-          },
-          overrides: {
-            containerOverrides: [
-              {
-                name: CONTAINER_NAME,
-                environment: [
-                  { name: 'JOB_ID', value: job.id },
-                  { name: 'WORKER_ID', value: `ecs-task-${Date.now()}` },
-                  // Worker credentials come from task definition secrets
-                  // (configured in backend.ts to use Secrets Manager)
-                ]
-              }
-            ]
-          },
-          tags: [
-            { key: 'JobId', value: job.id },
-            { key: 'VideoId', value: (job.inputJson ? JSON.parse(job.inputJson).videoId : null) || 'unknown' },
-            ...(job.orgId ? [{ key: 'OrgId', value: job.orgId }] : [])
-          ]
-        });
-
-        const response = await ecs.send(command);
-        const taskArn = response.tasks?.[0]?.taskArn;
-
-        if (!taskArn) {
-          throw new Error('ECS task ARN not returned');
-        }
-
-        console.log(`ECS task started: ${taskArn} for job ${job.id}`);
-
-        return {
-          jobId: job.id,
-          taskArn,
-          status: 'started'
-        };
-      } catch (error) {
-        console.error(`Failed to start ECS task for job ${job.id}:`, error);
-        return {
-          jobId: job.id,
-          error: error instanceof Error ? error.message : 'Unknown error',
-          status: 'failed'
-        };
-      }
-    });
-
-    const results = await Promise.all(taskPromises);
-
-    const successCount = results.filter((r: { status: string }) => r.status === 'started').length;
-    const failureCount = results.filter((r: { status: string }) => r.status === 'failed').length;
+    const successCount = results.filter(r => r.status === 'started').length;
+    const failureCount = results.filter(r => r.status === 'failed').length;
 
     console.log(`Task trigger results: ${successCount} started, ${failureCount} failed`);
-    console.log('Details:', JSON.stringify(results, null, 2));
 
     return {
       statusCode: 200,
