@@ -367,8 +367,13 @@ renderTriggerLambda.addToRolePolicy(
 
 // Use DynamoDB Streams to trigger render worker immediately when jobs are created
 // This eliminates the 1-minute polling delay and reduces Lambda invocation costs
-// Note: Streams are configured in the Job model schema via .configureTable()
+
+// Get the Job table and enable streams on the underlying CFN resource
 const jobTable = backend.data.resources.tables['Job'];
+const jobTableCfn = jobTable.node.findChild('Resource') as dynamodb.CfnTable;
+jobTableCfn.streamSpecification = {
+  streamViewType: 'NEW_AND_OLD_IMAGES',
+};
 
 // Create event source mapping for DynamoDB Streams
 new lambda.EventSourceMapping(backend.stack, 'JobTableStreamMapping', {
