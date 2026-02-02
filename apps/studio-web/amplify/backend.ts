@@ -322,11 +322,7 @@ const renderTriggerLambda = new NodejsFunction(backend.stack, 'RenderTriggerFunc
   handler: 'index.handler', // Handler after esbuild bundling
   entry: path.join(__dirname, 'functions/render-trigger/handler.ts'),
   bundling: {
-    externalModules: [
-      '@aws-sdk/client-s3', // Provided by Lambda runtime
-      '@aws-sdk/client-dynamodb', // Provided by Lambda runtime
-      // Note: @aws-sdk/util-dynamodb is NOT in Lambda runtime - must be bundled
-    ],
+    externalModules: ['@aws-sdk/*'], // AWS SDK is provided by Lambda runtime
     minify: true,
     sourceMap: false,
   },
@@ -365,22 +361,20 @@ renderTriggerLambda.addToRolePolicy(
   })
 );
 
-// Use DynamoDB Streams to trigger render worker for instant event-driven processing
-const { cfnResources } = backend.data.resources;
+// Use DynamoDB Streams to trigger render worker immediately when jobs are created
+// This eliminates the 1-minute polling delay and reduces Lambda invocation costs
+const jobTable = backend.data.resources.tables['Job'];
 
 // Enable DynamoDB Streams on the Job table
-const jobTableWrapper = cfnResources.amplifyDynamoDbTables['Job'];
-jobTableWrapper.streamSpecification = {
+const cfnTable = jobTable.node.defaultChild as dynamodb.CfnTable;
+cfnTable.streamSpecification = {
   streamViewType: dynamodb.StreamViewType.NEW_AND_OLD_IMAGES,
 };
-
-// Access the stream ARN via the underlying CFN resource
-const streamArn = (jobTableWrapper as any).resource.getAtt('StreamArn').toString();
 
 // Create event source mapping for DynamoDB Streams
 new lambda.EventSourceMapping(backend.stack, 'JobTableStreamMapping', {
   target: renderTriggerLambda,
-  eventSourceArn: streamArn,
+  eventSourceArn: jobTable.tableStreamArn!,
   startingPosition: lambda.StartingPosition.LATEST,
   batchSize: 10, // Process up to 10 stream records at once
   bisectBatchOnError: true, // Retry individual records on error

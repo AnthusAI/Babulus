@@ -1,28 +1,52 @@
-# This workflow is disabled because:
-# 1. Babulus is a Node.js/TypeScript project, not Python
-# 2. Deployment is handled by AWS Amplify Gen 2 CI/CD (see amplify.yml)
-# 3. Amplify automatically deploys when code is pushed to main branch
-#
-# To re-enable semantic releases for Node.js, use semantic-release/semantic-release
-# and configure for npm/GitHub releases instead of PyPI.
-
-name: Release (Disabled)
+name: Release
 
 on:
   push:
     branches:
-      - disabled # Change to 'main' to re-enable
+      - main
 
 permissions:
   contents: read
 
 jobs:
-  placeholder:
-    name: Deployment handled by Amplify
+  release:
+    name: Semantic Release
     runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    permissions:
+      contents: write
+      id-token: write
+
     steps:
-      - name: Info
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
         run: |
-          echo "Deployment is handled by AWS Amplify Gen 2 CI/CD"
-          echo "See amplify.yml for build configuration"
-          echo "Monitor builds at: AWS Amplify Console"
+          python -m pip install --upgrade pip
+          pip install python-semantic-release build twine
+
+      - name: Python Semantic Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          semantic-release version
+          semantic-release publish
+
+      - name: Publish to PyPI
+        if: success() && hashFiles('dist/*') != ''
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
+        run: |
+          twine upload --skip-existing dist/*
