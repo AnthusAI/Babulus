@@ -369,17 +369,18 @@ renderTriggerLambda.addToRolePolicy(
 const { cfnResources } = backend.data.resources;
 
 // Enable DynamoDB Streams on the Job table
-cfnResources.amplifyDynamoDbTables['Job'].streamSpecification = {
+const jobTableWrapper = cfnResources.amplifyDynamoDbTables['Job'];
+jobTableWrapper.streamSpecification = {
   streamViewType: dynamodb.StreamViewType.NEW_AND_OLD_IMAGES,
 };
 
-// Get the underlying CFN table to access stream ARN
-const jobTableCfn = cfnResources.amplifyDynamoDbTables['Job'].node.defaultChild as dynamodb.CfnTable;
+// Access the stream ARN via the underlying CFN resource
+const streamArn = (jobTableWrapper as any).resource.getAtt('StreamArn');
 
 // Create event source mapping for DynamoDB Streams
 new lambda.EventSourceMapping(backend.stack, 'JobTableStreamMapping', {
   target: renderTriggerLambda,
-  eventSourceArn: jobTableCfn.attrStreamArn,
+  eventSourceArn: streamArn,
   startingPosition: lambda.StartingPosition.LATEST,
   batchSize: 10, // Process up to 10 stream records at once
   bisectBatchOnError: true, // Retry individual records on error
