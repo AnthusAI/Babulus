@@ -370,13 +370,16 @@ const { cfnResources } = backend.data.resources;
 
 // Enable DynamoDB Streams on the Job table
 cfnResources.amplifyDynamoDbTables['Job'].streamSpecification = {
-  streamViewType: 'NEW_AND_OLD_IMAGES',
+  streamViewType: dynamodb.StreamViewType.NEW_AND_OLD_IMAGES,
 };
+
+// Get the underlying CFN table to access stream ARN
+const jobTableCfn = cfnResources.amplifyDynamoDbTables['Job'].node.defaultChild as dynamodb.CfnTable;
 
 // Create event source mapping for DynamoDB Streams
 new lambda.EventSourceMapping(backend.stack, 'JobTableStreamMapping', {
   target: renderTriggerLambda,
-  eventSourceArn: cfnResources.amplifyDynamoDbTables['Job'].attrStreamArn,
+  eventSourceArn: jobTableCfn.attrStreamArn,
   startingPosition: lambda.StartingPosition.LATEST,
   batchSize: 10, // Process up to 10 stream records at once
   bisectBatchOnError: true, // Retry individual records on error
