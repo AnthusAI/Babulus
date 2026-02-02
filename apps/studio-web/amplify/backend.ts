@@ -368,9 +368,11 @@ renderTriggerLambda.addToRolePolicy(
 // Enable DynamoDB Streams for event-driven job processing
 const jobTable = backend.data.resources.tables.Job;
 const jobCfnTable = jobTable.node.defaultChild as dynamodb.CfnTable;
-jobCfnTable.streamSpecification = {
-  streamViewType: dynamodb.StreamViewType.NEW_AND_OLD_IMAGES,
-};
+if (jobCfnTable) {
+  jobCfnTable.streamSpecification = {
+    streamViewType: dynamodb.StreamViewType.NEW_AND_OLD_IMAGES,
+  };
+}
 
 // Create Lambda event source mapping for DynamoDB Streams
 new lambda.EventSourceMapping(backend.stack, 'JobTableStreamMapping', {
