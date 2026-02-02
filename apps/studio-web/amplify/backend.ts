@@ -368,11 +368,28 @@ renderTriggerLambda.addToRolePolicy(
 
 // Enable DynamoDB Streams for event-driven job processing
 const jobTable = backend.data.resources.tables['Job'];
-const jobCfnTable = jobTable.node.defaultChild as dynamodb.CfnTable;
+console.log('Job table type:', jobTable.constructor.name);
+console.log('Job table keys:', Object.keys(jobTable));
+console.log('Job table node:', jobTable.node ? 'exists' : 'missing');
+console.log('Job table node.defaultChild:', jobTable.node?.defaultChild ? 'exists' : 'missing');
+
+// Try to access the CFN table
+const jobCfnTable = jobTable.node?.defaultChild as dynamodb.CfnTable;
 if (jobCfnTable) {
+  console.log('✓ Found CFN table, enabling streams');
   jobCfnTable.streamSpecification = {
     streamViewType: dynamodb.StreamViewType.NEW_AND_OLD_IMAGES,
   };
+} else {
+  console.error('✗ Could not find CFN table via node.defaultChild');
+  console.log('Trying alternative: checking if table is ITable');
+  // Check if it's an ITable
+  if ('tableArn' in jobTable) {
+    console.log('Table has tableArn:', (jobTable as any).tableArn);
+  }
+  if ('tableStreamArn' in jobTable) {
+    console.log('Table has tableStreamArn:', (jobTable as any).tableStreamArn);
+  }
 }
 
 // Create Lambda event source from DynamoDB Stream
