@@ -322,7 +322,11 @@ const renderTriggerLambda = new NodejsFunction(backend.stack, 'RenderTriggerFunc
   handler: 'index.handler', // Handler after esbuild bundling
   entry: path.join(__dirname, 'functions/render-trigger/handler.ts'),
   bundling: {
-    externalModules: ['@aws-sdk/*'], // AWS SDK is provided by Lambda runtime
+    externalModules: [
+      '@aws-sdk/client-s3', // Provided by Lambda runtime
+      '@aws-sdk/client-dynamodb', // Provided by Lambda runtime
+      // Note: @aws-sdk/util-dynamodb is NOT in Lambda runtime - must be bundled
+    ],
     minify: true,
     sourceMap: false,
   },
