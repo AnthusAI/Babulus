@@ -365,19 +365,18 @@ renderTriggerLambda.addToRolePolicy(
   })
 );
 
-// Use DynamoDB Streams to trigger render worker immediately when jobs are created
-// This eliminates the 1-minute polling delay and reduces Lambda invocation costs
+// Use DynamoDB Streams to trigger render worker for instant event-driven processing
+const { cfnResources } = backend.data.resources;
 
-// Get the Job table from cfnResources and enable streams
-const jobTableCfn = backend.data.resources.cfnResources.amplifyDynamoDbTables['Job'] as dynamodb.CfnTable;
-jobTableCfn.streamSpecification = {
+// Enable DynamoDB Streams on the Job table
+cfnResources.amplifyDynamoDbTables['Job'].streamSpecification = {
   streamViewType: 'NEW_AND_OLD_IMAGES',
 };
 
 // Create event source mapping for DynamoDB Streams
 new lambda.EventSourceMapping(backend.stack, 'JobTableStreamMapping', {
   target: renderTriggerLambda,
-  eventSourceArn: jobTableCfn.attrStreamArn,
+  eventSourceArn: cfnResources.amplifyDynamoDbTables['Job'].attrStreamArn,
   startingPosition: lambda.StartingPosition.LATEST,
   batchSize: 10, // Process up to 10 stream records at once
   bisectBatchOnError: true, // Retry individual records on error
