@@ -368,28 +368,46 @@ renderTriggerLambda.addToRolePolicy(
 
 // Enable DynamoDB Streams for event-driven job processing
 const jobTable = backend.data.resources.tables['Job'];
-console.log('Job table type:', jobTable.constructor.name);
-console.log('Job table keys:', Object.keys(jobTable));
-console.log('Job table node:', jobTable.node ? 'exists' : 'missing');
-console.log('Job table node.defaultChild:', jobTable.node?.defaultChild ? 'exists' : 'missing');
 
-// Try to access the CFN table
-const jobCfnTable = jobTable.node?.defaultChild as dynamodb.CfnTable;
+// Try multiple approaches to access the CFN table
+let jobCfnTable: dynamodb.CfnTable | undefined;
+
+// Approach 1: Direct node.defaultChild (works in older Amplify versions)
+if (jobTable.node?.defaultChild) {
+  console.log('✓ Found CFN table via node.defaultChild');
+  jobCfnTable = jobTable.node.defaultChild as dynamodb.CfnTable;
+}
+
+// Approach 2: Via cfnResources.amplifyDynamoDbTables
+if (!jobCfnTable && backend.data.resources.cfnResources.amplifyDynamoDbTables) {
+  const amplifyTable = backend.data.resources.cfnResources.amplifyDynamoDbTables['Job'];
+  if (amplifyTable) {
+    console.log('✓ Found table via cfnResources.amplifyDynamoDbTables');
+    // AmplifyDynamoDbTableWrapper wraps a CfnTable
+    jobCfnTable = (amplifyTable as any).tableDefinition as dynamodb.CfnTable;
+  }
+}
+
+// Approach 3: Search through the construct tree
+if (!jobCfnTable) {
+  console.log('Searching construct tree for Job table CfnTable...');
+  const stack = backend.stack;
+  stack.node.findAll().forEach((child) => {
+    if (child.node.id === 'Job' && child instanceof dynamodb.CfnTable) {
+      console.log('✓ Found CFN table via construct tree search');
+      jobCfnTable = child;
+    }
+  });
+}
+
 if (jobCfnTable) {
-  console.log('✓ Found CFN table, enabling streams');
+  console.log('Enabling DynamoDB Streams on Job table');
   jobCfnTable.streamSpecification = {
     streamViewType: dynamodb.StreamViewType.NEW_AND_OLD_IMAGES,
   };
 } else {
-  console.error('✗ Could not find CFN table via node.defaultChild');
-  console.log('Trying alternative: checking if table is ITable');
-  // Check if it's an ITable
-  if ('tableArn' in jobTable) {
-    console.log('Table has tableArn:', (jobTable as any).tableArn);
-  }
-  if ('tableStreamArn' in jobTable) {
-    console.log('Table has tableStreamArn:', (jobTable as any).tableStreamArn);
-  }
+  console.error('✗ Could not find Job CFN table via any method');
+  console.log('Available cfnResources keys:', Object.keys(backend.data.resources.cfnResources));
 }
 
 // Create Lambda event source from DynamoDB Stream
