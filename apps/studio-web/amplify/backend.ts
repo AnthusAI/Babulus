@@ -365,22 +365,17 @@ renderTriggerLambda.addToRolePolicy(
   })
 );
 
-// Use DynamoDB Streams to trigger render worker for instant event-driven processing
-const { cfnResources } = backend.data.resources;
-
-// Enable DynamoDB Streams on the Job table
-const jobTableWrapper = cfnResources.amplifyDynamoDbTables['Job'];
-jobTableWrapper.streamSpecification = {
+// Enable DynamoDB Streams for event-driven job processing
+const jobTable = backend.data.resources.tables.Job;
+const jobCfnTable = jobTable.node.defaultChild as dynamodb.CfnTable;
+jobCfnTable.streamSpecification = {
   streamViewType: dynamodb.StreamViewType.NEW_AND_OLD_IMAGES,
 };
 
-// Access the stream ARN via the underlying CFN resource
-const streamArn = (jobTableWrapper as any).resource.getAtt('StreamArn').toString();
-
-// Create event source mapping for DynamoDB Streams
+// Create Lambda event source mapping for DynamoDB Streams
 new lambda.EventSourceMapping(backend.stack, 'JobTableStreamMapping', {
   target: renderTriggerLambda,
-  eventSourceArn: streamArn,
+  eventSourceArn: jobTable.tableStreamArn,
   startingPosition: lambda.StartingPosition.LATEST,
   batchSize: 10, // Process up to 10 stream records at once
   bisectBatchOnError: true, // Retry individual records on error
