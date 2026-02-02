@@ -19,6 +19,7 @@ import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import * as ecr from 'aws-cdk-lib/aws-ecr';
 import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
+import { DynamoEventSource } from 'aws-cdk-lib/aws-lambda-event-sources';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
 import { readFileSync, existsSync } from 'fs';
@@ -367,23 +368,20 @@ renderTriggerLambda.addToRolePolicy(
 
 // Enable DynamoDB Streams for event-driven job processing
 const jobTable = backend.data.resources.tables['Job'];
-// Try accessing the CFN table through the amplifyDynamoDbTables path
-const jobCfnTable = backend.data.resources.cfnResources.amplifyDynamoDbTables['Job'];
-const cfnTableNode = (jobCfnTable as any).node?.defaultChild as dynamodb.CfnTable;
-if (cfnTableNode) {
-  cfnTableNode.streamSpecification = {
+const jobCfnTable = jobTable.node.defaultChild as dynamodb.CfnTable;
+if (jobCfnTable) {
+  jobCfnTable.streamSpecification = {
     streamViewType: dynamodb.StreamViewType.NEW_AND_OLD_IMAGES,
   };
 }
 
-// Create Lambda event source mapping for DynamoDB Streams
-new lambda.EventSourceMapping(backend.stack, 'JobTableStreamMapping', {
-  target: renderTriggerLambda,
-  eventSourceArn: jobTable.tableStreamArn,
+// Create Lambda event source from DynamoDB Stream
+const eventSource = new DynamoEventSource(jobTable, {
   startingPosition: lambda.StartingPosition.LATEST,
-  batchSize: 10, // Process up to 10 stream records at once
-  bisectBatchOnError: true, // Retry individual records on error
+  batchSize: 10,
   retryAttempts: 2,
+  bisectBatchOnError: true,
+  enabled: true,
   filters: [
     // Only process events where:
     // 1. A new Job is created (INSERT) with status='queued' and kind='render'
@@ -408,6 +406,9 @@ new lambda.EventSourceMapping(backend.stack, 'JobTableStreamMapping', {
     }),
   ],
 });
+
+// Add the event source to the Lambda function
+renderTriggerLambda.addEventSource(eventSource);
 
 // Export ECR repository URI for Docker build/push
 backend.addOutput({
