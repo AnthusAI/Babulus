@@ -26,6 +26,7 @@ const s3 = new S3Client({
 
 const VIDEO_ID = 'a422e6dd-d181-48d5-b4c6-f0c86771d39f';
 const ORG_ID = '2ee41f23-4003-47c8-bd94-6f4ff46beab6'; // test-org
+type GenerationRunCreateResult = { data?: { id?: string | null } | null; errors?: unknown };
 
 async function main() {
   // Sign in as render worker
@@ -97,7 +98,7 @@ async function main() {
     scriptPath: `${s3Prefix}/intro.script.json`,
     timelinePath: `${s3Prefix}/intro.timeline.json`,
     audioPath: `${s3Prefix}/intro.wav`
-  });
+  }) as GenerationRunCreateResult;
 
   if (errors) {
     console.error('Failed to create GenerationRun:', errors);

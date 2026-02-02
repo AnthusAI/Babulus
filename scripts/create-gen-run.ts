@@ -18,6 +18,7 @@ const client = generateClient<any>({ authMode: 'userPool' });
 const VIDEO_ID = 'a422e6dd-d181-48d5-b4c6-f0c86771d39f';
 const ORG_ID = '2ee41f23-4003-47c8-bd94-6f4ff46beab6';
 const RUN_ID = process.argv[2] || 'gen-1769973903';
+type GenerationRunCreateResult = { data?: { id?: string | null } | null; errors?: unknown };
 
 async function main() {
   const { isSignedIn } = await signIn({
@@ -39,7 +40,7 @@ async function main() {
     scriptArtifactKey: `${s3Prefix}/intro.script.json`,
     timelineArtifactKey: `${s3Prefix}/intro.timeline.json`,
     audioArtifactKey: `${s3Prefix}/intro.wav`
-  });
+  }) as GenerationRunCreateResult;
 
   if (errors) {
     console.error('Failed to create GenerationRun:', errors);
