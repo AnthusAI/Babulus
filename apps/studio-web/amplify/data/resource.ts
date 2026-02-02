@@ -128,7 +128,12 @@ const studioSchema = schema.schema({
       maxRetries: schema.integer().default(3),
       failureReason: schema.string(),
     })
-    .authorization((allow) => [allow.authenticated(), allow.publicApiKey()]), // Allow publish jobs to be read publicly? No, better to have a separate PublishedVideo model.
+    .authorization((allow) => [allow.authenticated(), allow.publicApiKey()])
+    .configureTable((table) => {
+      table.streamSpecification = {
+        streamViewType: 'NEW_AND_OLD_IMAGES'
+      };
+    }), // Allow publish jobs to be read publicly? No, better to have a separate PublishedVideo model.
 
   PublishedVideo: schema
     .model({
