@@ -366,8 +366,11 @@ renderTriggerLambda.addToRolePolicy(
 );
 
 // Enable DynamoDB Streams for event-driven job processing
+console.log('Available tables:', Object.keys(backend.data.resources.tables || {}));
 const jobTable = backend.data.resources.tables.Job;
-const jobCfnTable = jobTable.node.defaultChild as dynamodb.CfnTable;
+console.log('Job table:', jobTable ? 'found' : 'NOT FOUND');
+const jobCfnTable = jobTable?.node?.defaultChild as dynamodb.CfnTable;
+console.log('Job CFN table:', jobCfnTable ? 'found' : 'NOT FOUND');
 if (jobCfnTable) {
   jobCfnTable.streamSpecification = {
     streamViewType: dynamodb.StreamViewType.NEW_AND_OLD_IMAGES,
