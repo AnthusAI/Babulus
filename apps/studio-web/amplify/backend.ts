@@ -366,13 +366,12 @@ renderTriggerLambda.addToRolePolicy(
 );
 
 // Enable DynamoDB Streams for event-driven job processing
-console.log('Available tables:', Object.keys(backend.data.resources.tables || {}));
-const jobTable = backend.data.resources.tables.Job;
-console.log('Job table:', jobTable ? 'found' : 'NOT FOUND');
-const jobCfnTable = jobTable?.node?.defaultChild as dynamodb.CfnTable;
-console.log('Job CFN table:', jobCfnTable ? 'found' : 'NOT FOUND');
-if (jobCfnTable) {
-  jobCfnTable.streamSpecification = {
+const jobTable = backend.data.resources.tables['Job'];
+// Try accessing the CFN table through the amplifyDynamoDbTables path
+const jobCfnTable = backend.data.resources.cfnResources.amplifyDynamoDbTables['Job'];
+const cfnTableNode = (jobCfnTable as any).node?.defaultChild as dynamodb.CfnTable;
+if (cfnTableNode) {
+  cfnTableNode.streamSpecification = {
     streamViewType: dynamodb.StreamViewType.NEW_AND_OLD_IMAGES,
   };
 }
