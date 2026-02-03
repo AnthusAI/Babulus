@@ -1,0 +1,82 @@
+{
+  "items": [
+    {
+      "type": "tts",
+      "sceneId": "bullets-a",
+      "cueId": "vo-a",
+      "startSec": 0,
+      "endSec": 6.550000000000001,
+      "segments": [
+        {
+          "type": "tts",
+          "startSec": 0,
+          "endSec": 5.15,
+          "text": "Option A uses oversized checked bullets for maximum legibility.",
+          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/bullet-options/env/development/segments/bullets-a--vo-a--tts--28b4ea9a1db9--1.wav",
+          "durationSec": 5.15,
+          "rawDurationSec": 5.15,
+          "trimEndSec": 0
+        },
+        {
+          "type": "pause",
+          "startSec": 5.15,
+          "endSec": 6.550000000000001,
+          "seconds": 1.4
+        }
+      ]
+    },
+    {
+      "type": "tts",
+      "sceneId": "bullets-b",
+      "cueId": "vo-b",
+      "startSec": 6.550000000000001,
+      "endSec": 12.4,
+      "segments": [
+        {
+          "type": "tts",
+          "startSec": 6.550000000000001,
+          "endSec": 11,
+          "text": "Option B numbers each point for clear, ordered steps.",
+          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/bullet-options/env/development/segments/bullets-b--vo-b--tts--5e45a506998e--1.wav",
+          "durationSec": 4.45,
+          "rawDurationSec": 4.45,
+          "trimEndSec": 0
+        },
+        {
+          "type": "pause",
+          "startSec": 11,
+          "endSec": 12.4,
+          "seconds": 1.4
+        }
+      ]
+    },
+    {
+      "type": "tts",
+      "sceneId": "bullets-c",
+      "cueId": "vo-c",
+      "startSec": 12.4,
+      "endSec": 18.9,
+      "segments": [
+        {
+          "type": "tts",
+          "startSec": 12.4,
+          "endSec": 17.5,
+          "text": "Option C tightens the list into a compact grid-friendly spacing.",
+          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/bullet-options/env/development/segments/bullets-c--vo-c--tts--7a71241ada24--1.wav",
+          "durationSec": 5.1,
+          "rawDurationSec": 5.1,
+          "trimEndSec": 0
+        },
+        {
+          "type": "pause",
+          "startSec": 17.5,
+          "endSec": 18.9,
+          "seconds": 1.4
+        }
+      ]
+    }
+  ],
+  "audio": {
+    "tracks": []
+  }
+}

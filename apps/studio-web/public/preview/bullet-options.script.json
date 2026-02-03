@@ -1,0 +1,218 @@
+{
+  "scenes": [
+    {
+      "id": "bullets-a",
+      "title": "bullets-A",
+      "startSec": 0,
+      "endSec": 6.550000000000001,
+      "layers": [
+        {
+          "id": "page",
+          "components": [
+            {
+              "id": "layout-bulletlistscreen-0",
+              "type": "BulletListScreen",
+              "props": {
+                "label": "A",
+                "background": "linear-gradient(135deg, #101010, #1f2a44)",
+                "eyebrow": "Menu Option",
+                "title": "Option A — Bold & Large",
+                "subtitle": "Readable at a distance",
+                "align": "left",
+                "bullets": {
+                  "items": [
+                    "Fast onboarding",
+                    "Reusable layouts",
+                    "Motion presets",
+                    "Frame-accurate timing"
+                  ],
+                  "bulletStyle": "icon",
+                  "bulletIcon": {
+                    "kind": "lucide",
+                    "name": "check",
+                    "color": "#7ee0a3",
+                    "strokeWidth": 3,
+                    "size": 34
+                  },
+                  "fontSize": 76,
+                  "lineHeight": 1.5,
+                  "spacing": 110,
+                  "textColor": "#f5f7fb",
+                  "justify": "space-between"
+                },
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "vo-a",
+          "label": "vo-a",
+          "startSec": 0,
+          "endSec": 6.550000000000001,
+          "text": "Option A uses oversized checked bullets for maximum legibility.",
+          "segments": [
+            {
+              "type": "tts",
+              "startSec": 0,
+              "endSec": 5.15,
+              "text": "Option A uses oversized checked bullets for maximum legibility."
+            },
+            {
+              "type": "pause",
+              "startSec": 5.15,
+              "endSec": 6.550000000000001,
+              "durationSec": 1.4
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "bullets-b",
+      "title": "bullets-B",
+      "startSec": 6.550000000000001,
+      "endSec": 12.4,
+      "layers": [
+        {
+          "id": "page",
+          "components": [
+            {
+              "id": "layout-bulletlistscreen-0",
+              "type": "BulletListScreen",
+              "props": {
+                "label": "B",
+                "background": "linear-gradient(135deg, #15202b, #243447)",
+                "eyebrow": "Menu Option",
+                "title": "Option B — Numbered Stack",
+                "subtitle": "Ordered steps, strong rhythm",
+                "align": "left",
+                "bullets": {
+                  "items": [
+                    "Fast onboarding",
+                    "Reusable layouts",
+                    "Motion presets",
+                    "Frame-accurate timing"
+                  ],
+                  "bulletStyle": "number",
+                  "fontSize": 68,
+                  "lineHeight": 1.5,
+                  "spacing": 100,
+                  "textColor": "#eef3f8",
+                  "justify": "space-between"
+                },
+                "sceneStartSec": 6.550000000000001
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "vo-b",
+          "label": "vo-b",
+          "startSec": 6.550000000000001,
+          "endSec": 12.4,
+          "text": "Option B numbers each point for clear, ordered steps.",
+          "segments": [
+            {
+              "type": "tts",
+              "startSec": 6.550000000000001,
+              "endSec": 11,
+              "text": "Option B numbers each point for clear, ordered steps."
+            },
+            {
+              "type": "pause",
+              "startSec": 11,
+              "endSec": 12.4,
+              "durationSec": 1.4
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "bullets-c",
+      "title": "bullets-C",
+      "startSec": 12.4,
+      "endSec": 18.9,
+      "layers": [
+        {
+          "id": "page",
+          "components": [
+            {
+              "id": "layout-bulletlistscreen-0",
+              "type": "BulletListScreen",
+              "props": {
+                "label": "C",
+                "background": "linear-gradient(135deg, #0f172a, #1e293b)",
+                "eyebrow": "Menu Option",
+                "title": "Option C — Split Grid",
+                "subtitle": "Compact, two-column feel",
+                "align": "left",
+                "bullets": {
+                  "items": [
+                    "Fast onboarding",
+                    "Reusable layouts",
+                    "Motion presets",
+                    "Frame-accurate timing"
+                  ],
+                  "bulletStyle": "icon",
+                  "bulletIcon": {
+                    "kind": "lucide",
+                    "name": "arrow-right",
+                    "color": "#c7dcff",
+                    "strokeWidth": 2.4,
+                    "size": 34
+                  },
+                  "columns": 2,
+                  "columnGap": 80,
+                  "fontSize": 60,
+                  "lineHeight": 1.5,
+                  "spacing": 80,
+                  "textColor": "#e9edf5",
+                  "justify": "start"
+                },
+                "sceneStartSec": 12.4
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "vo-c",
+          "label": "vo-c",
+          "startSec": 12.4,
+          "endSec": 18.9,
+          "text": "Option C tightens the list into a compact grid-friendly spacing.",
+          "segments": [
+            {
+              "type": "tts",
+              "startSec": 12.4,
+              "endSec": 17.5,
+              "text": "Option C tightens the list into a compact grid-friendly spacing."
+            },
+            {
+              "type": "pause",
+              "startSec": 17.5,
+              "endSec": 18.9,
+              "durationSec": 1.4
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    }
+  ],
+  "fps": 30,
+  "meta": {
+    "fps": 30,
+    "width": 1920,
+    "height": 1080
+  }
+}
