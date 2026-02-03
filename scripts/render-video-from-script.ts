@@ -38,6 +38,7 @@ program
   .option("--width <number>", "Override width")
   .option("--height <number>", "Override height")
   .option("--duration <number>", "Override duration frames")
+  .option("--debug-layout", "Show layout bounds (dev-only helper)")
   .option("--no-clean", "Skip cleaning existing frames before rendering (default: clean)")
   .option("--ffmpeg <path>", "ffmpeg binary path", "ffmpeg")
   .action(async (opts) => {
@@ -64,6 +65,7 @@ program
       timeline,
       title: opts.title,
       subtitle: opts.subtitle,
+      debugLayout: !!opts.debugLayout,
       framesDir,
       outputPath,
       audioPath,
