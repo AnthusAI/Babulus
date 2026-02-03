@@ -26,6 +26,21 @@ export function DocsPreviewPlayer({ id, defaultWidth = 1920, defaultHeight = 108
     return Number.isFinite(value) && value > 0 ? value : defaultHeight;
   }, [defaultHeight, searchParams]);
 
+  const initialTime = useMemo(() => {
+    const value = Number(searchParams?.get('t') ?? 0);
+    return Number.isFinite(value) && value >= 0 ? value : 0;
+  }, [searchParams]);
+
+  const autoPlay = useMemo(() => {
+    const value = searchParams?.get('autoplay');
+    return value === '1' || value === 'true';
+  }, [searchParams]);
+
+  const showControls = useMemo(() => {
+    const value = searchParams?.get('controls');
+    return value !== '0' && value !== 'false';
+  }, [searchParams]);
+
   useEffect(() => {
     let isActive = true;
     const controller = new AbortController();
@@ -74,5 +89,15 @@ export function DocsPreviewPlayer({ id, defaultWidth = 1920, defaultHeight = 108
     );
   }
 
-  return <PreviewPlayer script={script} width={width} height={height} overlayControls />;
+  return (
+    <PreviewPlayer
+      script={script}
+      width={width}
+      height={height}
+      overlayControls={showControls}
+      showControls={showControls}
+      initialTime={initialTime}
+      autoPlay={autoPlay}
+    />
+  );
 }

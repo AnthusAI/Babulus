@@ -17,7 +17,7 @@ Apply via a class or inline CSS vars (example below). Pair with `COLORS.md` toke
 ```
 In React/DSL: set `styles` or wrapper class that defines the vars, then let components inherit.
 
-## Theme Catalog (mirrors the Menu demo screens)
+## Theme Catalog (mirrors the Typography preview reel)
 
 ### A — Broadcast Classics
 1. **Classic News** — Eyebrow Gill Sans; Headline Helvetica Neue Bold; Subhead Arial. Use for neutral newsy tone, lower-thirds.
@@ -69,8 +69,8 @@ In React/DSL: set `styles` or wrapper class that defines the vars, then let comp
 - **Quotes / lower-thirds:** Broadcast Quote, News Quote, Lower Third, Heritage.
 - **Family-friendly / lifestyle:** Rounded, Weather, Lifestyle.
 
-## Demo Video
-- Font Pairings Menu (A/B/C boards with debug frames): `open public/babulus/font-pairings-menu-full.mp4`
+## Live Preview (Studio docs)
+- Typography reel (3s per theme): `/docs-preview/typeface-themes`
 
 ## CSS Snippet Library
 Create a theme class per name; example:

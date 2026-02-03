@@ -28,9 +28,8 @@ For each theme define:
 - Light: Radix `teal`; trustworthy/data viz.
 - Dark: Radix `tealDark`; accent `teal9Dark`.
 
-## Demo Videos
-- Component Showcase (surfaces + accents in action): `open public/babulus/component-showcase-preview.mp4`
-- Menu (neutral background, accent labels): `open public/babulus/menu-auto.mp4`
+## Live Preview (Studio docs)
+- Color reel (3s per theme): `/docs-preview/color-themes`
 
 ## Application
 Example class:

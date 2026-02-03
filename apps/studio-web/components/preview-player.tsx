@@ -18,6 +18,9 @@ export type PreviewPlayerProps = {
   width?: number;
   height?: number;
   overlayControls?: boolean;
+  initialTime?: number;
+  autoPlay?: boolean;
+  showControls?: boolean;
   onExitFullscreen?: () => void;
   hideControlsDelayMs?: number;
 };
@@ -35,11 +38,14 @@ export function PreviewPlayer({
   width = 1280,
   height = 720,
   overlayControls = false,
+  initialTime = 0,
+  autoPlay = false,
+  showControls = true,
   onExitFullscreen,
   hideControlsDelayMs = 2200,
 }: PreviewPlayerProps) {
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [currentTime, setCurrentTime] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(autoPlay);
+  const [currentTime, setCurrentTime] = useState(initialTime);
   const [previewSize, setPreviewSize] = useState({ width: 0, height: 0 });
   const [showOverlayControls, setShowOverlayControls] = useState(true);
   const animationFrameRef = useRef<number>();
@@ -61,6 +67,12 @@ export function PreviewPlayer({
   }, [script]);
   const duration = script.meta?.durationSeconds ?? derivedDuration ?? 10;
   const currentFrame = Math.floor(currentTime * fps);
+
+  useEffect(() => {
+    setCurrentTime(initialTime);
+    setIsPlaying(autoPlay);
+    lastTimestampRef.current = undefined;
+  }, [autoPlay, initialTime, script]);
 
   useEffect(() => {
     const element = previewAreaRef.current;
@@ -222,7 +234,8 @@ export function PreviewPlayer({
         </div>
       </div>
 
-      {overlayControls ? (
+      {showControls ? (
+        overlayControls ? (
         <>
           <div
             className={`pointer-events-none absolute inset-x-0 bottom-6 flex justify-center transition-opacity duration-300 ${
@@ -295,7 +308,7 @@ export function PreviewPlayer({
             </div>
           )}
         </>
-      ) : (
+        ) : (
         <div
           className="preview-controls flex flex-col border-l border-r border-b border-gray-700 bg-gray-900 mx-auto"
           style={{
@@ -344,7 +357,8 @@ export function PreviewPlayer({
             </div>
           </div>
         </div>
-      )}
+        )
+      ) : null}
     </div>
   );
 }
