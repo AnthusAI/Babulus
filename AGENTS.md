@@ -33,6 +33,11 @@
     *   Provide examples of basic visual elements in **Storybook stories**.
     *   Do research into best practices for specific tasks.
 
+## Standard Building Blocks (quick links for agents)
+- Layouts: see `LAYOUTS.md` (standard screen layouts, required props, debug-frame flag)
+- Typography themes: see `TYPEFACES.md` (named font sets, when to use them)
+- Color themes: see `COLORS.md` (Radix-based light/dark theme tokens)
+
 ## Agent autonomy (behavior)
 - Proceed independently without stopping to ask permission after each change.
 - Keep moving through the plan and report only when there is meaningful progress or a true blocker.

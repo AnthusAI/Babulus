@@ -48,7 +48,18 @@ export function PreviewPlayer({
   const previewAreaRef = useRef<HTMLDivElement>(null);
 
   const fps = script.fps ?? 30;
-  const duration = script.meta?.durationSeconds ?? 10;
+  const derivedDuration = useMemo(() => {
+    const scenes = script?.scenes ?? [];
+    if (!scenes.length) return null;
+    let maxEnd = 0;
+    for (const scene of scenes) {
+      if (typeof scene.endSec === 'number' && scene.endSec > maxEnd) {
+        maxEnd = scene.endSec;
+      }
+    }
+    return maxEnd > 0 ? maxEnd : null;
+  }, [script]);
+  const duration = script.meta?.durationSeconds ?? derivedDuration ?? 10;
   const currentFrame = Math.floor(currentTime * fps);
 
   useEffect(() => {

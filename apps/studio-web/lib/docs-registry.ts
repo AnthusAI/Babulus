@@ -17,6 +17,9 @@ import { renderingMode2Doc } from "@/lib/docs-content/rendering-mode-2-container
 import { renderingMode3Doc } from "@/lib/docs-content/rendering-mode-3-cloud";
 import { configurationContent } from "@/lib/docs-content/configuration";
 import { marked } from "marked";
+import { componentsLayoutsDoc } from "@/lib/docs-content/components-layouts";
+import { componentsTypographyDoc } from "@/lib/docs-content/components-typography";
+import { componentsColorsDoc } from "@/lib/docs-content/components-colors";
 
 export type DocsCategory =
   | "Overview"
@@ -114,6 +117,9 @@ const RAW_DOCS: readonly DocsEntry[] = [
   renderingMode1Doc,
   renderingMode2Doc,
   renderingMode3Doc,
+  componentsLayoutsDoc,
+  componentsTypographyDoc,
+  componentsColorsDoc,
   technicalDoc,
   brandingDoc,
   componentsGuideDoc,
