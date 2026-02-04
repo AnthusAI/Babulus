@@ -26,7 +26,12 @@ export default function DocsLandingPage() {
   const accessibleSections = sections.filter((s) =>
     accessibleCategories.includes(s.category)
   );
-  const developerSections = sections.filter((s) => !accessibleCategories.includes(s.category));
+  const isRoadmapDoc = (slug: readonly string[]) => slug[0] === "roadmap";
+  const developerSections = sections.filter(
+    (s) =>
+      !accessibleCategories.includes(s.category) &&
+      !s.docs.some((doc) => isRoadmapDoc(doc.slug)),
+  );
   const isThemeSlug = (slug: readonly string[]) =>
     slug[0] === "components" &&
     (slug[1] === "layouts" || slug[1] === "typography" || slug[1] === "colors");
@@ -48,7 +53,9 @@ export default function DocsLandingPage() {
       s.category !== "TTS Providers" &&
       s.category !== "Rendering",
   );
-  const roadmapSection = sections.find((s) => s.category === "Roadmap");
+  const roadmapSection = sections.find((s) =>
+    s.docs.some((doc) => isRoadmapDoc(doc.slug)),
+  );
 
   return (
     <DocsShell>
