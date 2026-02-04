@@ -13,6 +13,15 @@ const repoRoot = process.cwd();
 const tsxPath = resolve(repoRoot, "node_modules", ".bin", process.platform === "win32" ? "tsx.cmd" : "tsx");
 const cliPath = resolve(repoRoot, "src", "cli.ts");
 
+const recordResult = (result: ReturnType<typeof spawnSync>) => {
+  exitCode = result.status;
+  stderr = result.stderr ?? "";
+  if (exitCode !== 0) {
+    console.log("CLI stdout:", result.stdout ?? "");
+    console.log("CLI stderr:", result.stderr ?? "");
+  }
+};
+
 Before(() => {
   workspace = mkdtempSync(join(tmpdir(), "babulus-cli-generate-"));
   mkdirSync(join(workspace, "content"), { recursive: true });
@@ -69,8 +78,7 @@ When("I run babulus generate for DSL {string} env {string}", (relativePath: stri
     ],
     { cwd: repoRoot, encoding: "utf-8" },
   );
-  exitCode = result.status;
-  stderr = result.stderr;
+  recordResult(result);
 });
 
 When(
@@ -93,8 +101,7 @@ When(
       ],
       { cwd: repoRoot, encoding: "utf-8" },
     );
-    exitCode = result.status;
-    stderr = result.stderr;
+    recordResult(result);
   },
 );
 
@@ -105,8 +112,7 @@ When("I run babulus generate with script override for DSL {string}", (relativePa
     ["src/cli.ts", "generate", path, "--script-out", "override.json", "--project-dir", workspace],
     { cwd: repoRoot, encoding: "utf-8" },
   );
-  exitCode = result.status;
-  stderr = result.stderr;
+  recordResult(result);
 });
 
 When("I run babulus generate watch with script override for directory {string}", (dir: string) => {
@@ -116,8 +122,7 @@ When("I run babulus generate watch with script override for directory {string}",
     ["src/cli.ts", "generate", path, "--watch", "--script-out", "override.json", "--project-dir", workspace],
     { cwd: repoRoot, encoding: "utf-8" },
   );
-  exitCode = result.status;
-  stderr = result.stderr;
+  recordResult(result);
 });
 
 When("I run babulus generate with auto-discovery env {string}", (env: string) => {
@@ -126,8 +131,7 @@ When("I run babulus generate with auto-discovery env {string}", (env: string) =>
     [cliPath, "generate", "--env", env, "--provider", "dry-run", "--project-dir", workspace],
     { cwd: workspace, encoding: "utf-8" },
   );
-  exitCode = result.status;
-  stderr = result.stderr;
+  recordResult(result);
 });
 
 When("I run babulus generate for missing path {string}", (relativePath: string) => {
@@ -137,8 +141,7 @@ When("I run babulus generate for missing path {string}", (relativePath: string) 
     [cliPath, "generate", path],
     { cwd: workspace, encoding: "utf-8" },
   );
-  exitCode = result.status;
-  stderr = result.stderr;
+  recordResult(result);
 });
 
 Then("the generate CLI exit code should be {int}", (code: number) => {
