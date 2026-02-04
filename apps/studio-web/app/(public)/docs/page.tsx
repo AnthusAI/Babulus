@@ -26,11 +26,7 @@ export default function DocsLandingPage() {
   const accessibleSections = sections.filter((s) =>
     accessibleCategories.includes(s.category)
   );
-  const developerSections = sections.filter((s) => {
-    if (accessibleCategories.includes(s.category)) return false;
-    if (s.category === "Roadmap") return false;
-    return true;
-  });
+  const developerSections = sections.filter((s) => !accessibleCategories.includes(s.category));
   const isThemeSlug = (slug: readonly string[]) =>
     slug[0] === "components" &&
     (slug[1] === "layouts" || slug[1] === "typography" || slug[1] === "colors");
