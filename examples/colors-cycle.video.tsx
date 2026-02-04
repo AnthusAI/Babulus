@@ -37,7 +37,7 @@ const themes: ColorTheme[] = [
     },
   },
   {
-    id: 'warm-light',
+    id: 'warm-dark',
     label: 'Dark Mode',
     title: 'Warm Dark',
     subtitle: 'Warm neutrals with pink-blue accents for cinematic stories.',

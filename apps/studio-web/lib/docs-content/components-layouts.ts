@@ -1,4 +1,6 @@
-export const componentsLayoutsDoc = {
+import type { DocsEntry } from "@/lib/docs-registry";
+
+export const componentsLayoutsDoc: DocsEntry = {
   slug: ["components", "layouts"],
   title: "Standard Layouts",
   description: "Full-frame flex layouts with debug frames, ready to combine with typography and color themes",
