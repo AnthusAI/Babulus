@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { MonitorPlay } from "lucide-react";
+import { PreviewEmbed } from "@/components/marketing/preview-embed";
 import { Button } from "@/components/ui/button";
 import { codeToHtml } from "shiki";
 
@@ -11,46 +11,62 @@ export const metadata: Metadata = {
 
 const exampleCode = `import { defineVideo } from "babulus";
 
-export default defineVideo((video) => {
-  video.composition("Introduction to Babulus", (composition) => {
-    composition.meta({ fps: 30, width: 1280, height: 720 });
-    composition.posterTime(2);
-    composition.voiceover({ provider: "elevenlabs", leadInSeconds: 0.5 });
-
-    composition.scene("Welcome", (scene) => {
-      scene.markup({
-        background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-        textAlign: "center",
-        titleColor: "#ffffff",
-        titleSize: 56,
+export default defineVideo(
+  "Code to Video Preview",
+  { fps: 30, width: 1920, height: 1080 },
+  (c) => {
+    c.scene("intro", (s) => {
+      s.layer("content", {}, (l) => {
+        l.layout("TitleSlide", {
+          eyebrow: "Code to Video",
+          title: "Code Your Videos",
+          subtitle: "(AI is really good at it!)",
+          verticalAlign: "center",
+          horizontalAlign: "center",
+          entranceStartFrame: -999,
+        });
       });
-
-      scene.cue("Opening", (cue) => {
-        cue.voice((voice) => {
-          voice.say("Welcome to Babulus, the AI-powered video creation platform.");
-          voice.pause(0.4);
-          voice.say("Create professional videos using code, with automatic voiceovers and scene composition.");
+      s.cue("intro-vo", (cue) => {
+        cue.voice((v) => {
+          v.say("Write TypeScript. Babulus builds the video.");
         });
       });
     });
 
-    composition.scene("Key Features", (scene) => {
-      scene.markup({
-        background: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
-        titleColor: "#ffffff",
-        titleSize: 48,
+    c.scene("code", (s) => {
+      s.layer("content", {}, (l) => {
+        l.layout("BulletListScreen", {
+          eyebrow: "Pipeline",
+          title: "Your code becomes a video",
+          subtitle: "Scene structure + narration = render",
+          bullets: {
+            items: [
+              "Write a few scenes",
+              "Add voiceover with cues",
+              "Babulus computes timing",
+              "Renderer outputs MP4",
+            ],
+            bulletStyle: "icon",
+            bulletIcon: {
+              kind: "lucide",
+              name: "check",
+              size: 44,
+              strokeWidth: 3.2,
+            },
+            fontSize: 48,
+            lineHeight: 1.2,
+            spacing: 24,
+          },
+        });
       });
-
-      scene.cue("Power of TypeScript", (cue) => {
-        cue.voice((voice) => {
-          voice.say("Babulus combines the power of TypeScript with AI to streamline video production.");
-          voice.pause(0.3);
-          voice.say("Write your video content as code, and we handle voiceover generation, timing, and rendering.");
+      s.cue("code-vo", (cue) => {
+        cue.voice((v) => {
+          v.say("Scenes and narration become a finished render.");
         });
       });
     });
-  });
-});`;
+  },
+);`;
 
 export default async function CodeToVideoPage() {
   const highlightedCode = await codeToHtml(exampleCode, {
@@ -71,23 +87,13 @@ export default async function CodeToVideoPage() {
             </p>
           </div>
 
-          {/* Video placeholder */}
+          {/* Video preview */}
           <div className="w-full pt-8">
-            <div className="rounded-2xl bg-card p-2">
-              <div className="rounded-xl bg-background p-3">
-                <div className="aspect-video w-full rounded-xl bg-muted flex items-center justify-center">
-                  <div className="flex items-center gap-3 text-foreground/70">
-                    <div className="h-10 w-10 rounded-full bg-background flex items-center justify-center">
-                      <MonitorPlay className="h-5 w-5" />
-                    </div>
-                    <div className="text-left">
-                      <div className="text-sm font-semibold leading-5">Video preview</div>
-                      <div className="text-xs text-muted-foreground leading-5">Coming soon</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <PreviewEmbed
+              id="code-to-video-preview"
+              showControls
+              showThemeControls
+            />
           </div>
 
           {/* Explanation */}

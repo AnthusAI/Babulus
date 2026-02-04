@@ -35,7 +35,7 @@ export function DocsShell({
   return (
     <div className="bg-recess">
       <div className="container py-10 md:py-14">
-        <div className="grid gap-8 md:grid-cols-[260px_1fr]">
+        <div className="grid gap-8 md:grid-cols-[260px_1fr_220px]">
           <aside className="hidden md:block">
             <div className="rounded-2xl bg-card p-2">
               <div className="rounded-xl bg-background p-2">
@@ -77,6 +77,35 @@ export function DocsShell({
             </div>
           </aside>
           <div className="min-w-0">{children}</div>
+          <aside className="hidden md:block">
+            <div className="rounded-2xl bg-card p-2">
+              <div className="rounded-xl bg-background p-4">
+                <div className="text-xs font-semibold uppercase tracking-[0.2em] text-foreground/50">
+                  Theme Library
+                </div>
+                <div className="mt-3 flex flex-col gap-1">
+                  <Link
+                    href="/docs/components/layouts"
+                    className="rounded-lg px-3 py-2 text-sm text-foreground/60 transition-colors hover:text-foreground/80"
+                  >
+                    Layouts
+                  </Link>
+                  <Link
+                    href="/docs/components/typography"
+                    className="rounded-lg px-3 py-2 text-sm text-foreground/60 transition-colors hover:text-foreground/80"
+                  >
+                    Typography Schemes
+                  </Link>
+                  <Link
+                    href="/docs/components/colors"
+                    className="rounded-lg px-3 py-2 text-sm text-foreground/60 transition-colors hover:text-foreground/80"
+                  >
+                    Color Schemes
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </aside>
         </div>
       </div>
     </div>

@@ -15,6 +15,7 @@ import {
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { WaitlistExpectations } from "@/components/marketing/waitlist-expectations";
+import { PreviewEmbed } from "@/components/marketing/preview-embed";
 
 export const metadata: Metadata = {
   title: {

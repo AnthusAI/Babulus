@@ -1,6 +1,6 @@
 export const introductionDoc = {
   slug: ["introduction"],
-  title: "Babulus — Introduction",
+  title: "Babulus Introduction",
   description:
     "What Babulus is, what problems it solves, and who should use it",
   category: "Overview",
@@ -87,8 +87,6 @@ export const introductionDoc = {
 <ul>
   <li><a href="/docs/technical">Technical overview</a></li>
   <li><a href="/docs/roadmap">Roadmap</a></li>
-  <li><a href="/docs/branding">Branding guidelines</a></li>
 </ul>
 `.trim(),
 } as const;
-

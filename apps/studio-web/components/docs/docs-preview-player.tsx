@@ -4,17 +4,35 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import type { ScriptData } from '@babulus/shared';
 import { PreviewPlayer } from '@/components/preview-player';
+import { COLOR_SCHEMES } from '@/lib/theme/color-schemes';
+import { TYPOGRAPHY_SCHEMES } from '@/lib/theme/typography-schemes';
 
 type DocsPreviewPlayerProps = {
   id: string;
   defaultWidth?: number;
   defaultHeight?: number;
+  showThemeControls?: boolean;
+  defaultColorScheme?: string;
+  defaultTypographyScheme?: string;
 };
 
-export function DocsPreviewPlayer({ id, defaultWidth = 1920, defaultHeight = 1080 }: DocsPreviewPlayerProps) {
+export function DocsPreviewPlayer({
+  id,
+  defaultWidth = 1920,
+  defaultHeight = 1080,
+  showThemeControls = false,
+  defaultColorScheme,
+  defaultTypographyScheme,
+}: DocsPreviewPlayerProps) {
   const searchParams = useSearchParams();
   const [script, setScript] = useState<ScriptData | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [colorSchemeId, setColorSchemeId] = useState(
+    defaultColorScheme ?? 'cool-dark',
+  );
+  const [typographySchemeId, setTypographySchemeId] = useState(
+    defaultTypographyScheme ?? TYPOGRAPHY_SCHEMES[0]?.id ?? 'classic-news',
+  );
 
   const width = useMemo(() => {
     const value = Number(searchParams?.get('w') ?? defaultWidth);
@@ -89,17 +107,77 @@ export function DocsPreviewPlayer({ id, defaultWidth = 1920, defaultHeight = 108
     );
   }
 
+  const colorScheme =
+    COLOR_SCHEMES.find((scheme) => scheme.id === colorSchemeId) ?? COLOR_SCHEMES[0];
+  const typographyScheme =
+    TYPOGRAPHY_SCHEMES.find((scheme) => scheme.id === typographySchemeId) ??
+    TYPOGRAPHY_SCHEMES[0];
+
+  const themeStyle: React.CSSProperties = colorScheme
+    ? {
+        ['--color-bg' as any]: colorScheme.palette.bg,
+        ['--color-bg-subtle' as any]: colorScheme.palette.surface,
+        ['--color-surface' as any]: colorScheme.palette.surface,
+        ['--color-surface-strong' as any]: colorScheme.palette.surfaceStrong,
+        ['--color-surface-2' as any]: colorScheme.palette.surfaceStrong,
+        ['--color-text' as any]: colorScheme.palette.text,
+        ['--color-text-muted' as any]: colorScheme.palette.textMuted,
+        ['--color-primary' as any]: colorScheme.palette.primary,
+        ['--color-secondary' as any]: colorScheme.palette.secondary,
+        ['--color-accent' as any]: colorScheme.palette.primary,
+        ['--color-accent-2' as any]: colorScheme.palette.secondary,
+        ['--color-muted' as any]: colorScheme.palette.muted,
+        ['--color-muted-more' as any]: colorScheme.palette.mutedMore,
+        ...(typographyScheme
+          ? {
+              ['--font-eyebrow' as any]: typographyScheme.vars.eyebrow,
+              ['--font-headline' as any]: typographyScheme.vars.headline,
+              ['--font-subhead' as any]: typographyScheme.vars.subhead,
+            }
+          : {}),
+      }
+    : undefined;
+
   return (
-    <PreviewPlayer
-      script={script}
-      width={width}
-      height={height}
-      overlayControls={false}
-      showControls={showControls}
-      initialTime={initialTime}
-      autoPlay={autoPlay}
-      align="start"
-      fillHeight={false}
-    />
+    <div className="relative w-full">
+      {showThemeControls ? (
+        <div className="absolute right-2 top-2 z-10 flex gap-2">
+          <select
+            value={colorSchemeId}
+            onChange={(event) => setColorSchemeId(event.target.value)}
+            className="rounded-lg bg-muted/80 px-2 py-1 text-[11px] font-medium text-foreground/80"
+          >
+            {COLOR_SCHEMES.map((scheme) => (
+              <option key={scheme.id} value={scheme.id}>
+                {scheme.name}
+              </option>
+            ))}
+          </select>
+          <select
+            value={typographySchemeId}
+            onChange={(event) => setTypographySchemeId(event.target.value)}
+            className="rounded-lg bg-muted/80 px-2 py-1 text-[11px] font-medium text-foreground/80"
+          >
+            {TYPOGRAPHY_SCHEMES.map((scheme) => (
+              <option key={scheme.id} value={scheme.id}>
+                {scheme.name}
+              </option>
+            ))}
+          </select>
+        </div>
+      ) : null}
+      <PreviewPlayer
+        script={script}
+        width={width}
+        height={height}
+        overlayControls={false}
+        showControls={showControls}
+        initialTime={initialTime}
+        autoPlay={autoPlay}
+        align="start"
+        fillHeight={false}
+        themeStyle={themeStyle}
+      />
+    </div>
   );
 }

@@ -104,8 +104,8 @@ Want to understand what's happening under the hood?
 
 export const renderingOverviewDoc: DocsEntry = {
   slug: ["rendering", "overview"],
-  title: "Overview",
-  description: "Understand how Babulus turns generated compositions into final MP4 videos",
-  category: "Guides",
+  title: "Rendering Overview",
+  description: "How Babulus turns generated compositions into final MP4 videos",
+  category: "Overview",
   html: marked.parse(content, { async: false }) as string,
 };

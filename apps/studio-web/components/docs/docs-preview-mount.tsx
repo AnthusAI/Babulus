@@ -9,6 +9,9 @@ type PreviewNode = HTMLElement & {
     docsPreview?: string;
     w?: string;
     h?: string;
+    themeControls?: string;
+    themeColor?: string;
+    themeTypography?: string;
     mounted?: string;
   };
 };
@@ -24,9 +27,21 @@ export function DocsPreviewMount() {
       if (!id) return;
       const width = Number(node.dataset.w ?? 1920);
       const height = Number(node.dataset.h ?? 1080);
+      const showThemeControls = node.dataset.themeControls === "true";
+      const defaultColorScheme = node.dataset.themeColor;
+      const defaultTypographyScheme = node.dataset.themeTypography;
       node.dataset.mounted = "true";
       const root = createRoot(node);
-      root.render(<DocsPreviewPlayer id={id} defaultWidth={width} defaultHeight={height} />);
+      root.render(
+        <DocsPreviewPlayer
+          id={id}
+          defaultWidth={width}
+          defaultHeight={height}
+          showThemeControls={showThemeControls}
+          defaultColorScheme={defaultColorScheme}
+          defaultTypographyScheme={defaultTypographyScheme}
+        />,
+      );
     });
   }, []);
 

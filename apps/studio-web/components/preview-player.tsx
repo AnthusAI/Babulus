@@ -25,6 +25,7 @@ export type PreviewPlayerProps = {
   showControls?: boolean;
   onExitFullscreen?: () => void;
   hideControlsDelayMs?: number;
+  themeStyle?: React.CSSProperties;
 };
 
 /**
@@ -47,6 +48,7 @@ export function PreviewPlayer({
   showControls = true,
   onExitFullscreen,
   hideControlsDelayMs = 2200,
+  themeStyle,
 }: PreviewPlayerProps) {
   const [isPlaying, setIsPlaying] = useState(autoPlay);
   const [currentTime, setCurrentTime] = useState(initialTime);
@@ -239,6 +241,7 @@ export function PreviewPlayer({
               height,
               transform: `scale(${scale})`,
               transformOrigin: 'top left',
+              ...(themeStyle ?? {}),
             }}
           >
             <RendererProvider

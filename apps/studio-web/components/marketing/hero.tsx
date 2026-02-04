@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { MonitorPlay } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { PreviewEmbed } from "@/components/marketing/preview-embed";
 
 export function Hero() {
   return (
@@ -29,21 +29,7 @@ export function Hero() {
         </div>
 
         <div className="w-full max-w-[56rem] pt-8">
-          <div className="rounded-2xl bg-card p-2">
-            <div className="rounded-xl bg-background p-3">
-              <div className="aspect-video w-full rounded-xl bg-muted flex items-center justify-center">
-                <div className="flex items-center gap-3 text-foreground/70">
-                  <div className="h-10 w-10 rounded-full bg-background flex items-center justify-center">
-                    <MonitorPlay className="h-5 w-5" />
-                  </div>
-                  <div className="text-left">
-                    <div className="text-sm font-semibold leading-5">Video preview</div>
-                    <div className="text-xs text-muted-foreground leading-5">Coming soon</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+            <PreviewEmbed id="home-elevator-preview" showControls />
         </div>
       </div>
     </section>

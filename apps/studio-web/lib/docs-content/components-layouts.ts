@@ -14,31 +14,31 @@ export const componentsLayoutsDoc: DocsEntry = {
 
 <h3>Title Screen</h3>
 <p>Centered/vertically aligned title & subtitle; configurable entrances.</p>
-<div class="docs-preview" data-docs-preview="title-slide-demo" data-w="1920" data-h="1080"></div>
+<div class="docs-preview" data-docs-preview="title-slide-demo" data-w="1920" data-h="1080" data-theme-controls="true"></div>
 
 <h3>Chapter Heading</h3>
 <p>Large chapter number with layouts.</p>
-<div class="docs-preview" data-docs-preview="chapter-heading-demo" data-w="1920" data-h="1080"></div>
+<div class="docs-preview" data-docs-preview="chapter-heading-demo" data-w="1920" data-h="1080" data-theme-controls="true"></div>
 
 <h3>Content Screen</h3>
 <p>Reusable header + single content area. Title, subtitle, eyebrow, and logo are optional.</p>
-<div class="docs-preview" data-docs-preview="content-layout-demo" data-w="1920" data-h="1080"></div>
+<div class="docs-preview" data-docs-preview="content-layout-demo" data-w="1920" data-h="1080" data-theme-controls="true"></div>
 
 <h3>Two Column Screen</h3>
 <p>Header + two columns. Supports animated column ratios.</p>
-<div class="docs-preview" data-docs-preview="two-column-demo" data-w="1920" data-h="1080"></div>
+<div class="docs-preview" data-docs-preview="two-column-demo" data-w="1920" data-h="1080" data-theme-controls="true"></div>
 
 <h3>Three Column Screen</h3>
 <p>Header + three columns for wide-screen dashboards.</p>
-<div class="docs-preview" data-docs-preview="three-column-demo" data-w="1920" data-h="1080"></div>
+<div class="docs-preview" data-docs-preview="three-column-demo" data-w="1920" data-h="1080" data-theme-controls="true"></div>
 
 <h3>Grid Screen</h3>
 <p>Header + multi-tile grid. Use for dashboards or menus.</p>
-<div class="docs-preview" data-docs-preview="grid-screen-demo" data-w="1920" data-h="1080"></div>
+<div class="docs-preview" data-docs-preview="grid-screen-demo" data-w="1920" data-h="1080" data-theme-controls="true"></div>
 
 <h3>Quote Card</h3>
 <p>Pull-quote card.</p>
-<div class="docs-preview" data-docs-preview="quote-card-demo" data-w="1920" data-h="1080"></div>
+<div class="docs-preview" data-docs-preview="quote-card-demo" data-w="1920" data-h="1080" data-theme-controls="true"></div>
 
 <h3>Bullet List Screen</h3>
 <p>Header (label/eyebrow/title/subtitle/logo/chapter) + bullet list filling remaining space. Props: <code>label</code>, <code>eyebrow</code>, <code>title</code>, <code>subtitle?</code>, <code>chapterNumber?</code>, <code>chapterLabel?</code>, <code>logoUrl?/logoAlt?/logoWidth?/logoHeight?</code>, <code>align</code>, <code>bullets</code> (pass-through to BulletListComponent), <code>background</code>, <code>padding</code>, <code>gap</code>, <code>debugLayout</code>.</p>

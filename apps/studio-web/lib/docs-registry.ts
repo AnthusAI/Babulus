@@ -1,4 +1,3 @@
-import { brandingDoc } from "@/lib/docs-content/branding";
 import { componentsGuideDoc } from "@/lib/docs-content/components-guide";
 import { configSetupDoc } from "@/lib/docs-content/config-setup";
 import { introductionDoc } from "@/lib/docs-content/introduction";
@@ -24,7 +23,6 @@ import { componentsColorsDoc } from "@/lib/docs-content/components-colors";
 export type DocsCategory =
   | "Overview"
   | "Guides"
-  | "Roadmap"
   | "Rendering"
   | "Developer Reference"
   | "TTS Providers"
@@ -106,7 +104,7 @@ const configurationDoc: DocsEntry = {
   slug: ["configuration"],
   title: "Configuration",
   description: "Configure API keys, TTS providers, and global settings",
-  category: "Guides",
+  category: "Overview",
   html: marked.parse(configurationContent) as string,
 };
 
@@ -121,8 +119,6 @@ const RAW_DOCS: readonly DocsEntry[] = [
   componentsTypographyDoc,
   componentsColorsDoc,
   technicalDoc,
-  brandingDoc,
-  componentsGuideDoc,
   configSetupDoc,
   ttsAwsPollyQuickstartDoc,
   ttsAzureSpeechQuickstartDoc,
@@ -131,6 +127,7 @@ const RAW_DOCS: readonly DocsEntry[] = [
   environmentsDoc,
   projectStorageArchitectureDoc,
   projectStorageQuickstartDoc,
+  componentsGuideDoc,
   roadmapDoc,
 ];
 
@@ -157,7 +154,6 @@ const CATEGORY_ORDER: readonly DocsCategory[] = [
   // Accessible content (no section header)
   "Overview",
   "Guides",
-  "Roadmap",
   // Developer documentation (with section header)
   "Rendering",
   "Developer Reference",
@@ -168,18 +164,32 @@ const CATEGORY_ORDER: readonly DocsCategory[] = [
 export function listDocsByCategory(options?: { includeInternal?: boolean }) {
   const includeInternal = options?.includeInternal ?? false;
   const categories = new Map<DocsCategory, DocsEntry[]>();
+  const deferredDocs: DocsEntry[] = [];
   for (const doc of DOCS) {
     if (!includeInternal && doc.internal) continue;
+    if (doc.category === "Roadmap") {
+      deferredDocs.push(doc);
+      continue;
+    }
     const existing = categories.get(doc.category) ?? [];
     existing.push(doc);
     categories.set(doc.category, existing);
   }
 
   // Return categories in the defined order, filtering out empty categories
-  return CATEGORY_ORDER.filter((category) => categories.has(category)).map(
+  const ordered = CATEGORY_ORDER.filter((category) => categories.has(category)).map(
     (category) => ({
       category,
       docs: categories.get(category)!,
     })
   );
+
+  if (deferredDocs.length) {
+    ordered.push({
+      category: "Roadmap" as DocsCategory,
+      docs: deferredDocs,
+    });
+  }
+
+  return ordered;
 }
