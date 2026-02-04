@@ -26,7 +26,8 @@ export type DocsCategory =
   | "Rendering"
   | "Developer Reference"
   | "TTS Providers"
-  | "Project Storage";
+  | "Project Storage"
+  | "Roadmap";
 
 export type DocsEntry = Readonly<{
   slug: readonly string[];
@@ -186,7 +187,7 @@ export function listDocsByCategory(options?: { includeInternal?: boolean }) {
 
   if (deferredDocs.length) {
     ordered.push({
-      category: "Roadmap" as DocsCategory,
+      category: "Roadmap",
       docs: deferredDocs,
     });
   }
