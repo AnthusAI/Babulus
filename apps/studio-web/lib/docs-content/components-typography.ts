@@ -1,14 +1,5 @@
 import type { DocsEntry } from "@/lib/docs-registry";
 
-type FontPreview = {
-  eyebrow: string;
-  headline: string;
-  subhead: string;
-  eyebrowFont: string;
-  headlineFont: string;
-  subheadFont: string;
-};
-
 const fontFallbacks: Array<[RegExp, string]> = [
   [
     /helvetica|neue|arial|verdana|trebuchet|lucida|sf pro|segoe|avenir/i,
