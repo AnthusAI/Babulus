@@ -502,6 +502,10 @@
   cursor: pointer;
 }
 
+.docs-preview {
+  width: 100%;
+}
+
 .runs-panel {
   display: flex;
   flex-direction: column;

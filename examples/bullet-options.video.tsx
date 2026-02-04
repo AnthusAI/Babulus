@@ -16,7 +16,7 @@ export default defineVideo('Bullet Options', { fps: 30, width: 1920, height: 108
   c.scene('bullets-A', (s) => {
     s.layer('page', {}, (l) => {
       l.layout('BulletListScreen', {
-        label: 'A',
+        label: undefined,
         background: 'linear-gradient(135deg, #101010, #1f2a44)',
         eyebrow: 'Menu Option',
         title: 'Option A — Bold & Large',
@@ -24,6 +24,7 @@ export default defineVideo('Bullet Options', { fps: 30, width: 1920, height: 108
         align: 'left',
         bullets: {
           items: featureItems,
+          entranceStartFrame: -999,
           bulletStyle: 'icon',
           bulletIcon: { kind: 'lucide', name: 'check', color: '#7ee0a3', strokeWidth: 3, size: 34 },
           fontSize: 76,
@@ -45,7 +46,7 @@ export default defineVideo('Bullet Options', { fps: 30, width: 1920, height: 108
   c.scene('bullets-B', (s) => {
     s.layer('page', {}, (l) => {
       l.layout('BulletListScreen', {
-        label: 'B',
+        label: undefined,
         background: 'linear-gradient(135deg, #15202b, #243447)',
         eyebrow: 'Menu Option',
         title: 'Option B — Numbered Stack',
@@ -53,6 +54,7 @@ export default defineVideo('Bullet Options', { fps: 30, width: 1920, height: 108
         align: 'left',
         bullets: {
           items: featureItems,
+          entranceStartFrame: -999,
           bulletStyle: 'number',
           fontSize: 68,
           lineHeight: 1.5,
@@ -73,7 +75,7 @@ export default defineVideo('Bullet Options', { fps: 30, width: 1920, height: 108
   c.scene('bullets-C', (s) => {
     s.layer('page', {}, (l) => {
       l.layout('BulletListScreen', {
-        label: 'C',
+        label: undefined,
         background: 'linear-gradient(135deg, #0f172a, #1e293b)',
         eyebrow: 'Menu Option',
         title: 'Option C — Split Grid',
@@ -81,6 +83,7 @@ export default defineVideo('Bullet Options', { fps: 30, width: 1920, height: 108
         align: 'left',
         bullets: {
           items: featureItems,
+          entranceStartFrame: -999,
           bulletStyle: 'icon',
           bulletIcon: { kind: 'lucide', name: 'arrow-right', color: '#c7dcff', strokeWidth: 2.4, size: 34 },
           columns: 2,

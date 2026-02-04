@@ -10,10 +10,10 @@ const miamiVars = {
   '--color-accent-2': '#8fb2ff',
 };
 
-export default defineVideo('Two Column Demo', { fps: 30, width: 1920, height: 1080 }, (c) => {
+export default defineVideo('Content Layout Demo', { fps: 30, width: 1920, height: 1080 }, (c) => {
   c.voiceover({ provider: 'openai', voice: 'alloy' });
 
-  c.scene('two-column', (s) => {
+  c.scene('content-layout', (s) => {
     s.styles({
       background: 'var(--color-bg, #131024)',
       color: 'var(--color-text, #f6f2ff)',
@@ -21,11 +21,11 @@ export default defineVideo('Two Column Demo', { fps: 30, width: 1920, height: 10
     });
 
     s.layer('content', { zIndex: 10 }, (l) => {
-      l.component('two-column-demo', 'TwoColumnLayoutDemo', {});
+      l.component('content-layout-demo', 'ContentLayoutDemo', {});
     });
 
     s.cue('preview', (cue) => {
-      cue.voice((v) => v.pause(16));
+      cue.voice((v) => v.pause(21));
     });
   });
 });

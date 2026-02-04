@@ -13,7 +13,6 @@
               "id": "layout-bulletlistscreen-0",
               "type": "BulletListScreen",
               "props": {
-                "label": "A",
                 "background": "linear-gradient(135deg, #101010, #1f2a44)",
                 "eyebrow": "Menu Option",
                 "title": "Option A — Bold & Large",
@@ -26,6 +25,7 @@
                     "Motion presets",
                     "Frame-accurate timing"
                   ],
+                  "entranceStartFrame": -999,
                   "bulletStyle": "icon",
                   "bulletIcon": {
                     "kind": "lucide",
@@ -84,7 +84,6 @@
               "id": "layout-bulletlistscreen-0",
               "type": "BulletListScreen",
               "props": {
-                "label": "B",
                 "background": "linear-gradient(135deg, #15202b, #243447)",
                 "eyebrow": "Menu Option",
                 "title": "Option B — Numbered Stack",
@@ -97,6 +96,7 @@
                     "Motion presets",
                     "Frame-accurate timing"
                   ],
+                  "entranceStartFrame": -999,
                   "bulletStyle": "number",
                   "fontSize": 68,
                   "lineHeight": 1.5,
@@ -148,7 +148,6 @@
               "id": "layout-bulletlistscreen-0",
               "type": "BulletListScreen",
               "props": {
-                "label": "C",
                 "background": "linear-gradient(135deg, #0f172a, #1e293b)",
                 "eyebrow": "Menu Option",
                 "title": "Option C — Split Grid",
@@ -161,6 +160,7 @@
                     "Motion presets",
                     "Frame-accurate timing"
                   ],
+                  "entranceStartFrame": -999,
                   "bulletStyle": "icon",
                   "bulletIcon": {
                     "kind": "lucide",

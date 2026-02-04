@@ -1,6 +1,6 @@
 import { defineVideo } from '../src/dsl/builder';
 
-export default defineVideo('Title Slide Demo', { fps: 30, width: 1920, height: 1080 }, (c) => {
+export default defineVideo('Title Screen Demo', { fps: 30, width: 1920, height: 1080 }, (c) => {
   c.voiceover({ provider: 'openai', voice: 'alloy' });
 
   const brandBackground = {
@@ -17,20 +17,13 @@ export default defineVideo('Title Slide Demo', { fps: 30, width: 1920, height: 1
     });
 
     s.layer('content', { zIndex: 10 }, (l) => {
-      l.layout('TitleSlide', {
-        title: 'Title Slide Layout',
-        subtitle: 'Single-purpose title screen demo',
-        entrance: {
-          title: { type: 'spring', durationFrames: 30, mass: 0.5, stiffness: 200, damping: 100 },
-          subtitle: { type: 'fade', durationFrames: 18, delayFrames: 12 },
-        },
-      });
+      l.component('title-demo', 'TitleSlideLayoutDemo', {});
     });
 
     s.cue('voice', (cue) => {
       cue.voice((v) => {
-        v.say('This is the title slide layout.');
-        v.pause(1.2);
+        v.say('This is the title screen layout.');
+        v.pause(18);
       });
     });
   });

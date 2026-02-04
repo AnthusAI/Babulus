@@ -1,5 +1,15 @@
 import type { ReactNode } from "react";
 
 export default function DocsPreviewLayout({ children }: { children: ReactNode }) {
-  return <>{children}</>;
+  return (
+    <>
+      <style>{`
+        html, body {
+          height: auto !important;
+          overflow: hidden !important;
+        }
+      `}</style>
+      {children}
+    </>
+  );
 }

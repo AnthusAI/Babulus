@@ -34,11 +34,13 @@ export default defineVideo('Bullet Playground', { fps: 30, width: 1920, height: 
         padding: 60,
         titleSize: 60,
         subtitleSize: 28,
+        entranceStartFrame: -999,
       });
     });
     s.layer('list', { zIndex: 10 }, (l) => {
       l.bulletList({
         items: featureItems,
+        entranceStartFrame: -999,
         bulletStyle: 'icon',
         bulletIcon: { kind: 'lucide', name: 'check', color: '#7ee0a3', strokeWidth: 2.4, size: 30 },
         fontSize: 44,
@@ -67,11 +69,13 @@ export default defineVideo('Bullet Playground', { fps: 30, width: 1920, height: 
         padding: 60,
         titleSize: 60,
         subtitleSize: 28,
+        entranceStartFrame: -999,
       });
     });
     s.layer('list', { zIndex: 10 }, (l) => {
       l.bulletList({
         items: featureItems,
+        entranceStartFrame: -999,
         bulletStyle: 'icon',
         bulletIcon: { kind: 'unicode', name: '•', fontFamily: '\"Segoe UI Symbol\", \"Arial Unicode MS\", sans-serif', color: '#f8d477', size: 34 },
         fontSize: 46,
@@ -100,11 +104,13 @@ export default defineVideo('Bullet Playground', { fps: 30, width: 1920, height: 
         padding: 60,
         titleSize: 60,
         subtitleSize: 28,
+        entranceStartFrame: -999,
       });
     });
     s.layer('list', { zIndex: 10 }, (l) => {
       l.bulletList({
         items: featureItems,
+        entranceStartFrame: -999,
         bulletStyle: 'number',
         fontSize: 46,
         lineHeight: 1.35,
@@ -132,6 +138,7 @@ export default defineVideo('Bullet Playground', { fps: 30, width: 1920, height: 
         padding: 60,
         titleSize: 60,
         subtitleSize: 28,
+        entranceStartFrame: -999,
       });
     });
     s.layer('list', { zIndex: 10 }, (l) => {
@@ -142,6 +149,7 @@ export default defineVideo('Bullet Playground', { fps: 30, width: 1920, height: 
           { text: 'Motion presets', icon: 'star' },
           { text: 'Frame-accurate timing', icon: 'circle-dot' },
         ],
+        entranceStartFrame: -999,
         bulletStyle: 'icon',
         bulletIcon: { kind: 'lucide', name: 'dot', color: '#9bd0ff', strokeWidth: 2.2, size: 28 }, // fallback if item.icon missing
         fontSize: 44,

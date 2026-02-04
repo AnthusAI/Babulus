@@ -18,6 +18,8 @@ export type PreviewPlayerProps = {
   width?: number;
   height?: number;
   overlayControls?: boolean;
+  align?: 'center' | 'start';
+  fillHeight?: boolean;
   initialTime?: number;
   autoPlay?: boolean;
   showControls?: boolean;
@@ -38,6 +40,8 @@ export function PreviewPlayer({
   width = 1280,
   height = 720,
   overlayControls = false,
+  align = 'center',
+  fillHeight = true,
   initialTime = 0,
   autoPlay = false,
   showControls = true,
@@ -112,9 +116,10 @@ export function PreviewPlayer({
       const newTime = currentTime + deltaSec;
 
       if (newTime >= duration) {
-        setCurrentTime(duration);
-        setIsPlaying(false);
-        lastTimestampRef.current = undefined;
+        const nextTime = newTime % duration;
+        setCurrentTime(nextTime);
+        lastTimestampRef.current = timestamp;
+        animationFrameRef.current = requestAnimationFrame(animate);
       } else {
         setCurrentTime(newTime);
         lastTimestampRef.current = timestamp;
@@ -132,7 +137,11 @@ export function PreviewPlayer({
   }, [isPlaying, currentTime, duration]);
 
   const handlePlayPause = () => {
-    setIsPlaying(!isPlaying);
+    const nextPlaying = !isPlaying;
+    if (nextPlaying && currentTime >= duration) {
+      setCurrentTime(0);
+    }
+    setIsPlaying(nextPlaying);
     lastTimestampRef.current = undefined;
   };
 
@@ -198,11 +207,24 @@ export function PreviewPlayer({
 
   return (
     <div
-      className="preview-player relative flex flex-col h-full w-full"
+      className="preview-player relative flex flex-col w-full"
       onMouseMove={handleUserActivity}
       onTouchStart={handleUserActivity}
     >
-      <div ref={previewAreaRef} className="flex-1 min-h-0 flex items-center justify-center">
+      <div
+        ref={previewAreaRef}
+        className={`${fillHeight ? 'flex-1 min-h-0' : 'flex-none'} flex ${
+          align === 'start' ? 'items-start' : 'items-center'
+        } justify-center`}
+        style={
+          fillHeight
+            ? undefined
+            : {
+                width: "100%",
+                aspectRatio: `${width} / ${height}`,
+              }
+        }
+      >
         <div
           className="preview-canvas relative overflow-hidden border-t border-l border-r border-gray-700"
           style={{
@@ -310,9 +332,8 @@ export function PreviewPlayer({
         </>
         ) : (
         <div
-          className="preview-controls flex flex-col border-l border-r border-b border-gray-700 bg-gray-900 mx-auto"
+          className="preview-controls flex flex-col border-l border-r border-b border-gray-700 bg-gray-900 mx-auto rounded-none"
           style={{
-            borderRadius: 0,
             width: displayWidth,
             height: transportHeight,
           }}

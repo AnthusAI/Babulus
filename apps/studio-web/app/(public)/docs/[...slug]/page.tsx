@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { DocsShell } from "@/components/docs/docs-shell";
 import { DocsContent } from "@/components/docs/docs-content";
+import { DocsPreviewMount } from "@/components/docs/docs-preview-mount";
 import { DOCS, findDocBySlug } from "@/lib/docs-registry";
 
 const legacyRoadmapSlugs: readonly (readonly string[])[] = [
@@ -99,6 +100,7 @@ export default function DocsPage({ params }: { params: { slug: string[] } }) {
             {/* eslint-disable-next-line react/no-danger */}
             <div dangerouslySetInnerHTML={{ __html: doc.html }} />
           </DocsContent>
+          <DocsPreviewMount />
         </div>
       </article>
     </DocsShell>

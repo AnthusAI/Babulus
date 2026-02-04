@@ -94,10 +94,12 @@ export function DocsPreviewPlayer({ id, defaultWidth = 1920, defaultHeight = 108
       script={script}
       width={width}
       height={height}
-      overlayControls={showControls}
+      overlayControls={false}
       showControls={showControls}
       initialTime={initialTime}
       autoPlay={autoPlay}
+      align="start"
+      fillHeight={false}
     />
   );
 }

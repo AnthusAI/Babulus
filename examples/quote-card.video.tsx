@@ -14,9 +14,9 @@ export default defineVideo('Quote Card Demo', { fps: 30, width: 1920, height: 10
       l.layout('QuoteCard', {
         quote: 'Design for video means clarity at a distance.',
         attribution: 'Babulus Studio',
-        accentColor: '#7ee0a3',
-        backgroundColor: 'rgba(255,255,255,0.9)',
-        textColor: '#1a1a1a',
+        accentColor: 'var(--color-accent, #8fb2ff)',
+        backgroundColor: 'var(--color-surface, #1f2233)',
+        textColor: 'var(--color-text, #f6f2ff)',
       });
     });
     s.cue('voice', (cue) => {

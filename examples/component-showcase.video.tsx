@@ -12,7 +12,7 @@ export default defineVideo('Component Showcase', { fps: 30, width: 1920, height:
     },
   };
 
-  // Scene 1: Title Slide Layout
+  // Scene 1: Title Screen Layout
   c.scene('intro', (s) => {
     s.layer('background', { zIndex: 0 }, (l) => {
       l.background(brandBackground);

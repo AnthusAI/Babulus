@@ -8,10 +8,9 @@ All layouts are full‑frame flex containers with an optional debug frame (`debu
 | --- | --- | --- | --- |
 | **BulletListScreen** | Header (label/eyebrow/title/subtitle/logo) + bullet list filling the remaining flex space. | `label`, `eyebrow`, `title` (req), `subtitle?`, `logoUrl?/logoAlt?/logoWidth?/logoHeight?`, `align: 'left'|'center'`, `bullets` (passes to `BulletListComponent`), `background`, `padding`, `gap`, `debugLayout`. | Standard “feature list” slide; supports Lucide/unicode bullets via `bullets.bulletIcon`. |
 | **FlexPage** | Generic page shell used by BulletListScreen; header + content flex area. | Same header props as above, plus `contentDirection`, `contentGap`, `children[]` (component specs). | Base for composing custom screens. |
-| **TitleSlide** | Centered/vertical‑aligned title & subtitle. | `title` (req), `subtitle?`, `verticalAlign`, `padding`, `entrance/exit`. | Simple opener/section break. |
+| **Title Screen** | Centered/vertical‑aligned title & subtitle. | `title` (req), `subtitle?`, `verticalAlign`, `padding`, `entrance/exit`. | Simple opener/section break. |
 | **TwoColumn** | Side‑by‑side content with ratios. | `ratio`, `gap`, `verticalAlign`, `left/right` nodes, `staggerDelayFrames`. | Comparisons, A/B explainers. |
 | **Grid** | N‑item grid with stagger reveal. | `columns`, `rows?`, `items[]`, `staggerPattern`, `itemEntrance`. | Galleries, icon boards. |
-| **Sidebar** | Main + sidebar rail. | `sidebarPosition`, `sidebarWidth`, `gap`, `mainEntrance`, `sidebarEntrance`. | Agenda + notes, stats rail. |
 | **SplitScreen** | 50/50 (or ratio) split horizontally/vertically. | `direction`, `ratio`, `divider`. | Before/after, interview/quote. |
 | **ChapterHeading** | Large chapter number + title/subtitle. | `number`, `title`, `layout`, `numberEntrance`, `titleEntrance`. | Section titles. |
 | **QuoteCard** | (Existing) quote/pull card. | — | Use with typography themes for quotes. |

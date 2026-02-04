@@ -39,6 +39,7 @@ export default defineVideo('Grid Demo', { fps: 30, width: 1920, height: 1080 }, 
         staggerPattern: 'diagonal',
         itemDurationFrames: 18,
         staggerDelayFrames: 6,
+        entranceStartFrame: -999,
       });
     });
     s.cue('voice', (cue) => {
