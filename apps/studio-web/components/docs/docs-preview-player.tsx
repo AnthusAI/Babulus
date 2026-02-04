@@ -113,30 +113,24 @@ export function DocsPreviewPlayer({
     TYPOGRAPHY_SCHEMES.find((scheme) => scheme.id === typographySchemeId) ??
     TYPOGRAPHY_SCHEMES[0];
 
-  const themeStyle: React.CSSProperties = colorScheme
-    ? {
-        ['--color-bg' as any]: colorScheme.palette.bg,
-        ['--color-bg-subtle' as any]: colorScheme.palette.surface,
-        ['--color-surface' as any]: colorScheme.palette.surface,
-        ['--color-surface-strong' as any]: colorScheme.palette.surfaceStrong,
-        ['--color-surface-2' as any]: colorScheme.palette.surfaceStrong,
-        ['--color-text' as any]: colorScheme.palette.text,
-        ['--color-text-muted' as any]: colorScheme.palette.textMuted,
-        ['--color-primary' as any]: colorScheme.palette.primary,
-        ['--color-secondary' as any]: colorScheme.palette.secondary,
-        ['--color-accent' as any]: colorScheme.palette.primary,
-        ['--color-accent-2' as any]: colorScheme.palette.secondary,
-        ['--color-muted' as any]: colorScheme.palette.muted,
-        ['--color-muted-more' as any]: colorScheme.palette.mutedMore,
-        ...(typographyScheme
-          ? {
-              ['--font-eyebrow' as any]: typographyScheme.vars.eyebrow,
-              ['--font-headline' as any]: typographyScheme.vars.headline,
-              ['--font-subhead' as any]: typographyScheme.vars.subhead,
-            }
-          : {}),
-      }
-    : undefined;
+  const themeStyle: React.CSSProperties = {
+    ['--color-bg' as any]: colorScheme.palette.bg,
+    ['--color-bg-subtle' as any]: colorScheme.palette.surface,
+    ['--color-surface' as any]: colorScheme.palette.surface,
+    ['--color-surface-strong' as any]: colorScheme.palette.surfaceStrong,
+    ['--color-surface-2' as any]: colorScheme.palette.surfaceStrong,
+    ['--color-text' as any]: colorScheme.palette.text,
+    ['--color-text-muted' as any]: colorScheme.palette.textMuted,
+    ['--color-primary' as any]: colorScheme.palette.primary,
+    ['--color-secondary' as any]: colorScheme.palette.secondary,
+    ['--color-accent' as any]: colorScheme.palette.primary,
+    ['--color-accent-2' as any]: colorScheme.palette.secondary,
+    ['--color-muted' as any]: colorScheme.palette.muted,
+    ['--color-muted-more' as any]: colorScheme.palette.mutedMore,
+    ['--font-eyebrow' as any]: typographyScheme.vars.eyebrow,
+    ['--font-headline' as any]: typographyScheme.vars.headline,
+    ['--font-subhead' as any]: typographyScheme.vars.subhead,
+  };
 
   return (
     <div className="relative w-full">
