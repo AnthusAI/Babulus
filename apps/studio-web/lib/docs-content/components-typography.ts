@@ -41,6 +41,12 @@ const applyFontFallback = (stack: string) => {
   return stack;
 };
 
+const escapeAttribute = (value: string) =>
+  value
+    .replace(/&/g, "&amp;")
+    .replace(/'/g, "&#39;")
+    .replace(/"/g, "&quot;");
+
 const typefaceThemes = [
   // A — Broadcast Classics
   {
@@ -561,27 +567,21 @@ const buildThemeList = (section: string) => {
     <div class="grid gap-8">
       ${items
         .map((theme) => {
+          const payload = escapeAttribute(
+            JSON.stringify({
+              eyebrow: theme.preview.eyebrow,
+              headline: theme.preview.headline,
+              subhead: theme.preview.subhead,
+              eyebrowFont: applyFontFallback(theme.preview.eyebrowFont),
+              headlineFont: applyFontFallback(theme.preview.headlineFont),
+              subheadFont: applyFontFallback(theme.preview.subheadFont),
+            }),
+          );
           return `
             <div class="rounded-2xl bg-muted/40 p-4">
               <div class="mb-2 text-sm font-semibold uppercase tracking-wide text-muted-foreground">${theme.name}</div>
               <div class="mb-4 text-sm text-muted-foreground">${theme.description}</div>
-              <div class="rounded-2xl bg-muted/20 p-4">
-                <div style="font-family:${applyFontFallback(
-                  theme.preview.eyebrowFont
-                )}; font-size:12px; letter-spacing:2px; text-transform:uppercase; color:var(--color-text-muted, #6b7280); margin-bottom:8px;">
-                  ${theme.preview.eyebrow}
-                </div>
-                <div style="font-family:${applyFontFallback(
-                  theme.preview.headlineFont
-                )}; font-size:28px; font-weight:700; color:var(--color-text, #111827); margin-bottom:8px;">
-                  ${theme.preview.headline}
-                </div>
-                <div style="font-family:${applyFontFallback(
-                  theme.preview.subheadFont
-                )}; font-size:16px; color:var(--color-text-muted, #6b7280); line-height:1.4;">
-                  ${theme.preview.subhead}
-                </div>
-              </div>
+              <div data-typography-preview="true" data-payload='${payload}'></div>
             </div>
           `;
         })

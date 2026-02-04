@@ -3,6 +3,7 @@ import { notFound, redirect } from "next/navigation";
 import { DocsShell } from "@/components/docs/docs-shell";
 import { DocsContent } from "@/components/docs/docs-content";
 import { DocsPreviewMount } from "@/components/docs/docs-preview-mount";
+import { TypographyPreviewMount } from "@/components/docs/typography-preview-mount";
 import { DOCS, findDocBySlug } from "@/lib/docs-registry";
 
 const legacyRoadmapSlugs: readonly (readonly string[])[] = [
@@ -101,6 +102,7 @@ export default function DocsPage({ params }: { params: { slug: string[] } }) {
             <div dangerouslySetInnerHTML={{ __html: doc.html }} />
           </DocsContent>
           <DocsPreviewMount />
+          <TypographyPreviewMount />
         </div>
       </article>
     </DocsShell>
