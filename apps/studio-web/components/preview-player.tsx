@@ -153,7 +153,7 @@ export function PreviewPlayer({
           currentTimeRef.current = duration;
           setCurrentTime(duration);
           lastTimestampRef.current = timestamp;
-          animationFrameRef.current = requestAnimationFrame(animate);
+          setIsPlaying(false);
         }
       } else {
         currentTimeRef.current = newTime;

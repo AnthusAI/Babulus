@@ -379,7 +379,7 @@ export function VideoEditor({ orgId, projectId, videoId }: VideoEditorProps) {
             fileName,
             editorCode,
             'video',
-            'text/typescript'
+            'text/xml'
           );
         } catch (s3Error) {
           console.error("Failed to save to S3:", s3Error);
@@ -695,7 +695,7 @@ export function VideoEditor({ orgId, projectId, videoId }: VideoEditorProps) {
         fileName,
         editorCode,
         'video',
-        'text/typescript'
+        'text/xml'
       );
       setSaveStatus('saved');
       // Reset to idle after 2 seconds
