@@ -1,0 +1,485 @@
+{
+  "scenes": [
+    {
+      "id": "grid",
+      "title": "grid",
+      "startSec": 0,
+      "endSec": 5.4,
+      "layers": [
+        {
+          "id": "background",
+          "zIndex": 0,
+          "components": [
+            {
+              "id": "background-0",
+              "type": "Background",
+              "props": {
+                "variant": "linear",
+                "gradient": {
+                  "angle": 135,
+                  "colors": [
+                    "#101010",
+                    "#1f2a44"
+                  ]
+                },
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        },
+        {
+          "id": "content",
+          "zIndex": 10,
+          "components": [
+            {
+              "id": "layout-grid-0",
+              "type": "Grid",
+              "props": {
+                "columns": 3,
+                "items": [
+                  {
+                    "type": "div",
+                    "key": "0",
+                    "ref": null,
+                    "props": {
+                      "style": {
+                        "background": "rgba(255,255,255,0.08)",
+                        "borderRadius": 20,
+                        "padding": 24,
+                        "color": "#f5f7fb",
+                        "display": "flex",
+                        "flexDirection": "column",
+                        "gap": 10
+                      },
+                      "children": [
+                        {
+                          "type": "div",
+                          "key": null,
+                          "ref": null,
+                          "props": {
+                            "style": {
+                              "fontSize": 20,
+                              "letterSpacing": 2,
+                              "textTransform": "uppercase",
+                              "color": "rgba(255,255,255,0.65)"
+                            },
+                            "children": [
+                              "Card ",
+                              1
+                            ]
+                          },
+                          "_owner": null,
+                          "_store": {}
+                        },
+                        {
+                          "type": "div",
+                          "key": null,
+                          "ref": null,
+                          "props": {
+                            "style": {
+                              "fontSize": 28,
+                              "fontWeight": 700
+                            },
+                            "children": "Grid Layout"
+                          },
+                          "_owner": null,
+                          "_store": {}
+                        },
+                        {
+                          "type": "div",
+                          "key": null,
+                          "ref": null,
+                          "props": {
+                            "style": {
+                              "fontSize": 20,
+                              "color": "rgba(255,255,255,0.75)"
+                            },
+                            "children": "Staggered reveal tiles."
+                          },
+                          "_owner": null,
+                          "_store": {}
+                        }
+                      ]
+                    },
+                    "_owner": null,
+                    "_store": {}
+                  },
+                  {
+                    "type": "div",
+                    "key": "1",
+                    "ref": null,
+                    "props": {
+                      "style": {
+                        "background": "rgba(255,255,255,0.08)",
+                        "borderRadius": 20,
+                        "padding": 24,
+                        "color": "#f5f7fb",
+                        "display": "flex",
+                        "flexDirection": "column",
+                        "gap": 10
+                      },
+                      "children": [
+                        {
+                          "type": "div",
+                          "key": null,
+                          "ref": null,
+                          "props": {
+                            "style": {
+                              "fontSize": 20,
+                              "letterSpacing": 2,
+                              "textTransform": "uppercase",
+                              "color": "rgba(255,255,255,0.65)"
+                            },
+                            "children": [
+                              "Card ",
+                              2
+                            ]
+                          },
+                          "_owner": null,
+                          "_store": {}
+                        },
+                        {
+                          "type": "div",
+                          "key": null,
+                          "ref": null,
+                          "props": {
+                            "style": {
+                              "fontSize": 28,
+                              "fontWeight": 700
+                            },
+                            "children": "Grid Layout"
+                          },
+                          "_owner": null,
+                          "_store": {}
+                        },
+                        {
+                          "type": "div",
+                          "key": null,
+                          "ref": null,
+                          "props": {
+                            "style": {
+                              "fontSize": 20,
+                              "color": "rgba(255,255,255,0.75)"
+                            },
+                            "children": "Staggered reveal tiles."
+                          },
+                          "_owner": null,
+                          "_store": {}
+                        }
+                      ]
+                    },
+                    "_owner": null,
+                    "_store": {}
+                  },
+                  {
+                    "type": "div",
+                    "key": "2",
+                    "ref": null,
+                    "props": {
+                      "style": {
+                        "background": "rgba(255,255,255,0.08)",
+                        "borderRadius": 20,
+                        "padding": 24,
+                        "color": "#f5f7fb",
+                        "display": "flex",
+                        "flexDirection": "column",
+                        "gap": 10
+                      },
+                      "children": [
+                        {
+                          "type": "div",
+                          "key": null,
+                          "ref": null,
+                          "props": {
+                            "style": {
+                              "fontSize": 20,
+                              "letterSpacing": 2,
+                              "textTransform": "uppercase",
+                              "color": "rgba(255,255,255,0.65)"
+                            },
+                            "children": [
+                              "Card ",
+                              3
+                            ]
+                          },
+                          "_owner": null,
+                          "_store": {}
+                        },
+                        {
+                          "type": "div",
+                          "key": null,
+                          "ref": null,
+                          "props": {
+                            "style": {
+                              "fontSize": 28,
+                              "fontWeight": 700
+                            },
+                            "children": "Grid Layout"
+                          },
+                          "_owner": null,
+                          "_store": {}
+                        },
+                        {
+                          "type": "div",
+                          "key": null,
+                          "ref": null,
+                          "props": {
+                            "style": {
+                              "fontSize": 20,
+                              "color": "rgba(255,255,255,0.75)"
+                            },
+                            "children": "Staggered reveal tiles."
+                          },
+                          "_owner": null,
+                          "_store": {}
+                        }
+                      ]
+                    },
+                    "_owner": null,
+                    "_store": {}
+                  },
+                  {
+                    "type": "div",
+                    "key": "3",
+                    "ref": null,
+                    "props": {
+                      "style": {
+                        "background": "rgba(255,255,255,0.08)",
+                        "borderRadius": 20,
+                        "padding": 24,
+                        "color": "#f5f7fb",
+                        "display": "flex",
+                        "flexDirection": "column",
+                        "gap": 10
+                      },
+                      "children": [
+                        {
+                          "type": "div",
+                          "key": null,
+                          "ref": null,
+                          "props": {
+                            "style": {
+                              "fontSize": 20,
+                              "letterSpacing": 2,
+                              "textTransform": "uppercase",
+                              "color": "rgba(255,255,255,0.65)"
+                            },
+                            "children": [
+                              "Card ",
+                              4
+                            ]
+                          },
+                          "_owner": null,
+                          "_store": {}
+                        },
+                        {
+                          "type": "div",
+                          "key": null,
+                          "ref": null,
+                          "props": {
+                            "style": {
+                              "fontSize": 28,
+                              "fontWeight": 700
+                            },
+                            "children": "Grid Layout"
+                          },
+                          "_owner": null,
+                          "_store": {}
+                        },
+                        {
+                          "type": "div",
+                          "key": null,
+                          "ref": null,
+                          "props": {
+                            "style": {
+                              "fontSize": 20,
+                              "color": "rgba(255,255,255,0.75)"
+                            },
+                            "children": "Staggered reveal tiles."
+                          },
+                          "_owner": null,
+                          "_store": {}
+                        }
+                      ]
+                    },
+                    "_owner": null,
+                    "_store": {}
+                  },
+                  {
+                    "type": "div",
+                    "key": "4",
+                    "ref": null,
+                    "props": {
+                      "style": {
+                        "background": "rgba(255,255,255,0.08)",
+                        "borderRadius": 20,
+                        "padding": 24,
+                        "color": "#f5f7fb",
+                        "display": "flex",
+                        "flexDirection": "column",
+                        "gap": 10
+                      },
+                      "children": [
+                        {
+                          "type": "div",
+                          "key": null,
+                          "ref": null,
+                          "props": {
+                            "style": {
+                              "fontSize": 20,
+                              "letterSpacing": 2,
+                              "textTransform": "uppercase",
+                              "color": "rgba(255,255,255,0.65)"
+                            },
+                            "children": [
+                              "Card ",
+                              5
+                            ]
+                          },
+                          "_owner": null,
+                          "_store": {}
+                        },
+                        {
+                          "type": "div",
+                          "key": null,
+                          "ref": null,
+                          "props": {
+                            "style": {
+                              "fontSize": 28,
+                              "fontWeight": 700
+                            },
+                            "children": "Grid Layout"
+                          },
+                          "_owner": null,
+                          "_store": {}
+                        },
+                        {
+                          "type": "div",
+                          "key": null,
+                          "ref": null,
+                          "props": {
+                            "style": {
+                              "fontSize": 20,
+                              "color": "rgba(255,255,255,0.75)"
+                            },
+                            "children": "Staggered reveal tiles."
+                          },
+                          "_owner": null,
+                          "_store": {}
+                        }
+                      ]
+                    },
+                    "_owner": null,
+                    "_store": {}
+                  },
+                  {
+                    "type": "div",
+                    "key": "5",
+                    "ref": null,
+                    "props": {
+                      "style": {
+                        "background": "rgba(255,255,255,0.08)",
+                        "borderRadius": 20,
+                        "padding": 24,
+                        "color": "#f5f7fb",
+                        "display": "flex",
+                        "flexDirection": "column",
+                        "gap": 10
+                      },
+                      "children": [
+                        {
+                          "type": "div",
+                          "key": null,
+                          "ref": null,
+                          "props": {
+                            "style": {
+                              "fontSize": 20,
+                              "letterSpacing": 2,
+                              "textTransform": "uppercase",
+                              "color": "rgba(255,255,255,0.65)"
+                            },
+                            "children": [
+                              "Card ",
+                              6
+                            ]
+                          },
+                          "_owner": null,
+                          "_store": {}
+                        },
+                        {
+                          "type": "div",
+                          "key": null,
+                          "ref": null,
+                          "props": {
+                            "style": {
+                              "fontSize": 28,
+                              "fontWeight": 700
+                            },
+                            "children": "Grid Layout"
+                          },
+                          "_owner": null,
+                          "_store": {}
+                        },
+                        {
+                          "type": "div",
+                          "key": null,
+                          "ref": null,
+                          "props": {
+                            "style": {
+                              "fontSize": 20,
+                              "color": "rgba(255,255,255,0.75)"
+                            },
+                            "children": "Staggered reveal tiles."
+                          },
+                          "_owner": null,
+                          "_store": {}
+                        }
+                      ]
+                    },
+                    "_owner": null,
+                    "_store": {}
+                  }
+                ],
+                "staggerPattern": "diagonal",
+                "itemDurationFrames": 18,
+                "staggerDelayFrames": 6,
+                "entranceStartFrame": -999,
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "voice",
+          "label": "voice",
+          "startSec": 0,
+          "endSec": 5.4,
+          "text": "Grid layouts are great for showcasing multiple items at once.",
+          "segments": [
+            {
+              "type": "tts",
+              "startSec": 0,
+              "endSec": 4.2,
+              "text": "Grid layouts are great for showcasing multiple items at once."
+            },
+            {
+              "type": "pause",
+              "startSec": 4.2,
+              "endSec": 5.4,
+              "durationSec": 1.2
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    }
+  ],
+  "fps": 30,
+  "meta": {
+    "fps": 30,
+    "width": 1920,
+    "height": 1080
+  }
+}

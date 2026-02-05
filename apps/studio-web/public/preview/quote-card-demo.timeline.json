@@ -1,0 +1,32 @@
+{
+  "items": [
+    {
+      "type": "tts",
+      "sceneId": "quote",
+      "cueId": "voice",
+      "startSec": 0,
+      "endSec": 5.6000000000000005,
+      "segments": [
+        {
+          "type": "tts",
+          "startSec": 0,
+          "endSec": 4.4,
+          "text": "Quote cards highlight short, punchy statements on screen.",
+          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/quote-card-demo/env/development/segments/quote--voice--tts--2665b95dd4ad--1.wav",
+          "durationSec": 4.4,
+          "rawDurationSec": 4.4,
+          "trimEndSec": 0
+        },
+        {
+          "type": "pause",
+          "startSec": 4.4,
+          "endSec": 5.6000000000000005,
+          "seconds": 1.2
+        }
+      ]
+    }
+  ],
+  "audio": {
+    "tracks": []
+  }
+}

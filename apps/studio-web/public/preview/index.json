@@ -1,0 +1,194 @@
+{
+  "updatedAt": "2026-02-05T03:31:48.581Z",
+  "compositions": [
+    {
+      "id": "animation-anime",
+      "title": "Animation Anime",
+      "script": "animation-anime.script.json",
+      "timeline": "animation-anime.timeline.json",
+      "audio": null
+    },
+    {
+      "id": "animation-d3",
+      "title": "Animation D3",
+      "script": "animation-d3.script.json",
+      "timeline": "animation-d3.timeline.json",
+      "audio": null
+    },
+    {
+      "id": "animation-framer",
+      "title": "Animation Framer",
+      "script": "animation-framer.script.json",
+      "timeline": "animation-framer.timeline.json",
+      "audio": null
+    },
+    {
+      "id": "animation-lottie",
+      "title": "Animation Lottie",
+      "script": "animation-lottie.script.json",
+      "timeline": "animation-lottie.timeline.json",
+      "audio": null
+    },
+    {
+      "id": "animation-mix",
+      "title": "Animation Mix",
+      "script": "animation-mix.script.json",
+      "timeline": "animation-mix.timeline.json",
+      "audio": null
+    },
+    {
+      "id": "animation-processing",
+      "title": "Animation Processing",
+      "script": "animation-processing.script.json",
+      "timeline": "animation-processing.timeline.json",
+      "audio": null
+    },
+    {
+      "id": "animation-reel",
+      "title": "Animation Reel",
+      "script": "animation-reel.script.json",
+      "timeline": "animation-reel.timeline.json",
+      "audio": null
+    },
+    {
+      "id": "animation-text-effects",
+      "title": "Animation Text Effects",
+      "script": "animation-text-effects.script.json",
+      "timeline": "animation-text-effects.timeline.json",
+      "audio": null
+    },
+    {
+      "id": "animation-three",
+      "title": "Animation Three",
+      "script": "animation-three.script.json",
+      "timeline": "animation-three.timeline.json",
+      "audio": null
+    },
+    {
+      "id": "chapter-heading-demo",
+      "title": "Chapter Heading Demo",
+      "script": "chapter-heading-demo.script.json",
+      "timeline": "chapter-heading-demo.timeline.json",
+      "audio": null
+    },
+    {
+      "id": "code-to-video-preview",
+      "title": "Code to Video Preview",
+      "script": "code-to-video-preview.script.json",
+      "timeline": "code-to-video-preview.timeline.json",
+      "audio": null
+    },
+    {
+      "id": "components-background",
+      "title": "Components Background",
+      "script": "components-background.script.json",
+      "timeline": "components-background.timeline.json",
+      "audio": null
+    },
+    {
+      "id": "components-bullets",
+      "title": "Components Bullets",
+      "script": "components-bullets.script.json",
+      "timeline": "components-bullets.timeline.json",
+      "audio": null
+    },
+    {
+      "id": "components-callout",
+      "title": "Components Callout",
+      "script": "components-callout.script.json",
+      "timeline": "components-callout.timeline.json",
+      "audio": null
+    },
+    {
+      "id": "components-chyron",
+      "title": "Components Chyron",
+      "script": "components-chyron.script.json",
+      "timeline": "components-chyron.timeline.json",
+      "audio": null
+    },
+    {
+      "id": "components-code",
+      "title": "Components Code",
+      "script": "components-code.script.json",
+      "timeline": "components-code.timeline.json",
+      "audio": null
+    },
+    {
+      "id": "components-lower-third",
+      "title": "Components Lower Third",
+      "script": "components-lower-third.script.json",
+      "timeline": "components-lower-third.timeline.json",
+      "audio": null
+    },
+    {
+      "id": "components-progress",
+      "title": "Components Progress",
+      "script": "components-progress.script.json",
+      "timeline": "components-progress.timeline.json",
+      "audio": null
+    },
+    {
+      "id": "components-quote",
+      "title": "Components Quote",
+      "script": "components-quote.script.json",
+      "timeline": "components-quote.timeline.json",
+      "audio": null
+    },
+    {
+      "id": "components-reel",
+      "title": "Components Reel",
+      "script": "components-reel.script.json",
+      "timeline": "components-reel.timeline.json",
+      "audio": null
+    },
+    {
+      "id": "components-title",
+      "title": "Components Title",
+      "script": "components-title.script.json",
+      "timeline": "components-title.timeline.json",
+      "audio": null
+    },
+    {
+      "id": "content-layout-demo",
+      "title": "Content Layout Demo",
+      "script": "content-layout-demo.script.json",
+      "timeline": "content-layout-demo.timeline.json",
+      "audio": null
+    },
+    {
+      "id": "grid-screen-demo",
+      "title": "Grid Screen Demo",
+      "script": "grid-screen-demo.script.json",
+      "timeline": "grid-screen-demo.timeline.json",
+      "audio": null
+    },
+    {
+      "id": "home-elevator-preview",
+      "title": "Home Elevator Preview",
+      "script": "home-elevator-preview.script.json",
+      "timeline": "home-elevator-preview.timeline.json",
+      "audio": null
+    },
+    {
+      "id": "three-column-demo",
+      "title": "Three Column Demo",
+      "script": "three-column-demo.script.json",
+      "timeline": "three-column-demo.timeline.json",
+      "audio": null
+    },
+    {
+      "id": "title-slide-demo",
+      "title": "Title Slide Demo",
+      "script": "title-slide-demo.script.json",
+      "timeline": "title-slide-demo.timeline.json",
+      "audio": null
+    },
+    {
+      "id": "two-column-demo",
+      "title": "Two Column Demo",
+      "script": "two-column-demo.script.json",
+      "timeline": "two-column-demo.timeline.json",
+      "audio": null
+    }
+  ]
+}

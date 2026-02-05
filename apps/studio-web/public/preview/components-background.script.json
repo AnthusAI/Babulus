@@ -1,0 +1,88 @@
+{
+  "scenes": [
+    {
+      "id": "background-demo",
+      "title": "background-demo",
+      "startSec": 0,
+      "endSec": 5,
+      "styles": {
+        "background": "var(--color-bg)"
+      },
+      "layers": [
+        {
+          "id": "background",
+          "zIndex": 0,
+          "components": [
+            {
+              "id": "background-0",
+              "type": "Background",
+              "props": {
+                "color": "var(--color-surface-strong)",
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        },
+        {
+          "id": "label",
+          "zIndex": 10,
+          "components": [
+            {
+              "id": "title-0",
+              "type": "Title",
+              "props": {
+                "text": "Background fills",
+                "color": "var(--color-primary)",
+                "textColor": "var(--color-text)",
+                "position": {
+                  "x": 160,
+                  "y": 300
+                },
+                "sceneStartSec": 0
+              }
+            },
+            {
+              "id": "subtitle-1",
+              "type": "Subtitle",
+              "props": {
+                "text": "Use theme surfaces for subtle contrast",
+                "position": {
+                  "x": 160,
+                  "y": 380
+                },
+                "color": "var(--color-text-muted)",
+                "fontSize": 28,
+                "fontWeight": 500,
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "hold",
+          "label": "hold",
+          "startSec": 0,
+          "endSec": 5,
+          "text": "",
+          "segments": [
+            {
+              "type": "pause",
+              "startSec": 0,
+              "endSec": 5,
+              "durationSec": 5
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    }
+  ],
+  "fps": 30,
+  "meta": {
+    "fps": 30,
+    "width": 1920,
+    "height": 1080
+  }
+}

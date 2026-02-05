@@ -1,0 +1,53 @@
+{
+  "scenes": [
+    {
+      "id": "lottie",
+      "title": "lottie",
+      "startSec": 0,
+      "endSec": 6,
+      "styles": {
+        "background": "var(--color-bg)"
+      },
+      "layers": [
+        {
+          "id": "lottie",
+          "zIndex": 10,
+          "components": [
+            {
+              "id": "lottie-badge-0",
+              "type": "LottieBadge",
+              "props": {
+                "size": 260,
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "hold",
+          "label": "hold",
+          "startSec": 0,
+          "endSec": 6,
+          "text": "",
+          "segments": [
+            {
+              "type": "pause",
+              "startSec": 0,
+              "endSec": 6,
+              "durationSec": 6
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    }
+  ],
+  "fps": 30,
+  "meta": {
+    "fps": 30,
+    "width": 1920,
+    "height": 1080
+  }
+}

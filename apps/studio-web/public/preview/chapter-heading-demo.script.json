@@ -1,0 +1,156 @@
+{
+  "scenes": [
+    {
+      "id": "chapter",
+      "title": "chapter",
+      "startSec": 0,
+      "endSec": 9,
+      "layers": [
+        {
+          "id": "background",
+          "zIndex": 0,
+          "components": [
+            {
+              "id": "background-0",
+              "type": "Background",
+              "props": {
+                "variant": "linear",
+                "gradient": {
+                  "angle": 135,
+                  "colors": [
+                    "#101010",
+                    "#1f2a44"
+                  ]
+                },
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        },
+        {
+          "id": "chapter-1",
+          "timing": {
+            "startSec": 0,
+            "endSec": 3
+          },
+          "zIndex": 10,
+          "components": [
+            {
+              "id": "chapter-heading-0",
+              "type": "ChapterHeading",
+              "props": {
+                "number": "01",
+                "title": "Introduction",
+                "subtitle": "Establish the structure and visual hierarchy",
+                "layout": "side-by-side",
+                "numberEntrance": {
+                  "type": "fade",
+                  "from": 1,
+                  "to": 1,
+                  "durationFrames": 1
+                },
+                "titleEntrance": {
+                  "type": "fade",
+                  "from": 1,
+                  "to": 1,
+                  "durationFrames": 1
+                },
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        },
+        {
+          "id": "chapter-2",
+          "timing": {
+            "startSec": 3,
+            "endSec": 6
+          },
+          "zIndex": 10,
+          "components": [
+            {
+              "id": "chapter-heading-0",
+              "type": "ChapterHeading",
+              "props": {
+                "number": "02",
+                "title": "System Components",
+                "subtitle": "Call out each section with bold numbering",
+                "layout": "side-by-side",
+                "numberEntrance": {
+                  "type": "fade",
+                  "from": 1,
+                  "to": 1,
+                  "durationFrames": 1
+                },
+                "titleEntrance": {
+                  "type": "fade",
+                  "from": 1,
+                  "to": 1,
+                  "durationFrames": 1
+                },
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        },
+        {
+          "id": "chapter-3",
+          "timing": {
+            "startSec": 6,
+            "endSec": 9
+          },
+          "zIndex": 10,
+          "components": [
+            {
+              "id": "chapter-heading-0",
+              "type": "ChapterHeading",
+              "props": {
+                "number": "03",
+                "title": "Next Steps",
+                "subtitle": "Use chapter breaks to pace the story",
+                "layout": "side-by-side",
+                "numberEntrance": {
+                  "type": "fade",
+                  "from": 1,
+                  "to": 1,
+                  "durationFrames": 1
+                },
+                "titleEntrance": {
+                  "type": "fade",
+                  "from": 1,
+                  "to": 1,
+                  "durationFrames": 1
+                },
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "preview",
+          "label": "preview",
+          "startSec": 0,
+          "endSec": 9,
+          "text": "",
+          "segments": [
+            {
+              "type": "pause",
+              "startSec": 0,
+              "endSec": 9,
+              "durationSec": 9
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    }
+  ],
+  "fps": 30,
+  "meta": {
+    "fps": 30,
+    "width": 1920,
+    "height": 1080
+  }
+}

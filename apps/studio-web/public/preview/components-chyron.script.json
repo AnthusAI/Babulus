@@ -1,0 +1,70 @@
+{
+  "scenes": [
+    {
+      "id": "chyron-demo",
+      "title": "chyron-demo",
+      "startSec": 0,
+      "endSec": 6,
+      "styles": {
+        "background": "var(--color-bg)"
+      },
+      "layers": [
+        {
+          "id": "chyron",
+          "zIndex": 10,
+          "components": [
+            {
+              "id": "chyron-0",
+              "type": "Chyron",
+              "props": {
+                "items": [
+                  {
+                    "text": "All components are frame-driven"
+                  },
+                  {
+                    "text": "Layouts handle structure"
+                  },
+                  {
+                    "text": "Text effects are deterministic"
+                  }
+                ],
+                "mode": "page",
+                "pageDurationFrames": 40,
+                "pageTransition": {
+                  "type": "slide",
+                  "direction": "up",
+                  "durationFrames": 10
+                },
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "hold",
+          "label": "hold",
+          "startSec": 0,
+          "endSec": 6,
+          "text": "",
+          "segments": [
+            {
+              "type": "pause",
+              "startSec": 0,
+              "endSec": 6,
+              "durationSec": 6
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    }
+  ],
+  "fps": 30,
+  "meta": {
+    "fps": 30,
+    "width": 1920,
+    "height": 1080
+  }
+}

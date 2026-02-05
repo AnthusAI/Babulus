@@ -1,0 +1,32 @@
+{
+  "items": [
+    {
+      "type": "tts",
+      "sceneId": "split-screen",
+      "cueId": "voice",
+      "startSec": 0,
+      "endSec": 6.45,
+      "segments": [
+        {
+          "type": "tts",
+          "startSec": 0,
+          "endSec": 5.25,
+          "text": "Split screens are ideal for comparisons and before and afters.",
+          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/split-screen-demo/env/development/segments/split-screen--voice--tts--64cdeef4a4b6--1.wav",
+          "durationSec": 5.25,
+          "rawDurationSec": 5.25,
+          "trimEndSec": 0
+        },
+        {
+          "type": "pause",
+          "startSec": 5.25,
+          "endSec": 6.45,
+          "seconds": 1.2
+        }
+      ]
+    }
+  ],
+  "audio": {
+    "tracks": []
+  }
+}

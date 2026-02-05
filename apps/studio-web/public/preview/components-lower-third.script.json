@@ -1,0 +1,57 @@
+{
+  "scenes": [
+    {
+      "id": "lower-third-demo",
+      "title": "lower-third-demo",
+      "startSec": 0,
+      "endSec": 5,
+      "styles": {
+        "background": "var(--color-bg)"
+      },
+      "layers": [
+        {
+          "id": "lower-third",
+          "zIndex": 10,
+          "components": [
+            {
+              "id": "lower-third-0",
+              "type": "LowerThird",
+              "props": {
+                "name": "Jordan Lee",
+                "title": "Design Lead",
+                "organization": "Babulus",
+                "style": "modern",
+                "primaryColor": "var(--color-accent)",
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "hold",
+          "label": "hold",
+          "startSec": 0,
+          "endSec": 5,
+          "text": "",
+          "segments": [
+            {
+              "type": "pause",
+              "startSec": 0,
+              "endSec": 5,
+              "durationSec": 5
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    }
+  ],
+  "fps": 30,
+  "meta": {
+    "fps": 30,
+    "width": 1920,
+    "height": 1080
+  }
+}

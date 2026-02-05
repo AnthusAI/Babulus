@@ -1,0 +1,45 @@
+{
+  "items": [
+    {
+      "type": "tts",
+      "sceneId": "intro",
+      "cueId": "intro-vo",
+      "startSec": 0,
+      "endSec": 2.1818181818181817,
+      "segments": [
+        {
+          "type": "tts",
+          "startSec": 0,
+          "endSec": 2.1818181818181817,
+          "text": "Write XML. Babulus builds the video.",
+          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/code-to-video-preview/env/development/segments/intro--intro-vo--tts--b02f8070a1c1--1.wav",
+          "durationSec": 2.1818181818181817,
+          "rawDurationSec": 2.1818181818181817,
+          "trimEndSec": 0
+        }
+      ]
+    },
+    {
+      "type": "tts",
+      "sceneId": "code",
+      "cueId": "code-vo",
+      "startSec": 2.1818181818181817,
+      "endSec": 4.727272727272727,
+      "segments": [
+        {
+          "type": "tts",
+          "startSec": 2.1818181818181817,
+          "endSec": 4.727272727272727,
+          "text": "Scenes and narration become a finished render.",
+          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/code-to-video-preview/env/development/segments/code--code-vo--tts--77553bc960ca--1.wav",
+          "durationSec": 2.5454545454545454,
+          "rawDurationSec": 2.5454545454545454,
+          "trimEndSec": 0
+        }
+      ]
+    }
+  ],
+  "audio": {
+    "tracks": []
+  }
+}

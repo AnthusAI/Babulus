@@ -1,0 +1,52 @@
+{
+  "scenes": [
+    {
+      "id": "d3",
+      "title": "d3",
+      "startSec": 0,
+      "endSec": 6,
+      "styles": {
+        "background": "var(--color-bg)"
+      },
+      "layers": [
+        {
+          "id": "d3",
+          "zIndex": 10,
+          "components": [
+            {
+              "id": "d3-bar-chart-0",
+              "type": "D3BarChart",
+              "props": {
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "hold",
+          "label": "hold",
+          "startSec": 0,
+          "endSec": 6,
+          "text": "",
+          "segments": [
+            {
+              "type": "pause",
+              "startSec": 0,
+              "endSec": 6,
+              "durationSec": 6
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    }
+  ],
+  "fps": 30,
+  "meta": {
+    "fps": 30,
+    "width": 1920,
+    "height": 1080
+  }
+}

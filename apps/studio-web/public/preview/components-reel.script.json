@@ -1,0 +1,548 @@
+{
+  "scenes": [
+    {
+      "id": "reel",
+      "title": "reel",
+      "startSec": 0,
+      "endSec": 17.6,
+      "styles": {
+        "background": "var(--color-bg)"
+      },
+      "layers": [
+        {
+          "id": "component-title",
+          "timing": {
+            "startSec": 0,
+            "endSec": 2.2
+          },
+          "zIndex": 10,
+          "components": [
+            {
+              "id": "title-0",
+              "type": "Title",
+              "props": {
+                "text": "Frame-driven components",
+                "color": "var(--color-primary)",
+                "textColor": "var(--color-text)",
+                "textEffect": {
+                  "effect": "fade_up",
+                  "unit": "words",
+                  "durationFrames": 22,
+                  "staggerFrames": 4
+                },
+                "position": {
+                  "x": 140,
+                  "y": 260
+                },
+                "sceneStartSec": 0
+              }
+            },
+            {
+              "id": "subtitle-1",
+              "type": "Subtitle",
+              "props": {
+                "text": "Readable motion with minimal setup",
+                "textEffect": {
+                  "effect": "slide_left",
+                  "unit": "chars",
+                  "durationFrames": 20,
+                  "staggerFrames": 2
+                },
+                "position": {
+                  "x": 140,
+                  "y": 360
+                },
+                "color": "var(--color-text-muted)",
+                "fontSize": 28,
+                "fontWeight": 500,
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        },
+        {
+          "id": "label-title",
+          "timing": {
+            "startSec": 0,
+            "endSec": 2.2
+          },
+          "zIndex": 20,
+          "components": [
+            {
+              "id": "chapter-heading-0",
+              "type": "ChapterHeading",
+              "props": {
+                "number": "01",
+                "title": "Title + Subtitle",
+                "subtitle": "Text effects ready",
+                "numberColor": "var(--color-accent)",
+                "layout": "side-by-side",
+                "numberEntrance": {
+                  "type": "fade",
+                  "from": 1,
+                  "to": 1,
+                  "durationFrames": 1
+                },
+                "titleEntrance": {
+                  "type": "fade",
+                  "from": 1,
+                  "to": 1,
+                  "durationFrames": 1
+                },
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        },
+        {
+          "id": "component-background",
+          "timing": {
+            "startSec": 2.2,
+            "endSec": 4.4
+          },
+          "zIndex": 10,
+          "components": [
+            {
+              "id": "background-0",
+              "type": "Background",
+              "props": {
+                "color": "var(--color-surface)",
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        },
+        {
+          "id": "label-background",
+          "timing": {
+            "startSec": 2.2,
+            "endSec": 4.4
+          },
+          "zIndex": 20,
+          "components": [
+            {
+              "id": "chapter-heading-0",
+              "type": "ChapterHeading",
+              "props": {
+                "number": "02",
+                "title": "Background",
+                "subtitle": "Flat theme fill",
+                "numberColor": "var(--color-accent)",
+                "layout": "side-by-side",
+                "numberEntrance": {
+                  "type": "fade",
+                  "from": 1,
+                  "to": 1,
+                  "durationFrames": 1
+                },
+                "titleEntrance": {
+                  "type": "fade",
+                  "from": 1,
+                  "to": 1,
+                  "durationFrames": 1
+                },
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        },
+        {
+          "id": "component-progress",
+          "timing": {
+            "startSec": 4.4,
+            "endSec": 6.6
+          },
+          "zIndex": 10,
+          "components": [
+            {
+              "id": "progress-bar-0",
+              "type": "ProgressBar",
+              "props": {
+                "position": "bottom",
+                "height": 10,
+                "color": "var(--color-accent)",
+                "backgroundColor": "var(--color-muted-more)",
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        },
+        {
+          "id": "label-progress",
+          "timing": {
+            "startSec": 4.4,
+            "endSec": 6.6
+          },
+          "zIndex": 20,
+          "components": [
+            {
+              "id": "chapter-heading-0",
+              "type": "ChapterHeading",
+              "props": {
+                "number": "03",
+                "title": "Progress Bar",
+                "subtitle": "Playback cue",
+                "numberColor": "var(--color-accent)",
+                "layout": "side-by-side",
+                "numberEntrance": {
+                  "type": "fade",
+                  "from": 1,
+                  "to": 1,
+                  "durationFrames": 1
+                },
+                "titleEntrance": {
+                  "type": "fade",
+                  "from": 1,
+                  "to": 1,
+                  "durationFrames": 1
+                },
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        },
+        {
+          "id": "component-bullets",
+          "timing": {
+            "startSec": 6.6,
+            "endSec": 8.8
+          },
+          "zIndex": 10,
+          "components": [
+            {
+              "id": "bullet-list-0",
+              "type": "BulletList",
+              "props": {
+                "items": [
+                  "Frame-driven",
+                  "Composable",
+                  "Deterministic"
+                ],
+                "revealStyle": "spring",
+                "staggerDelayFrames": 12,
+                "position": {
+                  "x": 140,
+                  "y": 280
+                },
+                "textColor": "var(--color-text)",
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        },
+        {
+          "id": "label-bullets",
+          "timing": {
+            "startSec": 6.6,
+            "endSec": 8.8
+          },
+          "zIndex": 20,
+          "components": [
+            {
+              "id": "chapter-heading-0",
+              "type": "ChapterHeading",
+              "props": {
+                "number": "04",
+                "title": "Bullet List",
+                "subtitle": "Structured points",
+                "numberColor": "var(--color-accent)",
+                "layout": "side-by-side",
+                "numberEntrance": {
+                  "type": "fade",
+                  "from": 1,
+                  "to": 1,
+                  "durationFrames": 1
+                },
+                "titleEntrance": {
+                  "type": "fade",
+                  "from": 1,
+                  "to": 1,
+                  "durationFrames": 1
+                },
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        },
+        {
+          "id": "component-lower-third",
+          "timing": {
+            "startSec": 8.8,
+            "endSec": 11
+          },
+          "zIndex": 10,
+          "components": [
+            {
+              "id": "lower-third-0",
+              "type": "LowerThird",
+              "props": {
+                "name": "Jordan Lee",
+                "title": "Design Lead",
+                "organization": "Babulus",
+                "style": "modern",
+                "primaryColor": "var(--color-accent)",
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        },
+        {
+          "id": "label-lower-third",
+          "timing": {
+            "startSec": 8.8,
+            "endSec": 11
+          },
+          "zIndex": 20,
+          "components": [
+            {
+              "id": "chapter-heading-0",
+              "type": "ChapterHeading",
+              "props": {
+                "number": "05",
+                "title": "Lower Third",
+                "subtitle": "Speaker context",
+                "numberColor": "var(--color-accent)",
+                "layout": "side-by-side",
+                "numberEntrance": {
+                  "type": "fade",
+                  "from": 1,
+                  "to": 1,
+                  "durationFrames": 1
+                },
+                "titleEntrance": {
+                  "type": "fade",
+                  "from": 1,
+                  "to": 1,
+                  "durationFrames": 1
+                },
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        },
+        {
+          "id": "component-callout",
+          "timing": {
+            "startSec": 11,
+            "endSec": 13.2
+          },
+          "zIndex": 10,
+          "components": [
+            {
+              "id": "code-block-0",
+              "type": "CodeBlock",
+              "props": {
+                "language": "typescript",
+                "code": "const frame = t => t * 2;\nconst motion = frame => Math.sin(frame / 8);",
+                "theme": "nord",
+                "position": {
+                  "y": 260
+                },
+                "width": 1200,
+                "height": 380,
+                "sceneStartSec": 0
+              }
+            },
+            {
+              "id": "callout-1",
+              "type": "Callout",
+              "props": {
+                "text": "Frame-driven motion",
+                "pointerTarget": {
+                  "x": 980,
+                  "y": 350
+                },
+                "position": {
+                  "x": 1180,
+                  "y": 220
+                },
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        },
+        {
+          "id": "label-callout",
+          "timing": {
+            "startSec": 11,
+            "endSec": 13.2
+          },
+          "zIndex": 20,
+          "components": [
+            {
+              "id": "chapter-heading-0",
+              "type": "ChapterHeading",
+              "props": {
+                "number": "06",
+                "title": "Callout + Code",
+                "subtitle": "Annotations",
+                "numberColor": "var(--color-accent)",
+                "layout": "side-by-side",
+                "numberEntrance": {
+                  "type": "fade",
+                  "from": 1,
+                  "to": 1,
+                  "durationFrames": 1
+                },
+                "titleEntrance": {
+                  "type": "fade",
+                  "from": 1,
+                  "to": 1,
+                  "durationFrames": 1
+                },
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        },
+        {
+          "id": "component-chyron",
+          "timing": {
+            "startSec": 13.2,
+            "endSec": 15.4
+          },
+          "zIndex": 10,
+          "components": [
+            {
+              "id": "chyron-0",
+              "type": "Chyron",
+              "props": {
+                "items": [
+                  {
+                    "text": "All components are frame-driven"
+                  },
+                  {
+                    "text": "Layouts handle structure"
+                  },
+                  {
+                    "text": "Text effects are deterministic"
+                  }
+                ],
+                "mode": "page",
+                "pageDurationFrames": 40,
+                "pageTransition": {
+                  "type": "slide",
+                  "direction": "up",
+                  "durationFrames": 10
+                },
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        },
+        {
+          "id": "label-chyron",
+          "timing": {
+            "startSec": 13.2,
+            "endSec": 15.4
+          },
+          "zIndex": 20,
+          "components": [
+            {
+              "id": "chapter-heading-0",
+              "type": "ChapterHeading",
+              "props": {
+                "number": "07",
+                "title": "Chyron",
+                "subtitle": "Ticker updates",
+                "numberColor": "var(--color-accent)",
+                "layout": "side-by-side",
+                "numberEntrance": {
+                  "type": "fade",
+                  "from": 1,
+                  "to": 1,
+                  "durationFrames": 1
+                },
+                "titleEntrance": {
+                  "type": "fade",
+                  "from": 1,
+                  "to": 1,
+                  "durationFrames": 1
+                },
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        },
+        {
+          "id": "component-quote",
+          "timing": {
+            "startSec": 15.4,
+            "endSec": 17.6
+          },
+          "zIndex": 10,
+          "components": [
+            {
+              "id": "quote-card-0",
+              "type": "QuoteCard",
+              "props": {
+                "quote": "The frame is the clock.",
+                "attribution": "Babulus",
+                "accentColor": "var(--color-accent)",
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        },
+        {
+          "id": "label-quote",
+          "timing": {
+            "startSec": 15.4,
+            "endSec": 17.6
+          },
+          "zIndex": 20,
+          "components": [
+            {
+              "id": "chapter-heading-0",
+              "type": "ChapterHeading",
+              "props": {
+                "number": "08",
+                "title": "Quote Card",
+                "subtitle": "Pull quotes",
+                "numberColor": "var(--color-accent)",
+                "layout": "side-by-side",
+                "numberEntrance": {
+                  "type": "fade",
+                  "from": 1,
+                  "to": 1,
+                  "durationFrames": 1
+                },
+                "titleEntrance": {
+                  "type": "fade",
+                  "from": 1,
+                  "to": 1,
+                  "durationFrames": 1
+                },
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "hold",
+          "label": "hold",
+          "startSec": 0,
+          "endSec": 17.6,
+          "text": "",
+          "segments": [
+            {
+              "type": "pause",
+              "startSec": 0,
+              "endSec": 17.6,
+              "durationSec": 17.6
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    }
+  ],
+  "fps": 30,
+  "meta": {
+    "fps": 30,
+    "width": 1920,
+    "height": 1080
+  }
+}

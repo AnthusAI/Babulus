@@ -1,0 +1,439 @@
+{
+  "scenes": [
+    {
+      "id": "lucide-checks",
+      "title": "lucide-checks",
+      "startSec": 0,
+      "endSec": 5.9,
+      "layers": [
+        {
+          "id": "bg",
+          "components": [
+            {
+              "id": "background-0",
+              "type": "Background",
+              "props": {
+                "variant": "linear",
+                "gradient": {
+                  "angle": 135,
+                  "colors": [
+                    "#101010",
+                    "#1f2a44"
+                  ]
+                },
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        },
+        {
+          "id": "title",
+          "zIndex": 5,
+          "components": [
+            {
+              "id": "layout-titleslide-0",
+              "type": "TitleSlide",
+              "props": {
+                "title": "Lucide Icon Bullets",
+                "subtitle": "check, arrow-right, star, circle-dot",
+                "verticalAlign": "top",
+                "padding": 60,
+                "titleSize": 60,
+                "subtitleSize": 28,
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        },
+        {
+          "id": "list",
+          "zIndex": 10,
+          "components": [
+            {
+              "id": "bullet-list-0",
+              "type": "BulletList",
+              "props": {
+                "items": [
+                  "Fast onboarding",
+                  "Reusable layouts",
+                  "Motion presets",
+                  "Frame-accurate timing"
+                ],
+                "bulletStyle": "icon",
+                "bulletIcon": {
+                  "kind": "lucide",
+                  "name": "check",
+                  "color": "#7ee0a3",
+                  "strokeWidth": 2.4,
+                  "size": 30
+                },
+                "fontSize": 44,
+                "lineHeight": 1.35,
+                "spacing": 18,
+                "textColor": "#e9edf5",
+                "position": {
+                  "x": 340,
+                  "y": 260
+                },
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "vo1",
+          "label": "vo1",
+          "startSec": 0,
+          "endSec": 5.9,
+          "text": "Lucide check marks sized for TV distance readability.",
+          "segments": [
+            {
+              "type": "tts",
+              "startSec": 0,
+              "endSec": 4.4,
+              "text": "Lucide check marks sized for TV distance readability."
+            },
+            {
+              "type": "pause",
+              "startSec": 4.4,
+              "endSec": 5.9,
+              "durationSec": 1.5
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "unicode-bullets",
+      "title": "unicode-bullets",
+      "startSec": 5.9,
+      "endSec": 11,
+      "layers": [
+        {
+          "id": "bg",
+          "components": [
+            {
+              "id": "background-0",
+              "type": "Background",
+              "props": {
+                "variant": "linear",
+                "gradient": {
+                  "angle": 135,
+                  "colors": [
+                    "#101010",
+                    "#1f2a44"
+                  ]
+                },
+                "sceneStartSec": 5.9
+              }
+            }
+          ]
+        },
+        {
+          "id": "title",
+          "zIndex": 5,
+          "components": [
+            {
+              "id": "layout-titleslide-0",
+              "type": "TitleSlide",
+              "props": {
+                "title": "Unicode Bullets",
+                "subtitle": "Em dash / stars with custom font",
+                "verticalAlign": "top",
+                "padding": 60,
+                "titleSize": 60,
+                "subtitleSize": 28,
+                "sceneStartSec": 5.9
+              }
+            }
+          ]
+        },
+        {
+          "id": "list",
+          "zIndex": 10,
+          "components": [
+            {
+              "id": "bullet-list-0",
+              "type": "BulletList",
+              "props": {
+                "items": [
+                  "Fast onboarding",
+                  "Reusable layouts",
+                  "Motion presets",
+                  "Frame-accurate timing"
+                ],
+                "bulletStyle": "icon",
+                "bulletIcon": {
+                  "kind": "unicode",
+                  "name": "•",
+                  "fontFamily": "\"Segoe UI Symbol\", \"Arial Unicode MS\", sans-serif",
+                  "color": "#f8d477",
+                  "size": 34
+                },
+                "fontSize": 46,
+                "lineHeight": 1.3,
+                "spacing": 20,
+                "textColor": "#f3f4f6",
+                "position": {
+                  "x": 320,
+                  "y": 260
+                },
+                "sceneStartSec": 5.9
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "vo2",
+          "label": "vo2",
+          "startSec": 5.9,
+          "endSec": 11,
+          "text": "Unicode bullets with a configurable fallback font.",
+          "segments": [
+            {
+              "type": "tts",
+              "startSec": 5.9,
+              "endSec": 9.5,
+              "text": "Unicode bullets with a configurable fallback font."
+            },
+            {
+              "type": "pause",
+              "startSec": 9.5,
+              "endSec": 11,
+              "durationSec": 1.5
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "numbered",
+      "title": "numbered",
+      "startSec": 11,
+      "endSec": 15.45,
+      "layers": [
+        {
+          "id": "bg",
+          "components": [
+            {
+              "id": "background-0",
+              "type": "Background",
+              "props": {
+                "variant": "linear",
+                "gradient": {
+                  "angle": 135,
+                  "colors": [
+                    "#101010",
+                    "#1f2a44"
+                  ]
+                },
+                "sceneStartSec": 11
+              }
+            }
+          ]
+        },
+        {
+          "id": "title",
+          "zIndex": 5,
+          "components": [
+            {
+              "id": "layout-titleslide-0",
+              "type": "TitleSlide",
+              "props": {
+                "title": "Numbered Bullets",
+                "subtitle": "Ordered, large, TV-friendly",
+                "verticalAlign": "top",
+                "padding": 60,
+                "titleSize": 60,
+                "subtitleSize": 28,
+                "sceneStartSec": 11
+              }
+            }
+          ]
+        },
+        {
+          "id": "list",
+          "zIndex": 10,
+          "components": [
+            {
+              "id": "bullet-list-0",
+              "type": "BulletList",
+              "props": {
+                "items": [
+                  "Fast onboarding",
+                  "Reusable layouts",
+                  "Motion presets",
+                  "Frame-accurate timing"
+                ],
+                "bulletStyle": "number",
+                "fontSize": 46,
+                "lineHeight": 1.35,
+                "spacing": 18,
+                "textColor": "#e5ecff",
+                "position": {
+                  "x": 340,
+                  "y": 260
+                },
+                "sceneStartSec": 11
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "vo3",
+          "label": "vo3",
+          "startSec": 11,
+          "endSec": 15.45,
+          "text": "Classic numbered list for ordered steps on screen.",
+          "segments": [
+            {
+              "type": "tts",
+              "startSec": 11,
+              "endSec": 13.95,
+              "text": "Classic numbered list for ordered steps on screen."
+            },
+            {
+              "type": "pause",
+              "startSec": 13.95,
+              "endSec": 15.45,
+              "durationSec": 1.5
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "mixed-icons",
+      "title": "mixed-icons",
+      "startSec": 15.45,
+      "endSec": 21.7,
+      "layers": [
+        {
+          "id": "bg",
+          "components": [
+            {
+              "id": "background-0",
+              "type": "Background",
+              "props": {
+                "variant": "linear",
+                "gradient": {
+                  "angle": 135,
+                  "colors": [
+                    "#101010",
+                    "#1f2a44"
+                  ]
+                },
+                "sceneStartSec": 15.45
+              }
+            }
+          ]
+        },
+        {
+          "id": "title",
+          "zIndex": 5,
+          "components": [
+            {
+              "id": "layout-titleslide-0",
+              "type": "TitleSlide",
+              "props": {
+                "title": "Mixed Lucide per Item",
+                "subtitle": "icon field on each item overrides",
+                "verticalAlign": "top",
+                "padding": 60,
+                "titleSize": 60,
+                "subtitleSize": 28,
+                "sceneStartSec": 15.45
+              }
+            }
+          ]
+        },
+        {
+          "id": "list",
+          "zIndex": 10,
+          "components": [
+            {
+              "id": "bullet-list-0",
+              "type": "BulletList",
+              "props": {
+                "items": [
+                  {
+                    "text": "Fast onboarding",
+                    "icon": "arrow-right"
+                  },
+                  {
+                    "text": "Reusable layouts",
+                    "icon": "check"
+                  },
+                  {
+                    "text": "Motion presets",
+                    "icon": "star"
+                  },
+                  {
+                    "text": "Frame-accurate timing",
+                    "icon": "circle-dot"
+                  }
+                ],
+                "bulletStyle": "icon",
+                "bulletIcon": {
+                  "kind": "lucide",
+                  "name": "dot",
+                  "color": "#9bd0ff",
+                  "strokeWidth": 2.2,
+                  "size": 28
+                },
+                "fontSize": 44,
+                "lineHeight": 1.35,
+                "spacing": 18,
+                "textColor": "#e9edf5",
+                "position": {
+                  "x": 340,
+                  "y": 260
+                },
+                "sceneStartSec": 15.45
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "vo4",
+          "label": "vo4",
+          "startSec": 15.45,
+          "endSec": 21.7,
+          "text": "Per-item Lucide icons override the default bullet icon.",
+          "segments": [
+            {
+              "type": "tts",
+              "startSec": 15.45,
+              "endSec": 20.2,
+              "text": "Per-item Lucide icons override the default bullet icon."
+            },
+            {
+              "type": "pause",
+              "startSec": 20.2,
+              "endSec": 21.7,
+              "durationSec": 1.5
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    }
+  ],
+  "fps": 30,
+  "meta": {
+    "fps": 30,
+    "width": 1920,
+    "height": 1080
+  }
+}

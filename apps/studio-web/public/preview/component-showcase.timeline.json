@@ -1,0 +1,284 @@
+{
+  "items": [
+    {
+      "type": "tts",
+      "sceneId": "intro",
+      "cueId": "welcome",
+      "startSec": 0,
+      "endSec": 7,
+      "segments": [
+        {
+          "type": "tts",
+          "startSec": 0,
+          "endSec": 2.45,
+          "text": "Welcome to the Babulus component library.",
+          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/component-showcase/env/development/segments/intro--welcome--tts--36050b457404--1.wav",
+          "durationSec": 2.45,
+          "rawDurationSec": 2.45,
+          "trimEndSec": 0
+        },
+        {
+          "type": "pause",
+          "startSec": 2.45,
+          "endSec": 2.75,
+          "seconds": 0.3
+        },
+        {
+          "type": "tts",
+          "startSec": 2.75,
+          "endSec": 7,
+          "text": "A comprehensive set of tools for creating professional videos.",
+          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/component-showcase/env/development/segments/intro--welcome--tts--09fe6aeb9594--1.wav",
+          "durationSec": 4.25,
+          "rawDurationSec": 4.25,
+          "trimEndSec": 0
+        }
+      ]
+    },
+    {
+      "type": "tts",
+      "sceneId": "bullet-list-demo",
+      "cueId": "features",
+      "startSec": 7,
+      "endSec": 19.05,
+      "segments": [
+        {
+          "type": "tts",
+          "startSec": 7,
+          "endSec": 10.45,
+          "text": "The library includes PowerPoint-style layouts.",
+          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/component-showcase/env/development/segments/bullet-list-demo--features--tts--09018992da0d--1.wav",
+          "durationSec": 3.45,
+          "rawDurationSec": 3.45,
+          "trimEndSec": 0
+        },
+        {
+          "type": "pause",
+          "startSec": 10.45,
+          "endSec": 10.85,
+          "seconds": 0.4
+        },
+        {
+          "type": "tts",
+          "startSec": 10.85,
+          "endSec": 13.2,
+          "text": "Broadcast-quality motion graphics.",
+          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/component-showcase/env/development/segments/bullet-list-demo--features--tts--7bda5597a7ee--1.wav",
+          "durationSec": 2.35,
+          "rawDurationSec": 2.35,
+          "trimEndSec": 0
+        },
+        {
+          "type": "pause",
+          "startSec": 13.2,
+          "endSec": 13.6,
+          "seconds": 0.4
+        },
+        {
+          "type": "tts",
+          "startSec": 13.6,
+          "endSec": 16.35,
+          "text": "A frame-based animation system.",
+          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/component-showcase/env/development/segments/bullet-list-demo--features--tts--3aebaea702ab--1.wav",
+          "durationSec": 2.75,
+          "rawDurationSec": 2.75,
+          "trimEndSec": 0
+        },
+        {
+          "type": "pause",
+          "startSec": 16.35,
+          "endSec": 16.75,
+          "seconds": 0.4
+        },
+        {
+          "type": "tts",
+          "startSec": 16.75,
+          "endSec": 19.05,
+          "text": "And smooth transitions throughout.",
+          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/component-showcase/env/development/segments/bullet-list-demo--features--tts--e5c445a423a2--1.wav",
+          "durationSec": 2.3,
+          "rawDurationSec": 2.3,
+          "trimEndSec": 0
+        }
+      ]
+    },
+    {
+      "type": "tts",
+      "sceneId": "lower-third-demo",
+      "cueId": "lower-third",
+      "startSec": 19.05,
+      "endSec": 27.700000000000003,
+      "segments": [
+        {
+          "type": "tts",
+          "startSec": 19.05,
+          "endSec": 23.700000000000003,
+          "text": "Lower thirds identify speakers with smooth animations.",
+          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/component-showcase/env/development/segments/lower-third-demo--lower-third--tts--fed44426f64f--1.wav",
+          "durationSec": 4.65,
+          "rawDurationSec": 4.65,
+          "trimEndSec": 0
+        },
+        {
+          "type": "pause",
+          "startSec": 23.700000000000003,
+          "endSec": 24.200000000000003,
+          "seconds": 0.5
+        },
+        {
+          "type": "tts",
+          "startSec": 24.200000000000003,
+          "endSec": 27.700000000000003,
+          "text": "Multiple styles are available to match your brand.",
+          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/component-showcase/env/development/segments/lower-third-demo--lower-third--tts--4efe3373c03f--1.wav",
+          "durationSec": 3.5,
+          "rawDurationSec": 3.5,
+          "trimEndSec": 0
+        }
+      ]
+    },
+    {
+      "type": "tts",
+      "sceneId": "chyron-demo",
+      "cueId": "chyron",
+      "startSec": 27.700000000000003,
+      "endSec": 36.75,
+      "segments": [
+        {
+          "type": "tts",
+          "startSec": 27.700000000000003,
+          "endSec": 32.45,
+          "text": "The chyron component provides scrolling tickers and paged displays.",
+          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/component-showcase/env/development/segments/chyron-demo--chyron--tts--0ba00a5970d7--1.wav",
+          "durationSec": 4.75,
+          "rawDurationSec": 4.75,
+          "trimEndSec": 0
+        },
+        {
+          "type": "pause",
+          "startSec": 32.45,
+          "endSec": 32.85,
+          "seconds": 0.4
+        },
+        {
+          "type": "tts",
+          "startSec": 32.85,
+          "endSec": 36.75,
+          "text": "Perfect for news-style content or key points.",
+          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/component-showcase/env/development/segments/chyron-demo--chyron--tts--216702aff92f--1.wav",
+          "durationSec": 3.9,
+          "rawDurationSec": 3.9,
+          "trimEndSec": 0
+        }
+      ]
+    },
+    {
+      "type": "tts",
+      "sceneId": "two-column-demo",
+      "cueId": "two-column",
+      "startSec": 36.75,
+      "endSec": 43.74999999999999,
+      "segments": [
+        {
+          "type": "tts",
+          "startSec": 36.75,
+          "endSec": 40.3,
+          "text": "Layout components make it easy to structure your content.",
+          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/component-showcase/env/development/segments/two-column-demo--two-column--tts--d8cc7d91037d--1.wav",
+          "durationSec": 3.55,
+          "rawDurationSec": 3.55,
+          "trimEndSec": 0
+        },
+        {
+          "type": "pause",
+          "startSec": 40.3,
+          "endSec": 40.599999999999994,
+          "seconds": 0.3
+        },
+        {
+          "type": "tts",
+          "startSec": 40.599999999999994,
+          "endSec": 43.74999999999999,
+          "text": "Choose from several PowerPoint-inspired layouts.",
+          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/component-showcase/env/development/segments/two-column-demo--two-column--tts--74c1ad64f8ea--1.wav",
+          "durationSec": 3.15,
+          "rawDurationSec": 3.15,
+          "trimEndSec": 0
+        }
+      ]
+    },
+    {
+      "type": "tts",
+      "sceneId": "code-demo",
+      "cueId": "code",
+      "startSec": 43.74999999999999,
+      "endSec": 51.34999999999999,
+      "segments": [
+        {
+          "type": "tts",
+          "startSec": 43.74999999999999,
+          "endSec": 47.24999999999999,
+          "text": "The code block component supports syntax highlighting.",
+          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/component-showcase/env/development/segments/code-demo--code--tts--0f227b3eb7ec--1.wav",
+          "durationSec": 3.5,
+          "rawDurationSec": 3.5,
+          "trimEndSec": 0
+        },
+        {
+          "type": "pause",
+          "startSec": 47.24999999999999,
+          "endSec": 47.54999999999999,
+          "seconds": 0.3
+        },
+        {
+          "type": "tts",
+          "startSec": 47.54999999999999,
+          "endSec": 51.34999999999999,
+          "text": "With multiple themes and reveal animations.",
+          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/component-showcase/env/development/segments/code-demo--code--tts--b93862c68151--1.wav",
+          "durationSec": 3.8,
+          "rawDurationSec": 3.8,
+          "trimEndSec": 0
+        }
+      ]
+    },
+    {
+      "type": "tts",
+      "sceneId": "conclusion",
+      "cueId": "outro",
+      "startSec": 51.34999999999999,
+      "endSec": 59.69999999999999,
+      "segments": [
+        {
+          "type": "tts",
+          "startSec": 51.34999999999999,
+          "endSec": 56.19999999999999,
+          "text": "Start creating professional videos with the Babulus component library.",
+          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/component-showcase/env/development/segments/conclusion--outro--tts--ae141a06bb67--1.wav",
+          "durationSec": 4.85,
+          "rawDurationSec": 4.85,
+          "trimEndSec": 0
+        },
+        {
+          "type": "pause",
+          "startSec": 56.19999999999999,
+          "endSec": 56.499999999999986,
+          "seconds": 0.3
+        },
+        {
+          "type": "tts",
+          "startSec": 56.499999999999986,
+          "endSec": 59.69999999999999,
+          "text": "Everything you need in one powerful package.",
+          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/component-showcase/env/development/segments/conclusion--outro--tts--a26952b92774--1.wav",
+          "durationSec": 3.2,
+          "rawDurationSec": 3.2,
+          "trimEndSec": 0
+        }
+      ]
+    }
+  ],
+  "audio": {
+    "tracks": []
+  }
+}

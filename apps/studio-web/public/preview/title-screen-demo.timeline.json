@@ -1,0 +1,32 @@
+{
+  "items": [
+    {
+      "type": "tts",
+      "sceneId": "title-slide",
+      "cueId": "voice",
+      "startSec": 0,
+      "endSec": 20.75,
+      "segments": [
+        {
+          "type": "tts",
+          "startSec": 0,
+          "endSec": 2.75,
+          "text": "This is the title screen layout.",
+          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/title-screen-demo/env/development/segments/title-slide--voice--tts--8efa6cd55136--1.wav",
+          "durationSec": 2.75,
+          "rawDurationSec": 2.75,
+          "trimEndSec": 0
+        },
+        {
+          "type": "pause",
+          "startSec": 2.75,
+          "endSec": 20.75,
+          "seconds": 18
+        }
+      ]
+    }
+  ],
+  "audio": {
+    "tracks": []
+  }
+}

@@ -1,0 +1,647 @@
+{
+  "scenes": [
+    {
+      "id": "bullets-a",
+      "title": "bullets-A",
+      "startSec": 0,
+      "endSec": 6.15,
+      "layers": [
+        {
+          "id": "page",
+          "components": [
+            {
+              "id": "layout-bulletlistscreen-0",
+              "type": "BulletListScreen",
+              "props": {
+                "label": "A",
+                "background": "linear-gradient(135deg, #101010, #1f2a44)",
+                "eyebrow": "Menu Option",
+                "title": "Option A — Bold & Large",
+                "subtitle": "Readable at a distance",
+                "align": "left",
+                "bullets": {
+                  "items": [
+                    "Fast onboarding",
+                    "Reusable layouts",
+                    "Motion presets",
+                    "Frame-accurate timing"
+                  ],
+                  "bulletStyle": "icon",
+                  "bulletIcon": {
+                    "kind": "lucide",
+                    "name": "check",
+                    "color": "#7ee0a3",
+                    "strokeWidth": 3,
+                    "size": 34
+                  },
+                  "fontSize": 76,
+                  "lineHeight": 1.5,
+                  "spacing": 110,
+                  "textColor": "#f5f7fb",
+                  "justify": "space-between"
+                },
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "vo-a",
+          "label": "vo-a",
+          "startSec": 0,
+          "endSec": 6.15,
+          "text": "Option A uses oversized checked bullets for maximum legibility.",
+          "segments": [
+            {
+              "type": "tts",
+              "startSec": 0,
+              "endSec": 4.75,
+              "text": "Option A uses oversized checked bullets for maximum legibility."
+            },
+            {
+              "type": "pause",
+              "startSec": 4.75,
+              "endSec": 6.15,
+              "durationSec": 1.4
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "bullets-b",
+      "title": "bullets-B",
+      "startSec": 6.15,
+      "endSec": 11.700000000000001,
+      "layers": [
+        {
+          "id": "page",
+          "components": [
+            {
+              "id": "layout-bulletlistscreen-0",
+              "type": "BulletListScreen",
+              "props": {
+                "label": "B",
+                "background": "linear-gradient(135deg, #15202b, #243447)",
+                "eyebrow": "Menu Option",
+                "title": "Option B — Numbered Stack",
+                "subtitle": "Ordered steps, strong rhythm",
+                "align": "left",
+                "bullets": {
+                  "items": [
+                    "Fast onboarding",
+                    "Reusable layouts",
+                    "Motion presets",
+                    "Frame-accurate timing"
+                  ],
+                  "bulletStyle": "number",
+                  "fontSize": 68,
+                  "lineHeight": 1.5,
+                  "spacing": 100,
+                  "textColor": "#eef3f8",
+                  "justify": "space-between"
+                },
+                "sceneStartSec": 6.15
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "vo-b",
+          "label": "vo-b",
+          "startSec": 6.15,
+          "endSec": 11.700000000000001,
+          "text": "Option B numbers each point for clear, ordered steps.",
+          "segments": [
+            {
+              "type": "tts",
+              "startSec": 6.15,
+              "endSec": 10.3,
+              "text": "Option B numbers each point for clear, ordered steps."
+            },
+            {
+              "type": "pause",
+              "startSec": 10.3,
+              "endSec": 11.700000000000001,
+              "durationSec": 1.4
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "bullets-c",
+      "title": "bullets-C",
+      "startSec": 11.700000000000001,
+      "endSec": 18.85,
+      "layers": [
+        {
+          "id": "page",
+          "components": [
+            {
+              "id": "layout-bulletlistscreen-0",
+              "type": "BulletListScreen",
+              "props": {
+                "label": "C",
+                "background": "linear-gradient(135deg, #0f172a, #1e293b)",
+                "eyebrow": "Menu Option",
+                "title": "Option C — Split Grid",
+                "subtitle": "Compact, two-column feel",
+                "align": "left",
+                "bullets": {
+                  "items": [
+                    "Fast onboarding",
+                    "Reusable layouts",
+                    "Motion presets",
+                    "Frame-accurate timing"
+                  ],
+                  "bulletStyle": "icon",
+                  "bulletIcon": {
+                    "kind": "lucide",
+                    "name": "arrow-right",
+                    "color": "#c7dcff",
+                    "strokeWidth": 2.4,
+                    "size": 34
+                  },
+                  "columns": 2,
+                  "columnGap": 80,
+                  "fontSize": 60,
+                  "lineHeight": 1.5,
+                  "spacing": 80,
+                  "textColor": "#e9edf5",
+                  "justify": "start"
+                },
+                "sceneStartSec": 11.700000000000001
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "vo-c",
+          "label": "vo-c",
+          "startSec": 11.700000000000001,
+          "endSec": 18.85,
+          "text": "Option C tightens the list into a compact grid-friendly spacing.",
+          "segments": [
+            {
+              "type": "tts",
+              "startSec": 11.700000000000001,
+              "endSec": 17.450000000000003,
+              "text": "Option C tightens the list into a compact grid-friendly spacing."
+            },
+            {
+              "type": "pause",
+              "startSec": 17.450000000000003,
+              "endSec": 18.85,
+              "durationSec": 1.4
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "font-menu-a",
+      "title": "font-menu-A",
+      "startSec": 18.85,
+      "endSec": 32.45,
+      "layers": [
+        {
+          "id": "grid",
+          "components": [
+            {
+              "id": "font-grid-a",
+              "type": "FontGrid",
+              "props": {
+                "label": "A — Broadcast Classics",
+                "cards": [
+                  {
+                    "eyebrow": "Classic News",
+                    "headline": "Helvetica Neue Bold",
+                    "subhead": "Clear, objective delivery.",
+                    "eyebrowFont": "Gill Sans, Arial, sans-serif",
+                    "headlineFont": "\"Helvetica Neue\", Arial, sans-serif",
+                    "subheadFont": "Arial, sans-serif"
+                  },
+                  {
+                    "eyebrow": "Authority",
+                    "headline": "Impact Heavy",
+                    "subhead": "Punchy for urgent lower-thirds.",
+                    "eyebrowFont": "\"Franklin Gothic Medium\", Arial, sans-serif",
+                    "headlineFont": "Impact, Haettenschweiler, \"Arial Narrow Bold\", sans-serif",
+                    "subheadFont": "\"Trebuchet MS\", sans-serif"
+                  },
+                  {
+                    "eyebrow": "Documentary",
+                    "headline": "Trebuchet MS",
+                    "subhead": "Friendly, legible narration.",
+                    "eyebrowFont": "\"Lucida Grande\", sans-serif",
+                    "headlineFont": "\"Trebuchet MS\", sans-serif",
+                    "subheadFont": "\"Gill Sans\", sans-serif"
+                  },
+                  {
+                    "eyebrow": "Serif Accent",
+                    "headline": "Georgia Bold",
+                    "subhead": "Trustworthy editorial tone.",
+                    "eyebrowFont": "\"Helvetica Neue\", Arial, sans-serif",
+                    "headlineFont": "Georgia, \"Times New Roman\", serif",
+                    "subheadFont": "\"Source Sans Pro\", Arial, sans-serif"
+                  },
+                  {
+                    "eyebrow": "Headline+Caption",
+                    "headline": "Arial Black",
+                    "subhead": "Big caps, compact support.",
+                    "eyebrowFont": "\"Avenir Next\", Arial, sans-serif",
+                    "headlineFont": "\"Arial Black\", Gadget, sans-serif",
+                    "subheadFont": "\"Segoe UI\", sans-serif"
+                  },
+                  {
+                    "eyebrow": "Sports Ticker",
+                    "headline": "Oswald Bold",
+                    "subhead": "Condensed, high-urgency.",
+                    "eyebrowFont": "\"Roboto Condensed\", Arial, sans-serif",
+                    "headlineFont": "Oswald, \"Arial Narrow\", sans-serif",
+                    "subheadFont": "\"Inter\", system-ui, sans-serif"
+                  },
+                  {
+                    "eyebrow": "Debate",
+                    "headline": "Verdana Bold",
+                    "subhead": "Neutral, screen-optimized.",
+                    "eyebrowFont": "\"Verdana\", sans-serif",
+                    "headlineFont": "Verdana, Geneva, sans-serif",
+                    "subheadFont": "\"Lucida Sans\", sans-serif"
+                  },
+                  {
+                    "eyebrow": "Magazine",
+                    "headline": "Bodoni Poster",
+                    "subhead": "Elegant with contrast.",
+                    "eyebrowFont": "\"Avenir Next\", sans-serif",
+                    "headlineFont": "\"Didot\", \"Bodoni MT\", serif",
+                    "subheadFont": "\"Helvetica Neue\", Arial, sans-serif"
+                  },
+                  {
+                    "eyebrow": "Finance",
+                    "headline": "Futura Bold",
+                    "subhead": "Geometric clarity.",
+                    "eyebrowFont": "\"Gill Sans\", sans-serif",
+                    "headlineFont": "Futura, \"Century Gothic\", sans-serif",
+                    "subheadFont": "\"Segoe UI\", sans-serif"
+                  },
+                  {
+                    "eyebrow": "Weather",
+                    "headline": "Montserrat SemiBold",
+                    "subhead": "Rounded, inviting tone.",
+                    "eyebrowFont": "\"Nunito Sans\", sans-serif",
+                    "headlineFont": "Montserrat, \"Arial Rounded MT Bold\", sans-serif",
+                    "subheadFont": "\"Open Sans\", sans-serif"
+                  },
+                  {
+                    "eyebrow": "Ticker Serif",
+                    "headline": "Merriweather Bold",
+                    "subhead": "Broadcast + heritage.",
+                    "eyebrowFont": "\"Gill Sans\", sans-serif",
+                    "headlineFont": "Merriweather, Georgia, serif",
+                    "subheadFont": "\"Source Sans Pro\", Arial, sans-serif"
+                  },
+                  {
+                    "eyebrow": "Tech Desk",
+                    "headline": "SF Pro Display Bold",
+                    "subhead": "Modern system default.",
+                    "eyebrowFont": "\"SF Pro Text\", system-ui, sans-serif",
+                    "headlineFont": "\"SF Pro Display\", system-ui, sans-serif",
+                    "subheadFont": "system-ui, -apple-system, \"Segoe UI\", sans-serif"
+                  }
+                ],
+                "sceneStartSec": 18.85
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "voice-a",
+          "label": "voice-a",
+          "startSec": 18.85,
+          "endSec": 32.45,
+          "text": "Screen A shows twelve broadcast-friendly pairings—neutral, Swiss-inspired, built for lower thirds.",
+          "segments": [
+            {
+              "type": "tts",
+              "startSec": 18.85,
+              "endSec": 26.450000000000003,
+              "text": "Screen A shows twelve broadcast-friendly pairings—neutral, Swiss-inspired, built for lower thirds."
+            },
+            {
+              "type": "pause",
+              "startSec": 26.450000000000003,
+              "endSec": 32.45,
+              "durationSec": 6
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "font-menu-b",
+      "title": "font-menu-B",
+      "startSec": 32.45,
+      "endSec": 44.85,
+      "layers": [
+        {
+          "id": "grid",
+          "components": [
+            {
+              "id": "font-grid-b",
+              "type": "FontGrid",
+              "props": {
+                "label": "B — Modern Sans & Slab",
+                "cards": [
+                  {
+                    "eyebrow": "Modern Grotesk",
+                    "headline": "Inter Black",
+                    "subhead": "UI-native for crisp overlays.",
+                    "eyebrowFont": "\"Inter\", system-ui, sans-serif",
+                    "headlineFont": "\"Inter\", system-ui, sans-serif",
+                    "subheadFont": "\"Inter\", system-ui, sans-serif"
+                  },
+                  {
+                    "eyebrow": "Slab Partner",
+                    "headline": "Roboto Slab Bold",
+                    "subhead": "Pair with sans eyebrow.",
+                    "eyebrowFont": "\"Roboto\", sans-serif",
+                    "headlineFont": "\"Roboto Slab\", serif",
+                    "subheadFont": "\"Roboto\", sans-serif"
+                  },
+                  {
+                    "eyebrow": "Humanist",
+                    "headline": "Segoe UI Bold",
+                    "subhead": "Warm, readable captions.",
+                    "eyebrowFont": "\"Segoe UI\", sans-serif",
+                    "headlineFont": "\"Segoe UI\", sans-serif",
+                    "subheadFont": "\"Segoe UI\", sans-serif"
+                  },
+                  {
+                    "eyebrow": "Heritage",
+                    "headline": "Times Bold",
+                    "subhead": "Short quotes / chyrons.",
+                    "eyebrowFont": "\"Helvetica Neue\", Arial, sans-serif",
+                    "headlineFont": "\"Times New Roman\", serif",
+                    "subheadFont": "\"Arial\", sans-serif"
+                  },
+                  {
+                    "eyebrow": "Condensed",
+                    "headline": "Arial Narrow Bold",
+                    "subhead": "Great for dense tickers.",
+                    "eyebrowFont": "\"Roboto Condensed\", sans-serif",
+                    "headlineFont": "\"Arial Narrow Bold\", sans-serif",
+                    "subheadFont": "\"Roboto\", sans-serif"
+                  },
+                  {
+                    "eyebrow": "Display",
+                    "headline": "Gill Sans Ultra Bold",
+                    "subhead": "Poster feel for promos.",
+                    "eyebrowFont": "\"Gill Sans\", sans-serif",
+                    "headlineFont": "\"Gill Sans Ultra Bold\", sans-serif",
+                    "subheadFont": "\"Lucida Sans\", sans-serif"
+                  },
+                  {
+                    "eyebrow": "Rounded",
+                    "headline": "Varela Round",
+                    "subhead": "Soft edges, friendly tone.",
+                    "eyebrowFont": "\"Nunito\", sans-serif",
+                    "headlineFont": "\"Varela Round\", \"Arial Rounded MT Bold\", sans-serif",
+                    "subheadFont": "\"Nunito Sans\", sans-serif"
+                  },
+                  {
+                    "eyebrow": "Slate",
+                    "headline": "Avenir Heavy",
+                    "subhead": "Premium, balanced weight.",
+                    "eyebrowFont": "\"Avenir Next\", sans-serif",
+                    "headlineFont": "Avenir, \"Avenir Next\", sans-serif",
+                    "subheadFont": "\"Avenir Next\", sans-serif"
+                  },
+                  {
+                    "eyebrow": "Hybrid",
+                    "headline": "Playfair Display Bold",
+                    "subhead": "Elegant serif + sans body.",
+                    "eyebrowFont": "\"Montserrat\", sans-serif",
+                    "headlineFont": "\"Playfair Display\", serif",
+                    "subheadFont": "\"Montserrat\", sans-serif"
+                  },
+                  {
+                    "eyebrow": "Geo Sans",
+                    "headline": "Poppins Bold",
+                    "subhead": "Perfect circles, clear caps.",
+                    "eyebrowFont": "\"Poppins\", sans-serif",
+                    "headlineFont": "\"Poppins\", sans-serif",
+                    "subheadFont": "\"Poppins\", sans-serif"
+                  },
+                  {
+                    "eyebrow": "Slate Serif",
+                    "headline": "Charter Bold",
+                    "subhead": "Dense yet legible.",
+                    "eyebrowFont": "\"Inter\", sans-serif",
+                    "headlineFont": "Charter, \"Bookman\", serif",
+                    "subheadFont": "\"Inter\", sans-serif"
+                  },
+                  {
+                    "eyebrow": "Studio Default",
+                    "headline": "SF Pro Bold",
+                    "subhead": "Apple broadcast baseline.",
+                    "eyebrowFont": "\"SF Pro Text\", system-ui, sans-serif",
+                    "headlineFont": "\"SF Pro Display\", system-ui, sans-serif",
+                    "subheadFont": "system-ui, -apple-system, \"Segoe UI\", sans-serif"
+                  }
+                ],
+                "sceneStartSec": 32.45
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "voice-b",
+          "label": "voice-b",
+          "startSec": 32.45,
+          "endSec": 44.85,
+          "text": "Screen B mixes modern grotesks with slabs and rounded faces for friendly overlays.",
+          "segments": [
+            {
+              "type": "tts",
+              "startSec": 32.45,
+              "endSec": 38.85,
+              "text": "Screen B mixes modern grotesks with slabs and rounded faces for friendly overlays."
+            },
+            {
+              "type": "pause",
+              "startSec": 38.85,
+              "endSec": 44.85,
+              "durationSec": 6
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "font-menu-c",
+      "title": "font-menu-C",
+      "startSec": 44.85,
+      "endSec": 57.65,
+      "layers": [
+        {
+          "id": "grid",
+          "components": [
+            {
+              "id": "font-grid-c",
+              "type": "FontGrid",
+              "props": {
+                "label": "C — History, Trends, Best Practices",
+                "cards": [
+                  {
+                    "eyebrow": "History",
+                    "headline": "Garamond Bold",
+                    "subhead": "Classic film title energy.",
+                    "eyebrowFont": "\"Gill Sans\", sans-serif",
+                    "headlineFont": "Garamond, \"Adobe Garamond\", serif",
+                    "subheadFont": "\"Helvetica Neue\", Arial, sans-serif"
+                  },
+                  {
+                    "eyebrow": "Cinema",
+                    "headline": "Futura Extra Bold",
+                    "subhead": "Kubrick-esque authority.",
+                    "eyebrowFont": "\"Avenir Next\", sans-serif",
+                    "headlineFont": "Futura, \"Century Gothic\", sans-serif",
+                    "subheadFont": "\"Avenir Next\", sans-serif"
+                  },
+                  {
+                    "eyebrow": "Current Trend",
+                    "headline": "Neue Haas Grotesk",
+                    "subhead": "Swiss clarity, everywhere.",
+                    "eyebrowFont": "\"Helvetica Neue\", Arial, sans-serif",
+                    "headlineFont": "\"Helvetica Neue\", Arial, sans-serif",
+                    "subheadFont": "\"Helvetica Neue\", Arial, sans-serif"
+                  },
+                  {
+                    "eyebrow": "Minimal Serif",
+                    "headline": "Canela Alt",
+                    "subhead": "Soft contrast, luxe feel.",
+                    "eyebrowFont": "\"Montserrat\", sans-serif",
+                    "headlineFont": "\"Baskerville\", \"Times New Roman\", serif",
+                    "subheadFont": "\"Inter\", sans-serif"
+                  },
+                  {
+                    "eyebrow": "Broadcast Quote",
+                    "headline": "Quote Card",
+                    "subhead": "Pair with new QuoteCard layout.",
+                    "eyebrowFont": "\"Segoe UI\", sans-serif",
+                    "headlineFont": "\"Merriweather\", serif",
+                    "subheadFont": "\"Segoe UI\", sans-serif"
+                  },
+                  {
+                    "eyebrow": "Lower Third",
+                    "headline": "Franklin Gothic Demi",
+                    "subhead": "Great for name keys.",
+                    "eyebrowFont": "\"Franklin Gothic Medium\", Arial, sans-serif",
+                    "headlineFont": "\"Franklin Gothic Demi\", Arial, sans-serif",
+                    "subheadFont": "\"Inter\", sans-serif"
+                  },
+                  {
+                    "eyebrow": "Pop Culture",
+                    "headline": "Bebas Neue",
+                    "subhead": "Tall condensed for promos.",
+                    "eyebrowFont": "\"Montserrat\", sans-serif",
+                    "headlineFont": "\"Bebas Neue\", \"Oswald\", sans-serif",
+                    "subheadFont": "\"Open Sans\", sans-serif"
+                  },
+                  {
+                    "eyebrow": "Luxury",
+                    "headline": "Trajan Pro",
+                    "subhead": "Movie trailer vibes.",
+                    "eyebrowFont": "\"Optima\", serif",
+                    "headlineFont": "Trajan, \"Times New Roman\", serif",
+                    "subheadFont": "\"Garamond\", serif"
+                  },
+                  {
+                    "eyebrow": "News Quote",
+                    "headline": "Serif Pull",
+                    "subhead": "Short pithy pull-quotes.",
+                    "eyebrowFont": "\"Gill Sans\", sans-serif",
+                    "headlineFont": "\"Georgia\", serif",
+                    "subheadFont": "\"Inter\", sans-serif"
+                  },
+                  {
+                    "eyebrow": "Data Viz",
+                    "headline": "DIN Condensed Bold",
+                    "subhead": "Labels in charts/tickers.",
+                    "eyebrowFont": "\"DIN Alternate\", sans-serif",
+                    "headlineFont": "\"DIN Condensed\", sans-serif",
+                    "subheadFont": "\"Inter\", sans-serif"
+                  },
+                  {
+                    "eyebrow": "Esports",
+                    "headline": "Russo One",
+                    "subhead": "Techno slab hybrid.",
+                    "eyebrowFont": "\"Orbitron\", sans-serif",
+                    "headlineFont": "\"Russo One\", sans-serif",
+                    "subheadFont": "\"Roboto\", sans-serif"
+                  },
+                  {
+                    "eyebrow": "Lifestyle",
+                    "headline": "Recoleta Alt",
+                    "subhead": "Friendly curves.",
+                    "eyebrowFont": "\"Nunito\", sans-serif",
+                    "headlineFont": "\"Recoleta\", \"Cooper Black\", serif",
+                    "subheadFont": "\"Nunito Sans\", sans-serif"
+                  }
+                ],
+                "sceneStartSec": 44.85
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "voice-c",
+          "label": "voice-c",
+          "startSec": 44.85,
+          "endSec": 57.65,
+          "text": "Screen C blends historical film faces, Swiss trends, and pull-quote serifs for storytelling.",
+          "segments": [
+            {
+              "type": "tts",
+              "startSec": 44.85,
+              "endSec": 51.65,
+              "text": "Screen C blends historical film faces, Swiss trends, and pull-quote serifs for storytelling."
+            },
+            {
+              "type": "pause",
+              "startSec": 51.65,
+              "endSec": 57.65,
+              "durationSec": 6
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    }
+  ],
+  "fps": 30,
+  "meta": {
+    "fps": 30,
+    "width": 1920,
+    "height": 1080
+  }
+}

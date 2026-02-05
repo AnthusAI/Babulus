@@ -1,0 +1,55 @@
+{
+  "items": [
+    {
+      "type": "tts",
+      "sceneId": "color-cool-dark",
+      "cueId": "preview-0",
+      "startSec": 0,
+      "endSec": 0,
+      "segments": []
+    },
+    {
+      "type": "tts",
+      "sceneId": "color-warm-dark",
+      "cueId": "preview-1",
+      "startSec": 0,
+      "endSec": 0,
+      "segments": []
+    },
+    {
+      "type": "tts",
+      "sceneId": "color-neutral-dark",
+      "cueId": "preview-2",
+      "startSec": 0,
+      "endSec": 0,
+      "segments": []
+    },
+    {
+      "type": "tts",
+      "sceneId": "color-cool-light",
+      "cueId": "preview-3",
+      "startSec": 0,
+      "endSec": 0,
+      "segments": []
+    },
+    {
+      "type": "tts",
+      "sceneId": "color-warm-light",
+      "cueId": "preview-4",
+      "startSec": 0,
+      "endSec": 0,
+      "segments": []
+    },
+    {
+      "type": "tts",
+      "sceneId": "color-neutral-light",
+      "cueId": "preview-5",
+      "startSec": 0,
+      "endSec": 0,
+      "segments": []
+    }
+  ],
+  "audio": {
+    "tracks": []
+  }
+}

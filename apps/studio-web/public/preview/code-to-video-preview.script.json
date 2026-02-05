@@ -1,0 +1,113 @@
+{
+  "scenes": [
+    {
+      "id": "intro",
+      "title": "intro",
+      "startSec": 0,
+      "endSec": 2.1818181818181817,
+      "layers": [
+        {
+          "id": "content",
+          "components": [
+            {
+              "id": "title-slide-0",
+              "type": "TitleSlide",
+              "props": {
+                "eyebrow": "Code to Video",
+                "title": "Code Your Videos",
+                "subtitle": "(AI is really good at it!)",
+                "verticalAlign": "center",
+                "horizontalAlign": "center",
+                "entranceStartFrame": -999,
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "intro-vo",
+          "label": "intro-vo",
+          "startSec": 0,
+          "endSec": 2.1818181818181817,
+          "text": "Write XML. Babulus builds the video.",
+          "segments": [
+            {
+              "type": "tts",
+              "startSec": 0,
+              "endSec": 2.1818181818181817,
+              "text": "Write XML. Babulus builds the video."
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "code",
+      "title": "code",
+      "startSec": 2.1818181818181817,
+      "endSec": 4.727272727272727,
+      "layers": [
+        {
+          "id": "content",
+          "components": [
+            {
+              "id": "bullet-list-screen-0",
+              "type": "BulletListScreen",
+              "props": {
+                "eyebrow": "Pipeline",
+                "title": "Your code becomes a video",
+                "subtitle": "Scene structure + narration = render",
+                "bullets": {
+                  "items": [
+                    "Write a few scenes",
+                    "Add voiceover with cues",
+                    "Babulus computes timing",
+                    "Renderer outputs MP4"
+                  ],
+                  "bulletStyle": "icon",
+                  "bulletIcon": {
+                    "kind": "lucide",
+                    "name": "check",
+                    "size": 44,
+                    "strokeWidth": 3.2
+                  },
+                  "fontSize": 48,
+                  "lineHeight": 1.2,
+                  "spacing": 24
+                },
+                "sceneStartSec": 2.1818181818181817
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "code-vo",
+          "label": "code-vo",
+          "startSec": 2.1818181818181817,
+          "endSec": 4.727272727272727,
+          "text": "Scenes and narration become a finished render.",
+          "segments": [
+            {
+              "type": "tts",
+              "startSec": 2.1818181818181817,
+              "endSec": 4.727272727272727,
+              "text": "Scenes and narration become a finished render."
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    }
+  ],
+  "fps": 30,
+  "meta": {
+    "fps": 30,
+    "width": 1920,
+    "height": 1080
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "items": [
+    {
+      "type": "tts",
+      "sceneId": "reel",
+      "cueId": "hold",
+      "startSec": 0,
+      "endSec": 17.6,
+      "segments": [
+        {
+          "type": "pause",
+          "startSec": 0,
+          "endSec": 17.6,
+          "seconds": 17.6
+        }
+      ]
+    }
+  ],
+  "audio": {
+    "tracks": []
+  }
+}

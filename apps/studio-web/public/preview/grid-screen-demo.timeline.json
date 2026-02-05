@@ -1,0 +1,22 @@
+{
+  "items": [
+    {
+      "type": "tts",
+      "sceneId": "grid-screen",
+      "cueId": "preview",
+      "startSec": 0,
+      "endSec": 4,
+      "segments": [
+        {
+          "type": "pause",
+          "startSec": 0,
+          "endSec": 4,
+          "seconds": 4
+        }
+      ]
+    }
+  ],
+  "audio": {
+    "tracks": []
+  }
+}

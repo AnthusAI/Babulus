@@ -1,0 +1,82 @@
+{
+  "items": [
+    {
+      "type": "tts",
+      "sceneId": "font-menu-a",
+      "cueId": "voice-a",
+      "startSec": 0,
+      "endSec": 10.2,
+      "segments": [
+        {
+          "type": "tts",
+          "startSec": 0,
+          "endSec": 7.7,
+          "text": "Screen A shows twelve broadcast-friendly pairings. Big, neutral, Swiss-inspired mixes for headlines, names, and lower thirds.",
+          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/font-pairings-menu/env/development/segments/font-menu-a--voice-a--tts--f2899b98f24c--1.wav",
+          "durationSec": 7.7,
+          "rawDurationSec": 7.7,
+          "trimEndSec": 0
+        },
+        {
+          "type": "pause",
+          "startSec": 7.7,
+          "endSec": 10.2,
+          "seconds": 2.5
+        }
+      ]
+    },
+    {
+      "type": "tts",
+      "sceneId": "font-menu-b",
+      "cueId": "voice-b",
+      "startSec": 10.2,
+      "endSec": 20.2,
+      "segments": [
+        {
+          "type": "tts",
+          "startSec": 10.2,
+          "endSec": 17.7,
+          "text": "Screen B blends modern grotesks with slabs and rounded faces for friendlier storytelling and UI overlays.",
+          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/font-pairings-menu/env/development/segments/font-menu-b--voice-b--tts--1504b478f09f--1.wav",
+          "durationSec": 7.5,
+          "rawDurationSec": 7.5,
+          "trimEndSec": 0
+        },
+        {
+          "type": "pause",
+          "startSec": 17.7,
+          "endSec": 20.2,
+          "seconds": 2.5
+        }
+      ]
+    },
+    {
+      "type": "tts",
+      "sceneId": "font-menu-c",
+      "cueId": "voice-c",
+      "startSec": 20.2,
+      "endSec": 30.45,
+      "segments": [
+        {
+          "type": "tts",
+          "startSec": 20.2,
+          "endSec": 28.95,
+          "text": "Screen C mixes historical film faces, current Swiss trends, and pull quote-ready serif-sans blends for video storytelling.",
+          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/font-pairings-menu/env/development/segments/font-menu-c--voice-c--tts--f2e7c8aca76f--1.wav",
+          "durationSec": 8.75,
+          "rawDurationSec": 8.75,
+          "trimEndSec": 0
+        },
+        {
+          "type": "pause",
+          "startSec": 28.95,
+          "endSec": 30.45,
+          "seconds": 1.5
+        }
+      ]
+    }
+  ],
+  "audio": {
+    "tracks": []
+  }
+}

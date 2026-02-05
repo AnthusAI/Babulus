@@ -1,0 +1,80 @@
+{
+  "scenes": [
+    {
+      "id": "grid-screen",
+      "title": "grid-screen",
+      "startSec": 0,
+      "endSec": 4,
+      "styles": {
+        "background": "var(--color-bg, #131024)",
+        "color": "var(--color-text, #f6f2ff)",
+        "vars": {
+          "--color-bg": "#131024",
+          "--color-text": "#f6f2ff",
+          "--color-text-muted": "#c9b8ff",
+          "--color-surface": "#2b2044",
+          "--color-surface-2": "#3d2b5c",
+          "--color-accent": "#ff6bdc",
+          "--color-accent-2": "#8fb2ff"
+        }
+      },
+      "layers": [
+        {
+          "id": "content",
+          "zIndex": 10,
+          "components": [
+            {
+              "id": "grid-screen-0",
+              "type": "GridScreen",
+              "props": {
+                "eyebrow": "Grid Layout",
+                "title": "Grid Screen",
+                "subtitle": "Header + multi-tile content area",
+                "grid": {
+                  "columns": 4,
+                  "items": [
+                    "Tile 1",
+                    "Tile 2",
+                    "Tile 3",
+                    "Tile 4",
+                    "Tile 5",
+                    "Tile 6",
+                    "Tile 7",
+                    "Tile 8"
+                  ],
+                  "gap": 20,
+                  "entranceStartFrame": -999
+                },
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "preview",
+          "label": "preview",
+          "startSec": 0,
+          "endSec": 4,
+          "text": "",
+          "segments": [
+            {
+              "type": "pause",
+              "startSec": 0,
+              "endSec": 4,
+              "durationSec": 4
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    }
+  ],
+  "fps": 30,
+  "meta": {
+    "fps": 30,
+    "width": 1920,
+    "height": 1080
+  }
+}

@@ -1,0 +1,451 @@
+{
+  "scenes": [
+    {
+      "id": "reel",
+      "title": "reel",
+      "startSec": 0,
+      "endSec": 17.6,
+      "styles": {
+        "background": "var(--color-bg)"
+      },
+      "layers": [
+        {
+          "id": "engine-framer",
+          "timing": {
+            "startSec": 0,
+            "endSec": 2.2
+          },
+          "zIndex": 10,
+          "components": [
+            {
+              "id": "framer-motion-demo-0",
+              "type": "FramerMotionDemo",
+              "props": {
+                "size": 240,
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        },
+        {
+          "id": "label-framer",
+          "timing": {
+            "startSec": 0,
+            "endSec": 2.2
+          },
+          "zIndex": 20,
+          "components": [
+            {
+              "id": "chapter-heading-0",
+              "type": "ChapterHeading",
+              "props": {
+                "number": "01",
+                "title": "Framer Motion",
+                "subtitle": "Layout + motion graphics",
+                "numberColor": "var(--color-accent)",
+                "layout": "side-by-side",
+                "numberEntrance": {
+                  "type": "fade",
+                  "from": 1,
+                  "to": 1,
+                  "durationFrames": 1
+                },
+                "titleEntrance": {
+                  "type": "fade",
+                  "from": 1,
+                  "to": 1,
+                  "durationFrames": 1
+                },
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        },
+        {
+          "id": "engine-d3",
+          "timing": {
+            "startSec": 2.2,
+            "endSec": 4.4
+          },
+          "zIndex": 10,
+          "components": [
+            {
+              "id": "d3-bar-chart-0",
+              "type": "D3BarChart",
+              "props": {
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        },
+        {
+          "id": "label-d3",
+          "timing": {
+            "startSec": 2.2,
+            "endSec": 4.4
+          },
+          "zIndex": 20,
+          "components": [
+            {
+              "id": "chapter-heading-0",
+              "type": "ChapterHeading",
+              "props": {
+                "number": "02",
+                "title": "D3",
+                "subtitle": "Data visualization",
+                "numberColor": "var(--color-accent)",
+                "layout": "side-by-side",
+                "numberEntrance": {
+                  "type": "fade",
+                  "from": 1,
+                  "to": 1,
+                  "durationFrames": 1
+                },
+                "titleEntrance": {
+                  "type": "fade",
+                  "from": 1,
+                  "to": 1,
+                  "durationFrames": 1
+                },
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        },
+        {
+          "id": "engine-processing",
+          "timing": {
+            "startSec": 4.4,
+            "endSec": 6.6
+          },
+          "zIndex": 10,
+          "components": [
+            {
+              "id": "p5-particles-0",
+              "type": "P5Particles",
+              "props": {
+                "particleCount": 30,
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        },
+        {
+          "id": "label-processing",
+          "timing": {
+            "startSec": 4.4,
+            "endSec": 6.6
+          },
+          "zIndex": 20,
+          "components": [
+            {
+              "id": "chapter-heading-0",
+              "type": "ChapterHeading",
+              "props": {
+                "number": "03",
+                "title": "Processing / p5.js",
+                "subtitle": "Generative art",
+                "numberColor": "var(--color-accent)",
+                "layout": "side-by-side",
+                "numberEntrance": {
+                  "type": "fade",
+                  "from": 1,
+                  "to": 1,
+                  "durationFrames": 1
+                },
+                "titleEntrance": {
+                  "type": "fade",
+                  "from": 1,
+                  "to": 1,
+                  "durationFrames": 1
+                },
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        },
+        {
+          "id": "engine-three",
+          "timing": {
+            "startSec": 6.6,
+            "endSec": 8.8
+          },
+          "zIndex": 10,
+          "components": [
+            {
+              "id": "three-orbit-0",
+              "type": "ThreeOrbit",
+              "props": {
+                "cubeSize": 160,
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        },
+        {
+          "id": "label-three",
+          "timing": {
+            "startSec": 6.6,
+            "endSec": 8.8
+          },
+          "zIndex": 20,
+          "components": [
+            {
+              "id": "chapter-heading-0",
+              "type": "ChapterHeading",
+              "props": {
+                "number": "04",
+                "title": "Three.js",
+                "subtitle": "3D scenes",
+                "numberColor": "var(--color-accent)",
+                "layout": "side-by-side",
+                "numberEntrance": {
+                  "type": "fade",
+                  "from": 1,
+                  "to": 1,
+                  "durationFrames": 1
+                },
+                "titleEntrance": {
+                  "type": "fade",
+                  "from": 1,
+                  "to": 1,
+                  "durationFrames": 1
+                },
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        },
+        {
+          "id": "engine-lottie",
+          "timing": {
+            "startSec": 8.8,
+            "endSec": 11
+          },
+          "zIndex": 10,
+          "components": [
+            {
+              "id": "lottie-badge-0",
+              "type": "LottieBadge",
+              "props": {
+                "size": 260,
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        },
+        {
+          "id": "label-lottie",
+          "timing": {
+            "startSec": 8.8,
+            "endSec": 11
+          },
+          "zIndex": 20,
+          "components": [
+            {
+              "id": "chapter-heading-0",
+              "type": "ChapterHeading",
+              "props": {
+                "number": "05",
+                "title": "Lottie",
+                "subtitle": "After Effects assets",
+                "numberColor": "var(--color-accent)",
+                "layout": "side-by-side",
+                "numberEntrance": {
+                  "type": "fade",
+                  "from": 1,
+                  "to": 1,
+                  "durationFrames": 1
+                },
+                "titleEntrance": {
+                  "type": "fade",
+                  "from": 1,
+                  "to": 1,
+                  "durationFrames": 1
+                },
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        },
+        {
+          "id": "engine-text",
+          "timing": {
+            "startSec": 11,
+            "endSec": 13.2
+          },
+          "zIndex": 10,
+          "components": [
+            {
+              "id": "text-effects-demo-0",
+              "type": "TextEffectsDemo",
+              "props": {
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        },
+        {
+          "id": "label-text",
+          "timing": {
+            "startSec": 11,
+            "endSec": 13.2
+          },
+          "zIndex": 20,
+          "components": [
+            {
+              "id": "chapter-heading-0",
+              "type": "ChapterHeading",
+              "props": {
+                "number": "06",
+                "title": "Text Effects",
+                "subtitle": "Named effects vocabulary",
+                "numberColor": "var(--color-accent)",
+                "layout": "side-by-side",
+                "numberEntrance": {
+                  "type": "fade",
+                  "from": 1,
+                  "to": 1,
+                  "durationFrames": 1
+                },
+                "titleEntrance": {
+                  "type": "fade",
+                  "from": 1,
+                  "to": 1,
+                  "durationFrames": 1
+                },
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        },
+        {
+          "id": "engine-anime",
+          "timing": {
+            "startSec": 13.2,
+            "endSec": 15.4
+          },
+          "zIndex": 10,
+          "components": [
+            {
+              "id": "anime-harness-demo-0",
+              "type": "AnimeHarnessDemo",
+              "props": {
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        },
+        {
+          "id": "label-anime",
+          "timing": {
+            "startSec": 13.2,
+            "endSec": 15.4
+          },
+          "zIndex": 20,
+          "components": [
+            {
+              "id": "chapter-heading-0",
+              "type": "ChapterHeading",
+              "props": {
+                "number": "07",
+                "title": "Anime.js",
+                "subtitle": "Low-level animation engine",
+                "numberColor": "var(--color-accent)",
+                "layout": "side-by-side",
+                "numberEntrance": {
+                  "type": "fade",
+                  "from": 1,
+                  "to": 1,
+                  "durationFrames": 1
+                },
+                "titleEntrance": {
+                  "type": "fade",
+                  "from": 1,
+                  "to": 1,
+                  "durationFrames": 1
+                },
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        },
+        {
+          "id": "engine-mix",
+          "timing": {
+            "startSec": 15.4,
+            "endSec": 17.6
+          },
+          "zIndex": 10,
+          "components": [
+            {
+              "id": "mix-and-match-demo-0",
+              "type": "MixAndMatchDemo",
+              "props": {
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        },
+        {
+          "id": "label-mix",
+          "timing": {
+            "startSec": 15.4,
+            "endSec": 17.6
+          },
+          "zIndex": 20,
+          "components": [
+            {
+              "id": "chapter-heading-0",
+              "type": "ChapterHeading",
+              "props": {
+                "number": "08",
+                "title": "Mix + Match",
+                "subtitle": "Multiple engines in one scene",
+                "numberColor": "var(--color-accent)",
+                "layout": "side-by-side",
+                "numberEntrance": {
+                  "type": "fade",
+                  "from": 1,
+                  "to": 1,
+                  "durationFrames": 1
+                },
+                "titleEntrance": {
+                  "type": "fade",
+                  "from": 1,
+                  "to": 1,
+                  "durationFrames": 1
+                },
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "hold",
+          "label": "hold",
+          "startSec": 0,
+          "endSec": 17.6,
+          "text": "",
+          "segments": [
+            {
+              "type": "pause",
+              "startSec": 0,
+              "endSec": 17.6,
+              "durationSec": 17.6
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    }
+  ],
+  "fps": 30,
+  "meta": {
+    "fps": 30,
+    "width": 1920,
+    "height": 1080
+  }
+}

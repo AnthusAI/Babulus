@@ -1,0 +1,82 @@
+{
+  "scenes": [
+    {
+      "id": "callout-demo",
+      "title": "callout-demo",
+      "startSec": 0,
+      "endSec": 6,
+      "styles": {
+        "background": "var(--color-bg)"
+      },
+      "layers": [
+        {
+          "id": "code",
+          "zIndex": 10,
+          "components": [
+            {
+              "id": "code-block-0",
+              "type": "CodeBlock",
+              "props": {
+                "language": "typescript",
+                "code": "const frame = i => i * 2;\nconst motion = frame => Math.sin(frame / 8);",
+                "theme": "nord",
+                "position": {
+                  "y": 260
+                },
+                "width": 1200,
+                "height": 380,
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        },
+        {
+          "id": "callout",
+          "zIndex": 20,
+          "components": [
+            {
+              "id": "callout-0",
+              "type": "Callout",
+              "props": {
+                "text": "Frame-driven motion",
+                "pointerTarget": {
+                  "x": 980,
+                  "y": 350
+                },
+                "position": {
+                  "x": 1180,
+                  "y": 220
+                },
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "hold",
+          "label": "hold",
+          "startSec": 0,
+          "endSec": 6,
+          "text": "",
+          "segments": [
+            {
+              "type": "pause",
+              "startSec": 0,
+              "endSec": 6,
+              "durationSec": 6
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    }
+  ],
+  "fps": 30,
+  "meta": {
+    "fps": 30,
+    "width": 1920,
+    "height": 1080
+  }
+}

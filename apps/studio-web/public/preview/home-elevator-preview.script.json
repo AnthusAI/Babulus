@@ -1,0 +1,1299 @@
+{
+  "scenes": [
+    {
+      "id": "intro",
+      "title": "intro",
+      "startSec": 0,
+      "endSec": 2,
+      "styles": {
+        "background": "var(--color-bg)",
+        "color": "var(--color-text)",
+        "vars": {
+          "--color-bg": "#0b0f1f",
+          "--color-bg-subtle": "#151b32",
+          "--color-surface": "#151b32",
+          "--color-surface-strong": "#1e2645",
+          "--color-surface-2": "#1e2645",
+          "--color-text": "#eef1ff",
+          "--color-text-muted": "#c8cff6",
+          "--color-primary": "#ff5ec4",
+          "--color-secondary": "#6a7dff",
+          "--color-accent": "#ff5ec4",
+          "--color-accent-2": "#6a7dff",
+          "--color-muted": "#c8cff6",
+          "--color-muted-more": "#c8cff6",
+          "--font-eyebrow": "var(--font-preview-humanist), sans-serif",
+          "--font-headline": "var(--font-preview-sans), sans-serif",
+          "--font-subhead": "var(--font-preview-humanist), sans-serif"
+        }
+      },
+      "layers": [
+        {
+          "id": "content",
+          "components": [
+            {
+              "id": "title-slide-0",
+              "type": "TitleSlide",
+              "props": {
+                "title": "Code Your Videos",
+                "subtitle": "(AI is really good at it!)",
+                "verticalAlign": "center",
+                "horizontalAlign": "center",
+                "entranceStartFrame": -999,
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "hold-intro",
+          "label": "hold-intro",
+          "startSec": 0,
+          "endSec": 2,
+          "text": "",
+          "segments": [
+            {
+              "type": "pause",
+              "startSec": 0,
+              "endSec": 2,
+              "durationSec": 2
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "quote",
+      "title": "quote",
+      "startSec": 2,
+      "endSec": 6,
+      "styles": {
+        "background": "var(--color-bg)",
+        "color": "var(--color-text)",
+        "vars": {
+          "--color-bg": "#0b0f1f",
+          "--color-bg-subtle": "#151b32",
+          "--color-surface": "#151b32",
+          "--color-surface-strong": "#1e2645",
+          "--color-surface-2": "#1e2645",
+          "--color-text": "#eef1ff",
+          "--color-text-muted": "#c8cff6",
+          "--color-primary": "#ff5ec4",
+          "--color-secondary": "#6a7dff",
+          "--color-accent": "#ff5ec4",
+          "--color-accent-2": "#6a7dff",
+          "--color-muted": "#c8cff6",
+          "--color-muted-more": "#c8cff6",
+          "--font-eyebrow": "var(--font-preview-humanist), sans-serif",
+          "--font-headline": "var(--font-preview-sans), sans-serif",
+          "--font-subhead": "var(--font-preview-humanist), sans-serif"
+        }
+      },
+      "layers": [
+        {
+          "id": "content",
+          "components": [
+            {
+              "id": "quote-card-0",
+              "type": "QuoteCard",
+              "props": {
+                "quote": "AI agents make all our YouTube videos for us now.",
+                "sceneStartSec": 2
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "hold-quote",
+          "label": "hold-quote",
+          "startSec": 2,
+          "endSec": 6,
+          "text": "",
+          "segments": [
+            {
+              "type": "pause",
+              "startSec": 2,
+              "endSec": 6,
+              "durationSec": 4
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "chapter-layouts",
+      "title": "chapter-layouts",
+      "startSec": 6,
+      "endSec": 8,
+      "styles": {
+        "background": "var(--color-bg)",
+        "color": "var(--color-text)",
+        "vars": {
+          "--color-bg": "#0b0f1f",
+          "--color-bg-subtle": "#151b32",
+          "--color-surface": "#151b32",
+          "--color-surface-strong": "#1e2645",
+          "--color-surface-2": "#1e2645",
+          "--color-text": "#eef1ff",
+          "--color-text-muted": "#c8cff6",
+          "--color-primary": "#ff5ec4",
+          "--color-secondary": "#6a7dff",
+          "--color-accent": "#ff5ec4",
+          "--color-accent-2": "#6a7dff",
+          "--color-muted": "#c8cff6",
+          "--color-muted-more": "#c8cff6",
+          "--font-eyebrow": "var(--font-preview-humanist), sans-serif",
+          "--font-headline": "var(--font-preview-sans), sans-serif",
+          "--font-subhead": "var(--font-preview-humanist), sans-serif"
+        }
+      },
+      "layers": [
+        {
+          "id": "content",
+          "components": [
+            {
+              "id": "chapter-heading-0",
+              "type": "ChapterHeading",
+              "props": {
+                "number": "01",
+                "title": "Layouts",
+                "subtitle": "Composable screens in seconds",
+                "layout": "side-by-side",
+                "sceneStartSec": 6
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "hold-chapter-layouts",
+          "label": "hold-chapter-layouts",
+          "startSec": 6,
+          "endSec": 8,
+          "text": "",
+          "segments": [
+            {
+              "type": "pause",
+              "startSec": 6,
+              "endSec": 8,
+              "durationSec": 2
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "layout-content",
+      "title": "layout-content",
+      "startSec": 8,
+      "endSec": 10,
+      "styles": {
+        "background": "var(--color-bg)",
+        "color": "var(--color-text)",
+        "vars": {
+          "--color-bg": "#0b0f1f",
+          "--color-bg-subtle": "#151b32",
+          "--color-surface": "#151b32",
+          "--color-surface-strong": "#1e2645",
+          "--color-surface-2": "#1e2645",
+          "--color-text": "#eef1ff",
+          "--color-text-muted": "#c8cff6",
+          "--color-primary": "#ff5ec4",
+          "--color-secondary": "#6a7dff",
+          "--color-accent": "#ff5ec4",
+          "--color-accent-2": "#6a7dff",
+          "--color-muted": "#c8cff6",
+          "--color-muted-more": "#c8cff6",
+          "--font-eyebrow": "var(--font-preview-humanist), sans-serif",
+          "--font-headline": "var(--font-preview-sans), sans-serif",
+          "--font-subhead": "var(--font-preview-humanist), sans-serif"
+        }
+      },
+      "layers": [
+        {
+          "id": "content",
+          "components": [
+            {
+              "id": "content-screen-0",
+              "type": "ContentScreen",
+              "props": {
+                "eyebrow": "Content Screen",
+                "title": "Single column canvas",
+                "subtitle": "Fill the space below the header",
+                "headerAlign": "left",
+                "content": {
+                  "type": "PlaceholderPanel",
+                  "id": "content",
+                  "flex": 1,
+                  "props": {
+                    "label": "Content Area",
+                    "text": "Drop in any component"
+                  }
+                },
+                "sceneStartSec": 8
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "hold-layout-content",
+          "label": "hold-layout-content",
+          "startSec": 8,
+          "endSec": 10,
+          "text": "",
+          "segments": [
+            {
+              "type": "pause",
+              "startSec": 8,
+              "endSec": 10,
+              "durationSec": 2
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "layout-two-column",
+      "title": "layout-two-column",
+      "startSec": 10,
+      "endSec": 12,
+      "styles": {
+        "background": "var(--color-bg)",
+        "color": "var(--color-text)",
+        "vars": {
+          "--color-bg": "#0b0f1f",
+          "--color-bg-subtle": "#151b32",
+          "--color-surface": "#151b32",
+          "--color-surface-strong": "#1e2645",
+          "--color-surface-2": "#1e2645",
+          "--color-text": "#eef1ff",
+          "--color-text-muted": "#c8cff6",
+          "--color-primary": "#ff5ec4",
+          "--color-secondary": "#6a7dff",
+          "--color-accent": "#ff5ec4",
+          "--color-accent-2": "#6a7dff",
+          "--color-muted": "#c8cff6",
+          "--color-muted-more": "#c8cff6",
+          "--font-eyebrow": "var(--font-preview-humanist), sans-serif",
+          "--font-headline": "var(--font-preview-sans), sans-serif",
+          "--font-subhead": "var(--font-preview-humanist), sans-serif"
+        }
+      },
+      "layers": [
+        {
+          "id": "content",
+          "components": [
+            {
+              "id": "two-column-screen-0",
+              "type": "TwoColumnScreen",
+              "props": {
+                "eyebrow": "Two Column Screen",
+                "title": "Balanced layout",
+                "subtitle": "Side-by-side storytelling",
+                "headerAlign": "left",
+                "left": {
+                  "type": "PlaceholderPanel",
+                  "id": "left",
+                  "flex": 1,
+                  "props": {
+                    "label": "Left Panel",
+                    "text": "Charts, visuals"
+                  }
+                },
+                "right": {
+                  "type": "PlaceholderPanel",
+                  "id": "right",
+                  "flex": 1,
+                  "props": {
+                    "label": "Right Panel",
+                    "text": "Narrative copy"
+                  }
+                },
+                "sceneStartSec": 10
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "hold-layout-two-column",
+          "label": "hold-layout-two-column",
+          "startSec": 10,
+          "endSec": 12,
+          "text": "",
+          "segments": [
+            {
+              "type": "pause",
+              "startSec": 10,
+              "endSec": 12,
+              "durationSec": 2
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "layout-three-column",
+      "title": "layout-three-column",
+      "startSec": 12,
+      "endSec": 14,
+      "styles": {
+        "background": "var(--color-bg)",
+        "color": "var(--color-text)",
+        "vars": {
+          "--color-bg": "#0b0f1f",
+          "--color-bg-subtle": "#151b32",
+          "--color-surface": "#151b32",
+          "--color-surface-strong": "#1e2645",
+          "--color-surface-2": "#1e2645",
+          "--color-text": "#eef1ff",
+          "--color-text-muted": "#c8cff6",
+          "--color-primary": "#ff5ec4",
+          "--color-secondary": "#6a7dff",
+          "--color-accent": "#ff5ec4",
+          "--color-accent-2": "#6a7dff",
+          "--color-muted": "#c8cff6",
+          "--color-muted-more": "#c8cff6",
+          "--font-eyebrow": "var(--font-preview-humanist), sans-serif",
+          "--font-headline": "var(--font-preview-sans), sans-serif",
+          "--font-subhead": "var(--font-preview-humanist), sans-serif"
+        }
+      },
+      "layers": [
+        {
+          "id": "content",
+          "components": [
+            {
+              "id": "three-column-screen-0",
+              "type": "ThreeColumnScreen",
+              "props": {
+                "eyebrow": "Three Column Screen",
+                "title": "Structured comparisons",
+                "subtitle": "Multiple streams at once",
+                "headerAlign": "left",
+                "columns": [
+                  {
+                    "type": "PlaceholderPanel",
+                    "id": "col-1",
+                    "flex": 1,
+                    "props": {
+                      "label": "Column One",
+                      "text": "Inputs"
+                    }
+                  },
+                  {
+                    "type": "PlaceholderPanel",
+                    "id": "col-2",
+                    "flex": 1,
+                    "props": {
+                      "label": "Column Two",
+                      "text": "Processing"
+                    }
+                  },
+                  {
+                    "type": "PlaceholderPanel",
+                    "id": "col-3",
+                    "flex": 1,
+                    "props": {
+                      "label": "Column Three",
+                      "text": "Outputs"
+                    }
+                  }
+                ],
+                "sceneStartSec": 12
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "hold-layout-three-column",
+          "label": "hold-layout-three-column",
+          "startSec": 12,
+          "endSec": 14,
+          "text": "",
+          "segments": [
+            {
+              "type": "pause",
+              "startSec": 12,
+              "endSec": 14,
+              "durationSec": 2
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "layout-grid",
+      "title": "layout-grid",
+      "startSec": 14,
+      "endSec": 16,
+      "styles": {
+        "background": "var(--color-bg)",
+        "color": "var(--color-text)",
+        "vars": {
+          "--color-bg": "#0b0f1f",
+          "--color-bg-subtle": "#151b32",
+          "--color-surface": "#151b32",
+          "--color-surface-strong": "#1e2645",
+          "--color-surface-2": "#1e2645",
+          "--color-text": "#eef1ff",
+          "--color-text-muted": "#c8cff6",
+          "--color-primary": "#ff5ec4",
+          "--color-secondary": "#6a7dff",
+          "--color-accent": "#ff5ec4",
+          "--color-accent-2": "#6a7dff",
+          "--color-muted": "#c8cff6",
+          "--color-muted-more": "#c8cff6",
+          "--font-eyebrow": "var(--font-preview-humanist), sans-serif",
+          "--font-headline": "var(--font-preview-sans), sans-serif",
+          "--font-subhead": "var(--font-preview-humanist), sans-serif"
+        }
+      },
+      "layers": [
+        {
+          "id": "content",
+          "components": [
+            {
+              "id": "grid-screen-0",
+              "type": "GridScreen",
+              "props": {
+                "eyebrow": "Grid Screen",
+                "title": "Modular tiles",
+                "subtitle": "Arrange multiple panels fast",
+                "headerAlign": "left",
+                "grid": {
+                  "columns": 3,
+                  "items": [
+                    "Story",
+                    "Charts",
+                    "Quotes",
+                    "Steps",
+                    "Metrics",
+                    "Highlights"
+                  ]
+                },
+                "sceneStartSec": 14
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "hold-layout-grid",
+          "label": "hold-layout-grid",
+          "startSec": 14,
+          "endSec": 16,
+          "text": "",
+          "segments": [
+            {
+              "type": "pause",
+              "startSec": 14,
+              "endSec": 16,
+              "durationSec": 2
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "chapter-colors",
+      "title": "chapter-colors",
+      "startSec": 16,
+      "endSec": 18,
+      "styles": {
+        "background": "var(--color-bg)",
+        "color": "var(--color-text)",
+        "vars": {
+          "--color-bg": "#0b0f1f",
+          "--color-bg-subtle": "#151b32",
+          "--color-surface": "#151b32",
+          "--color-surface-strong": "#1e2645",
+          "--color-surface-2": "#1e2645",
+          "--color-text": "#eef1ff",
+          "--color-text-muted": "#c8cff6",
+          "--color-primary": "#ff5ec4",
+          "--color-secondary": "#6a7dff",
+          "--color-accent": "#ff5ec4",
+          "--color-accent-2": "#6a7dff",
+          "--color-muted": "#c8cff6",
+          "--color-muted-more": "#c8cff6",
+          "--font-eyebrow": "var(--font-preview-humanist), sans-serif",
+          "--font-headline": "var(--font-preview-sans), sans-serif",
+          "--font-subhead": "var(--font-preview-humanist), sans-serif"
+        }
+      },
+      "layers": [
+        {
+          "id": "content",
+          "components": [
+            {
+              "id": "chapter-heading-0",
+              "type": "ChapterHeading",
+              "props": {
+                "number": "02",
+                "title": "Colors & Typefaces",
+                "subtitle": "Six schemes, one system",
+                "layout": "side-by-side",
+                "sceneStartSec": 16
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "hold-chapter-colors",
+          "label": "hold-chapter-colors",
+          "startSec": 16,
+          "endSec": 18,
+          "text": "",
+          "segments": [
+            {
+              "type": "pause",
+              "startSec": 16,
+              "endSec": 18,
+              "durationSec": 2
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "color-type-1",
+      "title": "color-type-1",
+      "startSec": 18,
+      "endSec": 20,
+      "styles": {
+        "background": "var(--color-bg)",
+        "color": "var(--color-text)",
+        "vars": {
+          "--color-bg": "#0b0f1f",
+          "--color-bg-subtle": "#151b32",
+          "--color-surface": "#151b32",
+          "--color-surface-strong": "#1e2645",
+          "--color-surface-2": "#1e2645",
+          "--color-text": "#eef1ff",
+          "--color-text-muted": "#c8cff6",
+          "--color-primary": "#ff5ec4",
+          "--color-secondary": "#6a7dff",
+          "--color-accent": "#ff5ec4",
+          "--color-accent-2": "#6a7dff",
+          "--color-muted": "#c8cff6",
+          "--color-muted-more": "#c8cff6",
+          "--font-eyebrow": "var(--font-preview-humanist), sans-serif",
+          "--font-headline": "var(--font-preview-sans), sans-serif",
+          "--font-subhead": "var(--font-preview-humanist), sans-serif"
+        }
+      },
+      "layers": [
+        {
+          "id": "content",
+          "components": [
+            {
+              "id": "title-slide-0",
+              "type": "TitleSlide",
+              "props": {
+                "eyebrow": "Cool Dark",
+                "title": "Humanist Sans",
+                "subtitle": "Friendly, readable UI copy",
+                "verticalAlign": "center",
+                "horizontalAlign": "center",
+                "entranceStartFrame": -999,
+                "sceneStartSec": 18
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "hold-color-type-1",
+          "label": "hold-color-type-1",
+          "startSec": 18,
+          "endSec": 20,
+          "text": "",
+          "segments": [
+            {
+              "type": "pause",
+              "startSec": 18,
+              "endSec": 20,
+              "durationSec": 2
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "color-type-2",
+      "title": "color-type-2",
+      "startSec": 20,
+      "endSec": 22,
+      "styles": {
+        "background": "var(--color-bg)",
+        "color": "var(--color-text)",
+        "vars": {
+          "--color-bg": "#0f0f0e",
+          "--color-bg-subtle": "#171615",
+          "--color-surface": "#171615",
+          "--color-surface-strong": "#211f1e",
+          "--color-surface-2": "#211f1e",
+          "--color-text": "#f5f5f4",
+          "--color-text-muted": "#c7c2bc",
+          "--color-primary": "#ff5ec4",
+          "--color-secondary": "#5f7bff",
+          "--color-accent": "#ff5ec4",
+          "--color-accent-2": "#5f7bff",
+          "--color-muted": "#c7c2bc",
+          "--color-muted-more": "#c7c2bc",
+          "--font-eyebrow": "var(--font-preview-sans), sans-serif",
+          "--font-headline": "var(--font-preview-serif), serif",
+          "--font-subhead": "var(--font-preview-sans), sans-serif"
+        }
+      },
+      "layers": [
+        {
+          "id": "content",
+          "components": [
+            {
+              "id": "title-slide-0",
+              "type": "TitleSlide",
+              "props": {
+                "eyebrow": "Neutral Dark",
+                "title": "Modern Serif",
+                "subtitle": "Editorial weight with clarity",
+                "verticalAlign": "center",
+                "horizontalAlign": "center",
+                "entranceStartFrame": -999,
+                "sceneStartSec": 20
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "hold-color-type-2",
+          "label": "hold-color-type-2",
+          "startSec": 20,
+          "endSec": 22,
+          "text": "",
+          "segments": [
+            {
+              "type": "pause",
+              "startSec": 20,
+              "endSec": 22,
+              "durationSec": 2
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "color-type-3",
+      "title": "color-type-3",
+      "startSec": 22,
+      "endSec": 24,
+      "styles": {
+        "background": "var(--color-bg)",
+        "color": "var(--color-text)",
+        "vars": {
+          "--color-bg": "#1b1207",
+          "--color-bg-subtle": "#24180b",
+          "--color-surface": "#24180b",
+          "--color-surface-strong": "#2f210f",
+          "--color-surface-2": "#2f210f",
+          "--color-text": "#ffe7c4",
+          "--color-text-muted": "#f2c89a",
+          "--color-primary": "#ff5ec4",
+          "--color-secondary": "#5b8cff",
+          "--color-accent": "#ff5ec4",
+          "--color-accent-2": "#5b8cff",
+          "--color-muted": "#f2c89a",
+          "--color-muted-more": "#f2c89a",
+          "--font-eyebrow": "var(--font-preview-humanist), sans-serif",
+          "--font-headline": "var(--font-preview-display), sans-serif",
+          "--font-subhead": "var(--font-preview-humanist), sans-serif"
+        }
+      },
+      "layers": [
+        {
+          "id": "content",
+          "components": [
+            {
+              "id": "title-slide-0",
+              "type": "TitleSlide",
+              "props": {
+                "eyebrow": "Warm Dark",
+                "title": "Display Contrast",
+                "subtitle": "Bold headlines with character",
+                "verticalAlign": "center",
+                "horizontalAlign": "center",
+                "entranceStartFrame": -999,
+                "sceneStartSec": 22
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "hold-color-type-3",
+          "label": "hold-color-type-3",
+          "startSec": 22,
+          "endSec": 24,
+          "text": "",
+          "segments": [
+            {
+              "type": "pause",
+              "startSec": 22,
+              "endSec": 24,
+              "durationSec": 2
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "color-type-4",
+      "title": "color-type-4",
+      "startSec": 24,
+      "endSec": 26,
+      "styles": {
+        "background": "var(--color-bg)",
+        "color": "var(--color-text)",
+        "vars": {
+          "--color-bg": "#f5f7ff",
+          "--color-bg-subtle": "#e9edff",
+          "--color-surface": "#e9edff",
+          "--color-surface-strong": "#dfe4ff",
+          "--color-surface-2": "#dfe4ff",
+          "--color-text": "#1f2d5c",
+          "--color-text-muted": "#4f5d88",
+          "--color-primary": "#d948b8",
+          "--color-secondary": "#4d6bff",
+          "--color-accent": "#d948b8",
+          "--color-accent-2": "#4d6bff",
+          "--color-muted": "#4f5d88",
+          "--color-muted-more": "#4f5d88",
+          "--font-eyebrow": "var(--font-preview-humanist), sans-serif",
+          "--font-headline": "var(--font-preview-sans), sans-serif",
+          "--font-subhead": "var(--font-preview-humanist), sans-serif"
+        }
+      },
+      "layers": [
+        {
+          "id": "content",
+          "components": [
+            {
+              "id": "title-slide-0",
+              "type": "TitleSlide",
+              "props": {
+                "eyebrow": "Cool Light",
+                "title": "Geometric Sans",
+                "subtitle": "Clean, precise, and modern",
+                "verticalAlign": "center",
+                "horizontalAlign": "center",
+                "entranceStartFrame": -999,
+                "sceneStartSec": 24
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "hold-color-type-4",
+          "label": "hold-color-type-4",
+          "startSec": 24,
+          "endSec": 26,
+          "text": "",
+          "segments": [
+            {
+              "type": "pause",
+              "startSec": 24,
+              "endSec": 26,
+              "durationSec": 2
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "color-type-5",
+      "title": "color-type-5",
+      "startSec": 26,
+      "endSec": 28,
+      "styles": {
+        "background": "var(--color-bg)",
+        "color": "var(--color-text)",
+        "vars": {
+          "--color-bg": "#f4f3f1",
+          "--color-bg-subtle": "#e9e7e4",
+          "--color-surface": "#e9e7e4",
+          "--color-surface-strong": "#dedbd7",
+          "--color-surface-2": "#dedbd7",
+          "--color-text": "#2a2623",
+          "--color-text-muted": "#5a534d",
+          "--color-primary": "#d948b8",
+          "--color-secondary": "#556eff",
+          "--color-accent": "#d948b8",
+          "--color-accent-2": "#556eff",
+          "--color-muted": "#5a534d",
+          "--color-muted-more": "#5a534d",
+          "--font-eyebrow": "var(--font-preview-sans), sans-serif",
+          "--font-headline": "var(--font-preview-serif), serif",
+          "--font-subhead": "var(--font-preview-sans), sans-serif"
+        }
+      },
+      "layers": [
+        {
+          "id": "content",
+          "components": [
+            {
+              "id": "title-slide-0",
+              "type": "TitleSlide",
+              "props": {
+                "eyebrow": "Neutral Light",
+                "title": "Studio Serif",
+                "subtitle": "Balanced warmth for narration",
+                "verticalAlign": "center",
+                "horizontalAlign": "center",
+                "entranceStartFrame": -999,
+                "sceneStartSec": 26
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "hold-color-type-5",
+          "label": "hold-color-type-5",
+          "startSec": 26,
+          "endSec": 28,
+          "text": "",
+          "segments": [
+            {
+              "type": "pause",
+              "startSec": 26,
+              "endSec": 28,
+              "durationSec": 2
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "color-type-6",
+      "title": "color-type-6",
+      "startSec": 28,
+      "endSec": 30,
+      "styles": {
+        "background": "var(--color-bg)",
+        "color": "var(--color-text)",
+        "vars": {
+          "--color-bg": "#fff5ee",
+          "--color-bg-subtle": "#ffe9db",
+          "--color-surface": "#ffe9db",
+          "--color-surface-strong": "#f9dcc6",
+          "--color-surface-2": "#f9dcc6",
+          "--color-text": "#5a2f13",
+          "--color-text-muted": "#84533b",
+          "--color-primary": "#d948b8",
+          "--color-secondary": "#5177ff",
+          "--color-accent": "#d948b8",
+          "--color-accent-2": "#5177ff",
+          "--color-muted": "#84533b",
+          "--color-muted-more": "#84533b",
+          "--font-eyebrow": "var(--font-preview-humanist), sans-serif",
+          "--font-headline": "var(--font-preview-display), sans-serif",
+          "--font-subhead": "var(--font-preview-humanist), sans-serif"
+        }
+      },
+      "layers": [
+        {
+          "id": "content",
+          "components": [
+            {
+              "id": "title-slide-0",
+              "type": "TitleSlide",
+              "props": {
+                "eyebrow": "Warm Light",
+                "title": "Soft Display",
+                "subtitle": "Friendly tone for storytelling",
+                "verticalAlign": "center",
+                "horizontalAlign": "center",
+                "entranceStartFrame": -999,
+                "sceneStartSec": 28
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "hold-color-type-6",
+          "label": "hold-color-type-6",
+          "startSec": 28,
+          "endSec": 30,
+          "text": "",
+          "segments": [
+            {
+              "type": "pause",
+              "startSec": 28,
+              "endSec": 30,
+              "durationSec": 2
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "chapter-features",
+      "title": "chapter-features",
+      "startSec": 30,
+      "endSec": 32,
+      "styles": {
+        "background": "var(--color-bg)",
+        "color": "var(--color-text)",
+        "vars": {
+          "--color-bg": "#0b0f1f",
+          "--color-bg-subtle": "#151b32",
+          "--color-surface": "#151b32",
+          "--color-surface-strong": "#1e2645",
+          "--color-surface-2": "#1e2645",
+          "--color-text": "#eef1ff",
+          "--color-text-muted": "#c8cff6",
+          "--color-primary": "#ff5ec4",
+          "--color-secondary": "#6a7dff",
+          "--color-accent": "#ff5ec4",
+          "--color-accent-2": "#6a7dff",
+          "--color-muted": "#c8cff6",
+          "--color-muted-more": "#c8cff6",
+          "--font-eyebrow": "var(--font-preview-humanist), sans-serif",
+          "--font-headline": "var(--font-preview-sans), sans-serif",
+          "--font-subhead": "var(--font-preview-humanist), sans-serif"
+        }
+      },
+      "layers": [
+        {
+          "id": "content",
+          "components": [
+            {
+              "id": "chapter-heading-0",
+              "type": "ChapterHeading",
+              "props": {
+                "number": "03",
+                "title": "Features",
+                "subtitle": "Built for fast video teams",
+                "layout": "side-by-side",
+                "sceneStartSec": 30
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "hold-chapter-features",
+          "label": "hold-chapter-features",
+          "startSec": 30,
+          "endSec": 32,
+          "text": "",
+          "segments": [
+            {
+              "type": "pause",
+              "startSec": 30,
+              "endSec": 32,
+              "durationSec": 2
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "features-1",
+      "title": "features-1",
+      "startSec": 32,
+      "endSec": 34,
+      "styles": {
+        "background": "var(--color-bg)",
+        "color": "var(--color-text)",
+        "vars": {
+          "--color-bg": "#0b0f1f",
+          "--color-bg-subtle": "#151b32",
+          "--color-surface": "#151b32",
+          "--color-surface-strong": "#1e2645",
+          "--color-surface-2": "#1e2645",
+          "--color-text": "#eef1ff",
+          "--color-text-muted": "#c8cff6",
+          "--color-primary": "#ff5ec4",
+          "--color-secondary": "#6a7dff",
+          "--color-accent": "#ff5ec4",
+          "--color-accent-2": "#6a7dff",
+          "--color-muted": "#c8cff6",
+          "--color-muted-more": "#c8cff6",
+          "--font-eyebrow": "var(--font-preview-humanist), sans-serif",
+          "--font-headline": "var(--font-preview-sans), sans-serif",
+          "--font-subhead": "var(--font-preview-humanist), sans-serif"
+        }
+      },
+      "layers": [
+        {
+          "id": "content",
+          "components": [
+            {
+              "id": "bullet-list-screen-0",
+              "type": "BulletListScreen",
+              "props": {
+                "eyebrow": "Feature Group",
+                "title": "AI Automation",
+                "subtitle": "Speech, timing, and rendering",
+                "align": "left",
+                "bullets": {
+                  "items": [
+                    "AI voiceover",
+                    "Auto timing",
+                    "Scene orchestration"
+                  ],
+                  "bulletStyle": "icon",
+                  "bulletIcon": {
+                    "kind": "lucide",
+                    "name": "check",
+                    "color": "var(--color-secondary)",
+                    "strokeWidth": 3,
+                    "size": 34
+                  },
+                  "fontSize": 52,
+                  "lineHeight": 1.35,
+                  "spacing": 42,
+                  "textColor": "var(--color-text)",
+                  "justify": "start"
+                },
+                "sceneStartSec": 32
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "hold-features-1",
+          "label": "hold-features-1",
+          "startSec": 32,
+          "endSec": 34,
+          "text": "",
+          "segments": [
+            {
+              "type": "pause",
+              "startSec": 32,
+              "endSec": 34,
+              "durationSec": 2
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "features-2",
+      "title": "features-2",
+      "startSec": 34,
+      "endSec": 36,
+      "styles": {
+        "background": "var(--color-bg)",
+        "color": "var(--color-text)",
+        "vars": {
+          "--color-bg": "#0b0f1f",
+          "--color-bg-subtle": "#151b32",
+          "--color-surface": "#151b32",
+          "--color-surface-strong": "#1e2645",
+          "--color-surface-2": "#1e2645",
+          "--color-text": "#eef1ff",
+          "--color-text-muted": "#c8cff6",
+          "--color-primary": "#ff5ec4",
+          "--color-secondary": "#6a7dff",
+          "--color-accent": "#ff5ec4",
+          "--color-accent-2": "#6a7dff",
+          "--color-muted": "#c8cff6",
+          "--color-muted-more": "#c8cff6",
+          "--font-eyebrow": "var(--font-preview-humanist), sans-serif",
+          "--font-headline": "var(--font-preview-sans), sans-serif",
+          "--font-subhead": "var(--font-preview-humanist), sans-serif"
+        }
+      },
+      "layers": [
+        {
+          "id": "content",
+          "components": [
+            {
+              "id": "bullet-list-screen-0",
+              "type": "BulletListScreen",
+              "props": {
+                "eyebrow": "Feature Group",
+                "title": "Design System",
+                "subtitle": "Reusable layouts + themes",
+                "align": "left",
+                "bullets": {
+                  "items": [
+                    "Standard layouts",
+                    "Typography schemes",
+                    "Color schemes"
+                  ],
+                  "bulletStyle": "icon",
+                  "bulletIcon": {
+                    "kind": "lucide",
+                    "name": "check",
+                    "color": "var(--color-secondary)",
+                    "strokeWidth": 3,
+                    "size": 34
+                  },
+                  "fontSize": 52,
+                  "lineHeight": 1.35,
+                  "spacing": 42,
+                  "textColor": "var(--color-text)",
+                  "justify": "start"
+                },
+                "sceneStartSec": 34
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "hold-features-2",
+          "label": "hold-features-2",
+          "startSec": 34,
+          "endSec": 36,
+          "text": "",
+          "segments": [
+            {
+              "type": "pause",
+              "startSec": 34,
+              "endSec": 36,
+              "durationSec": 2
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "features-3",
+      "title": "features-3",
+      "startSec": 36,
+      "endSec": 38,
+      "styles": {
+        "background": "var(--color-bg)",
+        "color": "var(--color-text)",
+        "vars": {
+          "--color-bg": "#0b0f1f",
+          "--color-bg-subtle": "#151b32",
+          "--color-surface": "#151b32",
+          "--color-surface-strong": "#1e2645",
+          "--color-surface-2": "#1e2645",
+          "--color-text": "#eef1ff",
+          "--color-text-muted": "#c8cff6",
+          "--color-primary": "#ff5ec4",
+          "--color-secondary": "#6a7dff",
+          "--color-accent": "#ff5ec4",
+          "--color-accent-2": "#6a7dff",
+          "--color-muted": "#c8cff6",
+          "--color-muted-more": "#c8cff6",
+          "--font-eyebrow": "var(--font-preview-humanist), sans-serif",
+          "--font-headline": "var(--font-preview-sans), sans-serif",
+          "--font-subhead": "var(--font-preview-humanist), sans-serif"
+        }
+      },
+      "layers": [
+        {
+          "id": "content",
+          "components": [
+            {
+              "id": "bullet-list-screen-0",
+              "type": "BulletListScreen",
+              "props": {
+                "eyebrow": "Feature Group",
+                "title": "Production Ready",
+                "subtitle": "Scale content without timelines",
+                "align": "left",
+                "bullets": {
+                  "items": [
+                    "Versioned videos",
+                    "Batch rendering",
+                    "Agent-friendly"
+                  ],
+                  "bulletStyle": "icon",
+                  "bulletIcon": {
+                    "kind": "lucide",
+                    "name": "check",
+                    "color": "var(--color-secondary)",
+                    "strokeWidth": 3,
+                    "size": 34
+                  },
+                  "fontSize": 52,
+                  "lineHeight": 1.35,
+                  "spacing": 42,
+                  "textColor": "var(--color-text)",
+                  "justify": "start"
+                },
+                "sceneStartSec": 36
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "hold-features-3",
+          "label": "hold-features-3",
+          "startSec": 36,
+          "endSec": 38,
+          "text": "",
+          "segments": [
+            {
+              "type": "pause",
+              "startSec": 36,
+              "endSec": 38,
+              "durationSec": 2
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    }
+  ],
+  "fps": 30,
+  "meta": {
+    "fps": 30,
+    "width": 1920,
+    "height": 1080
+  }
+}

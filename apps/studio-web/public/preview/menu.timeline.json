@@ -1,0 +1,157 @@
+{
+  "items": [
+    {
+      "type": "tts",
+      "sceneId": "bullets-a",
+      "cueId": "vo-a",
+      "startSec": 0,
+      "endSec": 6.15,
+      "segments": [
+        {
+          "type": "tts",
+          "startSec": 0,
+          "endSec": 4.75,
+          "text": "Option A uses oversized checked bullets for maximum legibility.",
+          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/menu/env/development/segments/bullets-a--vo-a--tts--28b4ea9a1db9--1.wav",
+          "durationSec": 4.75,
+          "rawDurationSec": 4.75,
+          "trimEndSec": 0
+        },
+        {
+          "type": "pause",
+          "startSec": 4.75,
+          "endSec": 6.15,
+          "seconds": 1.4
+        }
+      ]
+    },
+    {
+      "type": "tts",
+      "sceneId": "bullets-b",
+      "cueId": "vo-b",
+      "startSec": 6.15,
+      "endSec": 11.700000000000001,
+      "segments": [
+        {
+          "type": "tts",
+          "startSec": 6.15,
+          "endSec": 10.3,
+          "text": "Option B numbers each point for clear, ordered steps.",
+          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/menu/env/development/segments/bullets-b--vo-b--tts--5e45a506998e--1.wav",
+          "durationSec": 4.15,
+          "rawDurationSec": 4.15,
+          "trimEndSec": 0
+        },
+        {
+          "type": "pause",
+          "startSec": 10.3,
+          "endSec": 11.700000000000001,
+          "seconds": 1.4
+        }
+      ]
+    },
+    {
+      "type": "tts",
+      "sceneId": "bullets-c",
+      "cueId": "vo-c",
+      "startSec": 11.700000000000001,
+      "endSec": 18.85,
+      "segments": [
+        {
+          "type": "tts",
+          "startSec": 11.700000000000001,
+          "endSec": 17.450000000000003,
+          "text": "Option C tightens the list into a compact grid-friendly spacing.",
+          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/menu/env/development/segments/bullets-c--vo-c--tts--7a71241ada24--1.wav",
+          "durationSec": 5.75,
+          "rawDurationSec": 5.75,
+          "trimEndSec": 0
+        },
+        {
+          "type": "pause",
+          "startSec": 17.450000000000003,
+          "endSec": 18.85,
+          "seconds": 1.4
+        }
+      ]
+    },
+    {
+      "type": "tts",
+      "sceneId": "font-menu-a",
+      "cueId": "voice-a",
+      "startSec": 18.85,
+      "endSec": 32.45,
+      "segments": [
+        {
+          "type": "tts",
+          "startSec": 18.85,
+          "endSec": 26.450000000000003,
+          "text": "Screen A shows twelve broadcast-friendly pairings—neutral, Swiss-inspired, built for lower thirds.",
+          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/menu/env/development/segments/font-menu-a--voice-a--tts--63ed99990a74--1.wav",
+          "durationSec": 7.6,
+          "rawDurationSec": 7.6,
+          "trimEndSec": 0
+        },
+        {
+          "type": "pause",
+          "startSec": 26.450000000000003,
+          "endSec": 32.45,
+          "seconds": 6
+        }
+      ]
+    },
+    {
+      "type": "tts",
+      "sceneId": "font-menu-b",
+      "cueId": "voice-b",
+      "startSec": 32.45,
+      "endSec": 44.85,
+      "segments": [
+        {
+          "type": "tts",
+          "startSec": 32.45,
+          "endSec": 38.85,
+          "text": "Screen B mixes modern grotesks with slabs and rounded faces for friendly overlays.",
+          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/menu/env/development/segments/font-menu-b--voice-b--tts--e6a662cecaf1--1.wav",
+          "durationSec": 6.4,
+          "rawDurationSec": 6.4,
+          "trimEndSec": 0
+        },
+        {
+          "type": "pause",
+          "startSec": 38.85,
+          "endSec": 44.85,
+          "seconds": 6
+        }
+      ]
+    },
+    {
+      "type": "tts",
+      "sceneId": "font-menu-c",
+      "cueId": "voice-c",
+      "startSec": 44.85,
+      "endSec": 57.65,
+      "segments": [
+        {
+          "type": "tts",
+          "startSec": 44.85,
+          "endSec": 51.65,
+          "text": "Screen C blends historical film faces, Swiss trends, and pull-quote serifs for storytelling.",
+          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/menu/env/development/segments/font-menu-c--voice-c--tts--962a2ec69781--1.wav",
+          "durationSec": 6.8,
+          "rawDurationSec": 6.8,
+          "trimEndSec": 0
+        },
+        {
+          "type": "pause",
+          "startSec": 51.65,
+          "endSec": 57.65,
+          "seconds": 6
+        }
+      ]
+    }
+  ],
+  "audio": {
+    "tracks": []
+  }
+}

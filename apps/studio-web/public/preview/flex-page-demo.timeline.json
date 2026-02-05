@@ -1,0 +1,32 @@
+{
+  "items": [
+    {
+      "type": "tts",
+      "sceneId": "flex-page",
+      "cueId": "voice",
+      "startSec": 0,
+      "endSec": 5.1,
+      "segments": [
+        {
+          "type": "tts",
+          "startSec": 0,
+          "endSec": 3.9,
+          "text": "FlexPage is the base shell for custom layouts.",
+          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/flex-page-demo/env/development/segments/flex-page--voice--tts--a0556d27b126--1.wav",
+          "durationSec": 3.9,
+          "rawDurationSec": 3.9,
+          "trimEndSec": 0
+        },
+        {
+          "type": "pause",
+          "startSec": 3.9,
+          "endSec": 5.1,
+          "seconds": 1.2
+        }
+      ]
+    }
+  ],
+  "audio": {
+    "tracks": []
+  }
+}

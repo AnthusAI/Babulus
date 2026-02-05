@@ -1,0 +1,86 @@
+{
+  "scenes": [
+    {
+      "id": "title-demo",
+      "title": "title-demo",
+      "startSec": 0,
+      "endSec": 6,
+      "styles": {
+        "background": "var(--color-bg)"
+      },
+      "layers": [
+        {
+          "id": "title",
+          "zIndex": 10,
+          "components": [
+            {
+              "id": "title-0",
+              "type": "Title",
+              "props": {
+                "text": "Text effects with zero keyframes",
+                "color": "var(--color-primary)",
+                "textColor": "var(--color-text)",
+                "textEffect": {
+                  "effect": "fade_up",
+                  "unit": "words",
+                  "durationFrames": 24,
+                  "staggerFrames": 4
+                },
+                "position": {
+                  "x": 160,
+                  "y": 280
+                },
+                "sceneStartSec": 0
+              }
+            },
+            {
+              "id": "subtitle-1",
+              "type": "Subtitle",
+              "props": {
+                "text": "fade, slide, pop, scale — all frame-driven",
+                "textEffect": {
+                  "effect": "slide_left",
+                  "unit": "chars",
+                  "durationFrames": 20,
+                  "staggerFrames": 2
+                },
+                "position": {
+                  "x": 160,
+                  "y": 380
+                },
+                "color": "var(--color-text-muted)",
+                "fontSize": 28,
+                "fontWeight": 500,
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "hold",
+          "label": "hold",
+          "startSec": 0,
+          "endSec": 6,
+          "text": "",
+          "segments": [
+            {
+              "type": "pause",
+              "startSec": 0,
+              "endSec": 6,
+              "durationSec": 6
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    }
+  ],
+  "fps": 30,
+  "meta": {
+    "fps": 30,
+    "width": 1920,
+    "height": 1080
+  }
+}

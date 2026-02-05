@@ -1,0 +1,1990 @@
+{
+  "scenes": [
+    {
+      "id": "theme-0",
+      "title": "theme-0",
+      "startSec": 0,
+      "endSec": 0,
+      "styles": {
+        "background": "var(--color-bg, #f4f1ec)",
+        "color": "var(--color-text, #211f1b)",
+        "vars": {
+          "--color-bg": "#f4f1ec",
+          "--color-text": "#211f1b",
+          "--color-text-muted": "#5c5650",
+          "--font-eyebrow": "\"Gill Sans\", \"Helvetica Neue\", Arial, sans-serif",
+          "--font-headline": "\"Helvetica Neue\", Arial, sans-serif",
+          "--font-subhead": "Arial, \"Helvetica Neue\", sans-serif"
+        }
+      },
+      "layers": [
+        {
+          "id": "content",
+          "timing": {
+            "startSec": 0,
+            "endSec": 3
+          },
+          "components": [
+            {
+              "id": "layout-flexpage-0",
+              "type": "FlexPage",
+              "props": {
+                "headerAlign": "center",
+                "label": "A",
+                "eyebrow": "Broadcast Classics",
+                "title": "Classic News",
+                "subtitle": "Neutral, authoritative news tone. Use for anchors, headlines, and steady narration.",
+                "background": "var(--color-bg, #f4f1ec)",
+                "padding": 96,
+                "gap": 36,
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "preview-0",
+          "label": "preview-0",
+          "startSec": 0,
+          "endSec": 0,
+          "text": "",
+          "segments": [],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "theme-1",
+      "title": "theme-1",
+      "startSec": 0,
+      "endSec": 0,
+      "styles": {
+        "background": "var(--color-bg, #f4f1ec)",
+        "color": "var(--color-text, #211f1b)",
+        "vars": {
+          "--color-bg": "#f4f1ec",
+          "--color-text": "#211f1b",
+          "--color-text-muted": "#5c5650",
+          "--font-eyebrow": "\"Franklin Gothic\", \"Arial Black\", Arial, sans-serif",
+          "--font-headline": "Impact, \"Arial Black\", sans-serif",
+          "--font-subhead": "\"Trebuchet MS\", Arial, sans-serif"
+        }
+      },
+      "layers": [
+        {
+          "id": "content",
+          "timing": {
+            "startSec": 3,
+            "endSec": 6
+          },
+          "components": [
+            {
+              "id": "layout-flexpage-0",
+              "type": "FlexPage",
+              "props": {
+                "headerAlign": "center",
+                "label": "A",
+                "eyebrow": "Broadcast Classics",
+                "title": "Authority",
+                "subtitle": "High-impact urgency for promos, alerts, and breaking updates.",
+                "background": "var(--color-bg, #f4f1ec)",
+                "padding": 96,
+                "gap": 36,
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "preview-1",
+          "label": "preview-1",
+          "startSec": 0,
+          "endSec": 0,
+          "text": "",
+          "segments": [],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "theme-2",
+      "title": "theme-2",
+      "startSec": 0,
+      "endSec": 0,
+      "styles": {
+        "background": "var(--color-bg, #f4f1ec)",
+        "color": "var(--color-text, #211f1b)",
+        "vars": {
+          "--color-bg": "#f4f1ec",
+          "--color-text": "#211f1b",
+          "--color-text-muted": "#5c5650",
+          "--font-eyebrow": "\"Lucida Grande\", \"Trebuchet MS\", sans-serif",
+          "--font-headline": "\"Trebuchet MS\", \"Lucida Grande\", sans-serif",
+          "--font-subhead": "\"Gill Sans\", \"Helvetica Neue\", sans-serif"
+        }
+      },
+      "layers": [
+        {
+          "id": "content",
+          "timing": {
+            "startSec": 6,
+            "endSec": 9
+          },
+          "components": [
+            {
+              "id": "layout-flexpage-0",
+              "type": "FlexPage",
+              "props": {
+                "headerAlign": "center",
+                "label": "A",
+                "eyebrow": "Broadcast Classics",
+                "title": "Documentary",
+                "subtitle": "Warm, readable narration style for long-form storytelling.",
+                "background": "var(--color-bg, #f4f1ec)",
+                "padding": 96,
+                "gap": 36,
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "preview-2",
+          "label": "preview-2",
+          "startSec": 0,
+          "endSec": 0,
+          "text": "",
+          "segments": [],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "theme-3",
+      "title": "theme-3",
+      "startSec": 0,
+      "endSec": 0,
+      "styles": {
+        "background": "var(--color-bg, #f4f1ec)",
+        "color": "var(--color-text, #211f1b)",
+        "vars": {
+          "--color-bg": "#f4f1ec",
+          "--color-text": "#211f1b",
+          "--color-text-muted": "#5c5650",
+          "--font-eyebrow": "\"Helvetica Neue\", Arial, sans-serif",
+          "--font-headline": "Georgia, \"Times New Roman\", serif",
+          "--font-subhead": "\"Source Sans Pro\", Arial, sans-serif"
+        }
+      },
+      "layers": [
+        {
+          "id": "content",
+          "timing": {
+            "startSec": 9,
+            "endSec": 12
+          },
+          "components": [
+            {
+              "id": "layout-flexpage-0",
+              "type": "FlexPage",
+              "props": {
+                "headerAlign": "center",
+                "label": "A",
+                "eyebrow": "Broadcast Classics",
+                "title": "Serif Accent",
+                "subtitle": "Trustworthy headlines with a classic serif emphasis.",
+                "background": "var(--color-bg, #f4f1ec)",
+                "padding": 96,
+                "gap": 36,
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "preview-3",
+          "label": "preview-3",
+          "startSec": 0,
+          "endSec": 0,
+          "text": "",
+          "segments": [],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "theme-4",
+      "title": "theme-4",
+      "startSec": 0,
+      "endSec": 0,
+      "styles": {
+        "background": "var(--color-bg, #f4f1ec)",
+        "color": "var(--color-text, #211f1b)",
+        "vars": {
+          "--color-bg": "#f4f1ec",
+          "--color-text": "#211f1b",
+          "--color-text-muted": "#5c5650",
+          "--font-eyebrow": "\"Avenir Next\", \"Helvetica Neue\", sans-serif",
+          "--font-headline": "\"Arial Black\", Impact, sans-serif",
+          "--font-subhead": "\"Segoe UI\", Arial, sans-serif"
+        }
+      },
+      "layers": [
+        {
+          "id": "content",
+          "timing": {
+            "startSec": 12,
+            "endSec": 15
+          },
+          "components": [
+            {
+              "id": "layout-flexpage-0",
+              "type": "FlexPage",
+              "props": {
+                "headerAlign": "center",
+                "label": "A",
+                "eyebrow": "Broadcast Classics",
+                "title": "Headline + Caption",
+                "subtitle": "Big uppercase headlines with compact caption subheads.",
+                "background": "var(--color-bg, #f4f1ec)",
+                "padding": 96,
+                "gap": 36,
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "preview-4",
+          "label": "preview-4",
+          "startSec": 0,
+          "endSec": 0,
+          "text": "",
+          "segments": [],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "theme-5",
+      "title": "theme-5",
+      "startSec": 0,
+      "endSec": 0,
+      "styles": {
+        "background": "var(--color-bg, #f4f1ec)",
+        "color": "var(--color-text, #211f1b)",
+        "vars": {
+          "--color-bg": "#f4f1ec",
+          "--color-text": "#211f1b",
+          "--color-text-muted": "#5c5650",
+          "--font-eyebrow": "\"Roboto Condensed\", \"Helvetica Neue\", sans-serif",
+          "--font-headline": "\"Oswald\", \"Roboto Condensed\", sans-serif",
+          "--font-subhead": "Inter, \"Helvetica Neue\", sans-serif"
+        }
+      },
+      "layers": [
+        {
+          "id": "content",
+          "timing": {
+            "startSec": 15,
+            "endSec": 18
+          },
+          "components": [
+            {
+              "id": "layout-flexpage-0",
+              "type": "FlexPage",
+              "props": {
+                "headerAlign": "center",
+                "label": "A",
+                "eyebrow": "Broadcast Classics",
+                "title": "Sports Ticker",
+                "subtitle": "Condensed, fast-paced overlays for live score and stats.",
+                "background": "var(--color-bg, #f4f1ec)",
+                "padding": 96,
+                "gap": 36,
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "preview-5",
+          "label": "preview-5",
+          "startSec": 0,
+          "endSec": 0,
+          "text": "",
+          "segments": [],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "theme-6",
+      "title": "theme-6",
+      "startSec": 0,
+      "endSec": 0,
+      "styles": {
+        "background": "var(--color-bg, #f4f1ec)",
+        "color": "var(--color-text, #211f1b)",
+        "vars": {
+          "--color-bg": "#f4f1ec",
+          "--color-text": "#211f1b",
+          "--color-text-muted": "#5c5650",
+          "--font-eyebrow": "Verdana, Arial, sans-serif",
+          "--font-headline": "Verdana, Arial, sans-serif",
+          "--font-subhead": "Verdana, Arial, sans-serif"
+        }
+      },
+      "layers": [
+        {
+          "id": "content",
+          "timing": {
+            "startSec": 18,
+            "endSec": 21
+          },
+          "components": [
+            {
+              "id": "layout-flexpage-0",
+              "type": "FlexPage",
+              "props": {
+                "headerAlign": "center",
+                "label": "A",
+                "eyebrow": "Broadcast Classics",
+                "title": "Debate",
+                "subtitle": "Screen-optimized neutral set for multi-speaker segments.",
+                "background": "var(--color-bg, #f4f1ec)",
+                "padding": 96,
+                "gap": 36,
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "preview-6",
+          "label": "preview-6",
+          "startSec": 0,
+          "endSec": 0,
+          "text": "",
+          "segments": [],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "theme-7",
+      "title": "theme-7",
+      "startSec": 0,
+      "endSec": 0,
+      "styles": {
+        "background": "var(--color-bg, #f4f1ec)",
+        "color": "var(--color-text, #211f1b)",
+        "vars": {
+          "--color-bg": "#f4f1ec",
+          "--color-text": "#211f1b",
+          "--color-text-muted": "#5c5650",
+          "--font-eyebrow": "\"Avenir Next\", \"Helvetica Neue\", sans-serif",
+          "--font-headline": "\"Didot\", \"Bodoni 72\", serif",
+          "--font-subhead": "\"Helvetica Neue\", Arial, sans-serif"
+        }
+      },
+      "layers": [
+        {
+          "id": "content",
+          "timing": {
+            "startSec": 21,
+            "endSec": 24
+          },
+          "components": [
+            {
+              "id": "layout-flexpage-0",
+              "type": "FlexPage",
+              "props": {
+                "headerAlign": "center",
+                "label": "A",
+                "eyebrow": "Broadcast Classics",
+                "title": "Magazine",
+                "subtitle": "Elegant feature feel for editorial and brand stories.",
+                "background": "var(--color-bg, #f4f1ec)",
+                "padding": 96,
+                "gap": 36,
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "preview-7",
+          "label": "preview-7",
+          "startSec": 0,
+          "endSec": 0,
+          "text": "",
+          "segments": [],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "theme-8",
+      "title": "theme-8",
+      "startSec": 0,
+      "endSec": 0,
+      "styles": {
+        "background": "var(--color-bg, #f4f1ec)",
+        "color": "var(--color-text, #211f1b)",
+        "vars": {
+          "--color-bg": "#f4f1ec",
+          "--color-text": "#211f1b",
+          "--color-text-muted": "#5c5650",
+          "--font-eyebrow": "\"Gill Sans\", \"Helvetica Neue\", sans-serif",
+          "--font-headline": "Futura, \"Helvetica Neue\", sans-serif",
+          "--font-subhead": "\"Segoe UI\", Arial, sans-serif"
+        }
+      },
+      "layers": [
+        {
+          "id": "content",
+          "timing": {
+            "startSec": 24,
+            "endSec": 27
+          },
+          "components": [
+            {
+              "id": "layout-flexpage-0",
+              "type": "FlexPage",
+              "props": {
+                "headerAlign": "center",
+                "label": "A",
+                "eyebrow": "Broadcast Classics",
+                "title": "Finance",
+                "subtitle": "Clean data clarity for numbers, tickers, and charts.",
+                "background": "var(--color-bg, #f4f1ec)",
+                "padding": 96,
+                "gap": 36,
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "preview-8",
+          "label": "preview-8",
+          "startSec": 0,
+          "endSec": 0,
+          "text": "",
+          "segments": [],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "theme-9",
+      "title": "theme-9",
+      "startSec": 0,
+      "endSec": 0,
+      "styles": {
+        "background": "var(--color-bg, #f4f1ec)",
+        "color": "var(--color-text, #211f1b)",
+        "vars": {
+          "--color-bg": "#f4f1ec",
+          "--color-text": "#211f1b",
+          "--color-text-muted": "#5c5650",
+          "--font-eyebrow": "\"Nunito Sans\", \"Segoe UI\", sans-serif",
+          "--font-headline": "Montserrat, \"Nunito Sans\", sans-serif",
+          "--font-subhead": "\"Open Sans\", \"Segoe UI\", sans-serif"
+        }
+      },
+      "layers": [
+        {
+          "id": "content",
+          "timing": {
+            "startSec": 27,
+            "endSec": 30
+          },
+          "components": [
+            {
+              "id": "layout-flexpage-0",
+              "type": "FlexPage",
+              "props": {
+                "headerAlign": "center",
+                "label": "A",
+                "eyebrow": "Broadcast Classics",
+                "title": "Weather",
+                "subtitle": "Friendly rounded tone for forecast and explainer panels.",
+                "background": "var(--color-bg, #f4f1ec)",
+                "padding": 96,
+                "gap": 36,
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "preview-9",
+          "label": "preview-9",
+          "startSec": 0,
+          "endSec": 0,
+          "text": "",
+          "segments": [],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "theme-10",
+      "title": "theme-10",
+      "startSec": 0,
+      "endSec": 0,
+      "styles": {
+        "background": "var(--color-bg, #f4f1ec)",
+        "color": "var(--color-text, #211f1b)",
+        "vars": {
+          "--color-bg": "#f4f1ec",
+          "--color-text": "#211f1b",
+          "--color-text-muted": "#5c5650",
+          "--font-eyebrow": "\"Gill Sans\", \"Helvetica Neue\", sans-serif",
+          "--font-headline": "Merriweather, Georgia, serif",
+          "--font-subhead": "\"Source Sans Pro\", Arial, sans-serif"
+        }
+      },
+      "layers": [
+        {
+          "id": "content",
+          "timing": {
+            "startSec": 30,
+            "endSec": 33
+          },
+          "components": [
+            {
+              "id": "layout-flexpage-0",
+              "type": "FlexPage",
+              "props": {
+                "headerAlign": "center",
+                "label": "A",
+                "eyebrow": "Broadcast Classics",
+                "title": "Ticker Serif",
+                "subtitle": "Mix of broadcast sans with heritage serif for credibility.",
+                "background": "var(--color-bg, #f4f1ec)",
+                "padding": 96,
+                "gap": 36,
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "preview-10",
+          "label": "preview-10",
+          "startSec": 0,
+          "endSec": 0,
+          "text": "",
+          "segments": [],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "theme-11",
+      "title": "theme-11",
+      "startSec": 0,
+      "endSec": 0,
+      "styles": {
+        "background": "var(--color-bg, #f4f1ec)",
+        "color": "var(--color-text, #211f1b)",
+        "vars": {
+          "--color-bg": "#f4f1ec",
+          "--color-text": "#211f1b",
+          "--color-text-muted": "#5c5650",
+          "--font-eyebrow": "\"SF Pro Text\", \"Segoe UI\", sans-serif",
+          "--font-headline": "\"SF Pro Display\", \"Segoe UI\", sans-serif",
+          "--font-subhead": "\"SF Pro Text\", \"Segoe UI\", sans-serif"
+        }
+      },
+      "layers": [
+        {
+          "id": "content",
+          "timing": {
+            "startSec": 33,
+            "endSec": 36
+          },
+          "components": [
+            {
+              "id": "layout-flexpage-0",
+              "type": "FlexPage",
+              "props": {
+                "headerAlign": "center",
+                "label": "A",
+                "eyebrow": "Broadcast Classics",
+                "title": "Tech Desk",
+                "subtitle": "Platform-native fonts for clean product demos.",
+                "background": "var(--color-bg, #f4f1ec)",
+                "padding": 96,
+                "gap": 36,
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "preview-11",
+          "label": "preview-11",
+          "startSec": 0,
+          "endSec": 0,
+          "text": "",
+          "segments": [],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "theme-12",
+      "title": "theme-12",
+      "startSec": 0,
+      "endSec": 0,
+      "styles": {
+        "background": "var(--color-bg, #f4f1ec)",
+        "color": "var(--color-text, #211f1b)",
+        "vars": {
+          "--color-bg": "#f4f1ec",
+          "--color-text": "#211f1b",
+          "--color-text-muted": "#5c5650",
+          "--font-eyebrow": "Inter, \"Helvetica Neue\", sans-serif",
+          "--font-headline": "Inter, \"Helvetica Neue\", sans-serif",
+          "--font-subhead": "Inter, \"Helvetica Neue\", sans-serif"
+        }
+      },
+      "layers": [
+        {
+          "id": "content",
+          "timing": {
+            "startSec": 36,
+            "endSec": 39
+          },
+          "components": [
+            {
+              "id": "layout-flexpage-0",
+              "type": "FlexPage",
+              "props": {
+                "headerAlign": "center",
+                "label": "B",
+                "eyebrow": "Modern Sans & Slab",
+                "title": "Modern Grotesk",
+                "subtitle": "Unified sans stack for UI-first explainer content.",
+                "background": "var(--color-bg, #f4f1ec)",
+                "padding": 96,
+                "gap": 36,
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "preview-12",
+          "label": "preview-12",
+          "startSec": 0,
+          "endSec": 0,
+          "text": "",
+          "segments": [],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "theme-13",
+      "title": "theme-13",
+      "startSec": 0,
+      "endSec": 0,
+      "styles": {
+        "background": "var(--color-bg, #f4f1ec)",
+        "color": "var(--color-text, #211f1b)",
+        "vars": {
+          "--color-bg": "#f4f1ec",
+          "--color-text": "#211f1b",
+          "--color-text-muted": "#5c5650",
+          "--font-eyebrow": "Roboto, \"Helvetica Neue\", sans-serif",
+          "--font-headline": "\"Roboto Slab\", Georgia, serif",
+          "--font-subhead": "Roboto, \"Helvetica Neue\", sans-serif"
+        }
+      },
+      "layers": [
+        {
+          "id": "content",
+          "timing": {
+            "startSec": 39,
+            "endSec": 42
+          },
+          "components": [
+            {
+              "id": "layout-flexpage-0",
+              "type": "FlexPage",
+              "props": {
+                "headerAlign": "center",
+                "label": "B",
+                "eyebrow": "Modern Sans & Slab",
+                "title": "Slab Partner",
+                "subtitle": "Slab headline with clean sans subheads for contrast.",
+                "background": "var(--color-bg, #f4f1ec)",
+                "padding": 96,
+                "gap": 36,
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "preview-13",
+          "label": "preview-13",
+          "startSec": 0,
+          "endSec": 0,
+          "text": "",
+          "segments": [],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "theme-14",
+      "title": "theme-14",
+      "startSec": 0,
+      "endSec": 0,
+      "styles": {
+        "background": "var(--color-bg, #f4f1ec)",
+        "color": "var(--color-text, #211f1b)",
+        "vars": {
+          "--color-bg": "#f4f1ec",
+          "--color-text": "#211f1b",
+          "--color-text-muted": "#5c5650",
+          "--font-eyebrow": "\"Segoe UI\", Arial, sans-serif",
+          "--font-headline": "\"Segoe UI\", Arial, sans-serif",
+          "--font-subhead": "\"Segoe UI\", Arial, sans-serif"
+        }
+      },
+      "layers": [
+        {
+          "id": "content",
+          "timing": {
+            "startSec": 42,
+            "endSec": 45
+          },
+          "components": [
+            {
+              "id": "layout-flexpage-0",
+              "type": "FlexPage",
+              "props": {
+                "headerAlign": "center",
+                "label": "B",
+                "eyebrow": "Modern Sans & Slab",
+                "title": "Humanist",
+                "subtitle": "Warm humanist sans for friendly explainers.",
+                "background": "var(--color-bg, #f4f1ec)",
+                "padding": 96,
+                "gap": 36,
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "preview-14",
+          "label": "preview-14",
+          "startSec": 0,
+          "endSec": 0,
+          "text": "",
+          "segments": [],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "theme-15",
+      "title": "theme-15",
+      "startSec": 0,
+      "endSec": 0,
+      "styles": {
+        "background": "var(--color-bg, #f4f1ec)",
+        "color": "var(--color-text, #211f1b)",
+        "vars": {
+          "--color-bg": "#f4f1ec",
+          "--color-text": "#211f1b",
+          "--color-text-muted": "#5c5650",
+          "--font-eyebrow": "\"Helvetica Neue\", Arial, sans-serif",
+          "--font-headline": "\"Times New Roman\", Georgia, serif",
+          "--font-subhead": "Arial, \"Helvetica Neue\", sans-serif"
+        }
+      },
+      "layers": [
+        {
+          "id": "content",
+          "timing": {
+            "startSec": 45,
+            "endSec": 48
+          },
+          "components": [
+            {
+              "id": "layout-flexpage-0",
+              "type": "FlexPage",
+              "props": {
+                "headerAlign": "center",
+                "label": "B",
+                "eyebrow": "Modern Sans & Slab",
+                "title": "Heritage",
+                "subtitle": "Classic serif headline with neutral sans support.",
+                "background": "var(--color-bg, #f4f1ec)",
+                "padding": 96,
+                "gap": 36,
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "preview-15",
+          "label": "preview-15",
+          "startSec": 0,
+          "endSec": 0,
+          "text": "",
+          "segments": [],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "theme-16",
+      "title": "theme-16",
+      "startSec": 0,
+      "endSec": 0,
+      "styles": {
+        "background": "var(--color-bg, #f4f1ec)",
+        "color": "var(--color-text, #211f1b)",
+        "vars": {
+          "--color-bg": "#f4f1ec",
+          "--color-text": "#211f1b",
+          "--color-text-muted": "#5c5650",
+          "--font-eyebrow": "\"Roboto Condensed\", \"Helvetica Neue\", sans-serif",
+          "--font-headline": "\"Arial Narrow\", \"Roboto Condensed\", sans-serif",
+          "--font-subhead": "Roboto, \"Helvetica Neue\", sans-serif"
+        }
+      },
+      "layers": [
+        {
+          "id": "content",
+          "timing": {
+            "startSec": 48,
+            "endSec": 51
+          },
+          "components": [
+            {
+              "id": "layout-flexpage-0",
+              "type": "FlexPage",
+              "props": {
+                "headerAlign": "center",
+                "label": "B",
+                "eyebrow": "Modern Sans & Slab",
+                "title": "Condensed",
+                "subtitle": "Tight, tall headlines for data-heavy overlays.",
+                "background": "var(--color-bg, #f4f1ec)",
+                "padding": 96,
+                "gap": 36,
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "preview-16",
+          "label": "preview-16",
+          "startSec": 0,
+          "endSec": 0,
+          "text": "",
+          "segments": [],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "theme-17",
+      "title": "theme-17",
+      "startSec": 0,
+      "endSec": 0,
+      "styles": {
+        "background": "var(--color-bg, #f4f1ec)",
+        "color": "var(--color-text, #211f1b)",
+        "vars": {
+          "--color-bg": "#f4f1ec",
+          "--color-text": "#211f1b",
+          "--color-text-muted": "#5c5650",
+          "--font-eyebrow": "\"Gill Sans\", \"Helvetica Neue\", sans-serif",
+          "--font-headline": "\"Gill Sans Ultra Bold\", Impact, sans-serif",
+          "--font-subhead": "\"Gill Sans\", \"Helvetica Neue\", sans-serif"
+        }
+      },
+      "layers": [
+        {
+          "id": "content",
+          "timing": {
+            "startSec": 51,
+            "endSec": 54
+          },
+          "components": [
+            {
+              "id": "layout-flexpage-0",
+              "type": "FlexPage",
+              "props": {
+                "headerAlign": "center",
+                "label": "B",
+                "eyebrow": "Modern Sans & Slab",
+                "title": "Display",
+                "subtitle": "Bold display headline for promos and hero frames.",
+                "background": "var(--color-bg, #f4f1ec)",
+                "padding": 96,
+                "gap": 36,
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "preview-17",
+          "label": "preview-17",
+          "startSec": 0,
+          "endSec": 0,
+          "text": "",
+          "segments": [],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "theme-18",
+      "title": "theme-18",
+      "startSec": 0,
+      "endSec": 0,
+      "styles": {
+        "background": "var(--color-bg, #f4f1ec)",
+        "color": "var(--color-text, #211f1b)",
+        "vars": {
+          "--color-bg": "#f4f1ec",
+          "--color-text": "#211f1b",
+          "--color-text-muted": "#5c5650",
+          "--font-eyebrow": "\"Nunito\", \"Segoe UI\", sans-serif",
+          "--font-headline": "\"Varela Round\", \"Nunito\", sans-serif",
+          "--font-subhead": "\"Nunito\", \"Segoe UI\", sans-serif"
+        }
+      },
+      "layers": [
+        {
+          "id": "content",
+          "timing": {
+            "startSec": 54,
+            "endSec": 57
+          },
+          "components": [
+            {
+              "id": "layout-flexpage-0",
+              "type": "FlexPage",
+              "props": {
+                "headerAlign": "center",
+                "label": "B",
+                "eyebrow": "Modern Sans & Slab",
+                "title": "Rounded",
+                "subtitle": "Friendly rounded style for approachable messaging.",
+                "background": "var(--color-bg, #f4f1ec)",
+                "padding": 96,
+                "gap": 36,
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "preview-18",
+          "label": "preview-18",
+          "startSec": 0,
+          "endSec": 0,
+          "text": "",
+          "segments": [],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "theme-19",
+      "title": "theme-19",
+      "startSec": 0,
+      "endSec": 0,
+      "styles": {
+        "background": "var(--color-bg, #f4f1ec)",
+        "color": "var(--color-text, #211f1b)",
+        "vars": {
+          "--color-bg": "#f4f1ec",
+          "--color-text": "#211f1b",
+          "--color-text-muted": "#5c5650",
+          "--font-eyebrow": "\"Avenir Next\", \"Helvetica Neue\", sans-serif",
+          "--font-headline": "\"Avenir Next\", \"Helvetica Neue\", sans-serif",
+          "--font-subhead": "\"Avenir Next\", \"Helvetica Neue\", sans-serif"
+        }
+      },
+      "layers": [
+        {
+          "id": "content",
+          "timing": {
+            "startSec": 57,
+            "endSec": 60
+          },
+          "components": [
+            {
+              "id": "layout-flexpage-0",
+              "type": "FlexPage",
+              "props": {
+                "headerAlign": "center",
+                "label": "B",
+                "eyebrow": "Modern Sans & Slab",
+                "title": "Slate",
+                "subtitle": "Professional, understated sans stack for docs.",
+                "background": "var(--color-bg, #f4f1ec)",
+                "padding": 96,
+                "gap": 36,
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "preview-19",
+          "label": "preview-19",
+          "startSec": 0,
+          "endSec": 0,
+          "text": "",
+          "segments": [],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "theme-20",
+      "title": "theme-20",
+      "startSec": 0,
+      "endSec": 0,
+      "styles": {
+        "background": "var(--color-bg, #f4f1ec)",
+        "color": "var(--color-text, #211f1b)",
+        "vars": {
+          "--color-bg": "#f4f1ec",
+          "--color-text": "#211f1b",
+          "--color-text-muted": "#5c5650",
+          "--font-eyebrow": "Montserrat, \"Helvetica Neue\", sans-serif",
+          "--font-headline": "\"Playfair Display\", Georgia, serif",
+          "--font-subhead": "Montserrat, \"Helvetica Neue\", sans-serif"
+        }
+      },
+      "layers": [
+        {
+          "id": "content",
+          "timing": {
+            "startSec": 60,
+            "endSec": 63
+          },
+          "components": [
+            {
+              "id": "layout-flexpage-0",
+              "type": "FlexPage",
+              "props": {
+                "headerAlign": "center",
+                "label": "B",
+                "eyebrow": "Modern Sans & Slab",
+                "title": "Hybrid",
+                "subtitle": "Modern sans paired with a high-contrast serif headline.",
+                "background": "var(--color-bg, #f4f1ec)",
+                "padding": 96,
+                "gap": 36,
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "preview-20",
+          "label": "preview-20",
+          "startSec": 0,
+          "endSec": 0,
+          "text": "",
+          "segments": [],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "theme-21",
+      "title": "theme-21",
+      "startSec": 0,
+      "endSec": 0,
+      "styles": {
+        "background": "var(--color-bg, #f4f1ec)",
+        "color": "var(--color-text, #211f1b)",
+        "vars": {
+          "--color-bg": "#f4f1ec",
+          "--color-text": "#211f1b",
+          "--color-text-muted": "#5c5650",
+          "--font-eyebrow": "Poppins, \"Helvetica Neue\", sans-serif",
+          "--font-headline": "Poppins, \"Helvetica Neue\", sans-serif",
+          "--font-subhead": "Poppins, \"Helvetica Neue\", sans-serif"
+        }
+      },
+      "layers": [
+        {
+          "id": "content",
+          "timing": {
+            "startSec": 63,
+            "endSec": 66
+          },
+          "components": [
+            {
+              "id": "layout-flexpage-0",
+              "type": "FlexPage",
+              "props": {
+                "headerAlign": "center",
+                "label": "B",
+                "eyebrow": "Modern Sans & Slab",
+                "title": "Geo Sans",
+                "subtitle": "Geometric sans for bold tech stories.",
+                "background": "var(--color-bg, #f4f1ec)",
+                "padding": 96,
+                "gap": 36,
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "preview-21",
+          "label": "preview-21",
+          "startSec": 0,
+          "endSec": 0,
+          "text": "",
+          "segments": [],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "theme-22",
+      "title": "theme-22",
+      "startSec": 0,
+      "endSec": 0,
+      "styles": {
+        "background": "var(--color-bg, #f4f1ec)",
+        "color": "var(--color-text, #211f1b)",
+        "vars": {
+          "--color-bg": "#f4f1ec",
+          "--color-text": "#211f1b",
+          "--color-text-muted": "#5c5650",
+          "--font-eyebrow": "Inter, \"Helvetica Neue\", sans-serif",
+          "--font-headline": "Charter, Georgia, serif",
+          "--font-subhead": "Inter, \"Helvetica Neue\", sans-serif"
+        }
+      },
+      "layers": [
+        {
+          "id": "content",
+          "timing": {
+            "startSec": 66,
+            "endSec": 69
+          },
+          "components": [
+            {
+              "id": "layout-flexpage-0",
+              "type": "FlexPage",
+              "props": {
+                "headerAlign": "center",
+                "label": "B",
+                "eyebrow": "Modern Sans & Slab",
+                "title": "Slate Serif",
+                "subtitle": "Serif headline with neutral sans for contrast.",
+                "background": "var(--color-bg, #f4f1ec)",
+                "padding": 96,
+                "gap": 36,
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "preview-22",
+          "label": "preview-22",
+          "startSec": 0,
+          "endSec": 0,
+          "text": "",
+          "segments": [],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "theme-23",
+      "title": "theme-23",
+      "startSec": 0,
+      "endSec": 0,
+      "styles": {
+        "background": "var(--color-bg, #f4f1ec)",
+        "color": "var(--color-text, #211f1b)",
+        "vars": {
+          "--color-bg": "#f4f1ec",
+          "--color-text": "#211f1b",
+          "--color-text-muted": "#5c5650",
+          "--font-eyebrow": "\"SF Pro Text\", \"Segoe UI\", sans-serif",
+          "--font-headline": "\"SF Pro Display\", \"Segoe UI\", sans-serif",
+          "--font-subhead": "\"SF Pro Text\", \"Segoe UI\", sans-serif"
+        }
+      },
+      "layers": [
+        {
+          "id": "content",
+          "timing": {
+            "startSec": 69,
+            "endSec": 72
+          },
+          "components": [
+            {
+              "id": "layout-flexpage-0",
+              "type": "FlexPage",
+              "props": {
+                "headerAlign": "center",
+                "label": "B",
+                "eyebrow": "Modern Sans & Slab",
+                "title": "Studio Default",
+                "subtitle": "Default UI feel for clean product walkthroughs.",
+                "background": "var(--color-bg, #f4f1ec)",
+                "padding": 96,
+                "gap": 36,
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "preview-23",
+          "label": "preview-23",
+          "startSec": 0,
+          "endSec": 0,
+          "text": "",
+          "segments": [],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "theme-24",
+      "title": "theme-24",
+      "startSec": 0,
+      "endSec": 0,
+      "styles": {
+        "background": "var(--color-bg, #f4f1ec)",
+        "color": "var(--color-text, #211f1b)",
+        "vars": {
+          "--color-bg": "#f4f1ec",
+          "--color-text": "#211f1b",
+          "--color-text-muted": "#5c5650",
+          "--font-eyebrow": "\"Gill Sans\", \"Helvetica Neue\", sans-serif",
+          "--font-headline": "Garamond, \"Times New Roman\", serif",
+          "--font-subhead": "\"Helvetica Neue\", Arial, sans-serif"
+        }
+      },
+      "layers": [
+        {
+          "id": "content",
+          "timing": {
+            "startSec": 72,
+            "endSec": 75
+          },
+          "components": [
+            {
+              "id": "layout-flexpage-0",
+              "type": "FlexPage",
+              "props": {
+                "headerAlign": "center",
+                "label": "C",
+                "eyebrow": "History / Cinema / Trends",
+                "title": "History",
+                "subtitle": "Classic documentary tone with serif headline.",
+                "background": "var(--color-bg, #f4f1ec)",
+                "padding": 96,
+                "gap": 36,
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "preview-24",
+          "label": "preview-24",
+          "startSec": 0,
+          "endSec": 0,
+          "text": "",
+          "segments": [],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "theme-25",
+      "title": "theme-25",
+      "startSec": 0,
+      "endSec": 0,
+      "styles": {
+        "background": "var(--color-bg, #f4f1ec)",
+        "color": "var(--color-text, #211f1b)",
+        "vars": {
+          "--color-bg": "#f4f1ec",
+          "--color-text": "#211f1b",
+          "--color-text-muted": "#5c5650",
+          "--font-eyebrow": "\"Avenir Next\", \"Helvetica Neue\", sans-serif",
+          "--font-headline": "Futura, \"Avenir Next\", sans-serif",
+          "--font-subhead": "\"Avenir Next\", \"Helvetica Neue\", sans-serif"
+        }
+      },
+      "layers": [
+        {
+          "id": "content",
+          "timing": {
+            "startSec": 75,
+            "endSec": 78
+          },
+          "components": [
+            {
+              "id": "layout-flexpage-0",
+              "type": "FlexPage",
+              "props": {
+                "headerAlign": "center",
+                "label": "C",
+                "eyebrow": "History / Cinema / Trends",
+                "title": "Cinema",
+                "subtitle": "Futura headline with modern cinematic pacing.",
+                "background": "var(--color-bg, #f4f1ec)",
+                "padding": 96,
+                "gap": 36,
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "preview-25",
+          "label": "preview-25",
+          "startSec": 0,
+          "endSec": 0,
+          "text": "",
+          "segments": [],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "theme-26",
+      "title": "theme-26",
+      "startSec": 0,
+      "endSec": 0,
+      "styles": {
+        "background": "var(--color-bg, #f4f1ec)",
+        "color": "var(--color-text, #211f1b)",
+        "vars": {
+          "--color-bg": "#f4f1ec",
+          "--color-text": "#211f1b",
+          "--color-text-muted": "#5c5650",
+          "--font-eyebrow": "\"Helvetica Neue\", Arial, sans-serif",
+          "--font-headline": "\"Helvetica Neue\", Arial, sans-serif",
+          "--font-subhead": "\"Helvetica Neue\", Arial, sans-serif"
+        }
+      },
+      "layers": [
+        {
+          "id": "content",
+          "timing": {
+            "startSec": 78,
+            "endSec": 81
+          },
+          "components": [
+            {
+              "id": "layout-flexpage-0",
+              "type": "FlexPage",
+              "props": {
+                "headerAlign": "center",
+                "label": "C",
+                "eyebrow": "History / Cinema / Trends",
+                "title": "Current Trend",
+                "subtitle": "Contemporary sans stack for modern explainers.",
+                "background": "var(--color-bg, #f4f1ec)",
+                "padding": 96,
+                "gap": 36,
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "preview-26",
+          "label": "preview-26",
+          "startSec": 0,
+          "endSec": 0,
+          "text": "",
+          "segments": [],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "theme-27",
+      "title": "theme-27",
+      "startSec": 0,
+      "endSec": 0,
+      "styles": {
+        "background": "var(--color-bg, #f4f1ec)",
+        "color": "var(--color-text, #211f1b)",
+        "vars": {
+          "--color-bg": "#f4f1ec",
+          "--color-text": "#211f1b",
+          "--color-text-muted": "#5c5650",
+          "--font-eyebrow": "Montserrat, \"Helvetica Neue\", sans-serif",
+          "--font-headline": "Baskerville, Georgia, serif",
+          "--font-subhead": "Inter, \"Helvetica Neue\", sans-serif"
+        }
+      },
+      "layers": [
+        {
+          "id": "content",
+          "timing": {
+            "startSec": 81,
+            "endSec": 84
+          },
+          "components": [
+            {
+              "id": "layout-flexpage-0",
+              "type": "FlexPage",
+              "props": {
+                "headerAlign": "center",
+                "label": "C",
+                "eyebrow": "History / Cinema / Trends",
+                "title": "Minimal Serif",
+                "subtitle": "Clean serif headline with modern sans support.",
+                "background": "var(--color-bg, #f4f1ec)",
+                "padding": 96,
+                "gap": 36,
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "preview-27",
+          "label": "preview-27",
+          "startSec": 0,
+          "endSec": 0,
+          "text": "",
+          "segments": [],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "theme-28",
+      "title": "theme-28",
+      "startSec": 0,
+      "endSec": 0,
+      "styles": {
+        "background": "var(--color-bg, #f4f1ec)",
+        "color": "var(--color-text, #211f1b)",
+        "vars": {
+          "--color-bg": "#f4f1ec",
+          "--color-text": "#211f1b",
+          "--color-text-muted": "#5c5650",
+          "--font-eyebrow": "\"Segoe UI\", Arial, sans-serif",
+          "--font-headline": "Merriweather, Georgia, serif",
+          "--font-subhead": "\"Segoe UI\", Arial, sans-serif"
+        }
+      },
+      "layers": [
+        {
+          "id": "content",
+          "timing": {
+            "startSec": 84,
+            "endSec": 87
+          },
+          "components": [
+            {
+              "id": "layout-flexpage-0",
+              "type": "FlexPage",
+              "props": {
+                "headerAlign": "center",
+                "label": "C",
+                "eyebrow": "History / Cinema / Trends",
+                "title": "Broadcast Quote",
+                "subtitle": "Quote frames with serif emphasis and neutral sans.",
+                "background": "var(--color-bg, #f4f1ec)",
+                "padding": 96,
+                "gap": 36,
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "preview-28",
+          "label": "preview-28",
+          "startSec": 0,
+          "endSec": 0,
+          "text": "",
+          "segments": [],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "theme-29",
+      "title": "theme-29",
+      "startSec": 0,
+      "endSec": 0,
+      "styles": {
+        "background": "var(--color-bg, #f4f1ec)",
+        "color": "var(--color-text, #211f1b)",
+        "vars": {
+          "--color-bg": "#f4f1ec",
+          "--color-text": "#211f1b",
+          "--color-text-muted": "#5c5650",
+          "--font-eyebrow": "\"Franklin Gothic\", Arial, sans-serif",
+          "--font-headline": "\"Franklin Gothic\", Arial, sans-serif",
+          "--font-subhead": "\"Franklin Gothic\", Arial, sans-serif"
+        }
+      },
+      "layers": [
+        {
+          "id": "content",
+          "timing": {
+            "startSec": 87,
+            "endSec": 90
+          },
+          "components": [
+            {
+              "id": "layout-flexpage-0",
+              "type": "FlexPage",
+              "props": {
+                "headerAlign": "center",
+                "label": "C",
+                "eyebrow": "History / Cinema / Trends",
+                "title": "Lower Third",
+                "subtitle": "Classic lower-third stack for nameplates.",
+                "background": "var(--color-bg, #f4f1ec)",
+                "padding": 96,
+                "gap": 36,
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "preview-29",
+          "label": "preview-29",
+          "startSec": 0,
+          "endSec": 0,
+          "text": "",
+          "segments": [],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "theme-30",
+      "title": "theme-30",
+      "startSec": 0,
+      "endSec": 0,
+      "styles": {
+        "background": "var(--color-bg, #f4f1ec)",
+        "color": "var(--color-text, #211f1b)",
+        "vars": {
+          "--color-bg": "#f4f1ec",
+          "--color-text": "#211f1b",
+          "--color-text-muted": "#5c5650",
+          "--font-eyebrow": "Montserrat, \"Helvetica Neue\", sans-serif",
+          "--font-headline": "\"Bebas Neue\", \"Arial Black\", sans-serif",
+          "--font-subhead": "\"Open Sans\", Arial, sans-serif"
+        }
+      },
+      "layers": [
+        {
+          "id": "content",
+          "timing": {
+            "startSec": 90,
+            "endSec": 93
+          },
+          "components": [
+            {
+              "id": "layout-flexpage-0",
+              "type": "FlexPage",
+              "props": {
+                "headerAlign": "center",
+                "label": "C",
+                "eyebrow": "History / Cinema / Trends",
+                "title": "Pop Culture",
+                "subtitle": "High energy display for entertainment content.",
+                "background": "var(--color-bg, #f4f1ec)",
+                "padding": 96,
+                "gap": 36,
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "preview-30",
+          "label": "preview-30",
+          "startSec": 0,
+          "endSec": 0,
+          "text": "",
+          "segments": [],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "theme-31",
+      "title": "theme-31",
+      "startSec": 0,
+      "endSec": 0,
+      "styles": {
+        "background": "var(--color-bg, #f4f1ec)",
+        "color": "var(--color-text, #211f1b)",
+        "vars": {
+          "--color-bg": "#f4f1ec",
+          "--color-text": "#211f1b",
+          "--color-text-muted": "#5c5650",
+          "--font-eyebrow": "Optima, \"Helvetica Neue\", sans-serif",
+          "--font-headline": "Trajan, \"Times New Roman\", serif",
+          "--font-subhead": "Garamond, \"Times New Roman\", serif"
+        }
+      },
+      "layers": [
+        {
+          "id": "content",
+          "timing": {
+            "startSec": 93,
+            "endSec": 96
+          },
+          "components": [
+            {
+              "id": "layout-flexpage-0",
+              "type": "FlexPage",
+              "props": {
+                "headerAlign": "center",
+                "label": "C",
+                "eyebrow": "History / Cinema / Trends",
+                "title": "Luxury",
+                "subtitle": "Elegant serif with refined supporting sans.",
+                "background": "var(--color-bg, #f4f1ec)",
+                "padding": 96,
+                "gap": 36,
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "preview-31",
+          "label": "preview-31",
+          "startSec": 0,
+          "endSec": 0,
+          "text": "",
+          "segments": [],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "theme-32",
+      "title": "theme-32",
+      "startSec": 0,
+      "endSec": 0,
+      "styles": {
+        "background": "var(--color-bg, #f4f1ec)",
+        "color": "var(--color-text, #211f1b)",
+        "vars": {
+          "--color-bg": "#f4f1ec",
+          "--color-text": "#211f1b",
+          "--color-text-muted": "#5c5650",
+          "--font-eyebrow": "\"Gill Sans\", \"Helvetica Neue\", sans-serif",
+          "--font-headline": "Georgia, \"Times New Roman\", serif",
+          "--font-subhead": "Inter, \"Helvetica Neue\", sans-serif"
+        }
+      },
+      "layers": [
+        {
+          "id": "content",
+          "timing": {
+            "startSec": 96,
+            "endSec": 99
+          },
+          "components": [
+            {
+              "id": "layout-flexpage-0",
+              "type": "FlexPage",
+              "props": {
+                "headerAlign": "center",
+                "label": "C",
+                "eyebrow": "History / Cinema / Trends",
+                "title": "News Quote",
+                "subtitle": "Quote-heavy segments with clear serif headline.",
+                "background": "var(--color-bg, #f4f1ec)",
+                "padding": 96,
+                "gap": 36,
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "preview-32",
+          "label": "preview-32",
+          "startSec": 0,
+          "endSec": 0,
+          "text": "",
+          "segments": [],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "theme-33",
+      "title": "theme-33",
+      "startSec": 0,
+      "endSec": 0,
+      "styles": {
+        "background": "var(--color-bg, #f4f1ec)",
+        "color": "var(--color-text, #211f1b)",
+        "vars": {
+          "--color-bg": "#f4f1ec",
+          "--color-text": "#211f1b",
+          "--color-text-muted": "#5c5650",
+          "--font-eyebrow": "DIN, \"Helvetica Neue\", sans-serif",
+          "--font-headline": "DIN, \"Helvetica Neue\", sans-serif",
+          "--font-subhead": "DIN, \"Helvetica Neue\", sans-serif"
+        }
+      },
+      "layers": [
+        {
+          "id": "content",
+          "timing": {
+            "startSec": 99,
+            "endSec": 102
+          },
+          "components": [
+            {
+              "id": "layout-flexpage-0",
+              "type": "FlexPage",
+              "props": {
+                "headerAlign": "center",
+                "label": "C",
+                "eyebrow": "History / Cinema / Trends",
+                "title": "Data Viz",
+                "subtitle": "Technical, condensed numerics for charts.",
+                "background": "var(--color-bg, #f4f1ec)",
+                "padding": 96,
+                "gap": 36,
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "preview-33",
+          "label": "preview-33",
+          "startSec": 0,
+          "endSec": 0,
+          "text": "",
+          "segments": [],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "theme-34",
+      "title": "theme-34",
+      "startSec": 0,
+      "endSec": 0,
+      "styles": {
+        "background": "var(--color-bg, #f4f1ec)",
+        "color": "var(--color-text, #211f1b)",
+        "vars": {
+          "--color-bg": "#f4f1ec",
+          "--color-text": "#211f1b",
+          "--color-text-muted": "#5c5650",
+          "--font-eyebrow": "Orbitron, \"Helvetica Neue\", sans-serif",
+          "--font-headline": "\"Russo One\", \"Arial Black\", sans-serif",
+          "--font-subhead": "Roboto, \"Helvetica Neue\", sans-serif"
+        }
+      },
+      "layers": [
+        {
+          "id": "content",
+          "timing": {
+            "startSec": 102,
+            "endSec": 105
+          },
+          "components": [
+            {
+              "id": "layout-flexpage-0",
+              "type": "FlexPage",
+              "props": {
+                "headerAlign": "center",
+                "label": "C",
+                "eyebrow": "History / Cinema / Trends",
+                "title": "Esports",
+                "subtitle": "Futuristic display for gaming highlight reels.",
+                "background": "var(--color-bg, #f4f1ec)",
+                "padding": 96,
+                "gap": 36,
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "preview-34",
+          "label": "preview-34",
+          "startSec": 0,
+          "endSec": 0,
+          "text": "",
+          "segments": [],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "theme-35",
+      "title": "theme-35",
+      "startSec": 0,
+      "endSec": 0,
+      "styles": {
+        "background": "var(--color-bg, #f4f1ec)",
+        "color": "var(--color-text, #211f1b)",
+        "vars": {
+          "--color-bg": "#f4f1ec",
+          "--color-text": "#211f1b",
+          "--color-text-muted": "#5c5650",
+          "--font-eyebrow": "Nunito, \"Segoe UI\", sans-serif",
+          "--font-headline": "Recoleta, Georgia, serif",
+          "--font-subhead": "Nunito, \"Segoe UI\", sans-serif"
+        }
+      },
+      "layers": [
+        {
+          "id": "content",
+          "timing": {
+            "startSec": 105,
+            "endSec": 108
+          },
+          "components": [
+            {
+              "id": "layout-flexpage-0",
+              "type": "FlexPage",
+              "props": {
+                "headerAlign": "center",
+                "label": "C",
+                "eyebrow": "History / Cinema / Trends",
+                "title": "Lifestyle",
+                "subtitle": "Soft, approachable vibe for wellness & lifestyle.",
+                "background": "var(--color-bg, #f4f1ec)",
+                "padding": 96,
+                "gap": 36,
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "preview-35",
+          "label": "preview-35",
+          "startSec": 0,
+          "endSec": 0,
+          "text": "",
+          "segments": [],
+          "bullets": []
+        }
+      ]
+    }
+  ],
+  "fps": 30,
+  "meta": {
+    "fps": 30,
+    "width": 1920,
+    "height": 1080
+  }
+}

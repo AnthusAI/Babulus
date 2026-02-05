@@ -1,0 +1,65 @@
+{
+  "scenes": [
+    {
+      "id": "bullets-demo",
+      "title": "bullets-demo",
+      "startSec": 0,
+      "endSec": 6,
+      "styles": {
+        "background": "var(--color-bg)"
+      },
+      "layers": [
+        {
+          "id": "bullets",
+          "zIndex": 10,
+          "components": [
+            {
+              "id": "bullet-list-0",
+              "type": "BulletList",
+              "props": {
+                "items": [
+                  "Frame-driven",
+                  "Composable",
+                  "Deterministic",
+                  "Cue-timed"
+                ],
+                "revealStyle": "spring",
+                "staggerDelayFrames": 12,
+                "position": {
+                  "x": 160,
+                  "y": 260
+                },
+                "textColor": "var(--color-text)",
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "hold",
+          "label": "hold",
+          "startSec": 0,
+          "endSec": 6,
+          "text": "",
+          "segments": [
+            {
+              "type": "pause",
+              "startSec": 0,
+              "endSec": 6,
+              "durationSec": 6
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    }
+  ],
+  "fps": 30,
+  "meta": {
+    "fps": 30,
+    "width": 1920,
+    "height": 1080
+  }
+}

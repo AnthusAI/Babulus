@@ -1,0 +1,76 @@
+{
+  "scenes": [
+    {
+      "id": "title-slide",
+      "title": "title-slide",
+      "startSec": 0,
+      "endSec": 20.18181818181818,
+      "layers": [
+        {
+          "id": "background",
+          "zIndex": 0,
+          "components": [
+            {
+              "id": "background-0",
+              "type": "Background",
+              "props": {
+                "variant": "linear",
+                "gradient": {
+                  "angle": 135,
+                  "colors": [
+                    "#101010",
+                    "#1f2a44"
+                  ]
+                },
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        },
+        {
+          "id": "content",
+          "zIndex": 10,
+          "components": [
+            {
+              "id": "title-slide-layout-demo-0",
+              "type": "TitleSlideLayoutDemo",
+              "props": {
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "voice",
+          "label": "voice",
+          "startSec": 0,
+          "endSec": 20.18181818181818,
+          "text": "This is the title screen layout.",
+          "segments": [
+            {
+              "type": "tts",
+              "startSec": 0,
+              "endSec": 2.1818181818181817,
+              "text": "This is the title screen layout."
+            },
+            {
+              "type": "pause",
+              "startSec": 2.1818181818181817,
+              "endSec": 20.18181818181818,
+              "durationSec": 18
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    }
+  ],
+  "fps": 30,
+  "meta": {
+    "fps": 30,
+    "width": 1920,
+    "height": 1080
+  }
+}

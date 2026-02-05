@@ -1,0 +1,107 @@
+{
+  "items": [
+    {
+      "type": "tts",
+      "sceneId": "lucide-checks",
+      "cueId": "vo1",
+      "startSec": 0,
+      "endSec": 5.9,
+      "segments": [
+        {
+          "type": "tts",
+          "startSec": 0,
+          "endSec": 4.4,
+          "text": "Lucide check marks sized for TV distance readability.",
+          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/bullet-playground/env/development/segments/lucide-checks--vo1--tts--8374f6f6b795--1.wav",
+          "durationSec": 4.4,
+          "rawDurationSec": 4.4,
+          "trimEndSec": 0
+        },
+        {
+          "type": "pause",
+          "startSec": 4.4,
+          "endSec": 5.9,
+          "seconds": 1.5
+        }
+      ]
+    },
+    {
+      "type": "tts",
+      "sceneId": "unicode-bullets",
+      "cueId": "vo2",
+      "startSec": 5.9,
+      "endSec": 11,
+      "segments": [
+        {
+          "type": "tts",
+          "startSec": 5.9,
+          "endSec": 9.5,
+          "text": "Unicode bullets with a configurable fallback font.",
+          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/bullet-playground/env/development/segments/unicode-bullets--vo2--tts--5ec3df28aa07--1.wav",
+          "durationSec": 3.6,
+          "rawDurationSec": 3.6,
+          "trimEndSec": 0
+        },
+        {
+          "type": "pause",
+          "startSec": 9.5,
+          "endSec": 11,
+          "seconds": 1.5
+        }
+      ]
+    },
+    {
+      "type": "tts",
+      "sceneId": "numbered",
+      "cueId": "vo3",
+      "startSec": 11,
+      "endSec": 15.45,
+      "segments": [
+        {
+          "type": "tts",
+          "startSec": 11,
+          "endSec": 13.95,
+          "text": "Classic numbered list for ordered steps on screen.",
+          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/bullet-playground/env/development/segments/numbered--vo3--tts--267be8c575ed--1.wav",
+          "durationSec": 2.95,
+          "rawDurationSec": 2.95,
+          "trimEndSec": 0
+        },
+        {
+          "type": "pause",
+          "startSec": 13.95,
+          "endSec": 15.45,
+          "seconds": 1.5
+        }
+      ]
+    },
+    {
+      "type": "tts",
+      "sceneId": "mixed-icons",
+      "cueId": "vo4",
+      "startSec": 15.45,
+      "endSec": 21.7,
+      "segments": [
+        {
+          "type": "tts",
+          "startSec": 15.45,
+          "endSec": 20.2,
+          "text": "Per-item Lucide icons override the default bullet icon.",
+          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/bullet-playground/env/development/segments/mixed-icons--vo4--tts--eb6e68e206ba--1.wav",
+          "durationSec": 4.75,
+          "rawDurationSec": 4.75,
+          "trimEndSec": 0
+        },
+        {
+          "type": "pause",
+          "startSec": 20.2,
+          "endSec": 21.7,
+          "seconds": 1.5
+        }
+      ]
+    }
+  ],
+  "audio": {
+    "tracks": []
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "items": [
+    {
+      "type": "tts",
+      "sceneId": "grid",
+      "cueId": "voice",
+      "startSec": 0,
+      "endSec": 5.4,
+      "segments": [
+        {
+          "type": "tts",
+          "startSec": 0,
+          "endSec": 4.2,
+          "text": "Grid layouts are great for showcasing multiple items at once.",
+          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/grid-demo/env/development/segments/grid--voice--tts--3f979de10de6--1.wav",
+          "durationSec": 4.2,
+          "rawDurationSec": 4.2,
+          "trimEndSec": 0
+        },
+        {
+          "type": "pause",
+          "startSec": 4.2,
+          "endSec": 5.4,
+          "seconds": 1.2
+        }
+      ]
+    }
+  ],
+  "audio": {
+    "tracks": []
+  }
+}
