@@ -76,7 +76,7 @@ Feature: Config loading
       tts:
         default_provider: dry-run
       """
-    And a config DSL file at "content/demo.babulus.ts"
+    And a config DSL file at "content/demo.babulus.xml"
     When I load the config from DSL path
     Then the default provider should be "dry-run"
 

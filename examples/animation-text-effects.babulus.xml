@@ -1,0 +1,11 @@
+<video id="animation-text-effects" title="Animation Text Effects" fps="30" width="1920" height="1080">
+  <voiceover provider="dry-run" />
+  <scene id="text-effects" title="text-effects" styles='{"background":"var(--color-bg)"}'>
+    <layer id="text-effects" z="10">
+      <text-effects-demo />
+    </layer>
+    <cue id="hold" label="hold">
+      <pause seconds="6s" />
+    </cue>
+  </scene>
+</video>

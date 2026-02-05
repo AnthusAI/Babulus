@@ -431,7 +431,7 @@ export function StudioWorkspace() {
             {!previewIndex.length ? (
               <div className="notice">
                 Generate preview artifacts with
-                <code>npm run studio:preview -- content/your-video.babulus.ts</code>.
+                <code>npm run studio:preview -- content/your-video.babulus.xml</code>.
               </div>
             ) : null}
             <div className="artifact-list">

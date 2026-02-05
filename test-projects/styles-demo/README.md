@@ -32,7 +32,7 @@ This test project demonstrates the new cascading styles system with layers.
 
 ```bash
 # Generate script and audio
-npm run generate -- test-projects/styles-demo/styles-demo.babulus.ts
+npm run generate -- test-projects/styles-demo/styles-demo.babulus.xml
 
 # View in Studio (recommended)
 # Navigate to http://localhost:3000 and open the project

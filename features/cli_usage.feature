@@ -44,10 +44,10 @@ Feature: CLI usage summary
 
   Scenario: Summarize usage ledger resolved from DSL path
     Given a CLI usage workspace
-    And a usage DSL file "content/demo.babulus.ts" with composition "demo"
+    And a usage DSL file "content/demo.babulus.xml" with composition "demo"
     And a usage ledger for composition "demo" env "development" with entries:
       | kind | unit  | quantity | provider | estimated | actual |
       | tts  | chars | 20       | openai   | 0.01      | 0.01   |
-    When I run babulus usage summarize for DSL "content/demo.babulus.ts" with env "development"
+    When I run babulus usage summarize for DSL "content/demo.babulus.xml" with env "development"
     Then the usage CLI exit code should be 0
     And the usage summary json total quantity should be 20

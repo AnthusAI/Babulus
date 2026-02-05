@@ -274,7 +274,7 @@ export function VideoEditor({ orgId, projectId, videoId }: VideoEditorProps) {
 
       setIsLoadingCode(true);
       try {
-        const fileName = `${video.title.replace(/[^a-z0-9]/gi, '-').toLowerCase()}.babulus.ts`;
+        const fileName = `${video.title.replace(/[^a-z0-9]/gi, '-').toLowerCase()}.babulus.xml`;
         const content = await readProjectFileAction(projectId, fileName);
         if (content) {
           setEditorCode(content);
@@ -373,7 +373,7 @@ export function VideoEditor({ orgId, projectId, videoId }: VideoEditorProps) {
       if (video?.title) {
         try {
           // Generate filename from video title (sanitized)
-          const fileName = `${video.title.replace(/[^a-z0-9]/gi, '-').toLowerCase()}.babulus.ts`;
+        const fileName = `${video.title.replace(/[^a-z0-9]/gi, '-').toLowerCase()}.babulus.xml`;
           await uploadProjectFileAction(
             projectId,
             fileName,
@@ -689,7 +689,7 @@ export function VideoEditor({ orgId, projectId, videoId }: VideoEditorProps) {
     if (!video?.title || saveStatus === 'saving') return;
     setSaveStatus('saving');
     try {
-      const fileName = `${video.title.replace(/[^a-z0-9]/gi, '-').toLowerCase()}.babulus.ts`;
+      const fileName = `${video.title.replace(/[^a-z0-9]/gi, '-').toLowerCase()}.babulus.xml`;
       await uploadProjectFileAction(
         projectId,
         fileName,

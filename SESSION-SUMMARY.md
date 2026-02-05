@@ -41,7 +41,7 @@ Completed comprehensive local testing infrastructure for Babulus video generatio
 - **Structure**:
   ```
   introduction-video/
-  ├── introduction.babulus.ts    # DSL source
+  ├── introduction.babulus.xml    # DSL source
   ├── assets/                    # Placeholder for media
   ├── generated/
   │   ├── frames/               # 1734 rendered PNG frames
@@ -54,7 +54,7 @@ Completed comprehensive local testing infrastructure for Babulus video generatio
 
 #### Generation Testing
 ```bash
-npm run babulus generate test-projects/introduction-video/introduction.babulus.ts \
+npm run babulus generate test-projects/introduction-video/introduction.babulus.xml \
   --project-dir test-projects/introduction-video
 ```
 
@@ -123,7 +123,7 @@ npm run render:storyboard -- \
 ### DSL API Correction
 - **Issue**: Used non-existent `composition()` API
 - **Fix**: Updated to `defineVideo()` builder pattern
-- **Reference**: Matched `content/demo.babulus.ts` implementation
+- **Reference**: Matched `content/demo.babulus.xml` implementation
 - **Commit**: `dd1728f`
 
 ### Output Quality
@@ -153,7 +153,7 @@ npm run render:storyboard -- \
 ## Files Created/Modified
 
 ### New Files
-1. `test-projects/introduction-video/introduction.babulus.ts`
+1. `test-projects/introduction-video/introduction.babulus.xml`
 2. `test-projects/introduction-video/README.md`
 3. `test-projects/introduction-video/assets/.gitkeep`
 4. `test-projects/introduction-video/LOCAL-TEST-RESULTS.md`

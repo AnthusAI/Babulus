@@ -37,7 +37,13 @@ Given("a CLI sfx workspace", () => {});
 Given("a sfx DSL file {string} with composition {string}", (relativePath: string, compId: string) => {
   dslPath = join(workspace, relativePath);
   mkdirSync(join(workspace, "content"), { recursive: true });
-  writeFileSync(dslPath, `export default { compositions: [{ id: "${compId}", scenes: [] }] };\n`);
+  writeFileSync(
+    dslPath,
+    `<video id="${compId}" title="${compId}" fps="30" width="1280" height="720">
+  <scene id="scene" title="Scene" />
+</video>
+`,
+  );
 });
 
 Given(
@@ -47,24 +53,14 @@ Given(
     mkdirSync(join(workspace, "content"), { recursive: true });
     writeFileSync(
       dslPath,
-      `export default { compositions: [{
-        id: "${compId}",
-        scenes: [
-          {
-            id: "scene",
-            title: "Scene",
-            items: [
-              {
-                kind: "cue",
-                id: "cue",
-                label: "Cue",
-                segments: [{ kind: "text", text: "Hello world" }],
-                bullets: []
-              }
-            ]
-          }
-        ]
-      }] };\n`,
+      `<video id="${compId}" title="${compId}" fps="30" width="1280" height="720">
+  <scene id="scene" title="Scene">
+    <cue id="cue">
+      <voice>Hello world</voice>
+    </cue>
+  </scene>
+</video>
+`,
     );
     scriptPath = join(workspace, "src", "videos", compId, `${compId}.script.json`);
     timelinePath = join(workspace, "src", "videos", compId, `${compId}.timeline.json`);
@@ -73,14 +69,22 @@ Given(
 );
 
 Given(
-  "a sfx DSL file {string} with compositions {string} and {string}",
-  (relativePath: string, first: string, second: string) => {
-    dslPath = join(workspace, relativePath);
-    mkdirSync(join(workspace, "content"), { recursive: true });
-    writeFileSync(
-      dslPath,
-      `export default { compositions: [{ id: "${first}", scenes: [] }, { id: "${second}", scenes: [] }] };\n`,
-    );
+  "sfx DSL files in {string} named:",
+  (dir: string, table: { raw: () => string[][] }) => {
+    const target = join(workspace, dir);
+    mkdirSync(target, { recursive: true });
+    const rows = table.raw().flat();
+    for (const name of rows) {
+      const id = name.replace(/\.babulus\.xml$/, "");
+      const path = join(target, name);
+      writeFileSync(
+        path,
+        `<video id="${id}" title="${id}" fps="30" width="1280" height="720">
+  <scene id="scene" title="Scene" />
+</video>
+`,
+      );
+    }
   },
 );
 

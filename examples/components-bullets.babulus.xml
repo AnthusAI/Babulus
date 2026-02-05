@@ -1,0 +1,11 @@
+<video id="components-bullets" title="Components Bullets" fps="30" width="1920" height="1080">
+  <voiceover provider="dry-run" />
+  <scene id="bullets-demo" title="bullets-demo" styles='{"background":"var(--color-bg)"}'>
+    <layer id="bullets" z="10">
+      <bullet-list props='{"items":["Frame-driven","Composable","Deterministic","Cue-timed"],"revealStyle":"spring","staggerDelayFrames":12,"position":{"x":160,"y":260},"textColor":"var(--color-text)"}' />
+    </layer>
+    <cue id="hold" label="hold">
+      <pause seconds="6s" />
+    </cue>
+  </scene>
+</video>

@@ -23,7 +23,7 @@ type PreviewIndex = {
 const program = new Command();
 program
   .name("studio-preview")
-  .argument("<dsl...>", "Path(s) to .babulus.ts file(s)")
+  .argument("<dsl...>", "Path(s) to .babulus.ts or .babulus.xml file(s)")
   .option("--out-dir <path>", "Preview output directory", "apps/studio-web/public/preview")
   .option("--audio", "Write preview audio files", false)
   .option("--watch", "Watch DSL changes and regenerate", false)
@@ -114,7 +114,12 @@ const run = async () => {
 
   console.error(`[studio-preview] watching ${watchDirs.join(", ")}`);
   watcher.on("all", async (_event, changedPath) => {
-    if (!changedPath.endsWith(".ts") && !changedPath.endsWith(".yml") && !changedPath.endsWith(".yaml")) {
+    if (
+      !changedPath.endsWith(".ts") &&
+      !changedPath.endsWith(".xml") &&
+      !changedPath.endsWith(".yml") &&
+      !changedPath.endsWith(".yaml")
+    ) {
       return;
     }
     console.error(`[studio-preview] change detected: ${changedPath}`);

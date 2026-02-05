@@ -44,7 +44,7 @@ Given("a project config file with content:", (docString: string) => {
 Given("a config DSL file at {string}", (relativePath: string) => {
   dslPath = join(workspace, relativePath);
   mkdirSync(join(workspace, "content"), { recursive: true });
-  writeFileSync(dslPath, "export default { compositions: [] };\n");
+  writeFileSync(dslPath, `<video id="demo" title="Demo" fps="30" width="1280" height="720"><scene id="scene" /></video>\n`);
 });
 
 Given("a missing config path", () => {

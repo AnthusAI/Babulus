@@ -1,6 +1,6 @@
 # Babulus DSL API Reference
 
-Complete API documentation for the Babulus TypeScript DSL.
+Legacy API documentation for the Babulus TypeScript DSL. The current authoring surface is XML (`.babulus.xml`).
 
 ## Table of Contents
 

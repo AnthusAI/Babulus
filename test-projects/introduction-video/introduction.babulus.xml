@@ -1,0 +1,11 @@
+<video id="introduction" title="Introduction" fps="30" width="1920" height="1080">
+  <voiceover provider="openai" voice="echo" />
+
+  <scene id="intro" title="Intro">
+    <cue id="intro-1">
+      <voice>Since the dawn of computing...</voice>
+      <pause seconds="0.35s" />
+      <voice>Tool-using agents are changing the rules.</voice>
+    </cue>
+  </scene>
+</video>

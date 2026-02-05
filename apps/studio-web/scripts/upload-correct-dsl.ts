@@ -1,4 +1,4 @@
-import { readFileSync } from 'fs';
+import { existsSync, readFileSync } from 'fs';
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 import outputs from '../amplify_outputs.json';
 
@@ -13,13 +13,15 @@ if (!ORG_ID || !PROJECT_ID) {
 }
 
 // Read the correct DSL file from test-projects
-const correctDsl = readFileSync('../../../test-projects/styles-demo/styles-demo.babulus.ts', 'utf-8');
+const xmlPath = '../../../test-projects/styles-demo/styles-demo.babulus.xml';
+const tsPath = '../../../test-projects/styles-demo/styles-demo.babulus.ts';
+const correctDsl = readFileSync(existsSync(xmlPath) ? xmlPath : tsPath, 'utf-8');
 
 const client = new S3Client({
   region: outputs.storage.aws_region,
 });
 
-const fileName = `${VIDEO_TITLE.replace(/[^a-z0-9]/gi, '-').toLowerCase()}.babulus.ts`;
+const fileName = `${VIDEO_TITLE.replace(/[^a-z0-9]/gi, '-').toLowerCase()}.babulus.xml`;
 const storageKey = `org/${ORG_ID}/projects/${PROJECT_ID}/${fileName}`;
 
 async function upload() {
@@ -27,7 +29,7 @@ async function upload() {
     Bucket: outputs.storage.bucket_name,
     Key: storageKey,
     Body: correctDsl,
-    ContentType: 'text/typescript'
+    ContentType: 'text/xml'
   }));
   console.log(`Uploaded to ${storageKey}`);
 }

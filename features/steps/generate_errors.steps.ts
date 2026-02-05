@@ -39,7 +39,7 @@ const initPaths = (id: string) => {
   outDir = join(workspace, ".babulus", "out", id);
   scriptOut = join(workspace, "script.json");
   timelineOut = join(workspace, "timeline.json");
-  dslPath = join(workspace, "content", `${id}.babulus.ts`);
+  dslPath = join(workspace, "content", `${id}.babulus.xml`);
   config = {};
 };
 

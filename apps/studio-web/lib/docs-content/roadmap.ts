@@ -53,7 +53,7 @@ export const roadmapDoc = {
 <p>Once the alpha loop is stable, beta is about speed and ergonomics—without breaking the “DNA”:</p>
 <ul>
   <li><strong>Live preview from source</strong>: reduce the “generate to see changes” loop time.</li>
-  <li><strong>Import resolution</strong>: make <code>_*.babulus.ts</code> utilities first-class in projects.</li>
+  <li><strong>Import resolution</strong>: make <code>_*.babulus.xml</code> utilities first-class in projects.</li>
   <li><strong>Better approval workflows</strong>: operationalize “autonomy with gates”.</li>
   <li><strong>Local folders + sync</strong>: enable a desktop/local workflow that mirrors the cloud folder model.</li>
   <li><strong>Publishing integrations</strong>: distribute and track outcomes, then feed them back into topic selection and iteration.</li>

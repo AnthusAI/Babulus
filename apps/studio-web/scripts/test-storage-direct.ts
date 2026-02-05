@@ -15,13 +15,14 @@ async function main() {
   // Use test org and project IDs
   const orgId = 'test-org-' + Date.now();
   const projectId = 'test-project-' + Date.now();
-  const testFileName = 'test-video.babulus.ts';
-  const testContent = `// Test Babulus video
-export default function TestVideo() {
-  return scene('intro', () => {
-    text('Hello from S3!');
-  });
-}
+  const testFileName = 'test-video.babulus.xml';
+  const testContent = `<video id="test-video" title="Test Video" fps="30" width="1920" height="1080">
+  <scene id="intro">
+    <layer id="content">
+      <text props='{"content":"Hello from S3!"}' />
+    </layer>
+  </scene>
+</video>
 `;
 
   console.log('Testing S3 storage operations...');

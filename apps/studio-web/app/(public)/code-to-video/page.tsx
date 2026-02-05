@@ -6,71 +6,36 @@ import { codeToHtml } from "shiki";
 
 export const metadata: Metadata = {
   title: "Code to Video",
-  description: "Write TypeScript code and Babulus generates complete videos automatically—with AI voiceovers, automatic timing, and animated visuals.",
+  description: "Write declarative XML and Babulus generates complete videos automatically—with AI voiceovers, automatic timing, and animated visuals.",
 };
 
-const exampleCode = `import { defineVideo } from "babulus";
+const exampleCode = `<video id="code-to-video-preview" title="Code to Video Preview" fps="30" width="1920" height="1080">
+  <scene id="intro">
+    <layer id="content">
+      <title-slide
+        props='{"eyebrow":"Code to Video","title":"Code Your Videos","subtitle":"(AI is really good at it!)","verticalAlign":"center","horizontalAlign":"center","entranceStartFrame":-999}'
+      />
+    </layer>
+    <cue id="intro-vo">
+      <voice>Write XML. Babulus builds the video.</voice>
+    </cue>
+  </scene>
 
-export default defineVideo(
-  "Code to Video Preview",
-  { fps: 30, width: 1920, height: 1080 },
-  (c) => {
-    c.scene("intro", (s) => {
-      s.layer("content", {}, (l) => {
-        l.layout("TitleSlide", {
-          eyebrow: "Code to Video",
-          title: "Code Your Videos",
-          subtitle: "(AI is really good at it!)",
-          verticalAlign: "center",
-          horizontalAlign: "center",
-          entranceStartFrame: -999,
-        });
-      });
-      s.cue("intro-vo", (cue) => {
-        cue.voice((v) => {
-          v.say("Write TypeScript. Babulus builds the video.");
-        });
-      });
-    });
-
-    c.scene("code", (s) => {
-      s.layer("content", {}, (l) => {
-        l.layout("BulletListScreen", {
-          eyebrow: "Pipeline",
-          title: "Your code becomes a video",
-          subtitle: "Scene structure + narration = render",
-          bullets: {
-            items: [
-              "Write a few scenes",
-              "Add voiceover with cues",
-              "Babulus computes timing",
-              "Renderer outputs MP4",
-            ],
-            bulletStyle: "icon",
-            bulletIcon: {
-              kind: "lucide",
-              name: "check",
-              size: 44,
-              strokeWidth: 3.2,
-            },
-            fontSize: 48,
-            lineHeight: 1.2,
-            spacing: 24,
-          },
-        });
-      });
-      s.cue("code-vo", (cue) => {
-        cue.voice((v) => {
-          v.say("Scenes and narration become a finished render.");
-        });
-      });
-    });
-  },
-);`;
+  <scene id="code">
+    <layer id="content">
+      <bullet-list-screen
+        props='{"eyebrow":"Pipeline","title":"Your code becomes a video","subtitle":"Scene structure + narration = render","bullets":{"items":["Write a few scenes","Add voiceover with cues","Babulus computes timing","Renderer outputs MP4"],"bulletStyle":"icon","bulletIcon":{"kind":"lucide","name":"check","size":44,"strokeWidth":3.2},"fontSize":48,"lineHeight":1.2,"spacing":24}}'
+      />
+    </layer>
+    <cue id="code-vo">
+      <voice>Scenes and narration become a finished render.</voice>
+    </cue>
+  </scene>
+</video>`;
 
 export default async function CodeToVideoPage() {
   const highlightedCode = await codeToHtml(exampleCode, {
-    lang: "typescript",
+    lang: "xml",
     theme: "github-dark",
   });
 
@@ -83,7 +48,7 @@ export default async function CodeToVideoPage() {
               Code to Video
             </h1>
             <p className="text-lg text-muted-foreground">
-              Write TypeScript code. Get complete videos with AI voiceovers, automatic timing, and animated visuals.
+              Write declarative XML. Get complete videos with AI voiceovers, automatic timing, and animated visuals.
             </p>
           </div>
 
@@ -116,7 +81,7 @@ export default async function CodeToVideoPage() {
 
               <div className="space-y-4 text-muted-foreground leading-relaxed">
                 <p>
-                  Babulus turns TypeScript into complete videos. You write code that describes what you want—scenes, voiceover narration, visual styling, transitions—and the platform <strong className="text-foreground">automatically generates, times, and renders everything</strong>.
+                  Babulus turns declarative XML into complete videos. You write the structure you want—scenes, voiceover narration, visual styling, transitions—and the platform <strong className="text-foreground">automatically generates, times, and renders everything</strong>.
                 </p>
                 <p>
                   This isn't a video editor. It's a <strong className="text-foreground">compiler</strong> that takes code as input and produces MP4 files as output.
@@ -126,7 +91,7 @@ export default async function CodeToVideoPage() {
                   AI generates the audio
                 </h3>
                 <p>
-                  Every <code className="text-sm bg-muted px-1.5 py-0.5 rounded">voice.say()</code> call triggers AI audio generation. Babulus connects to services like ElevenLabs or OpenAI, synthesizes natural-sounding speech, and manages the audio files automatically.
+                  Every <code className="text-sm bg-muted px-1.5 py-0.5 rounded">&lt;voice&gt;</code> element triggers AI audio generation. Babulus connects to services like ElevenLabs or OpenAI, synthesizes natural-sounding speech, and manages the audio files automatically.
                 </p>
                 <p>
                   Background music, sound effects, and ambient audio work the same way. Reference them in code, and Babulus handles retrieval, caching, and integration.
@@ -172,7 +137,7 @@ export default async function CodeToVideoPage() {
                   From code to MP4:
                 </p>
                 <ol className="list-decimal list-inside space-y-2 pl-4">
-                  <li>Write or update your <code className="text-sm bg-muted px-1.5 py-0.5 rounded">.babulus.ts</code> file</li>
+                  <li>Write or update your <code className="text-sm bg-muted px-1.5 py-0.5 rounded">.babulus.xml</code> file</li>
                   <li>Babulus parses the code and generates voiceover audio via AI</li>
                   <li>The timing engine calculates scene durations from audio lengths</li>
                   <li>React components render with synchronized animations</li>

@@ -203,7 +203,7 @@ import {
 // Upload a file
 const file = await uploadProjectFileAction(
   projectId,
-  'video-001.babulus.ts',
+  'video-001.babulus.xml',
   '// Babulus source code...',
   'video',
   'text/typescript'
@@ -214,10 +214,10 @@ const files = await listProjectFilesAction(projectId);
 // Returns files with CloudFront URLs
 
 // Read file content
-const content = await readProjectFileAction(projectId, 'video-001.babulus.ts');
+const content = await readProjectFileAction(projectId, 'video-001.babulus.xml');
 
 // Delete file
-await deleteProjectFileAction(projectId, 'video-001.babulus.ts');
+await deleteProjectFileAction(projectId, 'video-001.babulus.xml');
 ```
 
 See Project Storage Architecture docs for complete API documentation:

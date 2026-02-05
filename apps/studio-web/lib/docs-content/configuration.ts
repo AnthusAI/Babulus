@@ -63,7 +63,7 @@ environments:
 
 You can specify the provider in your video definition:
 
-\`\`\`typescript
+\`\`\`xml
 export default defineVideo((video) => {
   video.composition("My Video", (composition) => {
     // Use OpenAI for this video
@@ -84,13 +84,13 @@ Override the provider when generating:
 
 \`\`\`bash
 # Use OpenAI
-npx babulus generate video.babulus.ts --provider openai
+npx babulus generate video.babulus.xml --provider openai
 
 # Use ElevenLabs
-npx babulus generate video.babulus.ts --provider elevenlabs
+npx babulus generate video.babulus.xml --provider elevenlabs
 
 # Use development environment defaults
-npx babulus generate video.babulus.ts --env development
+npx babulus generate video.babulus.xml --env development
 \`\`\`
 
 ### Via Environment Variables
@@ -103,7 +103,7 @@ export ELEVENLABS_API_KEY="..."
 export AZURE_SPEECH_KEY="..."
 export AZURE_SPEECH_REGION="eastus"
 
-npx babulus generate video.babulus.ts --provider openai
+npx babulus generate video.babulus.xml --provider openai
 \`\`\`
 
 Environment variables take precedence over the configuration file.
@@ -181,7 +181,7 @@ Environment variables take precedence over the configuration file.
 
 For testing without API calls, use the \`dry-run\` provider:
 
-\`\`\`typescript
+\`\`\`xml
 composition.voiceover({ provider: "dry-run" });
 \`\`\`
 

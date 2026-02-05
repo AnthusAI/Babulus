@@ -140,7 +140,7 @@ Or deployed to production by pushing to the \`main\` branch (Amplify Hosting aut
 
 Use the Amplify Data client to create a job:
 
-\`\`\`typescript
+\`\`\`xml
 import { generateClient } from 'aws-amplify/data';
 
 const client = generateClient({ authMode: 'userPool' });
@@ -358,7 +358,7 @@ aws logs tail "/aws/lambda/amplify-...-RenderTriggerFunction..." --region us-eas
 
 Edit \`apps/studio-web/amplify/backend.ts\`:
 
-\`\`\`typescript
+\`\`\`xml
 environment: {
   // ... other vars
   MAX_CONCURRENT_TASKS: '20',  // Increase from 10 to 20
@@ -376,7 +376,7 @@ git push origin main
 
 For longer videos, increase CPU/RAM:
 
-\`\`\`typescript
+\`\`\`xml
 const renderTaskDefinition = new ecs.FargateTaskDefinition(backend.stack, 'RenderTaskDefinition', {
   cpu: 8192,        // 8 vCPU (was 4096)
   memoryLimitMiB: 30720,  // 30 GB (was 16384)
@@ -388,7 +388,7 @@ const renderTaskDefinition = new ecs.FargateTaskDefinition(backend.stack, 'Rende
 
 Edit EventBridge schedule:
 
-\`\`\`typescript
+\`\`\`xml
 const renderWorkerRule = new events.Rule(backend.stack, 'RenderWorkerSchedule', {
   schedule: events.Schedule.rate(Duration.seconds(30)),  // Every 30 seconds (was 1 minute)
   // ...
@@ -400,7 +400,7 @@ const renderWorkerRule = new events.Rule(backend.stack, 'RenderWorkerSchedule', 
 ### 1. Use Secrets Manager for Worker Credentials
 Currently worker credentials are in plaintext environment variables. Move to Secrets Manager:
 
-\`\`\`typescript
+\`\`\`xml
 import * as secretsmanager from 'aws-cdk-lib/aws-secretsmanager';
 
 const workerSecret = new secretsmanager.Secret(backend.stack, 'WorkerCredentials', {
@@ -427,7 +427,7 @@ renderTaskDefinition.addContainer('render-worker', {
 ### 2. Restrict Task IAM Permissions
 Only grant permissions the worker actually needs:
 
-\`\`\`typescript
+\`\`\`xml
 taskRole.addToPolicy(
   new iam.PolicyStatement({
     actions: ['s3:GetObject', 's3:PutObject'],  // No DeleteObject
@@ -439,7 +439,7 @@ taskRole.addToPolicy(
 ### 3. Enable VPC Flow Logs
 Monitor network traffic:
 
-\`\`\`typescript
+\`\`\`xml
 vpc.addFlowLog('FlowLog', {
   destination: ec2.FlowLogDestination.toCloudWatchLogs(),
   trafficType: ec2.FlowLogTrafficType.ALL,

@@ -1,0 +1,64 @@
+<video id="animation-reel" title="Animation Reel" fps="30" width="1920" height="1080">
+  <voiceover provider="dry-run" />
+  <scene id="reel" title="reel" styles='{"background":"var(--color-bg)"}'>
+    <layer id="engine-framer" z="10" start="0s" end="2.2s">
+      <framer-motion-demo props='{"size":240}' />
+    </layer>
+    <layer id="label-framer" z="20" start="0s" end="2.2s">
+      <chapter-heading props='{"number":"01","title":"Framer Motion","subtitle":"Layout + motion graphics","numberColor":"var(--color-accent)","layout":"side-by-side","numberEntrance":{"type":"fade","from":1,"to":1,"durationFrames":1},"titleEntrance":{"type":"fade","from":1,"to":1,"durationFrames":1}}' />
+    </layer>
+
+    <layer id="engine-d3" z="10" start="2.2s" end="4.4s">
+      <d3-bar-chart />
+    </layer>
+    <layer id="label-d3" z="20" start="2.2s" end="4.4s">
+      <chapter-heading props='{"number":"02","title":"D3","subtitle":"Data visualization","numberColor":"var(--color-accent)","layout":"side-by-side","numberEntrance":{"type":"fade","from":1,"to":1,"durationFrames":1},"titleEntrance":{"type":"fade","from":1,"to":1,"durationFrames":1}}' />
+    </layer>
+
+    <layer id="engine-processing" z="10" start="4.4s" end="6.6s">
+      <p5-particles props='{"particleCount":30}' />
+    </layer>
+    <layer id="label-processing" z="20" start="4.4s" end="6.6s">
+      <chapter-heading props='{"number":"03","title":"Processing / p5.js","subtitle":"Generative art","numberColor":"var(--color-accent)","layout":"side-by-side","numberEntrance":{"type":"fade","from":1,"to":1,"durationFrames":1},"titleEntrance":{"type":"fade","from":1,"to":1,"durationFrames":1}}' />
+    </layer>
+
+    <layer id="engine-three" z="10" start="6.6s" end="8.8s">
+      <three-orbit props='{"cubeSize":160}' />
+    </layer>
+    <layer id="label-three" z="20" start="6.6s" end="8.8s">
+      <chapter-heading props='{"number":"04","title":"Three.js","subtitle":"3D scenes","numberColor":"var(--color-accent)","layout":"side-by-side","numberEntrance":{"type":"fade","from":1,"to":1,"durationFrames":1},"titleEntrance":{"type":"fade","from":1,"to":1,"durationFrames":1}}' />
+    </layer>
+
+    <layer id="engine-lottie" z="10" start="8.8s" end="11.0s">
+      <lottie-badge props='{"size":260}' />
+    </layer>
+    <layer id="label-lottie" z="20" start="8.8s" end="11.0s">
+      <chapter-heading props='{"number":"05","title":"Lottie","subtitle":"After Effects assets","numberColor":"var(--color-accent)","layout":"side-by-side","numberEntrance":{"type":"fade","from":1,"to":1,"durationFrames":1},"titleEntrance":{"type":"fade","from":1,"to":1,"durationFrames":1}}' />
+    </layer>
+
+    <layer id="engine-text" z="10" start="11.0s" end="13.2s">
+      <text-effects-demo />
+    </layer>
+    <layer id="label-text" z="20" start="11.0s" end="13.2s">
+      <chapter-heading props='{"number":"06","title":"Text Effects","subtitle":"Named effects vocabulary","numberColor":"var(--color-accent)","layout":"side-by-side","numberEntrance":{"type":"fade","from":1,"to":1,"durationFrames":1},"titleEntrance":{"type":"fade","from":1,"to":1,"durationFrames":1}}' />
+    </layer>
+
+    <layer id="engine-anime" z="10" start="13.2s" end="15.4s">
+      <anime-harness-demo />
+    </layer>
+    <layer id="label-anime" z="20" start="13.2s" end="15.4s">
+      <chapter-heading props='{"number":"07","title":"Anime.js","subtitle":"Low-level animation engine","numberColor":"var(--color-accent)","layout":"side-by-side","numberEntrance":{"type":"fade","from":1,"to":1,"durationFrames":1},"titleEntrance":{"type":"fade","from":1,"to":1,"durationFrames":1}}' />
+    </layer>
+
+    <layer id="engine-mix" z="10" start="15.4s" end="17.6s">
+      <mix-and-match-demo />
+    </layer>
+    <layer id="label-mix" z="20" start="15.4s" end="17.6s">
+      <chapter-heading props='{"number":"08","title":"Mix + Match","subtitle":"Multiple engines in one scene","numberColor":"var(--color-accent)","layout":"side-by-side","numberEntrance":{"type":"fade","from":1,"to":1,"durationFrames":1},"titleEntrance":{"type":"fade","from":1,"to":1,"durationFrames":1}}' />
+    </layer>
+
+    <cue id="hold" label="hold">
+      <pause seconds="17.6s" />
+    </cue>
+  </scene>
+</video>

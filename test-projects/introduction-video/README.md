@@ -6,7 +6,7 @@ This test project is used to validate both local and cloud execution paths for B
 
 ```
 introduction-video/
-├── introduction.babulus.ts  # Main video DSL script
+├── introduction.babulus.xml  # Main video DSL script
 ├── assets/                  # Media assets (images, audio, video)
 ├── generated/               # Generated outputs (script.json, timeline.json, audio files)
 └── README.md               # This file
@@ -18,16 +18,16 @@ Test the CLI commands locally with this project:
 
 ```bash
 # Generate script and timeline from DSL
-npm run babulus generate test-projects/introduction-video/introduction.babulus.ts --project-dir test-projects/introduction-video
+npm run babulus generate test-projects/introduction-video/introduction.babulus.xml --project-dir test-projects/introduction-video
 
 # Render video frames
-npm run babulus render test-projects/introduction-video/introduction.babulus.ts --project-dir test-projects/introduction-video
+npm run babulus render test-projects/introduction-video/introduction.babulus.xml --project-dir test-projects/introduction-video
 ```
 
 ## Testing Cloud Execution
 
 1. Upload this project to a cloud Project via the Studio UI
-2. Create a Video record pointing to `introduction.babulus.ts`
+2. Create a Video record pointing to `introduction.babulus.xml`
 3. Trigger a generation job via the UI
 4. Monitor job progress in the Jobs panel
 5. Compare outputs with local execution

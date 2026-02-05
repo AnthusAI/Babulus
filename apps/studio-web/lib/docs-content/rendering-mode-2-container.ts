@@ -63,7 +63,7 @@ This creates a Docker image with:
 
 Create \`test-container-local.ts\`:
 
-\`\`\`typescript
+\`\`\`xml
 import { readFileSync } from 'fs';
 import { renderVideoFromScript } from './packages/renderer/src/video-render.js';
 

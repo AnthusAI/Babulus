@@ -50,7 +50,13 @@ Given("a clean DSL file {string} with composition {string}", (relativePath: stri
   compositionId = compId;
   dslPath = join(workspace, relativePath);
   mkdirSync(join(workspace, "content"), { recursive: true });
-  writeFileSync(dslPath, `export default { compositions: [{ id: "${compId}", scenes: [] }] };\n`);
+  writeFileSync(
+    dslPath,
+    `<video id="${compId}" title="${compId}" fps="30" width="1280" height="720">
+  <scene id="scene" title="Scene" />
+</video>
+`,
+  );
 });
 
 Given(

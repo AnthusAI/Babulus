@@ -57,7 +57,7 @@ Given("generate DSL files in {string} named:", (dir: string, table: { raw: () =>
   const rows = table.raw().flat();
   for (const name of rows) {
     const path = join(target, name);
-    writeFileSync(path, buildDsl([name.replace(/\.babulus\.ts$/, "")]));
+    writeFileSync(path, buildDsl([name.replace(/\.babulus\.xml$/, "")]));
   }
 });
 
@@ -178,27 +178,13 @@ Then("the usage ledger should not exist for composition {string} env {string}", 
 });
 
 const buildDsl = (compositionIds: string[]) => {
-  const compositions = compositionIds
-    .map(
-      (id) => `{
-        id: "${id}",
-        scenes: [
-          {
-            id: "scene",
-            title: "Scene",
-            items: [
-              {
-                kind: "cue",
-                id: "cue",
-                label: "Cue",
-                segments: [{ kind: "text", text: "Hello world" }],
-                bullets: []
-              }
-            ]
-          }
-        ]
-      }`,
-    )
-    .join(",");
-  return `export default { compositions: [${compositions}] };\n`;
+  const id = compositionIds[0] ?? "demo";
+  return `<video id="${id}" title="${id}" fps="30" width="1280" height="720">
+  <scene id="scene" title="Scene">
+    <cue id="cue">
+      <voice>Hello world</voice>
+    </cue>
+  </scene>
+</video>
+`;
 };

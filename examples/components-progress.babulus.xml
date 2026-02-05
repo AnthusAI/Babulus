@@ -1,0 +1,11 @@
+<video id="components-progress" title="Components Progress" fps="30" width="1920" height="1080">
+  <voiceover provider="dry-run" />
+  <scene id="progress-demo" title="progress-demo" styles='{"background":"var(--color-bg)"}'>
+    <layer id="progress" z="10">
+      <progress-bar props='{"position":"bottom","height":12,"color":"var(--color-accent)","backgroundColor":"var(--color-muted-more)"}' />
+    </layer>
+    <cue id="hold" label="hold">
+      <pause seconds="5s" />
+    </cue>
+  </scene>
+</video>

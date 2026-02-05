@@ -96,7 +96,7 @@ export function PreviewEmbed({
   if (error) {
     return (
       <div className="flex h-full w-full items-center justify-center rounded-2xl bg-muted p-6 text-center text-sm text-muted-foreground">
-        {error} Generate previews with <code>npm run studio:preview -- examples/{id}.video.tsx</code>.
+        {error} Generate previews with <code>npm run studio:preview -- examples/{id}.video.tsx</code> or <code>examples/{id}.babulus.xml</code>.
       </div>
     );
   }

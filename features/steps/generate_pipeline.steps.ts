@@ -104,7 +104,7 @@ Given("a dry-run composition with audio plan", () => {
   outDir = join(workspace, ".babulus", "out", composition.id);
   scriptOut = join(workspace, "script.json");
   timelineOut = join(workspace, "timeline.json");
-  dslPath = join(workspace, "content", `${composition.id}.babulus.ts`);
+  dslPath = join(workspace, "content", `${composition.id}.babulus.xml`);
 });
 
 Given("a dry-run composition with file clip fade out", () => {
@@ -154,7 +154,7 @@ Given("a dry-run composition with file clip fade out", () => {
   outDir = join(workspace, ".babulus", "out", composition.id);
   scriptOut = join(workspace, "script.json");
   timelineOut = join(workspace, "timeline.json");
-  dslPath = join(workspace, "content", `${composition.id}.babulus.ts`);
+  dslPath = join(workspace, "content", `${composition.id}.babulus.xml`);
 });
 
 When("I generate the composition", async () => {

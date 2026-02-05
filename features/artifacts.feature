@@ -39,7 +39,7 @@ Feature: Run artifacts
     When I write run artifacts without audio
     Then the latest run pointer should match the run id
     And the run metadata should include composition id "demo" and env "test"
-    And the run metadata should include source path "content/demo.babulus.ts"
+    And the run metadata should include source path "content/demo.babulus.xml"
 
   Scenario: Run id is deterministic for identical inputs
     Given a run artifacts workspace

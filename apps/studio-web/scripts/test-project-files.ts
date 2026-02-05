@@ -26,13 +26,14 @@ async function main() {
   console.log(`Org ID: ${orgId}`);
   console.log(`Project ID: ${projectId}\n`);
 
-  const testFileName = 'test-video.babulus.ts';
-  const testContent = `// Test Babulus video
-export default function TestVideo() {
-  return scene('intro', () => {
-    text('Hello from S3!');
-  });
-}
+  const testFileName = 'test-video.babulus.xml';
+  const testContent = `<video id="test-video" title="Test Video" fps="30" width="1920" height="1080">
+  <scene id="intro">
+    <layer id="content">
+      <text props='{"content":"Hello from S3!"}' />
+    </layer>
+  </scene>
+</video>
 `;
 
   try {

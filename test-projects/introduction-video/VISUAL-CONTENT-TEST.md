@@ -2,7 +2,7 @@
 
 ## Overview
 
-This test validates that visual content (backgrounds, colors, fonts, layouts) can be controlled from the `.babulus.ts` DSL file, making it the single source of truth for both audio and visual content.
+This test validates that visual content (backgrounds, colors, fonts, layouts) can be controlled from the `.babulus.xml` DSL file, making it the single source of truth for both audio and visual content.
 
 **Test Date**: January 25, 2026
 **Test Project**: introduction-video
@@ -27,7 +27,7 @@ Prove that the Babulus DSL can define visual styling alongside voiceover content
    - Updated component to use markup-driven styles instead of hardcoded values
    - Falls back to defaults when markup is undefined
 
-3. **Test DSL** (`test-projects/introduction-video/introduction.babulus.ts`)
+3. **Test DSL** (`test-projects/introduction-video/introduction.babulus.xml`)
    - Added `scene.markup()` calls to all 4 scenes
    - Added `cue.markup()` overrides on 2 cues in Key Features scene
    - Defined backgrounds, colors, font sizes, text alignment
@@ -98,7 +98,7 @@ cue.markup({
 
 **Description**: Pink/red gradient (pink to red-pink) with white title (48px) and light pink subtitle.
 
-#### Cue 1: Power of TypeScript (7.8s - 17.6s)
+#### Cue 1: Power of XML (7.8s - 17.6s)
 
 **Cue Markup Override**:
 ```typescript
@@ -328,7 +328,7 @@ Current markup is just styling (colors, sizes). No way to add:
 
 ### 2. Untyped Markup
 
-Markup is `Record<string, any>` - no TypeScript validation.
+Markup is `Record<string, any>` - no XML validation.
 
 **Example Problem**:
 ```typescript
@@ -374,7 +374,7 @@ scene.markup({ backgroundImage: "assets/hero.png" }); // Doesn't work yet
 
 ## Conclusion
 
-**✅ SUCCESS**: The `.babulus.ts` file now controls both audio AND visual content. Visual styling is no longer hardcoded - it's defined in the DSL alongside voiceover text.
+**✅ SUCCESS**: The `.babulus.xml` file now controls both audio AND visual content. Visual styling is no longer hardcoded - it's defined in the DSL alongside voiceover text.
 
 ### What Works
 

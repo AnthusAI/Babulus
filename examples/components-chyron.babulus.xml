@@ -1,0 +1,11 @@
+<video id="components-chyron" title="Components Chyron" fps="30" width="1920" height="1080">
+  <voiceover provider="dry-run" />
+  <scene id="chyron-demo" title="chyron-demo" styles='{"background":"var(--color-bg)"}'>
+    <layer id="chyron" z="10">
+      <chyron props='{"items":[{"text":"All components are frame-driven"},{"text":"Layouts handle structure"},{"text":"Text effects are deterministic"}],"mode":"page","pageDurationFrames":40,"pageTransition":{"type":"slide","direction":"up","durationFrames":10}}' />
+    </layer>
+    <cue id="hold" label="hold">
+      <pause seconds="6s" />
+    </cue>
+  </scene>
+</video>

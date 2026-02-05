@@ -8,7 +8,7 @@ Each test project should have this structure:
 
 ```
 project-name/
-├── project-name.babulus.ts    # DSL video script
+├── project-name.babulus.xml    # DSL video script
 ├── assets/                     # Media assets
 │   ├── images/
 │   ├── audio/
@@ -27,7 +27,7 @@ project-name/
 
 ```bash
 # Generate from DSL
-npm run babulus generate test-projects/introduction-video/introduction.babulus.ts \
+npm run babulus generate test-projects/introduction-video/introduction.babulus.xml \
   --project-dir test-projects/introduction-video
 
 # This creates:
@@ -76,13 +76,13 @@ open test-projects/introduction-video/generated/introduction.mp4
 1. Navigate to Studio at http://localhost:3000 (or deployed URL)
 2. Create or select an Organization
 3. Create a new Project
-4. Upload the `.babulus.ts` file via the UI
+4. Upload the `.babulus.xml` file via the UI
 5. Upload assets to the `assets/` directory
 
 ### 2. Create Video Record
 
 1. In the Project view, create a new Video
-2. Link it to the uploaded `.babulus.ts` file
+2. Link it to the uploaded `.babulus.xml` file
 3. Set video title and metadata
 
 ### 3. Trigger Generation Job
@@ -168,7 +168,7 @@ npm run bdd:watch
 
 ```bash
 # Enable verbose logging
-DEBUG=* npm run babulus generate test-projects/introduction-video/introduction.babulus.ts
+DEBUG=* npm run babulus generate test-projects/introduction-video/introduction.babulus.xml
 
 # Check TTS provider status
 cat .babulus/out/introduction-to-babulus/env/development/usage-summary.json | jq

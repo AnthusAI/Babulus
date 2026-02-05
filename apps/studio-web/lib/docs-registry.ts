@@ -21,6 +21,7 @@ import { componentsTypographyDoc } from "@/lib/docs-content/components-typograph
 import { componentsColorsDoc } from "@/lib/docs-content/components-colors";
 import { animationDoc } from "@/lib/docs-content/animation";
 import { componentsDoc } from "@/lib/docs-content/components";
+import { liveVomDoc } from "@/lib/docs-content/live-vom";
 
 export type DocsCategory =
   | "Overview"
@@ -133,6 +134,7 @@ const RAW_DOCS: readonly DocsEntry[] = [
   babulusLanguageDesignDoc,
   ttsElevenlabsGuideDoc,
   environmentsDoc,
+  liveVomDoc,
   projectStorageArchitectureDoc,
   projectStorageQuickstartDoc,
   componentsGuideDoc,

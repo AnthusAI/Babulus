@@ -21,7 +21,7 @@ export const technicalDoc = {
 <hr />
 
 <h2 id="source-of-truth-video-as-code">Source of truth: “video as code”</h2>
-<p>Babulus uses a TypeScript DSL (<code>.babulus.ts</code>) as the authoring surface. This is deliberate:</p>
+<p>Babulus uses an XML DSL (<code>.babulus.xml</code>) as the authoring surface. This is deliberate:</p>
 <ul>
   <li><strong>Composable</strong>: utilities, imports, shared helpers.</li>
   <li><strong>Reviewable</strong>: diffs are real code diffs.</li>
@@ -47,15 +47,15 @@ export const technicalDoc = {
 <h2 id="project-storage-unified-filesystem">Project storage: unified filesystem abstraction</h2>
 <p>A project is modeled as a folder of files:</p>
 <ul>
-  <li><code>*.babulus.ts</code> (non-underscore): visible videos</li>
-  <li><code>_*.babulus.ts</code>: utility files (hidden by default, importable)</li>
+  <li><code>*.babulus.xml</code> (non-underscore): visible videos</li>
+  <li><code>_*.babulus.xml</code>: utility files (hidden by default, importable)</li>
   <li><code>assets/</code>: uploaded media</li>
 </ul>
 
 <h3 id="cloud-storage-paths">Cloud storage paths</h3>
 <pre><code>org/{orgId}/projects/{projectId}/
-  ├── intro.babulus.ts
-  ├── _helpers.babulus.ts
+  ├── intro.babulus.xml
+  ├── _helpers.babulus.xml
   └── assets/
       ├── logo.png
       └── music.wav</code></pre>
@@ -127,4 +127,3 @@ export const technicalDoc = {
 </ul>
 `.trim(),
 } as const;
-

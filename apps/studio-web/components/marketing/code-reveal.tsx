@@ -37,38 +37,20 @@ export function CodeReveal() {
               <div className="text-6xl font-bold text-white/90 tracking-tighter">
                 HELLO WORLD
               </div>
-              <p className="text-white/70">Generated from TypeScript</p>
+              <p className="text-white/70">Generated from XML</p>
             </div>
           </div>
         ) : (
           <div className="absolute inset-0 bg-[#1e1e1e] p-6 overflow-auto text-sm font-mono text-white/80">
             <pre>
-              {`import { Composition, Scene, Audio } from "@babulus/dsl";
-
-export default new Composition({
-  width: 1920,
-  height: 1080,
-  fps: 30,
-  scenes: [
-    new Scene({
-      duration: 5,
-      elements: [
-        {
-          type: "text",
-          content: "HELLO WORLD",
-          style: {
-            fontSize: 120,
-            fontWeight: "bold",
-            color: "white"
-          }
-        }
-      ],
-      audio: new Audio({
-        src: "./assets/intro.mp3"
-      })
-    })
-  ]
-});`}
+              {`<video id="hello-world" title="Hello World" fps="30" width="1920" height="1080">
+  <scene id="intro" duration="5s">
+    <layer id="content">
+      <text props='{"content":"HELLO WORLD","fontSize":120,"fontWeight":"bold","color":"white"}' />
+    </layer>
+    <audio src="./assets/intro.mp3" />
+  </scene>
+</video>`}
             </pre>
           </div>
         )}

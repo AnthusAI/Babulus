@@ -1,0 +1,12 @@
+<video id="components-title" title="Components Title" fps="30" width="1920" height="1080">
+  <voiceover provider="dry-run" />
+  <scene id="title-demo" title="title-demo" styles='{"background":"var(--color-bg)"}'>
+    <layer id="title" z="10">
+      <title props='{"text":"Text effects with zero keyframes","color":"var(--color-primary)","textColor":"var(--color-text)","textEffect":{"effect":"fade_up","unit":"words","durationFrames":24,"staggerFrames":4},"position":{"x":160,"y":280}}' />
+      <subtitle props='{"text":"fade, slide, pop, scale — all frame-driven","textEffect":{"effect":"slide_left","unit":"chars","durationFrames":20,"staggerFrames":2},"position":{"x":160,"y":380},"color":"var(--color-text-muted)","fontSize":28,"fontWeight":500}' />
+    </layer>
+    <cue id="hold" label="hold">
+      <pause seconds="6s" />
+    </cue>
+  </scene>
+</video>

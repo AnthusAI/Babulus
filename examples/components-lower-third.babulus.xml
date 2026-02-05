@@ -1,0 +1,11 @@
+<video id="components-lower-third" title="Components Lower Third" fps="30" width="1920" height="1080">
+  <voiceover provider="dry-run" />
+  <scene id="lower-third-demo" title="lower-third-demo" styles='{"background":"var(--color-bg)"}'>
+    <layer id="lower-third" z="10">
+      <lower-third props='{"name":"Jordan Lee","title":"Design Lead","organization":"Babulus","style":"modern","primaryColor":"var(--color-accent)"}' />
+    </layer>
+    <cue id="hold" label="hold">
+      <pause seconds="5s" />
+    </cue>
+  </scene>
+</video>

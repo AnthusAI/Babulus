@@ -13,7 +13,7 @@
 ### 1. DSL Generation
 **Command**:
 ```bash
-npm run babulus generate test-projects/introduction-video/introduction.babulus.ts \
+npm run babulus generate test-projects/introduction-video/introduction.babulus.xml \
   --project-dir test-projects/introduction-video
 ```
 
@@ -77,7 +77,7 @@ npm run render:storyboard -- \
 
 #### Scene 2: Key Features (7.8s - 28.2s)
 - **Duration**: 20.4 seconds
-- **Cues**: 2 (Power of TypeScript, Tooling Features)
+- **Cues**: 2 (Power of XML, Tooling Features)
 - **Content**: Feature explanation
 - **Pause**: 0.5s between cues
 
@@ -115,7 +115,7 @@ This is acceptable for a storyboard render and within normal tolerances.
 
 ```
 test-projects/introduction-video/
-├── introduction.babulus.ts          # Source DSL (2.3 KB)
+├── introduction.babulus.xml          # Source DSL (2.3 KB)
 ├── assets/
 │   └── .gitkeep                    # Placeholder for future assets
 ├── generated/

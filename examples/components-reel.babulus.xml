@@ -1,0 +1,66 @@
+<video id="components-reel" title="Components Reel" fps="30" width="1920" height="1080">
+  <voiceover provider="dry-run" />
+  <scene id="reel" title="reel" styles='{"background":"var(--color-bg)"}'>
+    <layer id="component-title" z="10" start="0s" end="2.2s">
+      <title props='{"text":"Frame-driven components","color":"var(--color-primary)","textColor":"var(--color-text)","textEffect":{"effect":"fade_up","unit":"words","durationFrames":22,"staggerFrames":4},"position":{"x":140,"y":260}}' />
+      <subtitle props='{"text":"Readable motion with minimal setup","textEffect":{"effect":"slide_left","unit":"chars","durationFrames":20,"staggerFrames":2},"position":{"x":140,"y":360},"color":"var(--color-text-muted)","fontSize":28,"fontWeight":500}' />
+    </layer>
+    <layer id="label-title" z="20" start="0s" end="2.2s">
+      <chapter-heading props='{"number":"01","title":"Title + Subtitle","subtitle":"Text effects ready","numberColor":"var(--color-accent)","layout":"side-by-side","numberEntrance":{"type":"fade","from":1,"to":1,"durationFrames":1},"titleEntrance":{"type":"fade","from":1,"to":1,"durationFrames":1}}' />
+    </layer>
+
+    <layer id="component-background" z="10" start="2.2s" end="4.4s">
+      <background props='{"color":"var(--color-surface)"}' />
+    </layer>
+    <layer id="label-background" z="20" start="2.2s" end="4.4s">
+      <chapter-heading props='{"number":"02","title":"Background","subtitle":"Flat theme fill","numberColor":"var(--color-accent)","layout":"side-by-side","numberEntrance":{"type":"fade","from":1,"to":1,"durationFrames":1},"titleEntrance":{"type":"fade","from":1,"to":1,"durationFrames":1}}' />
+    </layer>
+
+    <layer id="component-progress" z="10" start="4.4s" end="6.6s">
+      <progress-bar props='{"position":"bottom","height":10,"color":"var(--color-accent)","backgroundColor":"var(--color-muted-more)"}' />
+    </layer>
+    <layer id="label-progress" z="20" start="4.4s" end="6.6s">
+      <chapter-heading props='{"number":"03","title":"Progress Bar","subtitle":"Playback cue","numberColor":"var(--color-accent)","layout":"side-by-side","numberEntrance":{"type":"fade","from":1,"to":1,"durationFrames":1},"titleEntrance":{"type":"fade","from":1,"to":1,"durationFrames":1}}' />
+    </layer>
+
+    <layer id="component-bullets" z="10" start="6.6s" end="8.8s">
+      <bullet-list props='{"items":["Frame-driven","Composable","Deterministic"],"revealStyle":"spring","staggerDelayFrames":12,"position":{"x":140,"y":280},"textColor":"var(--color-text)"}' />
+    </layer>
+    <layer id="label-bullets" z="20" start="6.6s" end="8.8s">
+      <chapter-heading props='{"number":"04","title":"Bullet List","subtitle":"Structured points","numberColor":"var(--color-accent)","layout":"side-by-side","numberEntrance":{"type":"fade","from":1,"to":1,"durationFrames":1},"titleEntrance":{"type":"fade","from":1,"to":1,"durationFrames":1}}' />
+    </layer>
+
+    <layer id="component-lower-third" z="10" start="8.8s" end="11.0s">
+      <lower-third props='{"name":"Jordan Lee","title":"Design Lead","organization":"Babulus","style":"modern","primaryColor":"var(--color-accent)"}' />
+    </layer>
+    <layer id="label-lower-third" z="20" start="8.8s" end="11.0s">
+      <chapter-heading props='{"number":"05","title":"Lower Third","subtitle":"Speaker context","numberColor":"var(--color-accent)","layout":"side-by-side","numberEntrance":{"type":"fade","from":1,"to":1,"durationFrames":1},"titleEntrance":{"type":"fade","from":1,"to":1,"durationFrames":1}}' />
+    </layer>
+
+    <layer id="component-callout" z="10" start="11.0s" end="13.2s">
+      <code-block props='{"language":"typescript","code":"const frame = t => t * 2;\nconst motion = frame => Math.sin(frame / 8);","theme":"nord","position":{"y":260},"width":1200,"height":380}' />
+      <callout props='{"text":"Frame-driven motion","pointerTarget":{"x":980,"y":350},"position":{"x":1180,"y":220}}' />
+    </layer>
+    <layer id="label-callout" z="20" start="11.0s" end="13.2s">
+      <chapter-heading props='{"number":"06","title":"Callout + Code","subtitle":"Annotations","numberColor":"var(--color-accent)","layout":"side-by-side","numberEntrance":{"type":"fade","from":1,"to":1,"durationFrames":1},"titleEntrance":{"type":"fade","from":1,"to":1,"durationFrames":1}}' />
+    </layer>
+
+    <layer id="component-chyron" z="10" start="13.2s" end="15.4s">
+      <chyron props='{"items":[{"text":"All components are frame-driven"},{"text":"Layouts handle structure"},{"text":"Text effects are deterministic"}],"mode":"page","pageDurationFrames":40,"pageTransition":{"type":"slide","direction":"up","durationFrames":10}}' />
+    </layer>
+    <layer id="label-chyron" z="20" start="13.2s" end="15.4s">
+      <chapter-heading props='{"number":"07","title":"Chyron","subtitle":"Ticker updates","numberColor":"var(--color-accent)","layout":"side-by-side","numberEntrance":{"type":"fade","from":1,"to":1,"durationFrames":1},"titleEntrance":{"type":"fade","from":1,"to":1,"durationFrames":1}}' />
+    </layer>
+
+    <layer id="component-quote" z="10" start="15.4s" end="17.6s">
+      <quote-card props='{"quote":"The frame is the clock.","attribution":"Babulus","accentColor":"var(--color-accent)"}' />
+    </layer>
+    <layer id="label-quote" z="20" start="15.4s" end="17.6s">
+      <chapter-heading props='{"number":"08","title":"Quote Card","subtitle":"Pull quotes","numberColor":"var(--color-accent)","layout":"side-by-side","numberEntrance":{"type":"fade","from":1,"to":1,"durationFrames":1},"titleEntrance":{"type":"fade","from":1,"to":1,"durationFrames":1}}' />
+    </layer>
+
+    <cue id="hold" label="hold">
+      <pause seconds="17.6s" />
+    </cue>
+  </scene>
+</video>

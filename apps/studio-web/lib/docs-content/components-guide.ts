@@ -31,7 +31,7 @@ export const componentsGuideDoc = {
 
 <h2 id="quick-start">Quick Start</h2>
 <h3 id="basic-scene-with-components">Basic Scene with Components</h3>
-<div class="sourceCode" id="cb1"><pre class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { defineVideo } <span class="im">from</span> <span class="st">"@babulus/dsl"</span><span class="op">;</span></span>
+<div class="sourceCode" id="cb1"><pre class="sourceCode xml"><code class="sourceCode xml"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { defineVideo } <span class="im">from</span> <span class="st">"@babulus/dsl"</span><span class="op">;</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">export</span> <span class="im">default</span> <span class="fu">defineVideo</span>((video) <span class="kw">=&gt;</span> {</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  video<span class="op">.</span><span class="fu">composition</span>(<span class="st">"My Video"</span><span class="op">,</span> (composition) <span class="kw">=&gt;</span> {</span>
@@ -81,7 +81,7 @@ export const componentsGuideDoc = {
 <h2 id="built-in-components">Built-in Components</h2>
 <h3 id="background-component">Background Component</h3>
 <p>Sets the scene background - supports solid colors, gradients, and images.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>{</span>
+<div class="sourceCode" id="cb2"><pre class="sourceCode xml"><code class="sourceCode xml"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>{</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  id<span class="op">:</span> <span class="st">"bg"</span><span class="op">,</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  type<span class="op">:</span> <span class="st">"Background"</span><span class="op">,</span></span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  props<span class="op">:</span> {</span>
@@ -102,7 +102,7 @@ export const componentsGuideDoc = {
 
 <h3 id="title-component">Title Component</h3>
 <p>Displays large heading text, typically bound to scene title.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>{</span>
+<div class="sourceCode" id="cb3"><pre class="sourceCode xml"><code class="sourceCode xml"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>{</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  id<span class="op">:</span> <span class="st">"title"</span><span class="op">,</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  type<span class="op">:</span> <span class="st">"Title"</span><span class="op">,</span></span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  bindings<span class="op">:</span> {</span>
@@ -129,7 +129,7 @@ export const componentsGuideDoc = {
 
 <h3 id="subtitle-component">Subtitle Component</h3>
 <p>Displays smaller text, typically bound to active cue text.</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>{</span>
+<div class="sourceCode" id="cb4"><pre class="sourceCode xml"><code class="sourceCode xml"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>{</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  id<span class="op">:</span> <span class="st">"subtitle"</span><span class="op">,</span></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  type<span class="op">:</span> <span class="st">"Subtitle"</span><span class="op">,</span></span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  bindings<span class="op">:</span> {</span>
@@ -146,7 +146,7 @@ export const componentsGuideDoc = {
 
 <h3 id="progressbar-component">ProgressBar Component</h3>
 <p>Shows video playback progress.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>{</span>
+<div class="sourceCode" id="cb5"><pre class="sourceCode xml"><code class="sourceCode xml"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>{</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  id<span class="op">:</span> <span class="st">"progress"</span><span class="op">,</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  type<span class="op">:</span> <span class="st">"ProgressBar"</span><span class="op">,</span></span>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  props<span class="op">:</span> {</span>
@@ -186,7 +186,7 @@ export const componentsGuideDoc = {
 </ul>
 
 <h3 id="binding-examples">Binding Examples</h3>
-<div class="sourceCode" id="cb6"><pre class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Title bound to scene title</span></span>
+<div class="sourceCode" id="cb6"><pre class="sourceCode xml"><code class="sourceCode xml"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Title bound to scene title</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>{</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  id<span class="op">:</span> <span class="st">"title"</span><span class="op">,</span></span>
 <span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  type<span class="op">:</span> <span class="st">"Title"</span><span class="op">,</span></span>
@@ -213,7 +213,7 @@ export const componentsGuideDoc = {
 
 <h2 id="layering-with-zindex">Layering with zIndex</h2>
 <p>Control which components appear in front or behind using <code>zIndex</code>.</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>scene<span class="op">.</span><span class="at">components</span> <span class="op">=</span> [</span>
+<div class="sourceCode" id="cb7"><pre class="sourceCode xml"><code class="sourceCode xml"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>scene<span class="op">.</span><span class="at">components</span> <span class="op">=</span> [</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  {</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    id<span class="op">:</span> <span class="st">"bg"</span><span class="op">,</span></span>
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    type<span class="op">:</span> <span class="st">"Background"</span><span class="op">,</span></span>
@@ -240,7 +240,7 @@ export const componentsGuideDoc = {
 
 <h2 id="component-timing">Component Timing</h2>
 <p>Show/hide components at specific times using the <code>timing</code> property.</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>{</span>
+<div class="sourceCode" id="cb8"><pre class="sourceCode xml"><code class="sourceCode xml"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>{</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  id<span class="op">:</span> <span class="st">"intro-title"</span><span class="op">,</span></span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  type<span class="op">:</span> <span class="st">"Title"</span><span class="op">,</span></span>
 <span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  props<span class="op">:</span> { text<span class="op">:</span> <span class="st">"Welcome!"</span> }<span class="op">,</span></span>
@@ -259,7 +259,7 @@ export const componentsGuideDoc = {
 
 <h2 id="visibility-control">Visibility Control</h2>
 <p>Hide components conditionally using the <code>visible</code> property.</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>{</span>
+<div class="sourceCode" id="cb9"><pre class="sourceCode xml"><code class="sourceCode xml"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>{</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  id<span class="op">:</span> <span class="st">"debug-info"</span><span class="op">,</span></span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  type<span class="op">:</span> <span class="st">"Title"</span><span class="op">,</span></span>
 <span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  props<span class="op">:</span> { text<span class="op">:</span> <span class="st">"Debug Mode"</span> }<span class="op">,</span></span>
@@ -268,7 +268,7 @@ export const componentsGuideDoc = {
 
 <h2 id="complete-example">Complete Example</h2>
 <p>Here's a full scene with multiple components demonstrating all features:</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { defineVideo } <span class="im">from</span> <span class="st">"@babulus/dsl"</span><span class="op">;</span></span>
+<div class="sourceCode" id="cb10"><pre class="sourceCode xml"><code class="sourceCode xml"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { defineVideo } <span class="im">from</span> <span class="st">"@babulus/dsl"</span><span class="op">;</span></span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="im">export</span> <span class="im">default</span> <span class="fu">defineVideo</span>((video) <span class="kw">=&gt;</span> {</span>
 <span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  video<span class="op">.</span><span class="fu">composition</span>(<span class="st">"Product Demo"</span><span class="op">,</span> (composition) <span class="kw">=&gt;</span> {</span>
@@ -423,13 +423,13 @@ export const componentsGuideDoc = {
 <p>If you have older videos using <code>.markup()</code>, here's how to migrate to components:</p>
 
 <h3 id="before-markup-based">Before (Markup-based)</h3>
-<div class="sourceCode" id="cb11"><pre class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>scene<span class="op">.</span><span class="fu">markup</span>({</span>
+<div class="sourceCode" id="cb11"><pre class="sourceCode xml"><code class="sourceCode xml"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>scene<span class="op">.</span><span class="fu">markup</span>({</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  visualStyle<span class="op">:</span> <span class="st">"modern"</span><span class="op">,</span></span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  primaryGradient<span class="op">:</span> <span class="st">"linear-gradient(135deg, #667eea, #764ba2)"</span></span>
 <span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span></code></pre></div>
 
 <h3 id="after-component-based">After (Component-based)</h3>
-<div class="sourceCode" id="cb12"><pre class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>scene<span class="op">.</span><span class="at">components</span> <span class="op">=</span> [</span>
+<div class="sourceCode" id="cb12"><pre class="sourceCode xml"><code class="sourceCode xml"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>scene<span class="op">.</span><span class="at">components</span> <span class="op">=</span> [</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  {</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    id<span class="op">:</span> <span class="st">"bg"</span><span class="op">,</span></span>
 <span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    type<span class="op">:</span> <span class="st">"Background"</span><span class="op">,</span></span>

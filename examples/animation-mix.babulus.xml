@@ -1,0 +1,11 @@
+<video id="animation-mix" title="Animation Mix" fps="30" width="1920" height="1080">
+  <voiceover provider="dry-run" />
+  <scene id="mix" title="mix" styles='{"background":"var(--color-bg)"}'>
+    <layer id="mix" z="10">
+      <mix-and-match-demo />
+    </layer>
+    <cue id="hold" label="hold">
+      <pause seconds="8s" />
+    </cue>
+  </scene>
+</video>

@@ -50,7 +50,7 @@ const projectId = 'your-project-id-here';
 // Test upload
 const testFile = await uploadProjectFileAction(
   projectId,
-  'test-video.babulus.ts',
+  'test-video.babulus.xml',
   `// Test video
 export default function TestVideo() {
   return scene('intro', () => {
@@ -68,11 +68,11 @@ console.log('Files:', files);
 // Should see the test file with a CloudFront URL
 
 // Test read
-const content = await readProjectFileAction(projectId, 'test-video.babulus.ts');
+const content = await readProjectFileAction(projectId, 'test-video.babulus.xml');
 console.log('Content:', content);
 
 // Test delete
-await deleteProjectFileAction(projectId, 'test-video.babulus.ts');
+await deleteProjectFileAction(projectId, 'test-video.babulus.xml');
 console.log('Deleted');
 
 // Verify deletion
@@ -98,13 +98,13 @@ This tests the CloudFront security layer:
    ```bash
    # Copy your auth cookie from browser DevTools
    curl -H "Cookie: accessToken=<your-token>" \
-     https://<cloudfront-domain>/org/<orgId>/projects/<projectId>/test-video.babulus.ts
+     https://<cloudfront-domain>/org/<orgId>/projects/<projectId>/test-video.babulus.xml
    ```
    Should return file content.
 
 3. **Test unauthenticated access:**
    ```bash
-   curl https://<cloudfront-domain>/org/<orgId>/projects/<projectId>/test-video.babulus.ts
+   curl https://<cloudfront-domain>/org/<orgId>/projects/<projectId>/test-video.babulus.xml
    ```
    Should return 401 Unauthorized.
 
@@ -124,7 +124,7 @@ This tests the CloudFront security layer:
 Once the UI is built:
 
 1. Create a new project
-2. Upload a `.babulus.ts` file via file picker
+2. Upload a `.babulus.xml` file via file picker
 3. Upload an asset (image/audio) to `assets/` folder
 4. View the file list in the project dashboard
 5. Click on a video file to edit it
@@ -171,6 +171,6 @@ After verifying basic operations work:
 
 1. **Add UI** - File upload component in studio dashboard
 2. **Add file browser** - Show videos, utilities, and assets
-3. **Add editor integration** - Load/save `.babulus.ts` files from S3
+3. **Add editor integration** - Load/save `.babulus.xml` files from S3
 4. **Add asset resolution** - Replace `./assets/*` paths with CloudFront URLs at runtime
-5. **Add import resolution** - Support `import { helper } from './_helpers.babulus.ts'`
+5. **Add import resolution** - Support `import { helper } from './_helpers.babulus.xml'`

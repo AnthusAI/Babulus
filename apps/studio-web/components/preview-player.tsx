@@ -22,8 +22,13 @@ export type PreviewPlayerProps = {
   fillHeight?: boolean;
   initialTime?: number;
   autoPlay?: boolean;
+  loop?: boolean;
+  preserveTimeOnScriptChange?: boolean;
+  clockMode?: 'bounded' | 'live';
+  liveHorizonSeconds?: number;
   showControls?: boolean;
   onExitFullscreen?: () => void;
+  onTimeUpdate?: (timeSec: number, durationSec: number) => void;
   hideControlsDelayMs?: number;
   themeStyle?: React.CSSProperties;
 };
@@ -45,8 +50,13 @@ export function PreviewPlayer({
   fillHeight = true,
   initialTime = 0,
   autoPlay = false,
+  loop = true,
+  preserveTimeOnScriptChange = false,
+  clockMode = 'bounded',
+  liveHorizonSeconds = 6 * 60 * 60,
   showControls = true,
   onExitFullscreen,
+  onTimeUpdate,
   hideControlsDelayMs = 2200,
   themeStyle,
 }: PreviewPlayerProps) {
@@ -56,6 +66,7 @@ export function PreviewPlayer({
   const [showOverlayControls, setShowOverlayControls] = useState(true);
   const animationFrameRef = useRef<number>();
   const lastTimestampRef = useRef<number>();
+  const currentTimeRef = useRef<number>(initialTime);
   const hideControlsTimeoutRef = useRef<number | null>(null);
   const previewAreaRef = useRef<HTMLDivElement>(null);
 
@@ -72,13 +83,19 @@ export function PreviewPlayer({
     return maxEnd > 0 ? maxEnd : null;
   }, [script]);
   const duration = script.meta?.durationSeconds ?? derivedDuration ?? 10;
+  const renderDuration = clockMode === 'live' ? liveHorizonSeconds : duration;
   const currentFrame = Math.floor(currentTime * fps);
 
   useEffect(() => {
+    if (preserveTimeOnScriptChange) {
+      lastTimestampRef.current = undefined;
+      return;
+    }
     setCurrentTime(initialTime);
+    currentTimeRef.current = initialTime;
     setIsPlaying(autoPlay);
     lastTimestampRef.current = undefined;
-  }, [autoPlay, initialTime, script]);
+  }, [autoPlay, initialTime, preserveTimeOnScriptChange, script]);
 
   useEffect(() => {
     const element = previewAreaRef.current;
@@ -115,14 +132,31 @@ export function PreviewPlayer({
 
       const deltaMs = timestamp - lastTimestampRef.current;
       const deltaSec = deltaMs / 1000;
-      const newTime = currentTime + deltaSec;
+      const newTime = currentTimeRef.current + deltaSec;
 
-      if (newTime >= duration) {
-        const nextTime = newTime % duration;
-        setCurrentTime(nextTime);
+      if (clockMode === 'live') {
+        currentTimeRef.current = newTime;
+        setCurrentTime(newTime);
         lastTimestampRef.current = timestamp;
         animationFrameRef.current = requestAnimationFrame(animate);
+        return;
+      }
+
+      if (newTime >= duration) {
+        if (loop) {
+          const nextTime = duration > 0 ? newTime % duration : 0;
+          currentTimeRef.current = nextTime;
+          setCurrentTime(nextTime);
+          lastTimestampRef.current = timestamp;
+          animationFrameRef.current = requestAnimationFrame(animate);
+        } else {
+          currentTimeRef.current = duration;
+          setCurrentTime(duration);
+          lastTimestampRef.current = timestamp;
+          animationFrameRef.current = requestAnimationFrame(animate);
+        }
       } else {
+        currentTimeRef.current = newTime;
         setCurrentTime(newTime);
         lastTimestampRef.current = timestamp;
         animationFrameRef.current = requestAnimationFrame(animate);
@@ -136,24 +170,35 @@ export function PreviewPlayer({
         cancelAnimationFrame(animationFrameRef.current);
       }
     };
-  }, [isPlaying, currentTime, duration]);
+  }, [isPlaying, currentTime, duration, loop, clockMode]);
+
+  useEffect(() => {
+    if (!onTimeUpdate) {
+      return;
+    }
+    onTimeUpdate(currentTime, duration);
+  }, [currentTime, duration, onTimeUpdate]);
 
   const handlePlayPause = () => {
     const nextPlaying = !isPlaying;
-    if (nextPlaying && currentTime >= duration) {
+    if (nextPlaying && currentTime >= duration && clockMode !== 'live') {
       setCurrentTime(0);
+      currentTimeRef.current = 0;
     }
     setIsPlaying(nextPlaying);
     lastTimestampRef.current = undefined;
   };
 
   const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setCurrentTime(parseFloat(e.target.value));
+    const nextTime = parseFloat(e.target.value);
+    currentTimeRef.current = nextTime;
+    setCurrentTime(nextTime);
     lastTimestampRef.current = undefined;
   };
 
   const handleReset = () => {
     setCurrentTime(0);
+    currentTimeRef.current = 0;
     setIsPlaying(false);
     lastTimestampRef.current = undefined;
   };
@@ -228,11 +273,14 @@ export function PreviewPlayer({
         }
       >
         <div
-          className="preview-canvas relative overflow-hidden border-t border-l border-r border-gray-700"
+          className="preview-canvas relative overflow-hidden"
           style={{
             width: displayWidth,
             height: displayHeight,
             backgroundColor,
+            border: "none",
+            borderRadius: 0,
+            boxShadow: "none",
           }}
         >
           <div
@@ -244,18 +292,18 @@ export function PreviewPlayer({
               ...(themeStyle ?? {}),
             }}
           >
-            <RendererProvider
-              frame={currentFrame}
-              config={{
-                fps,
-                width,
-                height,
-                durationFrames: Math.floor(duration * fps),
-              }}
-            >
-              <ComposableRenderer script={script} />
-            </RendererProvider>
-          </div>
+              <RendererProvider
+                frame={currentFrame}
+                config={{
+                  fps,
+                  width,
+                  height,
+                  durationFrames: Math.floor(renderDuration * fps),
+                }}
+              >
+                <ComposableRenderer script={script} liveMode={clockMode === 'live'} />
+              </RendererProvider>
+            </div>
         </div>
       </div>
 

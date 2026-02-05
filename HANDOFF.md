@@ -1,12 +1,12 @@
-# Babulus TS Migration - Handoff Brief
+# Babulus XML Migration - Handoff Brief
 
 ## Status
-- ✅ **Migration Complete & Tested** - Babulus is now TypeScript-only (Node CLI + TS DSL). All Python files removed.
+- ✅ **Migration Complete & Tested** - Babulus uses an XML DSL with a TypeScript CLI/runtime. All Python files removed.
 - ✅ **All Tests Pass** - TypeScript compilation clean, CLI working, all three videos generate successfully.
 - ✅ **Outputs Verified** - Script JSON (with `posterTimeSec`), timeline JSON, and audio WAV files all have correct structure.
-- Three Tactus videos converted from YAML to `.babulus.ts` with shared defaults.
-- CLI, generator, DSL builders, providers, caching, SFX workflow implemented in TS.
-- Docs updated for TS usage (README/AGENTS).
+- Three Tactus videos converted from YAML to `.babulus.xml` with shared defaults.
+- CLI, generator, DSL loaders, providers, caching, SFX workflow implemented in TypeScript.
+- Docs updated for XML usage (README/AGENTS).
 
 ## Testing Summary (Jan 21, 2026)
 **Phase 1: Babulus Core**
@@ -15,9 +15,9 @@
 - ✅ CLI help command working
 
 **Phase 2: Dry-Run Generation (No API Calls)**
-- ✅ intro.babulus.ts → 293.63s, 34 segments
-- ✅ guardrails.babulus.ts → 257.17s, 40 segments
-- ✅ why-new-language.babulus.ts → 522.32s, 72 segments
+- ✅ intro.babulus.xml → 293.63s, 34 segments
+- ✅ guardrails.babulus.xml → 257.17s, 40 segments
+- ✅ why-new-language.babulus.xml → 522.32s, 72 segments
 
 **Phase 3: Output Verification**
 - ✅ All script JSON files include posterTimeSec
@@ -26,9 +26,9 @@
 - ✅ Cache structure correct (.babulus/out/<video>/env/development/)
 
 **Phase 4: OpenAI TTS Generation (Real Audio)**
-- ✅ intro.babulus.ts → 316.04s audio, 34 segments, ~66s generation
-- ✅ guardrails.babulus.ts → 321.05s audio, 40 segments, ~62s generation
-- ✅ why-new-language.babulus.ts → 633.82s audio, 72 segments, ~130s generation
+- ✅ intro.babulus.xml → 316.04s audio, 34 segments, ~66s generation
+- ✅ guardrails.babulus.xml → 321.05s audio, 40 segments, ~62s generation
+- ✅ why-new-language.babulus.xml → 633.82s audio, 72 segments, ~130s generation
 - ✅ Total: 1270.91s (~21 min) of audio generated in ~258s (~4.3 min)
 - ✅ Audio quality verified with OpenAI gpt-4o-mini-tts model + echo voice
 - ✅ Environment-aware caching working (reuses segments on regeneration)
@@ -55,18 +55,15 @@ Babulus repo:
 Tactus videos:
 - Shared defaults + helpers: `../Tactus-web/videos/content/_babulus.shared.ts`
 - Converted DSLs:
-  - `../Tactus-web/videos/content/intro.babulus.ts`
-  - `../Tactus-web/videos/content/guardrails.babulus.ts`
-  - `../Tactus-web/videos/content/why-new-language.babulus.ts`
+  - `../Tactus-web/videos/content/intro.babulus.xml`
+  - `../Tactus-web/videos/content/guardrails.babulus.xml`
+  - `../Tactus-web/videos/content/why-new-language.babulus.xml`
 - Node wrapper: `../Tactus-web/videos/bin/babulus`
 - Tactus docs: `../Tactus-web/videos/README.md`, `../Tactus-web/videos/AGENTS.md`
 - Render poster extraction now reads script JSON: `../Tactus-web/videos/scripts/render-all.js`
 
 ## Key behavioral changes
-- DSL is TypeScript (`.babulus.ts`). Uses `defineVideo`, `defineDefaults`, `pause`, `defineEnv`.
-- `pause(mean, std, clamp)` supports Gaussian pauses sampled at generate time.
-- `defineEnv().value(default, overrides)` uses ONLY explicit overrides (no implicit fallback chain).
-- Script JSON now includes `posterTimeSec` from `composition.posterTime`.
+- DSL is XML (`.babulus.xml`). Script JSON now includes `posterTimeSec` from `composition.posterTime`.
 
 ## Removed
 - All Python files in this repo.
@@ -89,16 +86,16 @@ Tactus videos:
 - Dry-run generation (no API calls, validated working):
   ```bash
   node ../../Babulus/node_modules/.bin/tsx ../../Babulus/src/cli.ts generate \
-    content/intro.babulus.ts \
+    content/intro.babulus.xml \
     --provider dry-run --sfx-provider dry-run --music-provider dry-run
   ```
-  - Repeat for `guardrails.babulus.ts` and `why-new-language.babulus.ts`
+  - Repeat for `guardrails.babulus.xml` and `why-new-language.babulus.xml`
   - All three videos generate successfully in ~2 seconds each
 - OpenAI generation (validated working):
   ```bash
   # Ensure .babulus/config.yml has your OpenAI API key
   node ../../Babulus/node_modules/.bin/tsx ../../Babulus/src/cli.ts generate \
-    content/intro.babulus.ts
+    content/intro.babulus.xml
   ```
   - Development mode uses OpenAI gpt-4o-mini-tts by default
   - Generates real audio ~4-5x faster than playback speed
@@ -123,7 +120,7 @@ Tactus videos:
     ```bash
     export BABULUS_PATH=/Users/ryan/projects/Tactus-web/.babulus/config.yml
     ```
-- ESM import: `.babulus.ts` files import shared file as `./_babulus.shared.js` (intentional for `tsx`).
+- ESM import: `.babulus.xml` files import shared file as `./_babulus.shared.js` (intentional for `tsx`).
 - CLI uses dynamic import with cache-bust query for watch: `src/dsl/load.ts`.
 - Docs under `docs/` still reference `.babulus.yml` (not updated).
 - `bin/babulus` wrapper expects `tsx` in PATH (workaround: use full path to tsx as shown above).
@@ -141,7 +138,7 @@ Tactus videos:
 - `src/generate.ts` (fixed environment-aware public paths for segments, music, sfx)
 
 ## Success criteria ✅ All Met
-- ✅ Running the three converted `.babulus.ts` files produces script/timeline/audio with correct structure
+- ✅ Running the three converted `.babulus.xml` files produces script/timeline/audio with correct structure
   - Script JSON includes scenes, cues, timing, and **posterTimeSec**
   - Timeline JSON includes items array and audio.tracks array
   - WAV files generated: intro (13MB), guardrails (11MB), why-new-language (23MB)

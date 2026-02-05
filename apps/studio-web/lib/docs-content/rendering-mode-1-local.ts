@@ -62,7 +62,7 @@ First, create a video composition:
 
 \`\`\`bash
 cd test-projects/my-video
-npx babulus generate my-video.babulus.ts
+npx babulus generate my-video.babulus.xml
 \`\`\`
 
 This creates:
@@ -74,7 +74,7 @@ This creates:
 
 Create a render script:
 
-\`\`\`typescript
+\`\`\`xml
 // test-local-render.ts
 import { readFileSync } from 'fs';
 import { renderVideoFromScript } from './packages/renderer/src/video-render.js';
@@ -122,7 +122,7 @@ public/babulus/my-video.mp4
 
 The \`renderVideoFromScript\` function accepts these options:
 
-\`\`\`typescript
+\`\`\`xml
 {
   // Required
   script: VideoScript,           // Parsed script.json
@@ -148,7 +148,7 @@ The \`renderVideoFromScript\` function accepts these options:
 
 Render in different aspect ratios:
 
-\`\`\`typescript
+\`\`\`xml
 // 16:9 HD
 await renderVideoFromScript({
   ...config,
@@ -175,7 +175,7 @@ await renderVideoFromScript({
 
 Adjust encoding quality:
 
-\`\`\`typescript
+\`\`\`xml
 // High quality (larger file)
 await renderVideoFromScript({
   ...config,
@@ -195,7 +195,7 @@ await renderVideoFromScript({
 
 Render multiple videos:
 
-\`\`\`typescript
+\`\`\`xml
 const videos = ['intro', 'main-content', 'outro'];
 
 for (const videoName of videos) {

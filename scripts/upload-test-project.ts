@@ -41,16 +41,18 @@ program
     console.log(`Dry Run: ${dryRun}`);
     console.log();
 
-    // Find .babulus.ts file
+    // Find .babulus.xml or .babulus.ts file
     const files = readdirSync(projectDir);
-    const dslFile = files.find(f => f.endsWith('.babulus.ts'));
+    const dslFile =
+      files.find(f => f.endsWith('.babulus.xml')) ??
+      files.find(f => f.endsWith('.babulus.ts'));
 
     if (!dslFile) {
-      console.error("❌ No .babulus.ts file found in project directory");
+      console.error("❌ No .babulus.xml or .babulus.ts file found in project directory");
       process.exit(1);
     }
 
-    const videoTitle = opts.videoTitle || dslFile.replace('.babulus.ts', '');
+    const videoTitle = opts.videoTitle || dslFile.replace(/\.babulus\.(xml|ts)$/, '');
     console.log(`Video Title: ${videoTitle}`);
     console.log(`DSL File: ${dslFile}`);
     console.log();

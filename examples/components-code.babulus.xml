@@ -1,0 +1,11 @@
+<video id="components-code" title="Components Code" fps="30" width="1920" height="1080">
+  <voiceover provider="dry-run" />
+  <scene id="code-demo" title="code-demo" styles='{"background":"var(--color-bg)"}'>
+    <layer id="code" z="10">
+      <code-block props='{"language":"typescript","code":"const frame = i => i * 2;\nconst motion = frame => Math.sin(frame / 8);","theme":"nord","position":{"y":260},"width":1200,"height":380}' />
+    </layer>
+    <cue id="hold" label="hold">
+      <pause seconds="6s" />
+    </cue>
+  </scene>
+</video>

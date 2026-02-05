@@ -103,7 +103,7 @@ layer.subtitle({
 <h2>Code Block</h2>
 <p>Readable code walkthroughs.</p>
 <pre><code>layer.codeBlock({
-  language: "typescript",
+  language: "xml",
   code: "const frame = i => i * 2;"
 });</code></pre>
 <div class="docs-preview" data-docs-preview="components-code" data-w="1920" data-h="1080" data-autoplay="true"></div>

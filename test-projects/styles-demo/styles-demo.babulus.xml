@@ -1,0 +1,12 @@
+<video id="styles-demo" title="Styles Demo" fps="30" width="1920" height="1080">
+  <voiceover provider="dry-run" />
+
+  <scene id="title" title="Title Slide">
+    <layer id="content">
+      <title-slide props='{"eyebrow":"Styles Demo","title":"XML Styles","subtitle":"Theme tokens + layout props"}' />
+    </layer>
+    <cue id="hold">
+      <pause seconds="2s" />
+    </cue>
+  </scene>
+</video>

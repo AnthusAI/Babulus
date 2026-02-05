@@ -4,6 +4,7 @@ import { DocsShell } from "@/components/docs/docs-shell";
 import { DocsContent } from "@/components/docs/docs-content";
 import { DocsPreviewMount } from "@/components/docs/docs-preview-mount";
 import { TypographyPreviewMount } from "@/components/docs/typography-preview-mount";
+import { DocsLiveMount } from "@/components/docs/docs-live-mount";
 import { DOCS, findDocBySlug } from "@/lib/docs-registry";
 
 const legacyRoadmapSlugs: readonly (readonly string[])[] = [
@@ -102,6 +103,7 @@ export default function DocsPage({ params }: { params: { slug: string[] } }) {
             <div dangerouslySetInnerHTML={{ __html: doc.html }} />
           </DocsContent>
           <DocsPreviewMount />
+          <DocsLiveMount />
           <TypographyPreviewMount />
         </div>
       </article>

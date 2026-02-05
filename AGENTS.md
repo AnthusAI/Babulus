@@ -1,4 +1,4 @@
-# Babulus - TypeScript DSL for Remotion Audio + Timing
+# Babulus - XML DSL for Remotion Audio + Timing
 
 ## CRITICAL PROTOCOL: GIT COMMITS
 **NEVER** commit changes without explicit user approval.
@@ -64,7 +64,7 @@ npm run studio:preview -- examples/animation-demos.video.tsx examples/components
 
 ## What this is
 
-Node/TypeScript CLI tool that compiles `.babulus.ts` DSL files into JSON timing for Remotion, plus generated TTS/SFX/music with environment-aware caching.
+Node/TypeScript CLI tool that compiles `.babulus.xml` DSL files into JSON timing for Remotion, plus generated TTS/SFX/music with environment-aware caching.
 
 ## How to run
 
@@ -73,17 +73,17 @@ Node/TypeScript CLI tool that compiles `.babulus.ts` DSL files into JSON timing 
 npm install
 
 # Generate audio + timing JSON
-npm run babulus -- generate content/<video>.babulus.ts
+npm run babulus -- generate content/<video>.babulus.xml
 
 # Watch mode (auto-regenerate on DSL changes)
-npm run babulus -- generate --watch content/<video>.babulus.ts
+npm run babulus -- generate --watch content/<video>.babulus.xml
 
 # Watch all videos in content/ directory
 npm run babulus -- generate --watch content/
 
 # Environment-specific generation
-BABULUS_ENV=development npm run babulus -- generate content/<video>.babulus.ts
-BABULUS_ENV=production npm run babulus -- generate content/<video>.babulus.ts
+BABULUS_ENV=development npm run babulus -- generate content/<video>.babulus.xml
+BABULUS_ENV=production npm run babulus -- generate content/<video>.babulus.xml
 ```
 
 ## Key files
@@ -111,7 +111,7 @@ The documentation source of truth lives in the Studio Web app (branded HTML, ser
 ## Inputs/Outputs
 
 **Inputs**:
-- DSL: `content/<video>.babulus.ts` (scenes, cues, narration, audio clips)
+- DSL: `content/<video>.babulus.xml` (scenes, cues, narration, audio clips)
 - Config: `.babulus/config.yml` (API credentials)
 
 **Outputs**:
@@ -137,7 +137,7 @@ Fallback chain: development -> aws -> azure -> production -> static
 BABULUS_ENV=development npm run babulus -- generate --watch content/
 
 # Force regenerate everything
-npm run babulus -- generate --fresh content/intro.babulus.ts
+npm run babulus -- generate --fresh content/intro.babulus.xml
 
 # Audition SFX variants
 npm run babulus -- sfx next --clip whoosh --variants 8
