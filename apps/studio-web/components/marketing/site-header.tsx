@@ -34,11 +34,11 @@ export function SiteHeader() {
               Code to Video
             </Link>
             <Link
-              href="/translations"
-              className={linkClass("/translations")}
-              aria-current={isActive("/translations") ? "page" : undefined}
+              href="/live"
+              className={linkClass("/live")}
+              aria-current={isActive("/live") ? "page" : undefined}
             >
-              Translations
+              Live
             </Link>
             <Link
               href="/docs"
