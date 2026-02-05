@@ -271,7 +271,8 @@ export function LiveVomPage() {
         };
         updatedLast.xml = buildSceneXml(updatedLast);
         nextScenes = [...prev.slice(0, -1), updatedLast];
-        start = updatedLast.end;
+        const updatedEnd = updatedLast.end ?? updatedLast.start + duration;
+        start = updatedEnd;
       } else {
         const lastEnd = prev.length ? prev[prev.length - 1].end : null;
         const lastEndValue = lastEnd ?? now;
