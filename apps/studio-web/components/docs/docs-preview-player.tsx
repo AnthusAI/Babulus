@@ -14,6 +14,8 @@ type DocsPreviewPlayerProps = {
   showThemeControls?: boolean;
   defaultColorScheme?: string;
   defaultTypographyScheme?: string;
+  defaultAutoPlay?: boolean;
+  defaultShowControls?: boolean;
 };
 
 export function DocsPreviewPlayer({
@@ -23,6 +25,8 @@ export function DocsPreviewPlayer({
   showThemeControls = false,
   defaultColorScheme,
   defaultTypographyScheme,
+  defaultAutoPlay = false,
+  defaultShowControls,
 }: DocsPreviewPlayerProps) {
   const searchParams = useSearchParams();
   const [script, setScript] = useState<ScriptData | null>(null);
@@ -51,13 +55,19 @@ export function DocsPreviewPlayer({
 
   const autoPlay = useMemo(() => {
     const value = searchParams?.get('autoplay');
+    if (value === null) {
+      return defaultAutoPlay;
+    }
     return value === '1' || value === 'true';
-  }, [searchParams]);
+  }, [defaultAutoPlay, searchParams]);
 
   const showControls = useMemo(() => {
     const value = searchParams?.get('controls');
+    if (value === null) {
+      return defaultShowControls ?? true;
+    }
     return value !== '0' && value !== 'false';
-  }, [searchParams]);
+  }, [defaultShowControls, searchParams]);
 
   useEffect(() => {
     let isActive = true;

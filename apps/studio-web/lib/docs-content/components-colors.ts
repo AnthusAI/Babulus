@@ -43,7 +43,7 @@ export const componentsColorsDoc: DocsEntry = {
   slug: ["components", "colors"],
   title: "Color Schemes",
   description: "Radix-based light/dark palettes for layouts; keep color schemes independent from typography",
-  category: "Developer Reference",
+  category: "Designers",
   html: `
 <h1>Color Schemes</h1>
 <p>Each scheme is a Radix-inspired palette with gentle contrast. Avoid pure black/white; backgrounds stay inward of the scale and text avoids full-white.</p>

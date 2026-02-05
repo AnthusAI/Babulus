@@ -2,6 +2,7 @@ export default {
   preset: "ts-jest/presets/default-esm",
   testEnvironment: "jsdom", // Changed to jsdom for React testing
   extensionsToTreatAsEsm: [".ts", ".tsx"],
+  modulePathIgnorePatterns: ["<rootDir>/.next/", "<rootDir>/.amplify/"],
   moduleNameMapper: {
     "^(\\.{1,2}/.*)\\.js$": "$1",
     "^@/(.*)$": "<rootDir>/$1", // Support Next.js @ imports

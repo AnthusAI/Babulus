@@ -7,6 +7,7 @@ export const componentsGuideDoc = {
   "description": "Learn how to build videos using the component-based blank slate architecture",
   "category": "Developer Reference",
   "html": `<h1 id="component-system-guide">Component System Guide</h1>
+<p><strong>Designers:</strong> For the curated component catalog and examples, see <a href="/docs/components">Components</a>.</p>
 <h2 id="overview">Overview</h2>
 <p>Babulus uses a <strong>blank slate architecture</strong> - scenes start completely empty (black background, no elements) and you explicitly add visual components to build your video. This gives you full control over what appears on screen.</p>
 <p><strong>Key Concepts:</strong></p>

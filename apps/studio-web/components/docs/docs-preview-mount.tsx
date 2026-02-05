@@ -12,6 +12,8 @@ type PreviewNode = HTMLElement & {
     themeControls?: string;
     themeColor?: string;
     themeTypography?: string;
+    autoplay?: string;
+    controls?: string;
     mounted?: string;
   };
 };
@@ -30,6 +32,10 @@ export function DocsPreviewMount() {
       const showThemeControls = node.dataset.themeControls === "true";
       const defaultColorScheme = node.dataset.themeColor;
       const defaultTypographyScheme = node.dataset.themeTypography;
+      const defaultAutoPlay = node.dataset.autoplay === "true";
+      const defaultShowControls = node.dataset.controls
+        ? node.dataset.controls !== "false" && node.dataset.controls !== "0"
+        : undefined;
       node.dataset.mounted = "true";
       const root = createRoot(node);
       root.render(
@@ -40,6 +46,8 @@ export function DocsPreviewMount() {
           showThemeControls={showThemeControls}
           defaultColorScheme={defaultColorScheme}
           defaultTypographyScheme={defaultTypographyScheme}
+          defaultAutoPlay={defaultAutoPlay}
+          defaultShowControls={defaultShowControls}
         />,
       );
     });

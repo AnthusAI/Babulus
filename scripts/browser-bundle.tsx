@@ -13,6 +13,22 @@ import { ComposableRenderer } from '../packages/renderer/src/ComposableRenderer.
 import { RendererProvider, useCurrentFrame, useVideoConfig } from '../packages/renderer/src/context.tsx';
 import { registerComponent, getComponent, listComponents } from '../packages/renderer/src/components/registry.ts';
 import { interpolate, spring } from '../packages/renderer/src/math.ts';
+import {
+  FrameDrivenCanvasBase,
+  P5SketchBase,
+  ThreeSceneBase,
+  D3SvgBase,
+  LottieBase,
+  KineticTextBase,
+  AnimeJsBase,
+  AnimeTextBase,
+  useAnimeTimeline,
+  useFrameProgress,
+  useFrameSpring,
+  useFrameInterpolate,
+  frameProgress,
+  frameInterpolate,
+} from '../packages/renderer/src/engines/index.ts';
 
 // Standard components are already registered in registry.ts
 // We just need to export the registration function for projects to extend
@@ -35,6 +51,24 @@ import { interpolate, spring } from '../packages/renderer/src/math.ts';
   // Math utilities (for animations)
   interpolate,
   spring,
+
+  // Engine base classes
+  FrameDrivenCanvasBase,
+  P5SketchBase,
+  ThreeSceneBase,
+  D3SvgBase,
+  LottieBase,
+  KineticTextBase,
+  AnimeJsBase,
+  AnimeTextBase,
+
+  // Frame helpers
+  useFrameProgress,
+  useFrameSpring,
+  useFrameInterpolate,
+  frameProgress,
+  frameInterpolate,
+  useAnimeTimeline,
 };
 
 // Create React root once and reuse it for all frames

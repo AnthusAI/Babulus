@@ -38,6 +38,25 @@
 - Typography themes: see `TYPEFACES.md` (named font sets, when to use them)
 - Color themes: see `COLORS.md` (Radix-based light/dark theme tokens)
 
+## Designers Documentation (cookbook index)
+- Layouts: `/docs/components/layouts`
+- Color Schemes: `/docs/components/colors`
+- Typefaces: `/docs/components/typography`
+- Animation: `/docs/animation`
+- Components: `/docs/components`
+
+## Text Effects Cookbook (curated names)
+- Effects: `fade`, `fade_up`, `fade_down`, `slide_left`, `slide_right`, `pop`, `scale_in`
+- Default timing: if a cue exists, `start: { kind: "cue" }` is the default
+- Example (Title + Subtitle):
+  - `titleEffect: { effect: "fade_up", unit: "words", durationFrames: 24, staggerFrames: 4 }`
+  - `subtitleEffect: { effect: "slide_left", unit: "chars", durationFrames: 20, staggerFrames: 2 }`
+
+## Preview generation (docs mounts)
+```bash
+npm run studio:preview -- examples/animation-demos.video.tsx examples/components-cookbook.video.tsx
+```
+
 ## Agent autonomy (behavior)
 - Proceed independently without stopping to ask permission after each change.
 - Keep moving through the plan and report only when there is meaningful progress or a true blocker.

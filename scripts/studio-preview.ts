@@ -23,7 +23,7 @@ type PreviewIndex = {
 const program = new Command();
 program
   .name("studio-preview")
-  .argument("<dsl>", "Path to .babulus.ts file")
+  .argument("<dsl...>", "Path(s) to .babulus.ts file(s)")
   .option("--out-dir <path>", "Preview output directory", "apps/studio-web/public/preview")
   .option("--audio", "Write preview audio files", false)
   .option("--watch", "Watch DSL changes and regenerate", false)
@@ -32,13 +32,13 @@ program
 program.parse();
 
 const opts = program.opts<{ outDir: string; audio: boolean; watch: boolean; env?: string }>();
-const dslPath = resolve(process.cwd(), program.args[0]);
+const dslPaths = program.args.map((arg) => resolve(process.cwd(), arg));
 if (opts.env) {
   process.env.BABULUS_ENV = opts.env;
 }
 
-const projectRoot = findProjectRoot(dslPath);
-const configPath = findConfigPath(projectRoot, dslPath);
+const projectRoot = findProjectRoot(dslPaths[0]);
+const configPath = findConfigPath(projectRoot, dslPaths[0]);
 const previewRoot = resolve(process.cwd(), opts.outDir);
 
 const writePreviewIndex = (index: PreviewIndex) => {
@@ -48,37 +48,45 @@ const writePreviewIndex = (index: PreviewIndex) => {
 };
 
 const runOnce = async () => {
-  const config = loadConfig(projectRoot, dslPath);
-  const videoFile = await loadVideoFile(dslPath);
   const entries: PreviewIndex["compositions"] = [];
+  const seen = new Set<string>();
 
-  for (const comp of videoFile.compositions) {
-    const scriptName = `${comp.id}.script.json`;
-    const timelineName = `${comp.id}.timeline.json`;
-    const audioName = opts.audio ? `${comp.id}.wav` : null;
-    const scriptOut = join(previewRoot, scriptName);
-    const timelineOut = join(previewRoot, timelineName);
-    const audioOut = audioName ? join(previewRoot, audioName) : null;
-    const outDir = join(projectRoot, ".babulus", "out", comp.id);
+  for (const dslPath of dslPaths) {
+    const root = findProjectRoot(dslPath);
+    const config = loadConfig(root, dslPath);
+    const videoFile = await loadVideoFile(dslPath);
 
-    await generateComposition({
-      composition: comp,
-      dslPath,
-      scriptOut,
-      timelineOut,
-      audioOut,
-      outDir,
-      config,
-      verboseLogs: true,
-    });
+    for (const comp of videoFile.compositions) {
+      const scriptName = `${comp.id}.script.json`;
+      const timelineName = `${comp.id}.timeline.json`;
+      const audioName = opts.audio ? `${comp.id}.wav` : null;
+      const scriptOut = join(previewRoot, scriptName);
+      const timelineOut = join(previewRoot, timelineName);
+      const audioOut = audioName ? join(previewRoot, audioName) : null;
+      const outDir = join(root, ".babulus", "out", comp.id);
 
-    entries.push({
-      id: comp.id,
-      title: comp.title ?? null,
-      script: scriptName,
-      timeline: timelineName,
-      audio: audioName,
-    });
+      await generateComposition({
+        composition: comp,
+        dslPath,
+        scriptOut,
+        timelineOut,
+        audioOut,
+        outDir,
+        config,
+        verboseLogs: true,
+      });
+
+      if (!seen.has(comp.id)) {
+        entries.push({
+          id: comp.id,
+          title: comp.title ?? null,
+          script: scriptName,
+          timeline: timelineName,
+          audio: audioName,
+        });
+        seen.add(comp.id);
+      }
+    }
   }
 
   writePreviewIndex({ updatedAt: new Date().toISOString(), compositions: entries });
@@ -91,7 +99,7 @@ const run = async () => {
     return;
   }
 
-  const watchDirs = [dirname(dslPath)];
+  const watchDirs = [...new Set(dslPaths.map((dslPath) => dirname(dslPath)))];
   if (configPath) {
     watchDirs.push(dirname(configPath));
   }

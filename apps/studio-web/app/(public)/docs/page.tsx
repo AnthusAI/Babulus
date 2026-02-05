@@ -22,31 +22,24 @@ export default function DocsLandingPage() {
   const sections = listDocsByCategory({ includeInternal: false });
 
   // Split sections into accessible and developer categories
-  const accessibleCategories = ["Overview"];
+  const accessibleCategories = ["Overview", "Guides"];
   const accessibleSections = sections.filter((s) =>
     accessibleCategories.includes(s.category)
   );
   const isRoadmapDoc = (slug: readonly string[]) => slug[0] === "roadmap";
+  const designersSection = sections.find((s) => s.category === "Designers");
   const developerSections = sections.filter(
     (s) =>
       !accessibleCategories.includes(s.category) &&
+      s.category !== "Designers" &&
       !s.docs.some((doc) => isRoadmapDoc(doc.slug)),
   );
-  const isThemeSlug = (slug: readonly string[]) =>
-    slug[0] === "components" &&
-    (slug[1] === "layouts" || slug[1] === "typography" || slug[1] === "colors");
-  const filteredDeveloperSections = developerSections
-    .map((section) => ({
-      ...section,
-      docs: section.docs.filter((doc) => !isThemeSlug(doc.slug)),
-    }))
-    .filter((section) => section.docs.length);
 
-  const devRefSection = filteredDeveloperSections.find((s) => s.category === "Developer Reference");
-  const projectStorageSection = filteredDeveloperSections.find((s) => s.category === "Project Storage");
-  const ttsSection = filteredDeveloperSections.find((s) => s.category === "TTS Providers");
-  const renderingSection = filteredDeveloperSections.find((s) => s.category === "Rendering");
-  const otherDevSections = filteredDeveloperSections.filter(
+  const devRefSection = developerSections.find((s) => s.category === "Developer Reference");
+  const projectStorageSection = developerSections.find((s) => s.category === "Project Storage");
+  const ttsSection = developerSections.find((s) => s.category === "TTS Providers");
+  const renderingSection = developerSections.find((s) => s.category === "Rendering");
+  const otherDevSections = developerSections.filter(
     (s) =>
       s.category !== "Developer Reference" &&
       s.category !== "Project Storage" &&
@@ -75,7 +68,7 @@ export default function DocsLandingPage() {
           </div>
         </div>
 
-        {/* Accessible content section (no header) */}
+        {/* Main documentation (no header) */}
         <div className="grid gap-4 lg:grid-cols-2">
           {accessibleSections.map(({ category, docs }) => (
             <div key={category} className="rounded-2xl bg-card p-2">
@@ -100,43 +93,38 @@ export default function DocsLandingPage() {
               </div>
             </div>
           ))}
+        </div>
+
+        {/* Designers section */}
+        {designersSection ? (
           <div className="rounded-2xl bg-card p-2">
             <div className="rounded-xl bg-background p-6">
               <div className="text-xs font-semibold uppercase tracking-[0.2em] text-foreground/60">
-                Themes
+                Designers
               </div>
               <div className="mt-4 space-y-3">
-                <Link
-                  href="/docs/components/layouts"
-                  className="block rounded-xl bg-card p-4 transition-colors hover:bg-card/80"
-                >
-                  <div className="font-semibold leading-snug">Layouts</div>
-                  <div className="mt-1 text-sm text-muted-foreground leading-6">
-                    Standard screen layouts and composition building blocks.
-                  </div>
-                </Link>
-                <Link
-                  href="/docs/components/typography"
-                  className="block rounded-xl bg-card p-4 transition-colors hover:bg-card/80"
-                >
-                  <div className="font-semibold leading-snug">Typography Schemes</div>
-                  <div className="mt-1 text-sm text-muted-foreground leading-6">
-                    Curated font pairings for different video moods.
-                  </div>
-                </Link>
-                <Link
-                  href="/docs/components/colors"
-                  className="block rounded-xl bg-card p-4 transition-colors hover:bg-card/80"
-                >
-                  <div className="font-semibold leading-snug">Color Schemes</div>
-                  <div className="mt-1 text-sm text-muted-foreground leading-6">
-                    Radix-based palettes for light and dark modes.
-                  </div>
-                </Link>
+                {[
+                  ["components/layouts", "Layouts", "Standard screen layouts and composition building blocks."],
+                  ["components/colors", "Color Schemes", "Radix-based palettes for light and dark modes."],
+                  ["components/typography", "Typefaces", "Curated font pairings for different video moods."],
+                  ["animation", "Animation", "Frame-driven motion across layout, data, generative art, 3D, and motion graphics."],
+                  ["components", "Components", "Off-the-shelf titles, overlays, callouts, and motion UI."],
+                ].map(([slug, label, description]) => (
+                  <Link
+                    key={slug}
+                    href={`/docs/${slug}`}
+                    className="block rounded-xl bg-card p-4 transition-colors hover:bg-card/80"
+                  >
+                    <div className="font-semibold leading-snug">{label}</div>
+                    <div className="mt-1 text-sm text-muted-foreground leading-6">
+                      {description}
+                    </div>
+                  </Link>
+                ))}
               </div>
             </div>
           </div>
-        </div>
+        ) : null}
 
         {/* Visual divider */}
         <div className="relative py-4">

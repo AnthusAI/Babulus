@@ -583,11 +583,11 @@ const buildThemeList = (section: string) => {
 
 export const componentsTypographyDoc: DocsEntry = {
   slug: ["components", "typography"],
-  title: "Typography Schemes",
+  title: "Typefaces",
   description: "Named eyebrow/headline/subhead font sets that overlay any layout",
-  category: "Developer Reference",
+  category: "Designers",
   html: `
-<h1>Typography Schemes</h1>
+<h1>Typefaces</h1>
 <p>Typeface schemes are packaged as CSS variables (<code>--font-eyebrow</code>, <code>--font-headline</code>, <code>--font-subhead</code>) so layouts stay typography-agnostic.</p>
 
 <h2>Scheme Catalog</h2>

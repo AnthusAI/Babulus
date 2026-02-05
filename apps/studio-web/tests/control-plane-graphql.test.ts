@@ -19,20 +19,28 @@
  * 11. Billing: create billing account → update visibility mode
  */
 
-import { describe, it, expect, beforeAll } from "@jest/globals";
-import { Amplify } from "aws-amplify";
-import { signIn, signUp, confirmSignUp, getCurrentUser } from "aws-amplify/auth";
-import outputs from "../amplify_outputs.json";
-import * as cp from "../lib/control-plane-graphql.js";
+/** @jest-environment node */
 
-// Configure Amplify for tests
-Amplify.configure(outputs, { ssr: false });
+import { describe, it, expect, beforeAll } from "@jest/globals";
+import outputs from "../amplify_outputs.json";
+
+// This suite requires a deployed Amplify backend and working auth flows.
+// It is intentionally opt-in to avoid breaking local/unit test runs.
+const RUN_INTEGRATION = process.env.BABULUS_RUN_INTEGRATION === "1";
+const describeIntegration = RUN_INTEGRATION ? describe : describe.skip;
+
+let Amplify: any;
+let signIn: any;
+let signUp: any;
+let confirmSignUp: any;
+let getCurrentUser: any;
+let cp: any;
 
 // Test user credentials (ephemeral test account)
 const TEST_EMAIL = `test-${Date.now()}@example.com`;
 const TEST_PASSWORD = "TestPassword123!";
 
-describe("Control-Plane GraphQL Integration", () => {
+describeIntegration("Control-Plane GraphQL Integration", () => {
   let userId: string;
   let orgId: string;
   let projectId: string;
@@ -43,6 +51,14 @@ describe("Control-Plane GraphQL Integration", () => {
   let assetId: string;
 
   beforeAll(async () => {
+    // Lazy-load heavy Next/AWS modules only when the suite is enabled.
+    ({ Amplify } = await import("aws-amplify"));
+    ({ signIn, signUp, confirmSignUp, getCurrentUser } = await import("aws-amplify/auth"));
+    cp = await import("../lib/control-plane-graphql.js");
+
+    // Configure Amplify for tests
+    Amplify.configure(outputs, { ssr: false });
+
     // Create test user
     try {
       await signUp({

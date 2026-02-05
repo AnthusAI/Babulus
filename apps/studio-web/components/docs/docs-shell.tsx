@@ -81,7 +81,7 @@ export function DocsShell({
             <div className="rounded-2xl bg-card p-2">
               <div className="rounded-xl bg-background p-4">
                 <div className="text-xs font-semibold uppercase tracking-[0.2em] text-foreground/50">
-                  Theme Library
+                  Design Library
                 </div>
                 <div className="mt-3 flex flex-col gap-1">
                   <Link
@@ -91,16 +91,28 @@ export function DocsShell({
                     Layouts
                   </Link>
                   <Link
-                    href="/docs/components/typography"
-                    className="rounded-lg px-3 py-2 text-sm text-foreground/60 transition-colors hover:text-foreground/80"
-                  >
-                    Typography Schemes
-                  </Link>
-                  <Link
                     href="/docs/components/colors"
                     className="rounded-lg px-3 py-2 text-sm text-foreground/60 transition-colors hover:text-foreground/80"
                   >
                     Color Schemes
+                  </Link>
+                  <Link
+                    href="/docs/components/typography"
+                    className="rounded-lg px-3 py-2 text-sm text-foreground/60 transition-colors hover:text-foreground/80"
+                  >
+                    Typefaces
+                  </Link>
+                  <Link
+                    href="/docs/animation"
+                    className="rounded-lg px-3 py-2 text-sm text-foreground/60 transition-colors hover:text-foreground/80"
+                  >
+                    Animation
+                  </Link>
+                  <Link
+                    href="/docs/components"
+                    className="rounded-lg px-3 py-2 text-sm text-foreground/60 transition-colors hover:text-foreground/80"
+                  >
+                    Components
                   </Link>
                 </div>
               </div>

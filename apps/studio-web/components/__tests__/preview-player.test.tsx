@@ -55,12 +55,12 @@ describe('PreviewPlayer', () => {
 
   it('renders play button', () => {
     render(<PreviewPlayer script={mockScript} />);
-    expect(screen.getByText('Play')).toBeInTheDocument();
+    expect(screen.getByLabelText('Play')).toBeInTheDocument();
   });
 
   it('renders reset button', () => {
     render(<PreviewPlayer script={mockScript} />);
-    expect(screen.getByText('Reset')).toBeInTheDocument();
+    expect(screen.getByLabelText('Reset')).toBeInTheDocument();
   });
 
   it('displays correct duration', () => {

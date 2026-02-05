@@ -290,6 +290,8 @@ export function PreviewPlayer({
                   variant="ghost"
                   size="sm"
                   className="flex items-center gap-1 px-2 text-neutral-100 hover:text-white"
+                  aria-label={isPlaying ? "Pause" : "Play"}
+                  title={isPlaying ? "Pause" : "Play"}
                 >
                   {isPlaying ? (
                     <Pause className="h-4 w-4" />
@@ -303,6 +305,8 @@ export function PreviewPlayer({
                   variant="ghost"
                   size="sm"
                   className="flex items-center gap-1 px-2 text-neutral-100 hover:text-white"
+                  aria-label="Reset"
+                  title="Reset"
                 >
                   <RotateCcw className="h-4 w-4" />
                 </Button>
@@ -357,6 +361,8 @@ export function PreviewPlayer({
               variant="outline"
               size="sm"
               className="flex items-center gap-1 px-2"
+              aria-label={isPlaying ? "Pause" : "Play"}
+              title={isPlaying ? "Pause" : "Play"}
             >
               {isPlaying ? (
                 <Pause className="h-4 w-4" />
@@ -370,6 +376,8 @@ export function PreviewPlayer({
               variant="outline"
               size="sm"
               className="flex items-center gap-1 px-2"
+              aria-label="Reset"
+              title="Reset"
             >
               <RotateCcw className="h-4 w-4" />
             </Button>

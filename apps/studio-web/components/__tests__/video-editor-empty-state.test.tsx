@@ -83,36 +83,36 @@ describe('VideoEditor Empty State', () => {
   it('renders empty editor when no DSL code is loaded', async () => {
     render(<VideoEditor {...defaultProps} />);
 
-    // Editor should be present
-    expect(screen.getByTestId('monaco-editor')).toBeInTheDocument();
+    // Editor should be present (after async code load completes)
+    await waitFor(() => {
+      expect(screen.getByTestId('monaco-editor')).toBeInTheDocument();
+    });
 
     // Preview should show empty state message
     await waitFor(() => {
       expect(screen.getByText('No preview available')).toBeInTheDocument();
     });
 
-    expect(screen.getByText('Click Preview to see your video')).toBeInTheDocument();
+    expect(screen.getByText('Preview will update automatically as you type')).toBeInTheDocument();
   });
 
-  it('shows Preview button in empty state', () => {
+  it('shows Save / Generate / Render buttons', async () => {
     render(<VideoEditor {...defaultProps} />);
 
-    const previewButton = screen.getByRole('button', { name: /preview/i });
-    expect(previewButton).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /save/i })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /generate/i })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /render/i })).toBeInTheDocument();
+    });
   });
 
-  it('does not show preview player when script is null', () => {
+  it('does not show preview player when script is null', async () => {
     render(<VideoEditor {...defaultProps} />);
+
+    await waitFor(() => {
+      expect(screen.getByText('No preview available')).toBeInTheDocument();
+    });
 
     expect(screen.queryByTestId('preview-player')).not.toBeInTheDocument();
-  });
-
-  it('shows other editor controls', () => {
-    render(<VideoEditor {...defaultProps} />);
-
-    // Should have Save, Generate, Render buttons
-    expect(screen.getByRole('button', { name: /save/i })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /generate/i })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /render/i })).toBeInTheDocument();
   });
 });

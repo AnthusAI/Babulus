@@ -19,10 +19,13 @@ import { marked } from "marked";
 import { componentsLayoutsDoc } from "@/lib/docs-content/components-layouts";
 import { componentsTypographyDoc } from "@/lib/docs-content/components-typography";
 import { componentsColorsDoc } from "@/lib/docs-content/components-colors";
+import { animationDoc } from "@/lib/docs-content/animation";
+import { componentsDoc } from "@/lib/docs-content/components";
 
 export type DocsCategory =
   | "Overview"
   | "Guides"
+  | "Designers"
   | "Rendering"
   | "Developer Reference"
   | "TTS Providers"
@@ -36,6 +39,8 @@ export type DocsEntry = Readonly<{
   category: DocsCategory;
   html: string;
   internal?: boolean;
+  // For docs that should be reachable by URL, but not listed in the left nav index.
+  navHidden?: boolean;
 }>;
 
 const legacyLinkMap: ReadonlyMap<string, string> = new Map([
@@ -117,8 +122,10 @@ const RAW_DOCS: readonly DocsEntry[] = [
   renderingMode2Doc,
   renderingMode3Doc,
   componentsLayoutsDoc,
-  componentsTypographyDoc,
   componentsColorsDoc,
+  componentsTypographyDoc,
+  animationDoc,
+  componentsDoc,
   technicalDoc,
   configSetupDoc,
   ttsAwsPollyQuickstartDoc,
@@ -155,6 +162,7 @@ const CATEGORY_ORDER: readonly DocsCategory[] = [
   // Accessible content (no section header)
   "Overview",
   "Guides",
+  "Designers",
   // Developer documentation (with section header)
   "Rendering",
   "Developer Reference",
@@ -167,6 +175,7 @@ export function listDocsByCategory(options?: { includeInternal?: boolean }) {
   const categories = new Map<DocsCategory, DocsEntry[]>();
   const deferredDocs: DocsEntry[] = [];
   for (const doc of DOCS) {
+    if (doc.navHidden) continue;
     if (!includeInternal && doc.internal) continue;
     if (doc.category === "Roadmap") {
       deferredDocs.push(doc);
