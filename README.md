@@ -44,7 +44,7 @@ Branded documentation lives in the Studio Web app:
 A `.babulus.xml` file declares a composition (or multiple). It is a declarative tree of scenes, cues, and components.
 
 ```xml
-<video id="intro" title="Intro" fps="30" width="1920" height="1080">
+<videoml id="intro" title="Intro" fps="30" width="1920" height="1080">
   <voiceover provider="openai" voice="echo" />
 
   <scene id="paradigm" title="A New Kind of Computer Program">
@@ -61,7 +61,7 @@ A `.babulus.xml` file declares a composition (or multiple). It is a declarative 
       <voice>But tool-using agents flip the script.</voice>
     </cue>
   </scene>
-</video>
+</videoml>
 ```
 
 ### Pauses

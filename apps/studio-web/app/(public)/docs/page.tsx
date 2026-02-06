@@ -35,12 +35,14 @@ export default function DocsLandingPage() {
       !s.docs.some((doc) => isRoadmapDoc(doc.slug)),
   );
 
+  const standardsSection = developerSections.find((s) => s.category === "Standards");
   const devRefSection = developerSections.find((s) => s.category === "Developer Reference");
   const projectStorageSection = developerSections.find((s) => s.category === "Project Storage");
   const ttsSection = developerSections.find((s) => s.category === "TTS Providers");
   const renderingSection = developerSections.find((s) => s.category === "Rendering");
   const otherDevSections = developerSections.filter(
     (s) =>
+      s.category !== "Standards" &&
       s.category !== "Developer Reference" &&
       s.category !== "Project Storage" &&
       s.category !== "TTS Providers" &&
@@ -148,6 +150,29 @@ export default function DocsLandingPage() {
 
           <div className="grid gap-4 lg:grid-cols-2">
             <div className="space-y-4">
+              {standardsSection ? (
+                <div className="rounded-2xl bg-card p-2">
+                  <div className="rounded-xl bg-background p-6">
+                    <div className="text-xs font-semibold uppercase tracking-[0.2em] text-foreground/60">
+                      {standardsSection.category}
+                    </div>
+                    <div className="mt-4 space-y-3">
+                      {standardsSection.docs.map((doc) => (
+                        <Link
+                          key={doc.slug.join("/")}
+                          href={docsHref(doc)}
+                          className="block rounded-xl bg-card p-4 transition-colors hover:bg-card/80"
+                        >
+                          <div className="font-semibold leading-snug">{doc.title}</div>
+                          <div className="mt-1 text-sm text-muted-foreground leading-6">
+                            {doc.description}
+                          </div>
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              ) : null}
               {devRefSection ? (
                 <div className="rounded-2xl bg-card p-2">
                   <div className="rounded-xl bg-background p-6">

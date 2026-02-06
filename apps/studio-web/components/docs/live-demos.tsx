@@ -3,12 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { VomPreviewPlayer } from "@/components/vom-preview-player";
-import { executeVomXml } from "@/lib/dsl-executor";
-import { dslToScriptData, type PlaceholderTimingStrategy } from "@babulus/shared/dsl-to-script";
-import type { ScriptData } from "@babulus/shared";
-import { ComposableRenderer, RendererProvider, dispatchLiveAction } from "@babulus/renderer";
-
-const VIDEO_FPS = 30;
+import { VideomlDomPlayer } from "@/components/videoml-dom-player";
 
 type DemoShellProps = {
   children: React.ReactNode;
@@ -24,41 +19,25 @@ function DemoShell({ children, note }: DemoShellProps) {
   );
 }
 
-function useScriptFromXml(xml: string, timingStrategy: PlaceholderTimingStrategy): ScriptData | null {
-  return useMemo(() => {
-    const videoSpec = executeVomXml(xml, undefined, false);
-    const composition = videoSpec.compositions?.[0];
-    if (!composition) return null;
-    return dslToScriptData(composition, timingStrategy);
-  }, [xml, timingStrategy]);
-}
-
 export function TemporalReflowDemo({ autoPlay }: { autoPlay?: boolean }) {
   const xml = useMemo(
     () => `
-<video id="temporal-reflow" title="Temporal Reflow" fps="30" width="1280" height="720">
+<videoml id="temporal-reflow" title="Temporal Reflow" fps="30" width="1280" height="720">
   <scene id="reflow">
     <layer id="content">
       <sequence>
-        <title duration="1s" props='{"text":"Beat 1","position":{"x":96,"y":140},"fontSize":64}' />
-        <title duration="1.2s" props='{"text":"Beat 2","position":{"x":96,"y":260},"fontSize":64,"color":"#3b82f6"}' />
-        <title duration="0.8s" props='{"text":"Beat 3","position":{"x":96,"y":380},"fontSize":64,"color":"#10b981"}' />
+        <video-title duration="1s" props='{"text":"Beat 1","position":{"x":96,"y":140},"fontSize":64}' />
+        <video-title duration="1.2s" props='{"text":"Beat 2","position":{"x":96,"y":260},"fontSize":64,"color":"#3b82f6"}' />
+        <video-title duration="0.8s" props='{"text":"Beat 3","position":{"x":96,"y":380},"fontSize":64,"color":"#10b981"}' />
       </sequence>
     </layer>
   </scene>
-</video>`.trim(),
+</videoml>`.trim(),
     [],
   );
   return (
     <DemoShell note="Scene duration is derived from the sequence total.">
-      <VomPreviewPlayer
-        xml={xml}
-        width={1280}
-        height={720}
-        autoPlay={autoPlay}
-        showControls
-        timingStrategy={{ type: "auto", secondsPerCue: 2 }}
-      />
+      <VomPreviewPlayer xml={xml} width={1280} height={720} autoPlay={autoPlay} showControls />
     </DemoShell>
   );
 }
@@ -66,51 +45,39 @@ export function TemporalReflowDemo({ autoPlay }: { autoPlay?: boolean }) {
 export function SequenceStackDemo() {
   const sequenceXml = useMemo(
     () => `
-<video id="sequence-demo" title="Sequence Demo" fps="30" width="1280" height="720">
+<videoml id="sequence-demo" title="Sequence Demo" fps="30" width="1280" height="720">
   <scene id="sequence">
     <layer id="content">
       <sequence>
-        <title duration="1.2s" props='{"text":"Seq A","position":{"x":96,"y":140},"fontSize":64,"color":"#f97316"}' />
-        <title duration="1.2s" props='{"text":"Seq B","position":{"x":96,"y":260},"fontSize":64,"color":"#22c55e"}' />
-        <title duration="1.2s" props='{"text":"Seq C","position":{"x":96,"y":380},"fontSize":64,"color":"#3b82f6"}' />
+        <video-title duration="1.2s" props='{"text":"Seq A","position":{"x":96,"y":140},"fontSize":64,"color":"#f97316"}' />
+        <video-title duration="1.2s" props='{"text":"Seq B","position":{"x":96,"y":260},"fontSize":64,"color":"#22c55e"}' />
+        <video-title duration="1.2s" props='{"text":"Seq C","position":{"x":96,"y":380},"fontSize":64,"color":"#3b82f6"}' />
       </sequence>
     </layer>
   </scene>
-</video>`.trim(),
+</videoml>`.trim(),
     [],
   );
   const stackXml = useMemo(
     () => `
-<video id="stack-demo" title="Stack Demo" fps="30" width="1280" height="720">
+<videoml id="stack-demo" title="Stack Demo" fps="30" width="1280" height="720">
   <scene id="stack">
     <layer id="content">
       <stack>
-        <rectangle duration="3s" props='{"width":1280,"height":720,"color":"#111827"}' />
-        <title duration="3s" props='{"text":"Stacked Title","position":{"x":96,"y":220},"fontSize":64,"color":"#f472b6"}' />
-        <subtitle duration="3s" props='{"text":"Overlayed in parallel","position":{"x":96,"y":320},"fontSize":36,"color":"#e5e7eb"}' />
+        <video-rectangle duration="3s" props='{"width":1280,"height":720,"color":"#111827"}' />
+        <video-title duration="3s" props='{"text":"Stacked Title","position":{"x":96,"y":220},"fontSize":64,"color":"#f472b6"}' />
+        <video-subtitle duration="3s" props='{"text":"Overlayed in parallel","position":{"x":96,"y":320},"fontSize":36,"color":"#e5e7eb"}' />
       </stack>
     </layer>
   </scene>
-</video>`.trim(),
+</videoml>`.trim(),
     [],
   );
   return (
     <DemoShell note="Sequence plays items one after another; stack overlays items in parallel.">
       <div className="grid gap-4 md:grid-cols-2">
-        <VomPreviewPlayer
-          xml={sequenceXml}
-          width={640}
-          height={360}
-          showControls
-          timingStrategy={{ type: "auto", secondsPerCue: 2 }}
-        />
-        <VomPreviewPlayer
-          xml={stackXml}
-          width={640}
-          height={360}
-          showControls
-          timingStrategy={{ type: "auto", secondsPerCue: 2 }}
-        />
+        <VomPreviewPlayer xml={sequenceXml} width={640} height={360} showControls />
+        <VomPreviewPlayer xml={stackXml} width={640} height={360} showControls />
       </div>
     </DemoShell>
   );
@@ -136,14 +103,14 @@ export function LiveOpenEndedDemo() {
         return `
   <scene id="${scene.id}" start="${scene.start.toFixed(2)}s"${durationAttr}>
     <layer id="content">
-      <title props='{"text":"${scene.title}","position":{"x":96,"y":180},"fontSize":64,"color":"${scene.color}"}' />
+      <video-title props='{"text":"${scene.title}","position":{"x":96,"y":180},"fontSize":64,"color":"${scene.color}"}' />
     </layer>
   </scene>`;
       })
       .join("\n");
     return `
-<video id="live-open" title="Live Open" fps="30" width="1280" height="720">${body}
-</video>`.trim();
+<videoml id="live-open" title="Live Open" fps="30" width="1280" height="720">${body}
+</videoml>`.trim();
   }, [scenes]);
 
   const appendScene = useCallback(() => {
@@ -176,7 +143,6 @@ export function LiveOpenEndedDemo() {
           autoPlay
           showControls={false}
           clockMode="live"
-          timingStrategy={{ type: "live", secondsPerCue: 2 }}
           onTimeUpdate={(timeSec) => {
             currentTimeRef.current = timeSec;
           }}
@@ -192,23 +158,23 @@ export function LiveOpenEndedDemo() {
 export function LiveDomEditDemo() {
   const [title, setTitle] = useState("Live DOM edit");
   const [xml, setXml] = useState(() => `
-<video id="live-dom" title="Live DOM" fps="30" width="1280" height="720">
+<videoml id="live-dom" title="Live DOM" fps="30" width="1280" height="720">
   <scene id="scene-001" start="0s">
     <layer id="content">
-      <title props='{"text":"${title}","position":{"x":96,"y":220},"fontSize":64,"color":"#a78bfa"}' />
+      <video-title props='{"text":"${title}","position":{"x":96,"y":220},"fontSize":64,"color":"#a78bfa"}' />
     </layer>
   </scene>
-</video>`.trim());
+</videoml>`.trim());
 
   useEffect(() => {
     setXml(`
-<video id="live-dom" title="Live DOM" fps="30" width="1280" height="720">
+<videoml id="live-dom" title="Live DOM" fps="30" width="1280" height="720">
   <scene id="scene-001" start="0s">
     <layer id="content">
-      <title props='{"text":"${title}","position":{"x":96,"y":220},"fontSize":64,"color":"#a78bfa"}' />
+      <video-title props='{"text":"${title}","position":{"x":96,"y":220},"fontSize":64,"color":"#a78bfa"}' />
     </layer>
   </scene>
-</video>`.trim());
+</videoml>`.trim());
   }, [title]);
 
   const updateTitle = useCallback(() => {
@@ -219,15 +185,7 @@ export function LiveDomEditDemo() {
   return (
     <DemoShell note="Edits to visible nodes appear immediately.">
       <div className="flex flex-col gap-3">
-        <VomPreviewPlayer
-          xml={xml}
-          width={1280}
-          height={720}
-          autoPlay
-          showControls={false}
-          clockMode="live"
-          timingStrategy={{ type: "live", secondsPerCue: 2 }}
-        />
+        <VomPreviewPlayer xml={xml} width={1280} height={720} autoPlay showControls={false} clockMode="live" />
         <div className="flex justify-center">
           <Button onClick={updateTitle}>Update Title</Button>
         </div>
@@ -239,100 +197,45 @@ export function LiveDomEditDemo() {
 export function NamedActionsDemo() {
   const xml = useMemo(
     () => `
-<video id="named-actions" title="Named Actions" fps="30" width="1280" height="720">
+<videoml id="named-actions" title="Named Actions" fps="30" width="1280" height="720">
   <scene id="scene-001" start="0s">
     <layer id="content">
-      <action-pulse props='{"actionName":"pulse","label":"Action: pulse","targetId":"pulse-card"}' />
+      <title-slide id="inline-demo" props='{"eyebrow":"Inline JS","title":"Click to mutate DOM","subtitle":"Events run in the live VOM","verticalAlign":"center","horizontalAlign":"center","entranceStartFrame":-999}' />
+      <button on:click='const el=root.querySelector(\"#inline-demo\");const props=JSON.parse(el.getAttribute(\"props\")||\"{}\");props.subtitle=\"Updated @ \"+new Date().toLocaleTimeString();el.setAttribute(\"props\",JSON.stringify(props));' style="position:absolute;left:48px;bottom:48px;padding:12px 18px;border-radius:12px;background:#111827;color:#e5e7eb;font-size:16px;border:none;cursor:pointer;">
+        Update Subtitle
+      </button>
     </layer>
   </scene>
-</video>`.trim(),
+</videoml>`.trim(),
     [],
   );
 
-  const fireAction = useCallback(() => {
-    dispatchLiveAction({ name: "pulse", targetId: "pulse-card" });
-  }, []);
-
   return (
-    <DemoShell note="Named actions dispatch to components without inline JS.">
+    <DemoShell note="Inline JS or external events can mutate the live DOM.">
       <div className="flex flex-col gap-3">
-        <VomPreviewPlayer
-          xml={xml}
-          width={1280}
-          height={720}
-          autoPlay
-          showControls={false}
-          clockMode="live"
-          timingStrategy={{ type: "live", secondsPerCue: 2 }}
-        />
-        <div className="flex justify-center">
-          <Button onClick={fireAction}>Dispatch Action</Button>
-        </div>
+        <VomPreviewPlayer xml={xml} width={1280} height={720} autoPlay showControls={false} clockMode="live" />
       </div>
     </DemoShell>
-  );
-}
-
-function RenderSurface({
-  script,
-  width,
-  height,
-  timeSec,
-}: {
-  script: ScriptData;
-  width: number;
-  height: number;
-  timeSec: number;
-}) {
-  const fps = script.fps ?? VIDEO_FPS;
-  const frame = Math.floor(timeSec * fps);
-  return (
-    <div style={{ width, height }}>
-      <RendererProvider frame={frame} config={{ fps, width, height, durationFrames: Math.floor(60 * fps) }}>
-        <ComposableRenderer script={script} liveMode />
-      </RendererProvider>
-    </div>
   );
 }
 
 export function MultiScreenSyncDemo() {
   const xml = useMemo(
     () => `
-<video id="sync-demo" title="Sync Demo" fps="30" width="1280" height="720">
+<videoml id="sync-demo" title="Sync Demo" fps="30" width="1280" height="720">
   <scene id="scene-001" start="0s">
     <layer id="content">
       <sequence>
-        <title duration="1.2s" props='{"text":"Sync A","position":{"x":96,"y":200},"fontSize":64,"color":"#38bdf8"}' />
-        <title duration="1.2s" props='{"text":"Sync B","position":{"x":96,"y":320},"fontSize":64,"color":"#f472b6"}' />
-        <title duration="1.2s" props='{"text":"Sync C","position":{"x":96,"y":440},"fontSize":64,"color":"#facc15"}' />
+        <video-title duration="1.2s" props='{"text":"Sync A","position":{"x":96,"y":200},"fontSize":64,"color":"#38bdf8"}' />
+        <video-title duration="1.2s" props='{"text":"Sync B","position":{"x":96,"y":320},"fontSize":64,"color":"#f472b6"}' />
+        <video-title duration="1.2s" props='{"text":"Sync C","position":{"x":96,"y":440},"fontSize":64,"color":"#facc15"}' />
       </sequence>
     </layer>
   </scene>
-</video>`.trim(),
+</videoml>`.trim(),
     [],
   );
-  const script = useScriptFromXml(xml, { type: "auto", secondsPerCue: 2 });
   const [sync, setSync] = useState(true);
-  const [timeSec, setTimeSec] = useState(0);
-  const rafRef = useRef<number>();
-
-  useEffect(() => {
-    let last = performance.now();
-    const tick = (now: number) => {
-      const delta = (now - last) / 1000;
-      last = now;
-      setTimeSec((prev) => prev + delta);
-      rafRef.current = requestAnimationFrame(tick);
-    };
-    rafRef.current = requestAnimationFrame(tick);
-    return () => {
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
-    };
-  }, []);
-
-  if (!script) {
-    return <div className="text-sm text-muted-foreground">Loading…</div>;
-  }
 
   return (
     <DemoShell note="Toggle sync to see shared vs independent clocks.">
@@ -346,8 +249,24 @@ export function MultiScreenSyncDemo() {
           </Button>
         </div>
         <div className="grid gap-4 md:grid-cols-2">
-          <RenderSurface script={script} width={640} height={360} timeSec={timeSec} />
-          <RenderSurface script={script} width={640} height={360} timeSec={sync ? timeSec : timeSec * 1.3} />
+          <VideomlDomPlayer
+            xml={xml}
+            width={640}
+            height={360}
+            autoPlay
+            clockMode="live"
+            loop={false}
+            syncGroup={sync ? "docs-sync" : "docs-sync-a"}
+          />
+          <VideomlDomPlayer
+            xml={xml}
+            width={640}
+            height={360}
+            autoPlay
+            clockMode="live"
+            loop={false}
+            syncGroup={sync ? "docs-sync" : "docs-sync-b"}
+          />
         </div>
       </div>
     </DemoShell>

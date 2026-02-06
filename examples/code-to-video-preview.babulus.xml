@@ -1,4 +1,4 @@
-<video id="code-to-video-preview" title="Code to Video Preview" fps="30" width="1920" height="1080">
+<videoml id="code-to-video-preview" title="Code to Video Preview" fps="30" width="1920" height="1080">
   <scene id="intro" title="intro">
     <layer id="content">
       <title-slide props='{"eyebrow":"Code to Video","title":"Code Your Videos","subtitle":"(AI is really good at it!)","verticalAlign":"center","horizontalAlign":"center","entranceStartFrame":-999}' />
@@ -16,4 +16,4 @@
       <voice>Scenes and narration become a finished render.</voice>
     </cue>
   </scene>
-</video>
+</videoml>

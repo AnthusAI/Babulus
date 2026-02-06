@@ -155,12 +155,31 @@ const buildXmlDocument = (scenes: SceneEntry[], sessionTitle: string, recordedAt
   const safeTitle = escapeXmlAttribute(sessionTitle || DEFAULT_SESSION_TITLE);
   const safeRecordedAt = escapeXmlAttribute(recordedAtIso);
   return [
-    `<video id="live-vom" title="${safeTitle}" recordedAt="${safeRecordedAt}" fps="${VIDEO_FPS}" width="${VIDEO_WIDTH}" height="${VIDEO_HEIGHT}">`,
+    `<videoml id="live-vom" title="${safeTitle}" recordedAt="${safeRecordedAt}" fps="${VIDEO_FPS}" width="${VIDEO_WIDTH}" height="${VIDEO_HEIGHT}">`,
     body,
-    "</video>",
+    "</videoml>",
   ]
     .filter(Boolean)
     .join("\n");
+};
+
+const finalizeScenes = (entries: SceneEntry[], nowSec: number) => {
+  const nextScenes: SceneEntry[] = entries.map((scene) => ({ ...scene }));
+  for (let i = 0; i < nextScenes.length; i += 1) {
+    const scene = nextScenes[i];
+    if (scene.duration != null) continue;
+    let end: number | null = null;
+    if (i < nextScenes.length - 1) {
+      end = nextScenes[i + 1].start;
+    } else {
+      end = nowSec + TRANSITION_BUFFER_SECONDS;
+    }
+    const duration = Math.max(MIN_SCENE_DURATION_SECONDS, (end ?? scene.start) - scene.start);
+    scene.duration = duration;
+    scene.end = scene.start + duration;
+    scene.xml = buildSceneXml(scene);
+  }
+  return nextScenes;
 };
 
 const formatTimestamp = (date: Date) => {
@@ -261,17 +280,9 @@ export function LiveVomPage() {
       let start: number;
 
       if (lastScene && futureScenes.length === 0) {
-        const nextStart = now + TRANSITION_BUFFER_SECONDS;
-        const duration = Math.max(MIN_SCENE_DURATION_SECONDS, nextStart - lastScene.start);
-        const updatedLast: SceneEntry = {
-          ...lastScene,
-          duration,
-          end: lastScene.start + duration,
-          xml: "",
-        };
-        updatedLast.xml = buildSceneXml(updatedLast);
-        nextScenes = [...prev.slice(0, -1), updatedLast];
-        const updatedEnd = updatedLast.end ?? updatedLast.start + duration;
+        nextScenes = finalizeScenes(prev, now);
+        const updatedLast = nextScenes[nextScenes.length - 1];
+        const updatedEnd = updatedLast.end ?? updatedLast.start + (updatedLast.duration ?? 0);
         start = updatedEnd;
       } else {
         const lastEnd = prev.length ? prev[prev.length - 1].end : null;
@@ -352,21 +363,8 @@ export function LiveVomPage() {
   const handleCopyXml = useCallback(async () => {
     try {
       const now = currentTimeRef.current;
-      const lastScene = scenes[scenes.length - 1];
-      let nextScenes = scenes;
-      if (lastScene && lastScene.duration == null) {
-        const end = now + TRANSITION_BUFFER_SECONDS;
-        const duration = Math.max(MIN_SCENE_DURATION_SECONDS, end - lastScene.start);
-        const updatedLast: SceneEntry = {
-          ...lastScene,
-          duration,
-          end: lastScene.start + duration,
-          xml: "",
-        };
-        updatedLast.xml = buildSceneXml(updatedLast);
-        nextScenes = [...scenes.slice(0, -1), updatedLast];
-        setScenes(nextScenes);
-      }
+      const nextScenes = finalizeScenes(scenes, now);
+      setScenes(nextScenes);
       const nextXml = buildXmlDocument(nextScenes, sessionTitle, recordingStartIso);
       await navigator.clipboard.writeText(nextXml);
       setCopyStatus("XML copied");
@@ -376,7 +374,7 @@ export function LiveVomPage() {
       setCopyStatus("Copy failed");
       window.setTimeout(() => setCopyStatus(null), 1800);
     }
-  }, [scenes]);
+  }, [recordingStartIso, scenes, sessionTitle]);
 
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
@@ -395,7 +393,7 @@ export function LiveVomPage() {
         </div>
 
         <div className="mx-auto flex w-full max-w-6xl flex-col gap-6">
-          <div className="relative">
+          <div className="relative mx-auto w-full max-w-5xl">
             <VomPreviewPlayer
               xml={xml}
               width={VIDEO_WIDTH}
@@ -407,8 +405,8 @@ export function LiveVomPage() {
               preserveTimeOnScriptChange
               clockMode="live"
               showControls={false}
-              timingStrategy={{ type: "live", secondsPerCue: 2 }}
               onTimeUpdate={handleTimeUpdate}
+              className="w-full"
             />
             <div className="pointer-events-none absolute bottom-4 right-4 rounded-xl bg-black/60 px-3 py-2 text-xs font-mono text-white/90">
               {timelineLabel}

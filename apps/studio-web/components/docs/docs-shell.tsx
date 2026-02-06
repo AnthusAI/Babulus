@@ -1,7 +1,11 @@
+"use client";
+
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { docsHref, listDocsByCategory, type DocsEntry } from "@/lib/docs-registry";
+import { PersonaFilter, usePersonaFilter } from "./persona-filter";
+import { DocsSearch, useDocsSearch } from "./docs-search";
 
 function DocsNavItem({ doc, isActive }: { doc: DocsEntry; isActive: boolean }) {
   return (
@@ -25,17 +29,31 @@ export function DocsShell({
   children: ReactNode;
 }) {
   const activeKey = activeSlug?.join("/") ?? null;
-  const sections = listDocsByCategory({ includeInternal: false });
+  const [persona, setPersona] = usePersonaFilter();
+  const [searchOpen, openSearch, closeSearch] = useDocsSearch();
+
+  const sections = listDocsByCategory({ includeInternal: false, persona });
   const internalDocs = activeSlug
-    ? listDocsByCategory({ includeInternal: true })
+    ? listDocsByCategory({ includeInternal: true, persona })
         .flatMap((section) => section.docs)
         .filter((doc) => doc.internal)
     : [];
 
   return (
     <div className="bg-recess">
+      <DocsSearch isOpen={searchOpen} onClose={closeSearch} persona={persona} />
       <div className="container py-10 md:py-14">
-        <div className="grid gap-8 md:grid-cols-[260px_1fr_220px]">
+        <div className="mb-6 flex items-center justify-between gap-4">
+          <PersonaFilter value={persona} onChange={setPersona} />
+          <button
+            onClick={openSearch}
+            className="flex items-center gap-2 rounded-lg border border-foreground/10 bg-background px-4 py-2 text-sm text-foreground/60 transition-colors hover:text-foreground/80"
+          >
+            <span>Search</span>
+            <kbd className="rounded bg-foreground/10 px-2 py-0.5 text-xs">⌘K</kbd>
+          </button>
+        </div>
+        <div className="grid gap-8 md:grid-cols-[260px_1fr]">
           <aside className="hidden md:block">
             <div className="rounded-2xl bg-card p-2">
               <div className="rounded-xl bg-background p-2">
@@ -77,47 +95,6 @@ export function DocsShell({
             </div>
           </aside>
           <div className="min-w-0">{children}</div>
-          <aside className="hidden md:block">
-            <div className="rounded-2xl bg-card p-2">
-              <div className="rounded-xl bg-background p-4">
-                <div className="text-xs font-semibold uppercase tracking-[0.2em] text-foreground/50">
-                  Design Library
-                </div>
-                <div className="mt-3 flex flex-col gap-1">
-                  <Link
-                    href="/docs/components/layouts"
-                    className="rounded-lg px-3 py-2 text-sm text-foreground/60 transition-colors hover:text-foreground/80"
-                  >
-                    Layouts
-                  </Link>
-                  <Link
-                    href="/docs/components/colors"
-                    className="rounded-lg px-3 py-2 text-sm text-foreground/60 transition-colors hover:text-foreground/80"
-                  >
-                    Color Schemes
-                  </Link>
-                  <Link
-                    href="/docs/components/typography"
-                    className="rounded-lg px-3 py-2 text-sm text-foreground/60 transition-colors hover:text-foreground/80"
-                  >
-                    Typefaces
-                  </Link>
-                  <Link
-                    href="/docs/animation"
-                    className="rounded-lg px-3 py-2 text-sm text-foreground/60 transition-colors hover:text-foreground/80"
-                  >
-                    Animation
-                  </Link>
-                  <Link
-                    href="/docs/components"
-                    className="rounded-lg px-3 py-2 text-sm text-foreground/60 transition-colors hover:text-foreground/80"
-                  >
-                    Components
-                  </Link>
-                </div>
-              </div>
-            </div>
-          </aside>
         </div>
       </div>
     </div>

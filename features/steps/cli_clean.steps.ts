@@ -52,9 +52,9 @@ Given("a clean DSL file {string} with composition {string}", (relativePath: stri
   mkdirSync(join(workspace, "content"), { recursive: true });
   writeFileSync(
     dslPath,
-    `<video id="${compId}" title="${compId}" fps="30" width="1280" height="720">
+    `<videoml id="${compId}" title="${compId}" fps="30" width="1280" height="720">
   <scene id="scene" title="Scene" />
-</video>
+</videoml>
 `,
   );
 });

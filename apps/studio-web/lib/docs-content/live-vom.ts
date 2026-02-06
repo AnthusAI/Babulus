@@ -7,7 +7,7 @@ export const liveVomDoc: DocsEntry = {
   category: "Developer Reference",
   html: `
 <h1>Live VOM &amp; Temporal Layout</h1>
-<p>This page is both documentation and a test bed. It demonstrates the new temporal layout model (time as a layout axis), live timelines that never stop, DOM-like edits, named actions, and synchronized multi-screen playback.</p>
+<p>This page is both documentation and a test bed. It demonstrates the temporal layout model (time as a layout axis), live timelines that never stop, DOM-like edits, inline JS + DOM events, and synchronized multi-screen playback.</p>
 
 <hr />
 
@@ -35,8 +35,8 @@ export const liveVomDoc: DocsEntry = {
 
 <hr />
 
-<h2>Named actions</h2>
-<p>Named actions dispatch events to components without inline JavaScript.</p>
+<h2>Inline JS + events</h2>
+<p>DOM events and inline JavaScript can mutate live elements immediately.</p>
 <div class="docs-live" data-docs-live="named-actions" data-w="1280" data-h="720"></div>
 
 <hr />

@@ -1,15 +1,15 @@
-<video id="components-background" title="Components Background" fps="30" width="1920" height="1080">
+<videoml id="components-background" title="Components Background" fps="30" width="1920" height="1080">
   <voiceover provider="dry-run" />
   <scene id="background-demo" title="background-demo" styles='{"background":"var(--color-bg)"}'>
     <layer id="background" z="0">
-      <background props='{"color":"var(--color-surface-strong)"}' />
+      <video-background props='{"color":"var(--color-surface-strong)"}' />
     </layer>
     <layer id="label" z="10">
-      <title props='{"text":"Background fills","color":"var(--color-primary)","textColor":"var(--color-text)","position":{"x":160,"y":300}}' />
-      <subtitle props='{"text":"Use theme surfaces for subtle contrast","position":{"x":160,"y":380},"color":"var(--color-text-muted)","fontSize":28,"fontWeight":500}' />
+      <video-title props='{"text":"Background fills","color":"var(--color-primary)","textColor":"var(--color-text)","position":{"x":160,"y":300}}' />
+      <video-subtitle props='{"text":"Use theme surfaces for subtle contrast","position":{"x":160,"y":380},"color":"var(--color-text-muted)","fontSize":28,"fontWeight":500}' />
     </layer>
     <cue id="hold" label="hold">
       <pause seconds="5s" />
     </cue>
   </scene>
-</video>
+</videoml>

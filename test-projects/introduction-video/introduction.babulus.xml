@@ -1,4 +1,4 @@
-<video id="introduction" title="Introduction" fps="30" width="1920" height="1080">
+<videoml id="introduction" title="Introduction" fps="30" width="1920" height="1080">
   <voiceover provider="openai" voice="echo" />
 
   <scene id="intro" title="Intro">
@@ -8,4 +8,4 @@
       <voice>Tool-using agents are changing the rules.</voice>
     </cue>
   </scene>
-</video>
+</videoml>

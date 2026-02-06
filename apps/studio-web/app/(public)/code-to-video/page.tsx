@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   description: "Write declarative XML and Babulus generates complete videos automatically—with AI voiceovers, automatic timing, and animated visuals.",
 };
 
-const exampleCode = `<video id="code-to-video-preview" title="Code to Video Preview" fps="30" width="1920" height="1080">
+const exampleCode = `<videoml id="code-to-video-preview" title="Code to Video Preview" fps="30" width="1920" height="1080">
   <scene id="intro">
     <layer id="content">
       <title-slide
@@ -31,7 +31,7 @@ const exampleCode = `<video id="code-to-video-preview" title="Code to Video Prev
       <voice>Scenes and narration become a finished render.</voice>
     </cue>
   </scene>
-</video>`;
+</videoml>`;
 
 export default async function CodeToVideoPage() {
   const highlightedCode = await codeToHtml(exampleCode, {

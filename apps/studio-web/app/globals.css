@@ -1574,3 +1574,346 @@ input[type="range"] {
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+/* Documentation Navigation Components */
+
+/* Persona Filter */
+.persona-filter {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.persona-filter-label {
+  font-size: 12px;
+  color: var(--color-muted-foreground);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-weight: 600;
+}
+
+.persona-filter-pills {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.persona-pill {
+  border-radius: 999px;
+  border: none;
+  padding: 6px 14px;
+  background: var(--color-muted);
+  color: var(--color-muted-foreground);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.persona-pill:hover {
+  background: var(--color-secondary);
+  color: var(--color-foreground);
+}
+
+.persona-pill.active {
+  background: var(--color-primary);
+  color: var(--color-primary-foreground);
+}
+
+/* Breadcrumbs */
+.docs-breadcrumbs {
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.breadcrumb-list {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 13px;
+}
+
+.breadcrumb-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--color-muted-foreground);
+}
+
+.breadcrumb-item a {
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: opacity 0.15s ease;
+}
+
+.breadcrumb-item a:hover {
+  opacity: 0.8;
+}
+
+.breadcrumb-separator {
+  color: var(--color-muted-foreground);
+  opacity: 0.5;
+}
+
+.breadcrumb-current {
+  color: var(--color-foreground);
+  font-weight: 600;
+}
+
+/* Table of Contents */
+.docs-toc {
+  padding: 16px;
+  border-radius: 12px;
+  background: var(--color-card);
+}
+
+.docs-toc-title {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--color-muted-foreground);
+  margin: 0 0 12px 0;
+}
+
+.docs-toc-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.docs-toc-item {
+  position: relative;
+}
+
+.docs-toc-item-3 {
+  padding-left: 16px;
+}
+
+.docs-toc-link {
+  display: block;
+  padding: 6px 10px;
+  border-radius: 8px;
+  color: var(--color-muted-foreground);
+  text-decoration: none;
+  font-size: 13px;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.docs-toc-link:hover {
+  background: var(--color-muted);
+  color: var(--color-foreground);
+}
+
+.docs-toc-item.active .docs-toc-link {
+  background: var(--color-primary);
+  color: var(--color-primary-foreground);
+  font-weight: 600;
+}
+
+/* Search Modal */
+.docs-search-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 1000;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 80px 20px 20px;
+  backdrop-filter: blur(4px);
+  animation: fadeIn 0.15s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.docs-search-modal {
+  width: 100%;
+  max-width: 600px;
+  background: var(--color-background);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: slideDown 0.2s ease;
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.docs-search-input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.docs-search-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--color-foreground);
+  font-size: 16px;
+}
+
+.docs-search-hint {
+  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: var(--color-muted);
+  color: var(--color-muted-foreground);
+  font-weight: 600;
+}
+
+.docs-search-no-results {
+  padding: 40px 24px;
+  text-align: center;
+  color: var(--color-muted-foreground);
+  font-size: 14px;
+}
+
+.docs-search-results {
+  list-style: none;
+  margin: 0;
+  padding: 8px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.docs-search-result {
+  padding: 12px 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.docs-search-result:hover,
+.docs-search-result.selected {
+  background: var(--color-muted);
+}
+
+.docs-search-result-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-foreground);
+  margin-bottom: 4px;
+}
+
+.docs-search-result-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+  font-size: 11px;
+  color: var(--color-muted-foreground);
+}
+
+.docs-search-result-category {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.docs-search-result-personas {
+  opacity: 0.7;
+}
+
+.docs-search-result-description {
+  font-size: 13px;
+  color: var(--color-muted-foreground);
+  line-height: 1.4;
+}
+
+.docs-search-footer {
+  padding: 12px 24px;
+  border-top: 1px solid var(--color-border);
+  background: var(--color-recess);
+}
+
+.docs-search-shortcuts {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 11px;
+  color: var(--color-muted-foreground);
+}
+
+.docs-search-shortcuts kbd {
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: var(--color-background);
+  font-weight: 600;
+  font-family: var(--font-mono, monospace);
+  margin-right: 4px;
+}
+
+/* Glossary Auto-Linking */
+.glossary-link {
+  color: var(--color-primary);
+  text-decoration: none;
+  border-bottom: 1px dotted var(--color-primary);
+  transition: opacity 0.15s ease;
+}
+
+.glossary-link:hover {
+  opacity: 0.8;
+}
+
+/* Glossary Tooltip (for future enhancement) */
+.glossary-tooltip {
+  padding: 12px;
+  background: var(--color-popover);
+  color: var(--color-popover-foreground);
+  border-radius: 8px;
+  max-width: 300px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.glossary-tooltip-term {
+  font-weight: 600;
+  font-size: 13px;
+  margin-bottom: 6px;
+  color: var(--color-foreground);
+}
+
+.glossary-tooltip-definition {
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--color-muted-foreground);
+}
+
+.glossary-tooltip-note {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--color-border);
+  font-size: 11px;
+  font-style: italic;
+  color: var(--color-muted-foreground);
+}

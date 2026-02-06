@@ -19,15 +19,8 @@ export const componentsGuideDoc = {
 <li><strong>Timing</strong> - Show/hide components at specific times</li>
 </ul>
 
-<h2 id="blank-slate-philosophy">Blank Slate Philosophy</h2>
-<p>Unlike traditional video tools that start with a template, Babulus scenes are <strong>completely blank by default</strong>:</p>
-<ul>
-<li>Black background (#000000)</li>
-<li>No title, subtitle, or metadata overlays</li>
-<li>No progress bars or decorative elements</li>
-<li>Nothing appears unless you explicitly add it</li>
-</ul>
-<p>This prevents surprising "magic" behavior and gives you complete control. It follows video production conventions where you start with a blank canvas.</p>
+<h2 id="default-behavior">Default Behavior</h2>
+<p>Scenes start blank (black background, no elements). Add components explicitly to build your video. This gives you complete control over what appears on screen.</p>
 
 <h2 id="quick-start">Quick Start</h2>
 <h3 id="basic-scene-with-components">Basic Scene with Components</h3>

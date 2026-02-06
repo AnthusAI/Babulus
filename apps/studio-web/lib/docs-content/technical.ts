@@ -28,7 +28,7 @@ export const technicalDoc = {
   <li><strong>Agent-friendly</strong>: agents propose patches, not opaque edits.</li>
   <li><strong>Deterministic</strong>: artifacts are generated from source.</li>
 </ul>
-<p>See <a href="/docs/babulus-language-design">Babulus language design</a> for DSL details.</p>
+<p>See <a href="/docs/videoml-standard">VideoML standard</a> for DSL details.</p>
 
 <hr />
 

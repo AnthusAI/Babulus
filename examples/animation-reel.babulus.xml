@@ -1,4 +1,4 @@
-<video id="animation-reel" title="Animation Reel" fps="30" width="1920" height="1080">
+<videoml id="animation-reel" title="Animation Reel" fps="30" width="1920" height="1080">
   <voiceover provider="dry-run" />
   <scene id="reel" title="reel" styles='{"background":"var(--color-bg)"}'>
     <layer id="engine-framer" z="10" start="0s" end="2.2s">
@@ -61,4 +61,4 @@
       <pause seconds="17.6s" />
     </cue>
   </scene>
-</video>
+</videoml>

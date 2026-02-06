@@ -1,4 +1,4 @@
-<video id="home-elevator-preview" title="Home Elevator Preview" fps="30" width="1920" height="1080">
+<videoml id="home-elevator-preview" title="Home Elevator Preview" fps="30" width="1920" height="1080">
   <voiceover provider="dry-run" />
 
   <scene id="intro" title="intro" styles='{"background":"var(--color-bg)","color":"var(--color-text)","vars":{"--color-bg":"#0b0f1f","--color-bg-subtle":"#151b32","--color-surface":"#151b32","--color-surface-strong":"#1e2645","--color-surface-2":"#1e2645","--color-text":"#eef1ff","--color-text-muted":"#c8cff6","--color-primary":"#ff5ec4","--color-secondary":"#6a7dff","--color-accent":"#ff5ec4","--color-accent-2":"#6a7dff","--color-muted":"#c8cff6","--color-muted-more":"#c8cff6","--font-eyebrow":"var(--font-preview-humanist), sans-serif","--font-headline":"var(--font-preview-sans), sans-serif","--font-subhead":"var(--font-preview-humanist), sans-serif"}}'>
@@ -162,4 +162,4 @@
       <pause seconds="2s" />
     </cue>
   </scene>
-</video>
+</videoml>

@@ -1,16 +1,16 @@
-<video id="components-reel" title="Components Reel" fps="30" width="1920" height="1080">
+<videoml id="components-reel" title="Components Reel" fps="30" width="1920" height="1080">
   <voiceover provider="dry-run" />
   <scene id="reel" title="reel" styles='{"background":"var(--color-bg)"}'>
     <layer id="component-title" z="10" start="0s" end="2.2s">
-      <title props='{"text":"Frame-driven components","color":"var(--color-primary)","textColor":"var(--color-text)","textEffect":{"effect":"fade_up","unit":"words","durationFrames":22,"staggerFrames":4},"position":{"x":140,"y":260}}' />
-      <subtitle props='{"text":"Readable motion with minimal setup","textEffect":{"effect":"slide_left","unit":"chars","durationFrames":20,"staggerFrames":2},"position":{"x":140,"y":360},"color":"var(--color-text-muted)","fontSize":28,"fontWeight":500}' />
+      <video-title props='{"text":"Frame-driven components","color":"var(--color-primary)","textColor":"var(--color-text)","textEffect":{"effect":"fade_up","unit":"words","durationFrames":22,"staggerFrames":4},"position":{"x":140,"y":260}}' />
+      <video-subtitle props='{"text":"Readable motion with minimal setup","textEffect":{"effect":"slide_left","unit":"chars","durationFrames":20,"staggerFrames":2},"position":{"x":140,"y":360},"color":"var(--color-text-muted)","fontSize":28,"fontWeight":500}' />
     </layer>
     <layer id="label-title" z="20" start="0s" end="2.2s">
       <chapter-heading props='{"number":"01","title":"Title + Subtitle","subtitle":"Text effects ready","numberColor":"var(--color-accent)","layout":"side-by-side","numberEntrance":{"type":"fade","from":1,"to":1,"durationFrames":1},"titleEntrance":{"type":"fade","from":1,"to":1,"durationFrames":1}}' />
     </layer>
 
     <layer id="component-background" z="10" start="2.2s" end="4.4s">
-      <background props='{"color":"var(--color-surface)"}' />
+      <video-background props='{"color":"var(--color-surface)"}' />
     </layer>
     <layer id="label-background" z="20" start="2.2s" end="4.4s">
       <chapter-heading props='{"number":"02","title":"Background","subtitle":"Flat theme fill","numberColor":"var(--color-accent)","layout":"side-by-side","numberEntrance":{"type":"fade","from":1,"to":1,"durationFrames":1},"titleEntrance":{"type":"fade","from":1,"to":1,"durationFrames":1}}' />
@@ -63,4 +63,4 @@
       <pause seconds="17.6s" />
     </cue>
   </scene>
-</video>
+</videoml>

@@ -1,4 +1,4 @@
-<video id="animation-lottie" title="Animation Lottie" fps="30" width="1920" height="1080">
+<videoml id="animation-lottie" title="Animation Lottie" fps="30" width="1920" height="1080">
   <voiceover provider="dry-run" />
   <scene id="lottie" title="lottie" styles='{"background":"var(--color-bg)"}'>
     <layer id="lottie" z="10">
@@ -8,4 +8,4 @@
       <pause seconds="6s" />
     </cue>
   </scene>
-</video>
+</videoml>

@@ -39,9 +39,9 @@ Given("a sfx DSL file {string} with composition {string}", (relativePath: string
   mkdirSync(join(workspace, "content"), { recursive: true });
   writeFileSync(
     dslPath,
-    `<video id="${compId}" title="${compId}" fps="30" width="1280" height="720">
+    `<videoml id="${compId}" title="${compId}" fps="30" width="1280" height="720">
   <scene id="scene" title="Scene" />
-</video>
+</videoml>
 `,
   );
 });
@@ -53,13 +53,13 @@ Given(
     mkdirSync(join(workspace, "content"), { recursive: true });
     writeFileSync(
       dslPath,
-      `<video id="${compId}" title="${compId}" fps="30" width="1280" height="720">
+      `<videoml id="${compId}" title="${compId}" fps="30" width="1280" height="720">
   <scene id="scene" title="Scene">
     <cue id="cue">
       <voice>Hello world</voice>
     </cue>
   </scene>
-</video>
+</videoml>
 `,
     );
     scriptPath = join(workspace, "src", "videos", compId, `${compId}.script.json`);
@@ -79,9 +79,9 @@ Given(
       const path = join(target, name);
       writeFileSync(
         path,
-        `<video id="${id}" title="${id}" fps="30" width="1280" height="720">
+        `<videoml id="${id}" title="${id}" fps="30" width="1280" height="720">
   <scene id="scene" title="Scene" />
-</video>
+</videoml>
 `,
       );
     }

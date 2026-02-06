@@ -270,6 +270,20 @@ If the build fails, check these common issues:
    - Check that all required packages are in `dependencies` (not devDependencies)
    - Backend packages must be in dependencies for Amplify to install them
 
+## Pre-deployment CI Mirror (Required)
+
+Run the same checks Amplify runs locally **before** committing or pushing:
+
+```bash
+cd apps/studio-web
+./scripts/ci-predeploy.sh
+```
+
+This mirrors the Amplify build steps that catch TypeScript/Next build failures
+without touching AWS or creating a sandbox. The backend pipeline deploy step
+cannot be run locally without AWS access; this script covers the local build
+portion that has been failing in CI.
+
 ## Studio Architecture
 
 - **Backend:** Amplify Gen2 (Cognito + AppSync + DynamoDB + S3)

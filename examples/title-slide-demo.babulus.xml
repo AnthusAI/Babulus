@@ -1,8 +1,8 @@
-<video id="title-slide-demo" title="Title Slide Demo" fps="30" width="1920" height="1080">
+<videoml id="title-slide-demo" title="Title Slide Demo" fps="30" width="1920" height="1080">
   <voiceover provider="dry-run" />
   <scene id="title-slide" title="title-slide">
     <layer id="background" z="0">
-      <background props='{"variant":"linear","gradient":{"angle":135,"colors":["#101010","#1f2a44"]}}' />
+      <video-background props='{"variant":"linear","gradient":{"angle":135,"colors":["#101010","#1f2a44"]}}' />
     </layer>
     <layer id="content" z="10">
       <title-slide-layout-demo />
@@ -12,4 +12,4 @@
       <pause seconds="18s" />
     </cue>
   </scene>
-</video>
+</videoml>

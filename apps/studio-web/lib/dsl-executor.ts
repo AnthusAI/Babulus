@@ -76,29 +76,47 @@ export type VomPatchInput =
   | { op: "sealScene"; sceneId: string };
 
 export function applyVomPatchesInBrowser(xml: string, patches: VomPatchInput[], enforceSealed = false): string {
+  type NodeLike = {
+    nodeType: number;
+    parentNode: NodeLike | null;
+    childNodes: ArrayLike<NodeLike> | null;
+  };
+  type ElementLike = NodeLike & {
+    tagName: string;
+    getAttribute: (name: string) => string | null;
+    setAttribute: (name: string, value: string) => void;
+    removeAttribute: (name: string) => void;
+    appendChild: (child: NodeLike) => void;
+    insertBefore: (child: NodeLike, ref: NodeLike | null) => void;
+    replaceChild: (newChild: NodeLike, oldChild: NodeLike) => void;
+    removeChild: (child: NodeLike) => void;
+    textContent: string | null;
+  };
+
   const parser = new DOMParser();
   const serializer = new XMLSerializer();
   const doc = parser.parseFromString(xml, "text/xml");
-  const root = doc.documentElement;
-  if (!root || root.tagName !== "video") {
-    throw new Error("XML root must be <video>.");
+  const root = doc.documentElement as unknown as ElementLike;
+  if (!root || root.tagName !== "videoml") {
+    throw new Error("XML root must be <videoml>.");
   }
 
-  const isElement = (node: Node): node is Element => node.nodeType === 1;
-  const walk = (visit: (el: Element) => void) => {
-    const stack: Element[] = [root];
+  const isElement = (node: NodeLike | null | undefined): node is ElementLike =>
+    Boolean(node && node.nodeType === 1);
+  const walk = (visit: (el: ElementLike) => void) => {
+    const stack: ElementLike[] = [root];
     while (stack.length) {
       const node = stack.pop();
       if (!node) continue;
       visit(node);
-      const children = Array.from(node.childNodes).filter(isElement) as Element[];
+      const children = Array.from(node.childNodes ?? []).filter(isElement) as ElementLike[];
       for (let i = children.length - 1; i >= 0; i -= 1) {
         stack.push(children[i]);
       }
     }
   };
-  const findById = (id: string) => {
-    let found: Element | null = null;
+  const findById = (id: string): ElementLike | null => {
+    let found: ElementLike | null = null;
     walk((el) => {
       if (found) return;
       if (el.getAttribute("id") === id) {
@@ -107,8 +125,8 @@ export function applyVomPatchesInBrowser(xml: string, patches: VomPatchInput[], 
     });
     return found;
   };
-  const findSceneAncestor = (node: Element): Element | null => {
-    let current: Node | null = node;
+  const findSceneAncestor = (node: ElementLike): ElementLike | null => {
+    let current: NodeLike | null = node;
     while (current) {
       if (isElement(current) && current.tagName === "scene") {
         return current;
@@ -117,7 +135,7 @@ export function applyVomPatchesInBrowser(xml: string, patches: VomPatchInput[], 
     }
     return null;
   };
-  const assertNotSealed = (node: Element) => {
+  const assertNotSealed = (node: ElementLike) => {
     if (!enforceSealed) return;
     const scene = findSceneAncestor(node);
     if (!scene) return;
@@ -127,14 +145,14 @@ export function applyVomPatchesInBrowser(xml: string, patches: VomPatchInput[], 
       throw new Error(`Cannot patch sealed scene "${sceneId}".`);
     }
   };
-  const parseFragment = (nodeXml: string): Element => {
+  const parseFragment = (nodeXml: string): ElementLike => {
     const fragDoc = parser.parseFromString(`<root>${nodeXml}</root>`, "text/xml");
-    const fragRoot = fragDoc.documentElement;
-    const first = Array.from(fragRoot.childNodes).find(isElement);
+    const fragRoot = fragDoc.documentElement as unknown as ElementLike;
+    const first = Array.from(fragRoot.childNodes ?? []).find(isElement);
     if (!first) {
       throw new Error("nodeXml must contain a single root element.");
     }
-    return first as Element;
+    return first as ElementLike;
   };
 
   for (const patch of patches) {
@@ -144,12 +162,13 @@ export function applyVomPatchesInBrowser(xml: string, patches: VomPatchInput[], 
         if (!parent) throw new Error(`appendNode: parent "${patch.parentId}" not found.`);
         assertNotSealed(parent);
         const newNode = parseFragment(patch.nodeXml);
-        const imported = doc.importNode ? doc.importNode(newNode, true) : (newNode as Node);
-        const children = Array.from(parent.childNodes).filter(isElement);
+        const imported = doc.importNode ? doc.importNode(newNode as any, true) : (newNode as any);
+        const parentNode = parent as ElementLike;
+        const children = Array.from(parentNode.childNodes ?? []).filter(isElement);
         if (patch.index == null || patch.index >= children.length) {
-          parent.appendChild(imported);
+          parentNode.appendChild(imported);
         } else {
-          parent.insertBefore(imported, children[patch.index]);
+          parentNode.insertBefore(imported, children[patch.index]);
         }
         break;
       }
@@ -159,7 +178,8 @@ export function applyVomPatchesInBrowser(xml: string, patches: VomPatchInput[], 
           throw new Error(`removeNode: node "${patch.nodeId}" not found.`);
         }
         assertNotSealed(target);
-        target.parentNode.removeChild(target);
+        const parentNode = target.parentNode as ElementLike;
+        parentNode.removeChild(target);
         break;
       }
       case "setAttr": {
@@ -187,8 +207,9 @@ export function applyVomPatchesInBrowser(xml: string, patches: VomPatchInput[], 
         }
         assertNotSealed(target);
         const newNode = parseFragment(patch.nodeXml);
-        const imported = doc.importNode ? doc.importNode(newNode, true) : (newNode as Node);
-        target.parentNode.replaceChild(imported, target);
+        const imported = doc.importNode ? doc.importNode(newNode as any, true) : (newNode as any);
+        const parentNode = target.parentNode as ElementLike;
+        parentNode.replaceChild(imported, target);
         break;
       }
       case "sealScene": {
@@ -216,8 +237,8 @@ function loadVideoFileFromXml(xml: string): any {
   const parser = new DOMParser();
   const doc = parser.parseFromString(xml, "text/xml");
   const root = doc.documentElement;
-  if (!root || root.tagName !== "video") {
-    throw new Error("XML root must be <video>.");
+  if (!root || root.tagName !== "videoml") {
+    throw new Error("XML root must be <videoml>.");
   }
   const getAttr = (el: Element, name: string) => el.getAttribute(name);
   const parseNumber = (value: string | null) => {
@@ -242,8 +263,8 @@ function loadVideoFileFromXml(xml: string): any {
     | { type: "identifier"; value: string }
     | { type: "operator"; value: "+" | "-" | "*" | "/" }
     | { type: "paren"; value: "(" | ")" }
-    | { type: "dot" }
-    | { type: "comma" };
+    | { type: "dot"; value: "." }
+    | { type: "comma"; value: "," };
 
   type AstNode =
     | { kind: "number"; value: number; unit?: "f" | "s" | "ms" }
@@ -273,12 +294,12 @@ function loadVideoFileFromXml(xml: string): any {
         continue;
       }
       if (ch === ".") {
-        tokens.push({ type: "dot" });
+        tokens.push({ type: "dot", value: "." });
         i += 1;
         continue;
       }
       if (ch === ",") {
-        tokens.push({ type: "comma" });
+        tokens.push({ type: "comma", value: "," });
         i += 1;
         continue;
       }
@@ -773,7 +794,7 @@ function loadVideoFileFromXml(xml: string): any {
   const width = parseNumber(getAttr(root, "width") ?? "") ?? 1280;
   const height = parseNumber(getAttr(root, "height") ?? "") ?? 720;
   const id = getAttr(root, "id");
-  if (!id) throw new Error("video requires id.");
+  if (!id) throw new Error("videoml requires id.");
   const title = getAttr(root, "title");
   const baseCtx: TimeEvalContext = {
     fps,
@@ -829,7 +850,6 @@ function loadVideoFileFromXml(xml: string): any {
         const items: any[] = [];
         const layers: any[] = [];
         const components: any[] = [];
-        let cueCount = 0;
         let componentIndex = 0;
         for (const child of Array.from(sceneEl.children)) {
           if (child.tagName === "cue") {
@@ -842,7 +862,6 @@ function loadVideoFileFromXml(xml: string): any {
               cueStartIndex.set(cue.id, cue.time.start);
             }
             items.push(cue);
-            cueCount += 1;
           } else if (child.tagName === "pause") {
             items.push(parsePause(child, ctx));
           } else if (child.tagName === "layer") {
@@ -962,7 +981,7 @@ function loadVideoFileFromXml(xml: string): any {
   }
 
   if (!scenes.length) {
-    throw new Error("video requires at least one scene.");
+    throw new Error("videoml requires at least one scene.");
   }
 
   return {

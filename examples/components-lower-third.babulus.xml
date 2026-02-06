@@ -1,4 +1,4 @@
-<video id="components-lower-third" title="Components Lower Third" fps="30" width="1920" height="1080">
+<videoml id="components-lower-third" title="Components Lower Third" fps="30" width="1920" height="1080">
   <voiceover provider="dry-run" />
   <scene id="lower-third-demo" title="lower-third-demo" styles='{"background":"var(--color-bg)"}'>
     <layer id="lower-third" z="10">
@@ -8,4 +8,4 @@
       <pause seconds="5s" />
     </cue>
   </scene>
-</video>
+</videoml>

@@ -1,4 +1,4 @@
-<video id="animation-d3" title="Animation D3" fps="30" width="1920" height="1080">
+<videoml id="animation-d3" title="Animation D3" fps="30" width="1920" height="1080">
   <voiceover provider="dry-run" />
   <scene id="d3" title="d3" styles='{"background":"var(--color-bg)"}'>
     <layer id="d3" z="10">
@@ -8,4 +8,4 @@
       <pause seconds="6s" />
     </cue>
   </scene>
-</video>
+</videoml>

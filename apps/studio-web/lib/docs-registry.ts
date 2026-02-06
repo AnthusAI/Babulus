@@ -5,6 +5,8 @@ import { roadmapDoc } from "@/lib/docs-content/roadmap";
 import { ttsAwsPollyQuickstartDoc } from "@/lib/docs-content/tts-aws-polly-quickstart";
 import { ttsAzureSpeechQuickstartDoc } from "@/lib/docs-content/tts-azure-speech-quickstart";
 import { babulusLanguageDesignDoc } from "@/lib/docs-content/babulus-language-design";
+import { videomlStandardDoc } from "@/lib/docs-content/videoml-standard";
+import { videomlConformanceDoc } from "@/lib/docs-content/videoml-conformance";
 import { ttsElevenlabsGuideDoc } from "@/lib/docs-content/tts-elevenlabs-guide";
 import { technicalDoc } from "@/lib/docs-content/technical";
 import { environmentsDoc } from "@/lib/docs-content/environments";
@@ -22,6 +24,8 @@ import { componentsColorsDoc } from "@/lib/docs-content/components-colors";
 import { animationDoc } from "@/lib/docs-content/animation";
 import { componentsDoc } from "@/lib/docs-content/components";
 import { liveVomDoc } from "@/lib/docs-content/live-vom";
+import { glossaryDoc } from "@/lib/docs-content/glossary";
+import { autoLinkGlossaryTerms } from "@/lib/glossary-linker";
 
 export type DocsCategory =
   | "Overview"
@@ -29,9 +33,14 @@ export type DocsCategory =
   | "Designers"
   | "Rendering"
   | "Developer Reference"
+  | "Standards"
   | "TTS Providers"
   | "Project Storage"
   | "Roadmap";
+
+export type DocsPersona = "all" | "designers" | "developers";
+
+export type DocsDifficulty = "beginner" | "intermediate" | "advanced";
 
 export type DocsEntry = Readonly<{
   slug: readonly string[];
@@ -42,6 +51,16 @@ export type DocsEntry = Readonly<{
   internal?: boolean;
   // For docs that should be reachable by URL, but not listed in the left nav index.
   navHidden?: boolean;
+  // Personas that should see this doc (defaults to ["all"])
+  personas?: readonly DocsPersona[];
+  // Difficulty level for the content
+  difficulty?: DocsDifficulty;
+  // Learning path this doc belongs to
+  learningPath?: string;
+  // Related doc slugs (as joined strings for easier matching)
+  relatedDocs?: readonly string[];
+  // Last reviewed date (ISO 8601 format)
+  lastReviewed?: string;
 }>;
 
 const legacyLinkMap: ReadonlyMap<string, string> = new Map([
@@ -65,6 +84,8 @@ const legacyLinkMap: ReadonlyMap<string, string> = new Map([
   ["worker-job-spec.md", "/docs/worker-job-spec"],
   ["./babulus-language-design.md", "/docs/babulus-language-design"],
   ["babulus-language-design.md", "/docs/babulus-language-design"],
+  ["./videoml-standard.md", "/docs/videoml-standard"],
+  ["videoml-standard.md", "/docs/videoml-standard"],
   ["./security-verification.md", "/docs/security-verification"],
   ["security-verification.md", "/docs/security-verification"],
   ["./test-coverage.md", "/docs/test-coverage"],
@@ -94,7 +115,7 @@ const legacyLinkMap: ReadonlyMap<string, string> = new Map([
   ["docs/saas-electron-plan.md", "/docs/technical"],
 ]);
 
-function normalizeDocHtml(html: string) {
+function normalizeDocHtml(html: string, slug: readonly string[]) {
   let normalized = html;
 
   for (const [legacy, href] of legacyLinkMap.entries()) {
@@ -103,6 +124,12 @@ function normalizeDocHtml(html: string) {
 
   normalized = normalized.replaceAll("href=\"./openai-quickstart.md\"", "href=\"/docs\"");
   normalized = normalized.replaceAll("href=\"./provider-comparison.md\"", "href=\"/docs\"");
+
+  // Skip auto-linking for the glossary page itself
+  const isGlossaryPage = slug.length === 1 && slug[0] === "glossary";
+  if (!isGlossaryPage) {
+    normalized = autoLinkGlossaryTerms(normalized);
+  }
 
   return normalized;
 }
@@ -132,6 +159,9 @@ const RAW_DOCS: readonly DocsEntry[] = [
   ttsAwsPollyQuickstartDoc,
   ttsAzureSpeechQuickstartDoc,
   babulusLanguageDesignDoc,
+  videomlStandardDoc,
+  videomlConformanceDoc,
+  glossaryDoc,
   ttsElevenlabsGuideDoc,
   environmentsDoc,
   liveVomDoc,
@@ -143,7 +173,7 @@ const RAW_DOCS: readonly DocsEntry[] = [
 
 export const DOCS: readonly DocsEntry[] = RAW_DOCS.map((doc) => ({
   ...doc,
-  html: normalizeDocHtml(doc.html),
+  html: normalizeDocHtml(doc.html, doc.slug),
 }));
 
 export function docsHref(entry: Pick<DocsEntry, "slug">) {
@@ -167,18 +197,64 @@ const CATEGORY_ORDER: readonly DocsCategory[] = [
   "Designers",
   // Developer documentation (with section header)
   "Rendering",
+  "Standards",
   "Developer Reference",
   "TTS Providers",
   "Project Storage",
 ] as const;
 
-export function listDocsByCategory(options?: { includeInternal?: boolean }) {
+/**
+ * Filter docs by persona. Docs with no persona field default to ["all"].
+ */
+export function filterDocsByPersona(docs: readonly DocsEntry[], persona: DocsPersona | null): readonly DocsEntry[] {
+  if (!persona) return docs;
+
+  return docs.filter((doc) => {
+    const docPersonas = doc.personas ?? ["all"];
+    // Show if doc targets "all" or specifically includes the selected persona
+    return docPersonas.includes("all") || docPersonas.includes(persona);
+  });
+}
+
+/**
+ * Check if a doc is relevant to a given persona.
+ */
+export function isDocForPersona(doc: DocsEntry, persona: DocsPersona | null): boolean {
+  if (!persona) return true;
+  const docPersonas = doc.personas ?? ["all"];
+  return docPersonas.includes("all") || docPersonas.includes(persona);
+}
+
+/**
+ * Get related docs for a given doc entry.
+ */
+export function getRelatedDocs(doc: DocsEntry): readonly DocsEntry[] {
+  if (!doc.relatedDocs || doc.relatedDocs.length === 0) return [];
+
+  return doc.relatedDocs
+    .map((slugKey) => DOCS.find((d) => docsKey(d.slug) === slugKey))
+    .filter((d): d is DocsEntry => d !== undefined);
+}
+
+/**
+ * Get docs by learning path.
+ */
+export function getDocsByLearningPath(pathId: string): readonly DocsEntry[] {
+  return DOCS.filter((doc) => doc.learningPath === pathId);
+}
+
+export function listDocsByCategory(options?: { includeInternal?: boolean; persona?: DocsPersona | null }) {
   const includeInternal = options?.includeInternal ?? false;
+  const persona = options?.persona ?? null;
+
   const categories = new Map<DocsCategory, DocsEntry[]>();
   const deferredDocs: DocsEntry[] = [];
+
   for (const doc of DOCS) {
     if (doc.navHidden) continue;
     if (!includeInternal && doc.internal) continue;
+    if (persona && !isDocForPersona(doc, persona)) continue;
+
     if (doc.category === "Roadmap") {
       deferredDocs.push(doc);
       continue;
