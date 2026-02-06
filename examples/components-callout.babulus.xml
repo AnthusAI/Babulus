@@ -5,7 +5,7 @@
       <code-block props='{"language":"typescript","code":"const frame = i => i * 2;\nconst motion = frame => Math.sin(frame / 8);","theme":"nord","position":{"y":260},"width":1200,"height":380}' />
     </layer>
     <layer id="callout" z="20">
-      <callout props='{"text":"Frame-driven motion","pointerTarget":{"x":980,"y":350},"position":{"x":1180,"y":220}}' />
+      <video-callout props='{"text":"Frame-driven motion","pointerTarget":{"x":980,"y":350},"position":{"x":1180,"y":220}}' />
     </layer>
     <cue id="hold" label="hold">
       <pause seconds="6s" />

@@ -39,14 +39,14 @@
 
     <layer id="component-callout" z="10" start="11.0s" end="13.2s">
       <code-block props='{"language":"typescript","code":"const frame = t => t * 2;\nconst motion = frame => Math.sin(frame / 8);","theme":"nord","position":{"y":260},"width":1200,"height":380}' />
-      <callout props='{"text":"Frame-driven motion","pointerTarget":{"x":980,"y":350},"position":{"x":1180,"y":220}}' />
+      <video-callout props='{"text":"Frame-driven motion","pointerTarget":{"x":980,"y":350},"position":{"x":1180,"y":220}}' />
     </layer>
     <layer id="label-callout" z="20" start="11.0s" end="13.2s">
       <chapter-heading props='{"number":"06","title":"Callout + Code","subtitle":"Annotations","numberColor":"var(--color-accent)","layout":"side-by-side","numberEntrance":{"type":"fade","from":1,"to":1,"durationFrames":1},"titleEntrance":{"type":"fade","from":1,"to":1,"durationFrames":1}}' />
     </layer>
 
     <layer id="component-chyron" z="10" start="13.2s" end="15.4s">
-      <chyron props='{"items":[{"text":"All components are frame-driven"},{"text":"Layouts handle structure"},{"text":"Text effects are deterministic"}],"mode":"page","pageDurationFrames":40,"pageTransition":{"type":"slide","direction":"up","durationFrames":10}}' />
+      <video-chyron props='{"items":[{"text":"All components are frame-driven"},{"text":"Layouts handle structure"},{"text":"Text effects are deterministic"}],"mode":"page","pageDurationFrames":40,"pageTransition":{"type":"slide","direction":"up","durationFrames":10}}' />
     </layer>
     <layer id="label-chyron" z="20" start="13.2s" end="15.4s">
       <chapter-heading props='{"number":"07","title":"Chyron","subtitle":"Ticker updates","numberColor":"var(--color-accent)","layout":"side-by-side","numberEntrance":{"type":"fade","from":1,"to":1,"durationFrames":1},"titleEntrance":{"type":"fade","from":1,"to":1,"durationFrames":1}}' />

@@ -680,8 +680,8 @@ export const registerVideoMLComponents = () => {
   define("progress-bar", ProgressBarElement);
   define("quote-card", QuoteCardElement);
   define("lower-third", LowerThirdElement);
-  define("callout", CalloutElement);
-  define("chyron", ChyronElement);
+  define("video-callout", CalloutElement);
+  define("video-chyron", ChyronElement);
   define("code-block", CodeBlockElement);
   defineAlias("anime-harness-demo", DemoPlaceholderElement);
   defineAlias("d3-bar-chart", DemoPlaceholderElement);
