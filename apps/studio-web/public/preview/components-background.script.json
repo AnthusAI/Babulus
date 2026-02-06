@@ -14,8 +14,8 @@
           "zIndex": 0,
           "components": [
             {
-              "id": "background-0",
-              "type": "Background",
+              "id": "video-background-0",
+              "type": "VideoBackground",
               "props": {
                 "color": "var(--color-surface-strong)",
                 "sceneStartSec": 0
@@ -28,8 +28,8 @@
           "zIndex": 10,
           "components": [
             {
-              "id": "title-0",
-              "type": "Title",
+              "id": "video-title-0",
+              "type": "VideoTitle",
               "props": {
                 "text": "Background fills",
                 "color": "var(--color-primary)",
@@ -42,8 +42,8 @@
               }
             },
             {
-              "id": "subtitle-1",
-              "type": "Subtitle",
+              "id": "video-subtitle-1",
+              "type": "VideoSubtitle",
               "props": {
                 "text": "Use theme surfaces for subtle contrast",
                 "position": {

@@ -18,8 +18,8 @@
           "zIndex": 10,
           "components": [
             {
-              "id": "title-0",
-              "type": "Title",
+              "id": "video-title-0",
+              "type": "VideoTitle",
               "props": {
                 "text": "Frame-driven components",
                 "color": "var(--color-primary)",
@@ -38,8 +38,8 @@
               }
             },
             {
-              "id": "subtitle-1",
-              "type": "Subtitle",
+              "id": "video-subtitle-1",
+              "type": "VideoSubtitle",
               "props": {
                 "text": "Readable motion with minimal setup",
                 "textEffect": {
@@ -103,8 +103,8 @@
           "zIndex": 10,
           "components": [
             {
-              "id": "background-0",
-              "type": "Background",
+              "id": "video-background-0",
+              "type": "VideoBackground",
               "props": {
                 "color": "var(--color-surface)",
                 "sceneStartSec": 0
@@ -344,8 +344,8 @@
               }
             },
             {
-              "id": "callout-1",
-              "type": "Callout",
+              "id": "video-callout-1",
+              "type": "VideoCallout",
               "props": {
                 "text": "Frame-driven motion",
                 "pointerTarget": {
@@ -404,8 +404,8 @@
           "zIndex": 10,
           "components": [
             {
-              "id": "chyron-0",
-              "type": "Chyron",
+              "id": "video-chyron-0",
+              "type": "VideoChyron",
               "props": {
                 "items": [
                   {

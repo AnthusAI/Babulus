@@ -14,8 +14,8 @@
           "zIndex": 10,
           "components": [
             {
-              "id": "title-0",
-              "type": "Title",
+              "id": "video-title-0",
+              "type": "VideoTitle",
               "props": {
                 "text": "Text effects with zero keyframes",
                 "color": "var(--color-primary)",
@@ -34,8 +34,8 @@
               }
             },
             {
-              "id": "subtitle-1",
-              "type": "Subtitle",
+              "id": "video-subtitle-1",
+              "type": "VideoSubtitle",
               "props": {
                 "text": "fade, slide, pop, scale — all frame-driven",
                 "textEffect": {

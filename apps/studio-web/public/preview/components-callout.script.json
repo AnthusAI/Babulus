@@ -35,8 +35,8 @@
           "zIndex": 20,
           "components": [
             {
-              "id": "callout-0",
-              "type": "Callout",
+              "id": "video-callout-0",
+              "type": "VideoCallout",
               "props": {
                 "text": "Frame-driven motion",
                 "pointerTarget": {

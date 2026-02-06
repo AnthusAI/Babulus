@@ -69,7 +69,7 @@ export default async function CodeToVideoPage() {
 
             {/* Code block with syntax highlighting */}
             <div
-              className="rounded-lg border overflow-hidden [&_pre]:!bg-[#0d1117] [&_pre]:!m-0 [&_pre]:p-6 [&_pre]:overflow-x-auto [&_code]:text-sm"
+              className="rounded-lg border overflow-hidden [&_pre]:!bg-[#0d1117] [&_pre]:!m-0 [&_pre]:p-6 [&_pre]:whitespace-pre-wrap [&_pre]:break-words [&_code]:text-sm [&_code]:break-words"
               dangerouslySetInnerHTML={{ __html: highlightedCode }}
             />
 

@@ -11,8 +11,8 @@
           "zIndex": 0,
           "components": [
             {
-              "id": "background-0",
-              "type": "Background",
+              "id": "video-background-0",
+              "type": "VideoBackground",
               "props": {
                 "variant": "linear",
                 "gradient": {

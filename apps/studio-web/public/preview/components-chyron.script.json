@@ -14,8 +14,8 @@
           "zIndex": 10,
           "components": [
             {
-              "id": "chyron-0",
-              "type": "Chyron",
+              "id": "video-chyron-0",
+              "type": "VideoChyron",
               "props": {
                 "items": [
                   {
