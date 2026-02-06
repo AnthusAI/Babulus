@@ -10,12 +10,33 @@
     </cue>
   </scene>
 
-  <scene id="live-demo" title="live-demo" styles='{"background":"#0f1117","color":"#e8eaf0","vars":{"--color-bg":"#0f1117","--color-bg-subtle":"#151a27","--color-surface":"#151a27","--color-surface-strong":"#1c2333","--color-surface-2":"#1c2333","--color-text":"#e8eaf0","--color-text-muted":"#c4c8d6","--color-primary":"#5f7bff","--color-secondary":"#ff6ac1","--color-accent":"#5f7bff","--color-accent-2":"#ff6ac1","--color-muted":"#c4c8d6","--color-muted-more":"#c4c8d6","--font-eyebrow":"var(--font-preview-humanist), sans-serif","--font-headline":"var(--font-preview-sans), sans-serif","--font-subhead":"var(--font-preview-humanist), sans-serif"}}'>
-    <layer id="content">
-      <mix-and-match-demo props='{}' />
+  <scene id="layout-title" title="layout-title" styles='{"background":"#0f1117","color":"#e8eaf0","vars":{"--color-bg":"#0f1117","--color-bg-subtle":"#151a27","--color-surface":"#151a27","--color-surface-strong":"#1c2333","--color-surface-2":"#1c2333","--color-text":"#e8eaf0","--color-text-muted":"#c4c8d6","--color-primary":"#5f7bff","--color-secondary":"#ff6ac1","--color-accent":"#5f7bff","--color-accent-2":"#ff6ac1","--color-muted":"#c4c8d6","--color-muted-more":"#c4c8d6","--font-eyebrow":"var(--font-preview-humanist), sans-serif","--font-headline":"var(--font-preview-sans), sans-serif","--font-subhead":"var(--font-preview-humanist), sans-serif"}}'>
+    <layer id="background" z="0">
+      <video-background props='{"variant":"linear","gradient":{"angle":135,"colors":["#101010","#1f2a44"]}}' />
     </layer>
-    <cue id="live-demo-cue" label="live-demo-cue">
-      <voice>Use the same components in your product and your videos, with a design system of layouts, type, and color themes.</voice>
+    <layer id="content" z="10">
+      <title-slide-layout-demo />
+    </layer>
+    <cue id="layout-title-cue" label="layout-title-cue">
+      <voice>Start with polished layout primitives like title slides, chapter breaks, and branded screens.</voice>
+    </cue>
+  </scene>
+
+  <scene id="layout-two-column" title="layout-two-column" styles='{"background":"#0f1117","color":"#e8eaf0","vars":{"--color-bg":"#0f1117","--color-bg-subtle":"#151a27","--color-surface":"#151a27","--color-surface-strong":"#1c2333","--color-surface-2":"#1c2333","--color-text":"#e8eaf0","--color-text-muted":"#c4c8d6","--color-primary":"#5f7bff","--color-secondary":"#ff6ac1","--color-accent":"#5f7bff","--color-accent-2":"#ff6ac1","--color-muted":"#c4c8d6","--color-muted-more":"#c4c8d6","--font-eyebrow":"var(--font-preview-humanist), sans-serif","--font-headline":"var(--font-preview-sans), sans-serif","--font-subhead":"var(--font-preview-humanist), sans-serif"}}'>
+    <layer id="content">
+      <two-column-layout-demo />
+    </layer>
+    <cue id="layout-two-column-cue" label="layout-two-column-cue">
+      <voice>Drop in structured layouts like two-column and three-column screens without hand-tuning motion.</voice>
+    </cue>
+  </scene>
+
+  <scene id="layout-grid" title="layout-grid" styles='{"background":"#0f1117","color":"#e8eaf0","vars":{"--color-bg":"#0f1117","--color-bg-subtle":"#151a27","--color-surface":"#151a27","--color-surface-strong":"#1c2333","--color-surface-2":"#1c2333","--color-text":"#e8eaf0","--color-text-muted":"#c4c8d6","--color-primary":"#5f7bff","--color-secondary":"#ff6ac1","--color-accent":"#5f7bff","--color-accent-2":"#ff6ac1","--color-muted":"#c4c8d6","--color-muted-more":"#c4c8d6","--font-eyebrow":"var(--font-preview-humanist), sans-serif","--font-headline":"var(--font-preview-sans), sans-serif","--font-subhead":"var(--font-preview-humanist), sans-serif"}}'>
+    <layer id="content">
+      <grid-screen props='{"eyebrow":"Grid Layout","title":"Grid Screen","subtitle":"Header + multi-tile content area","grid":{"columns":4,"items":["Tile 1","Tile 2","Tile 3","Tile 4","Tile 5","Tile 6","Tile 7","Tile 8"],"gap":20,"entranceStartFrame":-999}}' />
+    </layer>
+    <cue id="layout-grid-cue" label="layout-grid-cue">
+      <voice>Compose dashboards, highlights, and feature grids with reusable templates.</voice>
     </cue>
   </scene>
 
@@ -30,10 +51,10 @@
 
   <scene id="close" title="close" styles='{"background":"#0f1117","color":"#e8eaf0","vars":{"--color-bg":"#0f1117","--color-bg-subtle":"#151a27","--color-surface":"#151a27","--color-surface-strong":"#1c2333","--color-surface-2":"#1c2333","--color-text":"#e8eaf0","--color-text-muted":"#c4c8d6","--color-primary":"#5f7bff","--color-secondary":"#ff6ac1","--color-accent":"#5f7bff","--color-accent-2":"#ff6ac1","--color-muted":"#c4c8d6","--color-muted-more":"#c4c8d6","--font-eyebrow":"var(--font-preview-humanist), sans-serif","--font-headline":"var(--font-preview-sans), sans-serif","--font-subhead":"var(--font-preview-humanist), sans-serif"}}'>
     <layer id="content">
-      <title-slide props='{"eyebrow":"VideoML","title":"Design once. Ship everywhere.","subtitle":"Code-to-video without timelines","verticalAlign":"center","horizontalAlign":"center","entranceStartFrame":-999}' />
+      <title-slide props='{"eyebrow":"VideoML","title":"Design once. Play everywhere.","subtitle":"Code-to-video without timelines","verticalAlign":"center","horizontalAlign":"center","entranceStartFrame":-999}' />
     </layer>
     <cue id="close-cue" label="close-cue">
-      <voice>Babulus is the code-to-video stack. Ship consistent visuals across your website and your videos.</voice>
+      <voice>Babulus is the code-to-video stack. Play consistent visuals across your website and your videos.</voice>
       <pause seconds="2s" />
     </cue>
   </scene>

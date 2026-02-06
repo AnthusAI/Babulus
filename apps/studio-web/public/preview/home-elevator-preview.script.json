@@ -4,7 +4,7 @@
       "id": "title",
       "title": "title",
       "startSec": 0,
-      "endSec": 10.3,
+      "endSec": 10.4,
       "styles": {
         "background": "#0f1117",
         "color": "#e8eaf0",
@@ -52,13 +52,13 @@
           "id": "title-cue",
           "label": "title-cue",
           "startSec": 0,
-          "endSec": 10.3,
+          "endSec": 10.4,
           "text": "Babulus lets you create videos the same way you build web pages. Write VideoML and render it as a video or as live HTML.",
           "segments": [
             {
               "type": "tts",
               "startSec": 0,
-              "endSec": 10.3,
+              "endSec": 10.4,
               "text": "Babulus lets you create videos the same way you build web pages. Write VideoML and render it as a video or as live HTML."
             }
           ],
@@ -67,10 +67,92 @@
       ]
     },
     {
-      "id": "live-demo",
-      "title": "live-demo",
-      "startSec": 10.3,
-      "endSec": 18.3,
+      "id": "layout-title",
+      "title": "layout-title",
+      "startSec": 10.4,
+      "endSec": 16.75,
+      "styles": {
+        "background": "#0f1117",
+        "color": "#e8eaf0",
+        "vars": {
+          "--color-bg": "#0f1117",
+          "--color-bg-subtle": "#151a27",
+          "--color-surface": "#151a27",
+          "--color-surface-strong": "#1c2333",
+          "--color-surface-2": "#1c2333",
+          "--color-text": "#e8eaf0",
+          "--color-text-muted": "#c4c8d6",
+          "--color-primary": "#5f7bff",
+          "--color-secondary": "#ff6ac1",
+          "--color-accent": "#5f7bff",
+          "--color-accent-2": "#ff6ac1",
+          "--color-muted": "#c4c8d6",
+          "--color-muted-more": "#c4c8d6",
+          "--font-eyebrow": "var(--font-preview-humanist), sans-serif",
+          "--font-headline": "var(--font-preview-sans), sans-serif",
+          "--font-subhead": "var(--font-preview-humanist), sans-serif"
+        }
+      },
+      "layers": [
+        {
+          "id": "background",
+          "zIndex": 0,
+          "components": [
+            {
+              "id": "video-background-0",
+              "type": "VideoBackground",
+              "props": {
+                "variant": "linear",
+                "gradient": {
+                  "angle": 135,
+                  "colors": [
+                    "#101010",
+                    "#1f2a44"
+                  ]
+                },
+                "sceneStartSec": 10.4
+              }
+            }
+          ]
+        },
+        {
+          "id": "content",
+          "zIndex": 10,
+          "components": [
+            {
+              "id": "title-slide-layout-demo-0",
+              "type": "TitleSlideLayoutDemo",
+              "props": {
+                "sceneStartSec": 10.4
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "layout-title-cue",
+          "label": "layout-title-cue",
+          "startSec": 10.4,
+          "endSec": 16.75,
+          "text": "Start with polished layout primitives like title slides, chapter breaks, and branded screens.",
+          "segments": [
+            {
+              "type": "tts",
+              "startSec": 10.4,
+              "endSec": 16.75,
+              "text": "Start with polished layout primitives like title slides, chapter breaks, and branded screens."
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "layout-two-column",
+      "title": "layout-two-column",
+      "startSec": 16.75,
+      "endSec": 24.6,
       "styles": {
         "background": "#0f1117",
         "color": "#e8eaf0",
@@ -98,10 +180,10 @@
           "id": "content",
           "components": [
             {
-              "id": "mix-and-match-demo-0",
-              "type": "MixAndMatchDemo",
+              "id": "two-column-layout-demo-0",
+              "type": "TwoColumnLayoutDemo",
               "props": {
-                "sceneStartSec": 10.3
+                "sceneStartSec": 16.75
               }
             }
           ]
@@ -109,17 +191,95 @@
       ],
       "cues": [
         {
-          "id": "live-demo-cue",
-          "label": "live-demo-cue",
-          "startSec": 10.3,
-          "endSec": 18.3,
-          "text": "Use the same components in your product and your videos, with a design system of layouts, type, and color themes.",
+          "id": "layout-two-column-cue",
+          "label": "layout-two-column-cue",
+          "startSec": 16.75,
+          "endSec": 24.6,
+          "text": "Drop in structured layouts like two-column and three-column screens without hand-tuning motion.",
           "segments": [
             {
               "type": "tts",
-              "startSec": 10.3,
-              "endSec": 18.3,
-              "text": "Use the same components in your product and your videos, with a design system of layouts, type, and color themes."
+              "startSec": 16.75,
+              "endSec": 24.6,
+              "text": "Drop in structured layouts like two-column and three-column screens without hand-tuning motion."
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "layout-grid",
+      "title": "layout-grid",
+      "startSec": 24.6,
+      "endSec": 29.700000000000003,
+      "styles": {
+        "background": "#0f1117",
+        "color": "#e8eaf0",
+        "vars": {
+          "--color-bg": "#0f1117",
+          "--color-bg-subtle": "#151a27",
+          "--color-surface": "#151a27",
+          "--color-surface-strong": "#1c2333",
+          "--color-surface-2": "#1c2333",
+          "--color-text": "#e8eaf0",
+          "--color-text-muted": "#c4c8d6",
+          "--color-primary": "#5f7bff",
+          "--color-secondary": "#ff6ac1",
+          "--color-accent": "#5f7bff",
+          "--color-accent-2": "#ff6ac1",
+          "--color-muted": "#c4c8d6",
+          "--color-muted-more": "#c4c8d6",
+          "--font-eyebrow": "var(--font-preview-humanist), sans-serif",
+          "--font-headline": "var(--font-preview-sans), sans-serif",
+          "--font-subhead": "var(--font-preview-humanist), sans-serif"
+        }
+      },
+      "layers": [
+        {
+          "id": "content",
+          "components": [
+            {
+              "id": "grid-screen-0",
+              "type": "GridScreen",
+              "props": {
+                "eyebrow": "Grid Layout",
+                "title": "Grid Screen",
+                "subtitle": "Header + multi-tile content area",
+                "grid": {
+                  "columns": 4,
+                  "items": [
+                    "Tile 1",
+                    "Tile 2",
+                    "Tile 3",
+                    "Tile 4",
+                    "Tile 5",
+                    "Tile 6",
+                    "Tile 7",
+                    "Tile 8"
+                  ],
+                  "gap": 20,
+                  "entranceStartFrame": -999
+                },
+                "sceneStartSec": 24.6
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "layout-grid-cue",
+          "label": "layout-grid-cue",
+          "startSec": 24.6,
+          "endSec": 29.700000000000003,
+          "text": "Compose dashboards, highlights, and feature grids with reusable templates.",
+          "segments": [
+            {
+              "type": "tts",
+              "startSec": 24.6,
+              "endSec": 29.700000000000003,
+              "text": "Compose dashboards, highlights, and feature grids with reusable templates."
             }
           ],
           "bullets": []
@@ -129,8 +289,8 @@
     {
       "id": "bullets",
       "title": "bullets",
-      "startSec": 18.3,
-      "endSec": 26.25,
+      "startSec": 29.700000000000003,
+      "endSec": 37.050000000000004,
       "styles": {
         "background": "#0f1117",
         "color": "#e8eaf0",
@@ -185,7 +345,7 @@
                   "textColor": "var(--color-text)",
                   "justify": "start"
                 },
-                "sceneStartSec": 18.3
+                "sceneStartSec": 29.700000000000003
               }
             }
           ]
@@ -195,14 +355,14 @@
         {
           "id": "bullets-cue",
           "label": "bullets-cue",
-          "startSec": 18.3,
-          "endSec": 26.25,
+          "startSec": 29.700000000000003,
+          "endSec": 37.050000000000004,
           "text": "Render to MP4 for distribution, or embed the same VideoML as live, interactive HTML on your site.",
           "segments": [
             {
               "type": "tts",
-              "startSec": 18.3,
-              "endSec": 26.25,
+              "startSec": 29.700000000000003,
+              "endSec": 37.050000000000004,
               "text": "Render to MP4 for distribution, or embed the same VideoML as live, interactive HTML on your site."
             }
           ],
@@ -213,8 +373,8 @@
     {
       "id": "close",
       "title": "close",
-      "startSec": 26.25,
-      "endSec": 34.7,
+      "startSec": 37.050000000000004,
+      "endSec": 47.35000000000001,
       "styles": {
         "background": "#0f1117",
         "color": "#e8eaf0",
@@ -246,12 +406,12 @@
               "type": "TitleSlide",
               "props": {
                 "eyebrow": "VideoML",
-                "title": "Design once. Ship everywhere.",
+                "title": "Design once. Play everywhere.",
                 "subtitle": "Code-to-video without timelines",
                 "verticalAlign": "center",
                 "horizontalAlign": "center",
                 "entranceStartFrame": -999,
-                "sceneStartSec": 26.25
+                "sceneStartSec": 37.050000000000004
               }
             }
           ]
@@ -261,20 +421,20 @@
         {
           "id": "close-cue",
           "label": "close-cue",
-          "startSec": 26.25,
-          "endSec": 34.7,
-          "text": "Babulus is the code-to-video stack. Ship consistent visuals across your website and your videos.",
+          "startSec": 37.050000000000004,
+          "endSec": 47.35000000000001,
+          "text": "Babulus is the code-to-video stack. Play consistent visuals across your website and your videos.",
           "segments": [
             {
               "type": "tts",
-              "startSec": 26.25,
-              "endSec": 32.7,
-              "text": "Babulus is the code-to-video stack. Ship consistent visuals across your website and your videos."
+              "startSec": 37.050000000000004,
+              "endSec": 45.35000000000001,
+              "text": "Babulus is the code-to-video stack. Play consistent visuals across your website and your videos."
             },
             {
               "type": "pause",
-              "startSec": 32.7,
-              "endSec": 34.7,
+              "startSec": 45.35000000000001,
+              "endSec": 47.35000000000001,
               "durationSec": 2
             }
           ],

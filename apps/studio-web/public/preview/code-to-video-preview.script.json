@@ -4,7 +4,7 @@
       "id": "intro",
       "title": "intro",
       "startSec": 0,
-      "endSec": 9.35,
+      "endSec": 10.7,
       "layers": [
         {
           "id": "content",
@@ -30,13 +30,13 @@
           "id": "intro-vo",
           "label": "intro-vo",
           "startSec": 0,
-          "endSec": 9.35,
+          "endSec": 10.7,
           "text": "Watch this. I write a few lines of VideoML, and Babulus turns them into a fully timed video—voiceover, motion, and layout all synchronized.",
           "segments": [
             {
               "type": "tts",
               "startSec": 0,
-              "endSec": 9.35,
+              "endSec": 10.7,
               "text": "Watch this. I write a few lines of VideoML, and Babulus turns them into a fully timed video—voiceover, motion, and layout all synchronized."
             }
           ],
@@ -45,19 +45,19 @@
       ]
     },
     {
-      "id": "engines",
-      "title": "engines",
-      "startSec": 9.35,
-      "endSec": 19.45,
+      "id": "layouts",
+      "title": "layouts",
+      "startSec": 10.7,
+      "endSec": 17.25,
       "layers": [
         {
           "id": "content",
           "components": [
             {
-              "id": "mix-and-match-demo-0",
-              "type": "MixAndMatchDemo",
+              "id": "two-column-layout-demo-0",
+              "type": "TwoColumnLayoutDemo",
               "props": {
-                "sceneStartSec": 9.35
+                "sceneStartSec": 10.7
               }
             }
           ]
@@ -65,17 +65,17 @@
       ],
       "cues": [
         {
-          "id": "engines-vo",
-          "label": "engines-vo",
-          "startSec": 9.35,
-          "endSec": 19.45,
-          "text": "Here is the fun part: you can mix engines in a single scene—D3, WebGL, motion layers, all orchestrated by the same timeline.",
+          "id": "layouts-vo",
+          "label": "layouts-vo",
+          "startSec": 10.7,
+          "endSec": 17.25,
+          "text": "Babulus ships a library of off-the-shelf layouts you can drop in instantly—then move on.",
           "segments": [
             {
               "type": "tts",
-              "startSec": 9.35,
-              "endSec": 19.45,
-              "text": "Here is the fun part: you can mix engines in a single scene—D3, WebGL, motion layers, all orchestrated by the same timeline."
+              "startSec": 10.7,
+              "endSec": 17.25,
+              "text": "Babulus ships a library of off-the-shelf layouts you can drop in instantly—then move on."
             }
           ],
           "bullets": []
@@ -85,8 +85,8 @@
     {
       "id": "code",
       "title": "code",
-      "startSec": 19.45,
-      "endSec": 42.55,
+      "startSec": 17.25,
+      "endSec": 40.4,
       "layers": [
         {
           "id": "content",
@@ -116,7 +116,7 @@
                   "lineHeight": 1.2,
                   "spacing": 24
                 },
-                "sceneStartSec": 19.45
+                "sceneStartSec": 17.25
               }
             }
           ]
@@ -126,20 +126,20 @@
         {
           "id": "code-vo",
           "label": "code-vo",
-          "startSec": 19.45,
-          "endSec": 42.55,
+          "startSec": 17.25,
+          "endSec": 40.4,
           "text": "Voiceover comes straight from this file. Babulus generates audio using pluggable providers like ElevenLabs, OpenAI, and AWS Polly, then computes cue timing from the real clip durations. Add a few words and it regenerates the voice and retimes every scene so everything stays perfectly in sync.",
           "segments": [
             {
               "type": "tts",
-              "startSec": 19.45,
-              "endSec": 40.55,
+              "startSec": 17.25,
+              "endSec": 38.4,
               "text": "Voiceover comes straight from this file. Babulus generates audio using pluggable providers like ElevenLabs, OpenAI, and AWS Polly, then computes cue timing from the real clip durations. Add a few words and it regenerates the voice and retimes every scene so everything stays perfectly in sync."
             },
             {
               "type": "pause",
-              "startSec": 40.55,
-              "endSec": 42.55,
+              "startSec": 38.4,
+              "endSec": 40.4,
               "durationSec": 2
             }
           ],

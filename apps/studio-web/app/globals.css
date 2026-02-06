@@ -503,7 +503,8 @@
 }
 
 .docs-preview {
-  width: 100%;
+  width: min(100%, 960px);
+  margin: 0 auto;
 }
 
 .runs-panel {

@@ -21,12 +21,12 @@ const exampleCode = `<videoml id="code-to-video-preview" title="Code to Video Pr
     </cue>
   </scene>
 
-  <scene id="engines">
+  <scene id="layouts">
     <layer id="content">
-      <mix-and-match-demo props='{}' />
+      <two-column-layout-demo />
     </layer>
-    <cue id="engines-vo">
-      <voice>Here is the fun part: you can mix engines in a single scene—D3, WebGL, motion layers, all orchestrated by the same timeline.</voice>
+    <cue id="layouts-vo">
+      <voice>Babulus ships a library of off-the-shelf layouts you can drop in instantly—then move on.</voice>
     </cue>
   </scene>
 

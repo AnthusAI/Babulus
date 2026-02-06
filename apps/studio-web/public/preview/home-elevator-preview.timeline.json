@@ -5,35 +5,73 @@
       "sceneId": "title",
       "cueId": "title-cue",
       "startSec": 0,
-      "endSec": 10.3,
+      "endSec": 10.4,
       "segments": [
         {
           "type": "tts",
           "startSec": 0,
-          "endSec": 10.3,
+          "endSec": 10.4,
           "text": "Babulus lets you create videos the same way you build web pages. Write VideoML and render it as a video or as live HTML.",
           "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/home-elevator-preview/env/development/segments/title--title-cue--tts--92b34b49a4e9--1.wav",
-          "durationSec": 10.3,
-          "rawDurationSec": 10.3,
+          "durationSec": 10.4,
+          "rawDurationSec": 10.4,
           "trimEndSec": 0
         }
       ]
     },
     {
       "type": "tts",
-      "sceneId": "live-demo",
-      "cueId": "live-demo-cue",
-      "startSec": 10.3,
-      "endSec": 18.3,
+      "sceneId": "layout-title",
+      "cueId": "layout-title-cue",
+      "startSec": 10.4,
+      "endSec": 16.75,
       "segments": [
         {
           "type": "tts",
-          "startSec": 10.3,
-          "endSec": 18.3,
-          "text": "Use the same components in your product and your videos, with a design system of layouts, type, and color themes.",
-          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/home-elevator-preview/env/development/segments/live-demo--live-demo-cue--tts--05f57142e794--1.wav",
-          "durationSec": 8,
-          "rawDurationSec": 8,
+          "startSec": 10.4,
+          "endSec": 16.75,
+          "text": "Start with polished layout primitives like title slides, chapter breaks, and branded screens.",
+          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/home-elevator-preview/env/development/segments/layout-title--layout-title-cue--tts--de845e6382eb--1.wav",
+          "durationSec": 6.35,
+          "rawDurationSec": 6.35,
+          "trimEndSec": 0
+        }
+      ]
+    },
+    {
+      "type": "tts",
+      "sceneId": "layout-two-column",
+      "cueId": "layout-two-column-cue",
+      "startSec": 16.75,
+      "endSec": 24.6,
+      "segments": [
+        {
+          "type": "tts",
+          "startSec": 16.75,
+          "endSec": 24.6,
+          "text": "Drop in structured layouts like two-column and three-column screens without hand-tuning motion.",
+          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/home-elevator-preview/env/development/segments/layout-two-column--layout-two-column-cue--tts--122c830925f4--1.wav",
+          "durationSec": 7.85,
+          "rawDurationSec": 7.85,
+          "trimEndSec": 0
+        }
+      ]
+    },
+    {
+      "type": "tts",
+      "sceneId": "layout-grid",
+      "cueId": "layout-grid-cue",
+      "startSec": 24.6,
+      "endSec": 29.700000000000003,
+      "segments": [
+        {
+          "type": "tts",
+          "startSec": 24.6,
+          "endSec": 29.700000000000003,
+          "text": "Compose dashboards, highlights, and feature grids with reusable templates.",
+          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/home-elevator-preview/env/development/segments/layout-grid--layout-grid-cue--tts--f92c565ca942--1.wav",
+          "durationSec": 5.1,
+          "rawDurationSec": 5.1,
           "trimEndSec": 0
         }
       ]
@@ -42,17 +80,17 @@
       "type": "tts",
       "sceneId": "bullets",
       "cueId": "bullets-cue",
-      "startSec": 18.3,
-      "endSec": 26.25,
+      "startSec": 29.700000000000003,
+      "endSec": 37.050000000000004,
       "segments": [
         {
           "type": "tts",
-          "startSec": 18.3,
-          "endSec": 26.25,
+          "startSec": 29.700000000000003,
+          "endSec": 37.050000000000004,
           "text": "Render to MP4 for distribution, or embed the same VideoML as live, interactive HTML on your site.",
           "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/home-elevator-preview/env/development/segments/bullets--bullets-cue--tts--1cfaa8d6cbf3--1.wav",
-          "durationSec": 7.95,
-          "rawDurationSec": 7.95,
+          "durationSec": 7.35,
+          "rawDurationSec": 7.35,
           "trimEndSec": 0
         }
       ]
@@ -61,23 +99,23 @@
       "type": "tts",
       "sceneId": "close",
       "cueId": "close-cue",
-      "startSec": 26.25,
-      "endSec": 34.7,
+      "startSec": 37.050000000000004,
+      "endSec": 47.35000000000001,
       "segments": [
         {
           "type": "tts",
-          "startSec": 26.25,
-          "endSec": 32.7,
-          "text": "Babulus is the code-to-video stack. Ship consistent visuals across your website and your videos.",
-          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/home-elevator-preview/env/development/segments/close--close-cue--tts--38dd3aa27bd0--1.wav",
-          "durationSec": 6.45,
-          "rawDurationSec": 6.45,
+          "startSec": 37.050000000000004,
+          "endSec": 45.35000000000001,
+          "text": "Babulus is the code-to-video stack. Play consistent visuals across your website and your videos.",
+          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/home-elevator-preview/env/development/segments/close--close-cue--tts--60e2b68f407f--1.wav",
+          "durationSec": 8.3,
+          "rawDurationSec": 8.3,
           "trimEndSec": 0
         },
         {
           "type": "pause",
-          "startSec": 32.7,
-          "endSec": 34.7,
+          "startSec": 45.35000000000001,
+          "endSec": 47.35000000000001,
           "seconds": 2
         }
       ]
@@ -93,32 +131,48 @@
             "id": "title--title-cue--tts--92b34b49a4e9--1",
             "kind": "file",
             "startSec": 0,
-            "durationSec": 10.3,
+            "durationSec": 10.4,
             "src": "/preview/home-elevator-preview/env/development/segments/title--title-cue--tts--92b34b49a4e9--1.wav",
             "volume": 1
           },
           {
-            "id": "live-demo--live-demo-cue--tts--05f57142e794--1",
+            "id": "layout-title--layout-title-cue--tts--de845e6382eb--1",
             "kind": "file",
-            "startSec": 10.3,
-            "durationSec": 8,
-            "src": "/preview/home-elevator-preview/env/development/segments/live-demo--live-demo-cue--tts--05f57142e794--1.wav",
+            "startSec": 10.4,
+            "durationSec": 6.35,
+            "src": "/preview/home-elevator-preview/env/development/segments/layout-title--layout-title-cue--tts--de845e6382eb--1.wav",
+            "volume": 1
+          },
+          {
+            "id": "layout-two-column--layout-two-column-cue--tts--122c830925f4--1",
+            "kind": "file",
+            "startSec": 16.75,
+            "durationSec": 7.85,
+            "src": "/preview/home-elevator-preview/env/development/segments/layout-two-column--layout-two-column-cue--tts--122c830925f4--1.wav",
+            "volume": 1
+          },
+          {
+            "id": "layout-grid--layout-grid-cue--tts--f92c565ca942--1",
+            "kind": "file",
+            "startSec": 24.6,
+            "durationSec": 5.1,
+            "src": "/preview/home-elevator-preview/env/development/segments/layout-grid--layout-grid-cue--tts--f92c565ca942--1.wav",
             "volume": 1
           },
           {
             "id": "bullets--bullets-cue--tts--1cfaa8d6cbf3--1",
             "kind": "file",
-            "startSec": 18.3,
-            "durationSec": 7.95,
+            "startSec": 29.700000000000003,
+            "durationSec": 7.35,
             "src": "/preview/home-elevator-preview/env/development/segments/bullets--bullets-cue--tts--1cfaa8d6cbf3--1.wav",
             "volume": 1
           },
           {
-            "id": "close--close-cue--tts--38dd3aa27bd0--1",
+            "id": "close--close-cue--tts--60e2b68f407f--1",
             "kind": "file",
-            "startSec": 26.25,
-            "durationSec": 6.45,
-            "src": "/preview/home-elevator-preview/env/development/segments/close--close-cue--tts--38dd3aa27bd0--1.wav",
+            "startSec": 37.050000000000004,
+            "durationSec": 8.3,
+            "src": "/preview/home-elevator-preview/env/development/segments/close--close-cue--tts--60e2b68f407f--1.wav",
             "volume": 1
           }
         ]

@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-02-06T03:52:11.131Z",
+  "updatedAt": "2026-02-06T05:57:26.350Z",
   "compositions": [
     {
       "id": "home-elevator-preview",
@@ -7,13 +7,6 @@
       "script": "home-elevator-preview.script.json",
       "timeline": "home-elevator-preview.timeline.json",
       "audio": "home-elevator-preview.wav"
-    },
-    {
-      "id": "code-to-video-preview",
-      "title": "Code to Video Preview",
-      "script": "code-to-video-preview.script.json",
-      "timeline": "code-to-video-preview.timeline.json",
-      "audio": "code-to-video-preview.wav"
     }
   ]
 }
