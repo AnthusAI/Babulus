@@ -658,13 +658,17 @@ export const registerVideoMLComponents = () => {
       customElements.define(name, ctor);
     }
   };
+  const defineAlias = (name: string, Base: CustomElementConstructor) => {
+    class AliasElement extends (Base as typeof HTMLElement) {}
+    define(name, AliasElement);
+  };
 
   define("title-slide", TitleSlideElement);
-  define("title-slide-layout-demo", TitleSlideElement);
-  define("bullet-list-screen", BulletListElement);
-  define("bullet-list", BulletListElement);
-  define("two-column-screen", TwoColumnElement);
-  define("two-column-layout-demo", TwoColumnElement);
+  defineAlias("title-slide-layout-demo", TitleSlideElement);
+  defineAlias("bullet-list-screen", BulletListElement);
+  defineAlias("bullet-list", BulletListElement);
+  defineAlias("two-column-screen", TwoColumnElement);
+  defineAlias("two-column-layout-demo", TwoColumnElement);
   define("chapter-heading", ChapterHeadingElement);
   define("content-screen", ContentScreenElement);
   define("grid-screen", GridScreenElement);
@@ -679,16 +683,16 @@ export const registerVideoMLComponents = () => {
   define("callout", CalloutElement);
   define("chyron", ChyronElement);
   define("code-block", CodeBlockElement);
-  define("anime-harness-demo", DemoPlaceholderElement);
-  define("d3-bar-chart", DemoPlaceholderElement);
-  define("framer-motion-demo", DemoPlaceholderElement);
-  define("lottie-badge", DemoPlaceholderElement);
-  define("mix-and-match-demo", DemoPlaceholderElement);
-  define("p5-particles", DemoPlaceholderElement);
-  define("text-effects-demo", DemoPlaceholderElement);
-  define("three-orbit", DemoPlaceholderElement);
-  define("content-layout-demo", DemoPlaceholderElement);
-  define("not-video", DemoPlaceholderElement);
+  defineAlias("anime-harness-demo", DemoPlaceholderElement);
+  defineAlias("d3-bar-chart", DemoPlaceholderElement);
+  defineAlias("framer-motion-demo", DemoPlaceholderElement);
+  defineAlias("lottie-badge", DemoPlaceholderElement);
+  defineAlias("mix-and-match-demo", DemoPlaceholderElement);
+  defineAlias("p5-particles", DemoPlaceholderElement);
+  defineAlias("text-effects-demo", DemoPlaceholderElement);
+  defineAlias("three-orbit", DemoPlaceholderElement);
+  defineAlias("content-layout-demo", DemoPlaceholderElement);
+  defineAlias("not-video", DemoPlaceholderElement);
 };
 
 class FallbackElement extends HTMLElement {
