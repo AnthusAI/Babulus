@@ -29,6 +29,7 @@ export type PreviewPlayerProps = {
   showControls?: boolean;
   onExitFullscreen?: () => void;
   onTimeUpdate?: (timeSec: number, durationSec: number) => void;
+  onPlayStateChange?: (isPlaying: boolean) => void;
   hideControlsDelayMs?: number;
   themeStyle?: React.CSSProperties;
 };
@@ -57,6 +58,7 @@ export function PreviewPlayer({
   showControls = true,
   onExitFullscreen,
   onTimeUpdate,
+  onPlayStateChange,
   hideControlsDelayMs = 2200,
   themeStyle,
 }: PreviewPlayerProps) {
@@ -178,6 +180,10 @@ export function PreviewPlayer({
     }
     onTimeUpdate(currentTime, duration);
   }, [currentTime, duration, onTimeUpdate]);
+
+  useEffect(() => {
+    onPlayStateChange?.(isPlaying);
+  }, [isPlaying, onPlayStateChange]);
 
   const handlePlayPause = () => {
     const nextPlaying = !isPlaying;

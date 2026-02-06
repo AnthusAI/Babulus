@@ -1,164 +1,39 @@
 <videoml id="home-elevator-preview" title="Home Elevator Preview" fps="30" width="1920" height="1080">
-  <voiceover provider="dry-run" />
+  <voiceover />
 
-  <scene id="intro" title="intro" styles='{"background":"var(--color-bg)","color":"var(--color-text)","vars":{"--color-bg":"#0b0f1f","--color-bg-subtle":"#151b32","--color-surface":"#151b32","--color-surface-strong":"#1e2645","--color-surface-2":"#1e2645","--color-text":"#eef1ff","--color-text-muted":"#c8cff6","--color-primary":"#ff5ec4","--color-secondary":"#6a7dff","--color-accent":"#ff5ec4","--color-accent-2":"#6a7dff","--color-muted":"#c8cff6","--color-muted-more":"#c8cff6","--font-eyebrow":"var(--font-preview-humanist), sans-serif","--font-headline":"var(--font-preview-sans), sans-serif","--font-subhead":"var(--font-preview-humanist), sans-serif"}}'>
+  <scene id="title" title="title" styles='{"background":"#0f1117","color":"#e8eaf0","vars":{"--color-bg":"#0f1117","--color-bg-subtle":"#151a27","--color-surface":"#151a27","--color-surface-strong":"#1c2333","--color-surface-2":"#1c2333","--color-text":"#e8eaf0","--color-text-muted":"#c4c8d6","--color-primary":"#5f7bff","--color-secondary":"#ff6ac1","--color-accent":"#5f7bff","--color-accent-2":"#ff6ac1","--color-muted":"#c4c8d6","--color-muted-more":"#c4c8d6","--font-eyebrow":"var(--font-preview-humanist), sans-serif","--font-headline":"var(--font-preview-sans), sans-serif","--font-subhead":"var(--font-preview-humanist), sans-serif"}}'>
     <layer id="content">
-      <title-slide props='{"title":"Code Your Videos","subtitle":"(AI is really good at it!)","verticalAlign":"center","horizontalAlign":"center","entranceStartFrame":-999}' />
+      <title-slide props='{"eyebrow":"Babulus","title":"Create videos like web pages","subtitle":"Write VideoML, render anywhere","verticalAlign":"center","horizontalAlign":"center","entranceStartFrame":-999}' />
     </layer>
-    <cue id="hold-intro" label="hold-intro">
-      <pause seconds="2s" />
+    <cue id="title-cue" label="title-cue">
+      <voice>Babulus lets you create videos the same way you build web pages. Write VideoML and render it as a video or as live HTML.</voice>
     </cue>
   </scene>
 
-  <scene id="quote" title="quote" styles='{"background":"var(--color-bg)","color":"var(--color-text)","vars":{"--color-bg":"#0b0f1f","--color-bg-subtle":"#151b32","--color-surface":"#151b32","--color-surface-strong":"#1e2645","--color-surface-2":"#1e2645","--color-text":"#eef1ff","--color-text-muted":"#c8cff6","--color-primary":"#ff5ec4","--color-secondary":"#6a7dff","--color-accent":"#ff5ec4","--color-accent-2":"#6a7dff","--color-muted":"#c8cff6","--color-muted-more":"#c8cff6","--font-eyebrow":"var(--font-preview-humanist), sans-serif","--font-headline":"var(--font-preview-sans), sans-serif","--font-subhead":"var(--font-preview-humanist), sans-serif"}}'>
+  <scene id="live-demo" title="live-demo" styles='{"background":"#0f1117","color":"#e8eaf0","vars":{"--color-bg":"#0f1117","--color-bg-subtle":"#151a27","--color-surface":"#151a27","--color-surface-strong":"#1c2333","--color-surface-2":"#1c2333","--color-text":"#e8eaf0","--color-text-muted":"#c4c8d6","--color-primary":"#5f7bff","--color-secondary":"#ff6ac1","--color-accent":"#5f7bff","--color-accent-2":"#ff6ac1","--color-muted":"#c4c8d6","--color-muted-more":"#c4c8d6","--font-eyebrow":"var(--font-preview-humanist), sans-serif","--font-headline":"var(--font-preview-sans), sans-serif","--font-subhead":"var(--font-preview-humanist), sans-serif"}}'>
     <layer id="content">
-      <quote-card props='{"quote":"AI agents make all our YouTube videos for us now."}' />
+      <mix-and-match-demo props='{}' />
     </layer>
-    <cue id="hold-quote" label="hold-quote">
-      <pause seconds="4s" />
+    <cue id="live-demo-cue" label="live-demo-cue">
+      <voice>Use the same components in your product and your videos, with a design system of layouts, type, and color themes.</voice>
     </cue>
   </scene>
 
-  <scene id="chapter-layouts" title="chapter-layouts" styles='{"background":"var(--color-bg)","color":"var(--color-text)","vars":{"--color-bg":"#0b0f1f","--color-bg-subtle":"#151b32","--color-surface":"#151b32","--color-surface-strong":"#1e2645","--color-surface-2":"#1e2645","--color-text":"#eef1ff","--color-text-muted":"#c8cff6","--color-primary":"#ff5ec4","--color-secondary":"#6a7dff","--color-accent":"#ff5ec4","--color-accent-2":"#6a7dff","--color-muted":"#c8cff6","--color-muted-more":"#c8cff6","--font-eyebrow":"var(--font-preview-humanist), sans-serif","--font-headline":"var(--font-preview-sans), sans-serif","--font-subhead":"var(--font-preview-humanist), sans-serif"}}'>
+  <scene id="bullets" title="bullets" styles='{"background":"#0f1117","color":"#e8eaf0","vars":{"--color-bg":"#0f1117","--color-bg-subtle":"#151a27","--color-surface":"#151a27","--color-surface-strong":"#1c2333","--color-surface-2":"#1c2333","--color-text":"#e8eaf0","--color-text-muted":"#c4c8d6","--color-primary":"#5f7bff","--color-secondary":"#ff6ac1","--color-accent":"#5f7bff","--color-accent-2":"#ff6ac1","--color-muted":"#c4c8d6","--color-muted-more":"#c4c8d6","--font-eyebrow":"var(--font-preview-humanist), sans-serif","--font-headline":"var(--font-preview-sans), sans-serif","--font-subhead":"var(--font-preview-humanist), sans-serif"}}'>
     <layer id="content">
-      <chapter-heading props='{"number":"01","title":"Layouts","subtitle":"Composable screens in seconds","layout":"side-by-side"}' />
+      <bullet-list-screen props='{"eyebrow":"One system","title":"Render anywhere","subtitle":"Live HTML or exported video","align":"left","bullets":{"items":["Build screens with reusable layouts","Export MP4s for YouTube and socials","Embed live players inside web pages"],"bulletStyle":"icon","bulletIcon":{"kind":"lucide","name":"check","color":"var(--color-accent)","strokeWidth":3,"size":36},"fontSize":52,"lineHeight":1.3,"spacing":36,"textColor":"var(--color-text)","justify":"start"}}' />
     </layer>
-    <cue id="hold-chapter-layouts" label="hold-chapter-layouts">
-      <pause seconds="2s" />
+    <cue id="bullets-cue" label="bullets-cue">
+      <voice>Render to MP4 for distribution, or embed the same VideoML as live, interactive HTML on your site.</voice>
     </cue>
   </scene>
 
-  <scene id="layout-content" title="layout-content" styles='{"background":"var(--color-bg)","color":"var(--color-text)","vars":{"--color-bg":"#0b0f1f","--color-bg-subtle":"#151b32","--color-surface":"#151b32","--color-surface-strong":"#1e2645","--color-surface-2":"#1e2645","--color-text":"#eef1ff","--color-text-muted":"#c8cff6","--color-primary":"#ff5ec4","--color-secondary":"#6a7dff","--color-accent":"#ff5ec4","--color-accent-2":"#6a7dff","--color-muted":"#c8cff6","--color-muted-more":"#c8cff6","--font-eyebrow":"var(--font-preview-humanist), sans-serif","--font-headline":"var(--font-preview-sans), sans-serif","--font-subhead":"var(--font-preview-humanist), sans-serif"}}'>
+  <scene id="close" title="close" styles='{"background":"#0f1117","color":"#e8eaf0","vars":{"--color-bg":"#0f1117","--color-bg-subtle":"#151a27","--color-surface":"#151a27","--color-surface-strong":"#1c2333","--color-surface-2":"#1c2333","--color-text":"#e8eaf0","--color-text-muted":"#c4c8d6","--color-primary":"#5f7bff","--color-secondary":"#ff6ac1","--color-accent":"#5f7bff","--color-accent-2":"#ff6ac1","--color-muted":"#c4c8d6","--color-muted-more":"#c4c8d6","--font-eyebrow":"var(--font-preview-humanist), sans-serif","--font-headline":"var(--font-preview-sans), sans-serif","--font-subhead":"var(--font-preview-humanist), sans-serif"}}'>
     <layer id="content">
-      <content-screen props='{"eyebrow":"Content Screen","title":"Single column canvas","subtitle":"Fill the space below the header","headerAlign":"left","content":{"type":"PlaceholderPanel","id":"content","flex":1,"props":{"label":"Content Area","text":"Drop in any component"}}}' />
+      <title-slide props='{"eyebrow":"VideoML","title":"Design once. Ship everywhere.","subtitle":"Code-to-video without timelines","verticalAlign":"center","horizontalAlign":"center","entranceStartFrame":-999}' />
     </layer>
-    <cue id="hold-layout-content" label="hold-layout-content">
-      <pause seconds="2s" />
-    </cue>
-  </scene>
-
-  <scene id="layout-two-column" title="layout-two-column" styles='{"background":"var(--color-bg)","color":"var(--color-text)","vars":{"--color-bg":"#0b0f1f","--color-bg-subtle":"#151b32","--color-surface":"#151b32","--color-surface-strong":"#1e2645","--color-surface-2":"#1e2645","--color-text":"#eef1ff","--color-text-muted":"#c8cff6","--color-primary":"#ff5ec4","--color-secondary":"#6a7dff","--color-accent":"#ff5ec4","--color-accent-2":"#6a7dff","--color-muted":"#c8cff6","--color-muted-more":"#c8cff6","--font-eyebrow":"var(--font-preview-humanist), sans-serif","--font-headline":"var(--font-preview-sans), sans-serif","--font-subhead":"var(--font-preview-humanist), sans-serif"}}'>
-    <layer id="content">
-      <two-column-screen props='{"eyebrow":"Two Column Screen","title":"Balanced layout","subtitle":"Side-by-side storytelling","headerAlign":"left","left":{"type":"PlaceholderPanel","id":"left","flex":1,"props":{"label":"Left Panel","text":"Charts, visuals"}},"right":{"type":"PlaceholderPanel","id":"right","flex":1,"props":{"label":"Right Panel","text":"Narrative copy"}}}' />
-    </layer>
-    <cue id="hold-layout-two-column" label="hold-layout-two-column">
-      <pause seconds="2s" />
-    </cue>
-  </scene>
-
-  <scene id="layout-three-column" title="layout-three-column" styles='{"background":"var(--color-bg)","color":"var(--color-text)","vars":{"--color-bg":"#0b0f1f","--color-bg-subtle":"#151b32","--color-surface":"#151b32","--color-surface-strong":"#1e2645","--color-surface-2":"#1e2645","--color-text":"#eef1ff","--color-text-muted":"#c8cff6","--color-primary":"#ff5ec4","--color-secondary":"#6a7dff","--color-accent":"#ff5ec4","--color-accent-2":"#6a7dff","--color-muted":"#c8cff6","--color-muted-more":"#c8cff6","--font-eyebrow":"var(--font-preview-humanist), sans-serif","--font-headline":"var(--font-preview-sans), sans-serif","--font-subhead":"var(--font-preview-humanist), sans-serif"}}'>
-    <layer id="content">
-      <three-column-screen props='{"eyebrow":"Three Column Screen","title":"Structured comparisons","subtitle":"Multiple streams at once","headerAlign":"left","columns":[{"type":"PlaceholderPanel","id":"col-1","flex":1,"props":{"label":"Column One","text":"Inputs"}},{"type":"PlaceholderPanel","id":"col-2","flex":1,"props":{"label":"Column Two","text":"Processing"}},{"type":"PlaceholderPanel","id":"col-3","flex":1,"props":{"label":"Column Three","text":"Outputs"}}]}' />
-    </layer>
-    <cue id="hold-layout-three-column" label="hold-layout-three-column">
-      <pause seconds="2s" />
-    </cue>
-  </scene>
-
-  <scene id="layout-grid" title="layout-grid" styles='{"background":"var(--color-bg)","color":"var(--color-text)","vars":{"--color-bg":"#0b0f1f","--color-bg-subtle":"#151b32","--color-surface":"#151b32","--color-surface-strong":"#1e2645","--color-surface-2":"#1e2645","--color-text":"#eef1ff","--color-text-muted":"#c8cff6","--color-primary":"#ff5ec4","--color-secondary":"#6a7dff","--color-accent":"#ff5ec4","--color-accent-2":"#6a7dff","--color-muted":"#c8cff6","--color-muted-more":"#c8cff6","--font-eyebrow":"var(--font-preview-humanist), sans-serif","--font-headline":"var(--font-preview-sans), sans-serif","--font-subhead":"var(--font-preview-humanist), sans-serif"}}'>
-    <layer id="content">
-      <grid-screen props='{"eyebrow":"Grid Screen","title":"Modular tiles","subtitle":"Arrange multiple panels fast","headerAlign":"left","grid":{"columns":3,"items":["Story","Charts","Quotes","Steps","Metrics","Highlights"]}}' />
-    </layer>
-    <cue id="hold-layout-grid" label="hold-layout-grid">
-      <pause seconds="2s" />
-    </cue>
-  </scene>
-
-  <scene id="chapter-colors" title="chapter-colors" styles='{"background":"var(--color-bg)","color":"var(--color-text)","vars":{"--color-bg":"#0b0f1f","--color-bg-subtle":"#151b32","--color-surface":"#151b32","--color-surface-strong":"#1e2645","--color-surface-2":"#1e2645","--color-text":"#eef1ff","--color-text-muted":"#c8cff6","--color-primary":"#ff5ec4","--color-secondary":"#6a7dff","--color-accent":"#ff5ec4","--color-accent-2":"#6a7dff","--color-muted":"#c8cff6","--color-muted-more":"#c8cff6","--font-eyebrow":"var(--font-preview-humanist), sans-serif","--font-headline":"var(--font-preview-sans), sans-serif","--font-subhead":"var(--font-preview-humanist), sans-serif"}}'>
-    <layer id="content">
-      <chapter-heading props='{"number":"02","title":"Colors & Typefaces","subtitle":"Six schemes, one system","layout":"side-by-side"}' />
-    </layer>
-    <cue id="hold-chapter-colors" label="hold-chapter-colors">
-      <pause seconds="2s" />
-    </cue>
-  </scene>
-
-  <scene id="color-type-1" title="color-type-1" styles='{"background":"var(--color-bg)","color":"var(--color-text)","vars":{"--color-bg":"#0b0f1f","--color-bg-subtle":"#151b32","--color-surface":"#151b32","--color-surface-strong":"#1e2645","--color-surface-2":"#1e2645","--color-text":"#eef1ff","--color-text-muted":"#c8cff6","--color-primary":"#ff5ec4","--color-secondary":"#6a7dff","--color-accent":"#ff5ec4","--color-accent-2":"#6a7dff","--color-muted":"#c8cff6","--color-muted-more":"#c8cff6","--font-eyebrow":"var(--font-preview-humanist), sans-serif","--font-headline":"var(--font-preview-sans), sans-serif","--font-subhead":"var(--font-preview-humanist), sans-serif"}}'>
-    <layer id="content">
-      <title-slide props='{"eyebrow":"Cool Dark","title":"Humanist Sans","subtitle":"Friendly, readable UI copy","verticalAlign":"center","horizontalAlign":"center","entranceStartFrame":-999}' />
-    </layer>
-    <cue id="hold-color-type-1" label="hold-color-type-1">
-      <pause seconds="2s" />
-    </cue>
-  </scene>
-
-  <scene id="color-type-2" title="color-type-2" styles='{"background":"var(--color-bg)","color":"var(--color-text)","vars":{"--color-bg":"#0f0f0e","--color-bg-subtle":"#171615","--color-surface":"#171615","--color-surface-strong":"#211f1e","--color-surface-2":"#211f1e","--color-text":"#f5f5f4","--color-text-muted":"#c7c2bc","--color-primary":"#ff5ec4","--color-secondary":"#5f7bff","--color-accent":"#ff5ec4","--color-accent-2":"#5f7bff","--color-muted":"#c7c2bc","--color-muted-more":"#c7c2bc","--font-eyebrow":"var(--font-preview-sans), sans-serif","--font-headline":"var(--font-preview-serif), serif","--font-subhead":"var(--font-preview-sans), sans-serif"}}'>
-    <layer id="content">
-      <title-slide props='{"eyebrow":"Neutral Dark","title":"Modern Serif","subtitle":"Editorial weight with clarity","verticalAlign":"center","horizontalAlign":"center","entranceStartFrame":-999}' />
-    </layer>
-    <cue id="hold-color-type-2" label="hold-color-type-2">
-      <pause seconds="2s" />
-    </cue>
-  </scene>
-
-  <scene id="color-type-3" title="color-type-3" styles='{"background":"var(--color-bg)","color":"var(--color-text)","vars":{"--color-bg":"#1b1207","--color-bg-subtle":"#24180b","--color-surface":"#24180b","--color-surface-strong":"#2f210f","--color-surface-2":"#2f210f","--color-text":"#ffe7c4","--color-text-muted":"#f2c89a","--color-primary":"#ff5ec4","--color-secondary":"#5b8cff","--color-accent":"#ff5ec4","--color-accent-2":"#5b8cff","--color-muted":"#f2c89a","--color-muted-more":"#f2c89a","--font-eyebrow":"var(--font-preview-humanist), sans-serif","--font-headline":"var(--font-preview-display), sans-serif","--font-subhead":"var(--font-preview-humanist), sans-serif"}}'>
-    <layer id="content">
-      <title-slide props='{"eyebrow":"Warm Dark","title":"Display Contrast","subtitle":"Bold headlines with character","verticalAlign":"center","horizontalAlign":"center","entranceStartFrame":-999}' />
-    </layer>
-    <cue id="hold-color-type-3" label="hold-color-type-3">
-      <pause seconds="2s" />
-    </cue>
-  </scene>
-
-  <scene id="color-type-4" title="color-type-4" styles='{"background":"var(--color-bg)","color":"var(--color-text)","vars":{"--color-bg":"#f5f7ff","--color-bg-subtle":"#e9edff","--color-surface":"#e9edff","--color-surface-strong":"#dfe4ff","--color-surface-2":"#dfe4ff","--color-text":"#1f2d5c","--color-text-muted":"#4f5d88","--color-primary":"#d948b8","--color-secondary":"#4d6bff","--color-accent":"#d948b8","--color-accent-2":"#4d6bff","--color-muted":"#4f5d88","--color-muted-more":"#4f5d88","--font-eyebrow":"var(--font-preview-humanist), sans-serif","--font-headline":"var(--font-preview-sans), sans-serif","--font-subhead":"var(--font-preview-humanist), sans-serif"}}'>
-    <layer id="content">
-      <title-slide props='{"eyebrow":"Cool Light","title":"Geometric Sans","subtitle":"Clean, precise, and modern","verticalAlign":"center","horizontalAlign":"center","entranceStartFrame":-999}' />
-    </layer>
-    <cue id="hold-color-type-4" label="hold-color-type-4">
-      <pause seconds="2s" />
-    </cue>
-  </scene>
-
-  <scene id="color-type-5" title="color-type-5" styles='{"background":"var(--color-bg)","color":"var(--color-text)","vars":{"--color-bg":"#f4f3f1","--color-bg-subtle":"#e9e7e4","--color-surface":"#e9e7e4","--color-surface-strong":"#dedbd7","--color-surface-2":"#dedbd7","--color-text":"#2a2623","--color-text-muted":"#5a534d","--color-primary":"#d948b8","--color-secondary":"#556eff","--color-accent":"#d948b8","--color-accent-2":"#556eff","--color-muted":"#5a534d","--color-muted-more":"#5a534d","--font-eyebrow":"var(--font-preview-sans), sans-serif","--font-headline":"var(--font-preview-serif), serif","--font-subhead":"var(--font-preview-sans), sans-serif"}}'>
-    <layer id="content">
-      <title-slide props='{"eyebrow":"Neutral Light","title":"Studio Serif","subtitle":"Balanced warmth for narration","verticalAlign":"center","horizontalAlign":"center","entranceStartFrame":-999}' />
-    </layer>
-    <cue id="hold-color-type-5" label="hold-color-type-5">
-      <pause seconds="2s" />
-    </cue>
-  </scene>
-
-  <scene id="color-type-6" title="color-type-6" styles='{"background":"var(--color-bg)","color":"var(--color-text)","vars":{"--color-bg":"#fff5ee","--color-bg-subtle":"#ffe9db","--color-surface":"#ffe9db","--color-surface-strong":"#f9dcc6","--color-surface-2":"#f9dcc6","--color-text":"#5a2f13","--color-text-muted":"#84533b","--color-primary":"#d948b8","--color-secondary":"#5177ff","--color-accent":"#d948b8","--color-accent-2":"#5177ff","--color-muted":"#84533b","--color-muted-more":"#84533b","--font-eyebrow":"var(--font-preview-humanist), sans-serif","--font-headline":"var(--font-preview-display), sans-serif","--font-subhead":"var(--font-preview-humanist), sans-serif"}}'>
-    <layer id="content">
-      <title-slide props='{"eyebrow":"Warm Light","title":"Soft Display","subtitle":"Friendly tone for storytelling","verticalAlign":"center","horizontalAlign":"center","entranceStartFrame":-999}' />
-    </layer>
-    <cue id="hold-color-type-6" label="hold-color-type-6">
-      <pause seconds="2s" />
-    </cue>
-  </scene>
-
-  <scene id="chapter-features" title="chapter-features" styles='{"background":"var(--color-bg)","color":"var(--color-text)","vars":{"--color-bg":"#0b0f1f","--color-bg-subtle":"#151b32","--color-surface":"#151b32","--color-surface-strong":"#1e2645","--color-surface-2":"#1e2645","--color-text":"#eef1ff","--color-text-muted":"#c8cff6","--color-primary":"#ff5ec4","--color-secondary":"#6a7dff","--color-accent":"#ff5ec4","--color-accent-2":"#6a7dff","--color-muted":"#c8cff6","--color-muted-more":"#c8cff6","--font-eyebrow":"var(--font-preview-humanist), sans-serif","--font-headline":"var(--font-preview-sans), sans-serif","--font-subhead":"var(--font-preview-humanist), sans-serif"}}'>
-    <layer id="content">
-      <chapter-heading props='{"number":"03","title":"Features","subtitle":"Built for fast video teams","layout":"side-by-side"}' />
-    </layer>
-    <cue id="hold-chapter-features" label="hold-chapter-features">
-      <pause seconds="2s" />
-    </cue>
-  </scene>
-
-  <scene id="features-1" title="features-1" styles='{"background":"var(--color-bg)","color":"var(--color-text)","vars":{"--color-bg":"#0b0f1f","--color-bg-subtle":"#151b32","--color-surface":"#151b32","--color-surface-strong":"#1e2645","--color-surface-2":"#1e2645","--color-text":"#eef1ff","--color-text-muted":"#c8cff6","--color-primary":"#ff5ec4","--color-secondary":"#6a7dff","--color-accent":"#ff5ec4","--color-accent-2":"#6a7dff","--color-muted":"#c8cff6","--color-muted-more":"#c8cff6","--font-eyebrow":"var(--font-preview-humanist), sans-serif","--font-headline":"var(--font-preview-sans), sans-serif","--font-subhead":"var(--font-preview-humanist), sans-serif"}}'>
-    <layer id="content">
-      <bullet-list-screen props='{"eyebrow":"Feature Group","title":"AI Automation","subtitle":"Speech, timing, and rendering","align":"left","bullets":{"items":["AI voiceover","Auto timing","Scene orchestration"],"bulletStyle":"icon","bulletIcon":{"kind":"lucide","name":"check","color":"var(--color-secondary)","strokeWidth":3,"size":34},"fontSize":52,"lineHeight":1.35,"spacing":42,"textColor":"var(--color-text)","justify":"start"}}' />
-    </layer>
-    <cue id="hold-features-1" label="hold-features-1">
-      <pause seconds="2s" />
-    </cue>
-  </scene>
-
-  <scene id="features-2" title="features-2" styles='{"background":"var(--color-bg)","color":"var(--color-text)","vars":{"--color-bg":"#0b0f1f","--color-bg-subtle":"#151b32","--color-surface":"#151b32","--color-surface-strong":"#1e2645","--color-surface-2":"#1e2645","--color-text":"#eef1ff","--color-text-muted":"#c8cff6","--color-primary":"#ff5ec4","--color-secondary":"#6a7dff","--color-accent":"#ff5ec4","--color-accent-2":"#6a7dff","--color-muted":"#c8cff6","--color-muted-more":"#c8cff6","--font-eyebrow":"var(--font-preview-humanist), sans-serif","--font-headline":"var(--font-preview-sans), sans-serif","--font-subhead":"var(--font-preview-humanist), sans-serif"}}'>
-    <layer id="content">
-      <bullet-list-screen props='{"eyebrow":"Feature Group","title":"Design System","subtitle":"Reusable layouts + themes","align":"left","bullets":{"items":["Standard layouts","Typography schemes","Color schemes"],"bulletStyle":"icon","bulletIcon":{"kind":"lucide","name":"check","color":"var(--color-secondary)","strokeWidth":3,"size":34},"fontSize":52,"lineHeight":1.35,"spacing":42,"textColor":"var(--color-text)","justify":"start"}}' />
-    </layer>
-    <cue id="hold-features-2" label="hold-features-2">
-      <pause seconds="2s" />
-    </cue>
-  </scene>
-
-  <scene id="features-3" title="features-3" styles='{"background":"var(--color-bg)","color":"var(--color-text)","vars":{"--color-bg":"#0b0f1f","--color-bg-subtle":"#151b32","--color-surface":"#151b32","--color-surface-strong":"#1e2645","--color-surface-2":"#1e2645","--color-text":"#eef1ff","--color-text-muted":"#c8cff6","--color-primary":"#ff5ec4","--color-secondary":"#6a7dff","--color-accent":"#ff5ec4","--color-accent-2":"#6a7dff","--color-muted":"#c8cff6","--color-muted-more":"#c8cff6","--font-eyebrow":"var(--font-preview-humanist), sans-serif","--font-headline":"var(--font-preview-sans), sans-serif","--font-subhead":"var(--font-preview-humanist), sans-serif"}}'>
-    <layer id="content">
-      <bullet-list-screen props='{"eyebrow":"Feature Group","title":"Production Ready","subtitle":"Scale content without timelines","align":"left","bullets":{"items":["Versioned videos","Batch rendering","Agent-friendly"],"bulletStyle":"icon","bulletIcon":{"kind":"lucide","name":"check","color":"var(--color-secondary)","strokeWidth":3,"size":34},"fontSize":52,"lineHeight":1.35,"spacing":42,"textColor":"var(--color-text)","justify":"start"}}' />
-    </layer>
-    <cue id="hold-features-3" label="hold-features-3">
+    <cue id="close-cue" label="close-cue">
+      <voice>Babulus is the code-to-video stack. Ship consistent visuals across your website and your videos.</voice>
       <pause seconds="2s" />
     </cue>
   </scene>

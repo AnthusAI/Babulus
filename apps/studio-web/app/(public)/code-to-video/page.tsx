@@ -13,22 +13,31 @@ const exampleCode = `<videoml id="code-to-video-preview" title="Code to Video Pr
   <scene id="intro">
     <layer id="content">
       <title-slide
-        props='{"eyebrow":"Code to Video","title":"Code Your Videos","subtitle":"(AI is really good at it!)","verticalAlign":"center","horizontalAlign":"center","entranceStartFrame":-999}'
+        props='{"eyebrow":"Code to Video","title":"Write Video. Ship Video.","subtitle":"From XML to cinematic motion in minutes.","verticalAlign":"center","horizontalAlign":"center","entranceStartFrame":-999}'
       />
     </layer>
     <cue id="intro-vo">
-      <voice>Write XML. Babulus builds the video.</voice>
+      <voice>Watch this. I write a few lines of VideoML, and Babulus turns them into a fully timed video—voiceover, motion, and layout all synchronized.</voice>
+    </cue>
+  </scene>
+
+  <scene id="engines">
+    <layer id="content">
+      <mix-and-match-demo props='{}' />
+    </layer>
+    <cue id="engines-vo">
+      <voice>Here is the fun part: you can mix engines in a single scene—D3, WebGL, motion layers, all orchestrated by the same timeline.</voice>
     </cue>
   </scene>
 
   <scene id="code">
     <layer id="content">
       <bullet-list-screen
-        props='{"eyebrow":"Pipeline","title":"Your code becomes a video","subtitle":"Scene structure + narration = render","bullets":{"items":["Write a few scenes","Add voiceover with cues","Babulus computes timing","Renderer outputs MP4"],"bulletStyle":"icon","bulletIcon":{"kind":"lucide","name":"check","size":44,"strokeWidth":3.2},"fontSize":48,"lineHeight":1.2,"spacing":24}}'
+        props='{"eyebrow":"Pipeline","title":"Your code becomes a production","subtitle":"Structure + cues = timing + motion","bullets":{"items":["Describe scenes, cues, and layout","AI narrates and times each beat","Reusable React components + motion UI","Render to MP4 or embed live"],"bulletStyle":"icon","bulletIcon":{"kind":"lucide","name":"check","size":44,"strokeWidth":3.2},"fontSize":48,"lineHeight":1.2,"spacing":24}}'
       />
     </layer>
     <cue id="code-vo">
-      <voice>Scenes and narration become a finished render.</voice>
+      <voice>Voiceover comes straight from this file. Babulus generates audio using pluggable providers like ElevenLabs, OpenAI, and AWS Polly, then computes cue timing from the real clip durations. Add a few words and it regenerates the voice and retimes every scene so everything stays perfectly in sync.</voice>
     </cue>
   </scene>
 </videoml>`;

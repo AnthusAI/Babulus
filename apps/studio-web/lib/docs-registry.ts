@@ -243,9 +243,8 @@ export function getDocsByLearningPath(pathId: string): readonly DocsEntry[] {
   return DOCS.filter((doc) => doc.learningPath === pathId);
 }
 
-export function listDocsByCategory(options?: { includeInternal?: boolean; persona?: DocsPersona | null }) {
+export function listDocsByCategory(options?: { includeInternal?: boolean }) {
   const includeInternal = options?.includeInternal ?? false;
-  const persona = options?.persona ?? null;
 
   const categories = new Map<DocsCategory, DocsEntry[]>();
   const deferredDocs: DocsEntry[] = [];
@@ -253,7 +252,6 @@ export function listDocsByCategory(options?: { includeInternal?: boolean; person
   for (const doc of DOCS) {
     if (doc.navHidden) continue;
     if (!includeInternal && doc.internal) continue;
-    if (persona && !isDocForPersona(doc, persona)) continue;
 
     if (doc.category === "Roadmap") {
       deferredDocs.push(doc);

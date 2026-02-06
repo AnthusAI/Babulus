@@ -5,16 +5,35 @@
       "sceneId": "intro",
       "cueId": "intro-vo",
       "startSec": 0,
-      "endSec": 2.1818181818181817,
+      "endSec": 9.35,
       "segments": [
         {
           "type": "tts",
           "startSec": 0,
-          "endSec": 2.1818181818181817,
-          "text": "Write XML. Babulus builds the video.",
-          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/code-to-video-preview/env/development/segments/intro--intro-vo--tts--b02f8070a1c1--1.wav",
-          "durationSec": 2.1818181818181817,
-          "rawDurationSec": 2.1818181818181817,
+          "endSec": 9.35,
+          "text": "Watch this. I write a few lines of VideoML, and Babulus turns them into a fully timed video—voiceover, motion, and layout all synchronized.",
+          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/code-to-video-preview/env/development/segments/intro--intro-vo--tts--5bb0beb3bf49--1.wav",
+          "durationSec": 9.35,
+          "rawDurationSec": 9.35,
+          "trimEndSec": 0
+        }
+      ]
+    },
+    {
+      "type": "tts",
+      "sceneId": "engines",
+      "cueId": "engines-vo",
+      "startSec": 9.35,
+      "endSec": 19.45,
+      "segments": [
+        {
+          "type": "tts",
+          "startSec": 9.35,
+          "endSec": 19.45,
+          "text": "Here is the fun part: you can mix engines in a single scene—D3, WebGL, motion layers, all orchestrated by the same timeline.",
+          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/code-to-video-preview/env/development/segments/engines--engines-vo--tts--affffe75e2b5--1.wav",
+          "durationSec": 10.1,
+          "rawDurationSec": 10.1,
           "trimEndSec": 0
         }
       ]
@@ -23,23 +42,60 @@
       "type": "tts",
       "sceneId": "code",
       "cueId": "code-vo",
-      "startSec": 2.1818181818181817,
-      "endSec": 4.727272727272727,
+      "startSec": 19.45,
+      "endSec": 42.55,
       "segments": [
         {
           "type": "tts",
-          "startSec": 2.1818181818181817,
-          "endSec": 4.727272727272727,
-          "text": "Scenes and narration become a finished render.",
-          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/code-to-video-preview/env/development/segments/code--code-vo--tts--77553bc960ca--1.wav",
-          "durationSec": 2.5454545454545454,
-          "rawDurationSec": 2.5454545454545454,
+          "startSec": 19.45,
+          "endSec": 40.55,
+          "text": "Voiceover comes straight from this file. Babulus generates audio using pluggable providers like ElevenLabs, OpenAI, and AWS Polly, then computes cue timing from the real clip durations. Add a few words and it regenerates the voice and retimes every scene so everything stays perfectly in sync.",
+          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/code-to-video-preview/env/development/segments/code--code-vo--tts--67bf499563a2--1.wav",
+          "durationSec": 21.1,
+          "rawDurationSec": 21.1,
           "trimEndSec": 0
+        },
+        {
+          "type": "pause",
+          "startSec": 40.55,
+          "endSec": 42.55,
+          "seconds": 2
         }
       ]
     }
   ],
   "audio": {
-    "tracks": []
+    "tracks": [
+      {
+        "id": "narration",
+        "kind": "narration",
+        "clips": [
+          {
+            "id": "intro--intro-vo--tts--5bb0beb3bf49--1",
+            "kind": "file",
+            "startSec": 0,
+            "durationSec": 9.35,
+            "src": "/preview/code-to-video-preview/env/development/segments/intro--intro-vo--tts--5bb0beb3bf49--1.wav",
+            "volume": 1
+          },
+          {
+            "id": "engines--engines-vo--tts--affffe75e2b5--1",
+            "kind": "file",
+            "startSec": 9.35,
+            "durationSec": 10.1,
+            "src": "/preview/code-to-video-preview/env/development/segments/engines--engines-vo--tts--affffe75e2b5--1.wav",
+            "volume": 1
+          },
+          {
+            "id": "code--code-vo--tts--67bf499563a2--1",
+            "kind": "file",
+            "startSec": 19.45,
+            "durationSec": 21.1,
+            "src": "/preview/code-to-video-preview/env/development/segments/code--code-vo--tts--67bf499563a2--1.wav",
+            "volume": 1
+          }
+        ]
+      }
+    ]
   }
 }

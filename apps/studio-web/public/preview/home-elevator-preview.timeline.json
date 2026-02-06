@@ -2,276 +2,127 @@
   "items": [
     {
       "type": "tts",
-      "sceneId": "intro",
-      "cueId": "hold-intro",
+      "sceneId": "title",
+      "cueId": "title-cue",
       "startSec": 0,
-      "endSec": 2,
+      "endSec": 10.3,
       "segments": [
         {
-          "type": "pause",
+          "type": "tts",
           "startSec": 0,
-          "endSec": 2,
-          "seconds": 2
+          "endSec": 10.3,
+          "text": "Babulus lets you create videos the same way you build web pages. Write VideoML and render it as a video or as live HTML.",
+          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/home-elevator-preview/env/development/segments/title--title-cue--tts--92b34b49a4e9--1.wav",
+          "durationSec": 10.3,
+          "rawDurationSec": 10.3,
+          "trimEndSec": 0
         }
       ]
     },
     {
       "type": "tts",
-      "sceneId": "quote",
-      "cueId": "hold-quote",
-      "startSec": 2,
-      "endSec": 6,
+      "sceneId": "live-demo",
+      "cueId": "live-demo-cue",
+      "startSec": 10.3,
+      "endSec": 18.3,
       "segments": [
         {
-          "type": "pause",
-          "startSec": 2,
-          "endSec": 6,
-          "seconds": 4
+          "type": "tts",
+          "startSec": 10.3,
+          "endSec": 18.3,
+          "text": "Use the same components in your product and your videos, with a design system of layouts, type, and color themes.",
+          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/home-elevator-preview/env/development/segments/live-demo--live-demo-cue--tts--05f57142e794--1.wav",
+          "durationSec": 8,
+          "rawDurationSec": 8,
+          "trimEndSec": 0
         }
       ]
     },
     {
       "type": "tts",
-      "sceneId": "chapter-layouts",
-      "cueId": "hold-chapter-layouts",
-      "startSec": 6,
-      "endSec": 8,
+      "sceneId": "bullets",
+      "cueId": "bullets-cue",
+      "startSec": 18.3,
+      "endSec": 26.25,
       "segments": [
         {
-          "type": "pause",
-          "startSec": 6,
-          "endSec": 8,
-          "seconds": 2
+          "type": "tts",
+          "startSec": 18.3,
+          "endSec": 26.25,
+          "text": "Render to MP4 for distribution, or embed the same VideoML as live, interactive HTML on your site.",
+          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/home-elevator-preview/env/development/segments/bullets--bullets-cue--tts--1cfaa8d6cbf3--1.wav",
+          "durationSec": 7.95,
+          "rawDurationSec": 7.95,
+          "trimEndSec": 0
         }
       ]
     },
     {
       "type": "tts",
-      "sceneId": "layout-content",
-      "cueId": "hold-layout-content",
-      "startSec": 8,
-      "endSec": 10,
+      "sceneId": "close",
+      "cueId": "close-cue",
+      "startSec": 26.25,
+      "endSec": 34.7,
       "segments": [
         {
-          "type": "pause",
-          "startSec": 8,
-          "endSec": 10,
-          "seconds": 2
-        }
-      ]
-    },
-    {
-      "type": "tts",
-      "sceneId": "layout-two-column",
-      "cueId": "hold-layout-two-column",
-      "startSec": 10,
-      "endSec": 12,
-      "segments": [
+          "type": "tts",
+          "startSec": 26.25,
+          "endSec": 32.7,
+          "text": "Babulus is the code-to-video stack. Ship consistent visuals across your website and your videos.",
+          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/home-elevator-preview/env/development/segments/close--close-cue--tts--38dd3aa27bd0--1.wav",
+          "durationSec": 6.45,
+          "rawDurationSec": 6.45,
+          "trimEndSec": 0
+        },
         {
           "type": "pause",
-          "startSec": 10,
-          "endSec": 12,
-          "seconds": 2
-        }
-      ]
-    },
-    {
-      "type": "tts",
-      "sceneId": "layout-three-column",
-      "cueId": "hold-layout-three-column",
-      "startSec": 12,
-      "endSec": 14,
-      "segments": [
-        {
-          "type": "pause",
-          "startSec": 12,
-          "endSec": 14,
-          "seconds": 2
-        }
-      ]
-    },
-    {
-      "type": "tts",
-      "sceneId": "layout-grid",
-      "cueId": "hold-layout-grid",
-      "startSec": 14,
-      "endSec": 16,
-      "segments": [
-        {
-          "type": "pause",
-          "startSec": 14,
-          "endSec": 16,
-          "seconds": 2
-        }
-      ]
-    },
-    {
-      "type": "tts",
-      "sceneId": "chapter-colors",
-      "cueId": "hold-chapter-colors",
-      "startSec": 16,
-      "endSec": 18,
-      "segments": [
-        {
-          "type": "pause",
-          "startSec": 16,
-          "endSec": 18,
-          "seconds": 2
-        }
-      ]
-    },
-    {
-      "type": "tts",
-      "sceneId": "color-type-1",
-      "cueId": "hold-color-type-1",
-      "startSec": 18,
-      "endSec": 20,
-      "segments": [
-        {
-          "type": "pause",
-          "startSec": 18,
-          "endSec": 20,
-          "seconds": 2
-        }
-      ]
-    },
-    {
-      "type": "tts",
-      "sceneId": "color-type-2",
-      "cueId": "hold-color-type-2",
-      "startSec": 20,
-      "endSec": 22,
-      "segments": [
-        {
-          "type": "pause",
-          "startSec": 20,
-          "endSec": 22,
-          "seconds": 2
-        }
-      ]
-    },
-    {
-      "type": "tts",
-      "sceneId": "color-type-3",
-      "cueId": "hold-color-type-3",
-      "startSec": 22,
-      "endSec": 24,
-      "segments": [
-        {
-          "type": "pause",
-          "startSec": 22,
-          "endSec": 24,
-          "seconds": 2
-        }
-      ]
-    },
-    {
-      "type": "tts",
-      "sceneId": "color-type-4",
-      "cueId": "hold-color-type-4",
-      "startSec": 24,
-      "endSec": 26,
-      "segments": [
-        {
-          "type": "pause",
-          "startSec": 24,
-          "endSec": 26,
-          "seconds": 2
-        }
-      ]
-    },
-    {
-      "type": "tts",
-      "sceneId": "color-type-5",
-      "cueId": "hold-color-type-5",
-      "startSec": 26,
-      "endSec": 28,
-      "segments": [
-        {
-          "type": "pause",
-          "startSec": 26,
-          "endSec": 28,
-          "seconds": 2
-        }
-      ]
-    },
-    {
-      "type": "tts",
-      "sceneId": "color-type-6",
-      "cueId": "hold-color-type-6",
-      "startSec": 28,
-      "endSec": 30,
-      "segments": [
-        {
-          "type": "pause",
-          "startSec": 28,
-          "endSec": 30,
-          "seconds": 2
-        }
-      ]
-    },
-    {
-      "type": "tts",
-      "sceneId": "chapter-features",
-      "cueId": "hold-chapter-features",
-      "startSec": 30,
-      "endSec": 32,
-      "segments": [
-        {
-          "type": "pause",
-          "startSec": 30,
-          "endSec": 32,
-          "seconds": 2
-        }
-      ]
-    },
-    {
-      "type": "tts",
-      "sceneId": "features-1",
-      "cueId": "hold-features-1",
-      "startSec": 32,
-      "endSec": 34,
-      "segments": [
-        {
-          "type": "pause",
-          "startSec": 32,
-          "endSec": 34,
-          "seconds": 2
-        }
-      ]
-    },
-    {
-      "type": "tts",
-      "sceneId": "features-2",
-      "cueId": "hold-features-2",
-      "startSec": 34,
-      "endSec": 36,
-      "segments": [
-        {
-          "type": "pause",
-          "startSec": 34,
-          "endSec": 36,
-          "seconds": 2
-        }
-      ]
-    },
-    {
-      "type": "tts",
-      "sceneId": "features-3",
-      "cueId": "hold-features-3",
-      "startSec": 36,
-      "endSec": 38,
-      "segments": [
-        {
-          "type": "pause",
-          "startSec": 36,
-          "endSec": 38,
+          "startSec": 32.7,
+          "endSec": 34.7,
           "seconds": 2
         }
       ]
     }
   ],
   "audio": {
-    "tracks": []
+    "tracks": [
+      {
+        "id": "narration",
+        "kind": "narration",
+        "clips": [
+          {
+            "id": "title--title-cue--tts--92b34b49a4e9--1",
+            "kind": "file",
+            "startSec": 0,
+            "durationSec": 10.3,
+            "src": "/preview/home-elevator-preview/env/development/segments/title--title-cue--tts--92b34b49a4e9--1.wav",
+            "volume": 1
+          },
+          {
+            "id": "live-demo--live-demo-cue--tts--05f57142e794--1",
+            "kind": "file",
+            "startSec": 10.3,
+            "durationSec": 8,
+            "src": "/preview/home-elevator-preview/env/development/segments/live-demo--live-demo-cue--tts--05f57142e794--1.wav",
+            "volume": 1
+          },
+          {
+            "id": "bullets--bullets-cue--tts--1cfaa8d6cbf3--1",
+            "kind": "file",
+            "startSec": 18.3,
+            "durationSec": 7.95,
+            "src": "/preview/home-elevator-preview/env/development/segments/bullets--bullets-cue--tts--1cfaa8d6cbf3--1.wav",
+            "volume": 1
+          },
+          {
+            "id": "close--close-cue--tts--38dd3aa27bd0--1",
+            "kind": "file",
+            "startSec": 26.25,
+            "durationSec": 6.45,
+            "src": "/preview/home-elevator-preview/env/development/segments/close--close-cue--tts--38dd3aa27bd0--1.wav",
+            "volume": 1
+          }
+        ]
+      }
+    ]
   }
 }

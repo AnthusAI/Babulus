@@ -4,7 +4,6 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { docsHref, listDocsByCategory, type DocsEntry } from "@/lib/docs-registry";
-import { PersonaFilter, usePersonaFilter } from "./persona-filter";
 import { DocsSearch, useDocsSearch } from "./docs-search";
 
 function DocsNavItem({ doc, isActive }: { doc: DocsEntry; isActive: boolean }) {
@@ -29,22 +28,20 @@ export function DocsShell({
   children: ReactNode;
 }) {
   const activeKey = activeSlug?.join("/") ?? null;
-  const [persona, setPersona] = usePersonaFilter();
   const [searchOpen, openSearch, closeSearch] = useDocsSearch();
 
-  const sections = listDocsByCategory({ includeInternal: false, persona });
+  const sections = listDocsByCategory({ includeInternal: false });
   const internalDocs = activeSlug
-    ? listDocsByCategory({ includeInternal: true, persona })
+    ? listDocsByCategory({ includeInternal: true })
         .flatMap((section) => section.docs)
         .filter((doc) => doc.internal)
     : [];
 
   return (
     <div className="bg-recess">
-      <DocsSearch isOpen={searchOpen} onClose={closeSearch} persona={persona} />
+      <DocsSearch isOpen={searchOpen} onClose={closeSearch} />
       <div className="container py-10 md:py-14">
-        <div className="mb-6 flex items-center justify-between gap-4">
-          <PersonaFilter value={persona} onChange={setPersona} />
+        <div className="mb-6 flex items-center justify-end gap-4">
           <button
             onClick={openSearch}
             className="flex items-center gap-2 rounded-lg border border-foreground/10 bg-background px-4 py-2 text-sm text-foreground/60 transition-colors hover:text-foreground/80"

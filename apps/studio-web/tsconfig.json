@@ -20,7 +20,9 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./*"],
-      "babulus/dsl": ["../../src/dsl/index.ts"]
+      "babulus/dsl": ["../../src/dsl/index.ts"],
+      "@babulus/shared": ["../../packages/shared/src/index.ts"],
+      "@babulus/renderer": ["../../packages/renderer/src/index.ts"]
     }
   },
   "include": [

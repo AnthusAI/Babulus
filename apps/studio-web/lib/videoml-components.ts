@@ -162,6 +162,114 @@ class BulletListElement extends HTMLElement {
   }
 }
 
+class MotionBarsElement extends HTMLElement {
+  static get observedAttributes() {
+    return ["props"];
+  }
+  private barNodes: HTMLElement[] = [];
+  private tickHandler?: (event: Event) => void;
+  connectedCallback() {
+    this.render();
+    this.bindTimeline();
+  }
+  disconnectedCallback() {
+    const root = this.closest("videoml");
+    if (root && this.tickHandler) {
+      root.removeEventListener("timeline:tick", this.tickHandler as EventListener);
+    }
+  }
+  attributeChangedCallback() {
+    this.render();
+  }
+  bindTimeline() {
+    const root = this.closest("videoml");
+    if (!root) return;
+    if (this.tickHandler) {
+      root.removeEventListener("timeline:tick", this.tickHandler as EventListener);
+    }
+    this.tickHandler = (event: Event) => {
+      const detail = (event as CustomEvent).detail as { time?: number };
+      const time = detail?.time ?? 0;
+      this.barNodes.forEach((bar, idx) => {
+        const base = Number.parseFloat(bar.dataset.base ?? "1");
+        const scale = 0.7 + 0.3 * Math.sin(time * 2 + idx);
+        bar.style.transform = `scaleY(${Math.max(0.1, base * scale)})`;
+      });
+    };
+    root.addEventListener("timeline:tick", this.tickHandler as EventListener);
+  }
+  render() {
+    const props = parseProps(this.getAttribute("props"));
+    clear(this);
+    const theme = getRootTheme(this);
+    const wrap = document.createElement("div");
+    Object.assign(wrap.style, {
+      display: "flex",
+      flexDirection: "column",
+      gap: "18px",
+      padding: "64px 72px",
+      boxSizing: "border-box",
+      color: props.color ?? theme.text,
+      fontFamily: BASE_FONT,
+      height: "100%",
+      justifyContent: "center",
+    });
+    if (props.eyebrow) {
+      wrap.appendChild(makeText(String(props.eyebrow), { fontSize: "18px", letterSpacing: "0.24em", textTransform: "uppercase", opacity: "0.6" }));
+    }
+    if (props.title) {
+      wrap.appendChild(makeText(String(props.title), { fontSize: "48px", fontWeight: "600", fontFamily: HEADING_FONT }));
+    }
+    if (props.subtitle) {
+      wrap.appendChild(makeText(String(props.subtitle), { fontSize: "24px", opacity: "0.8" }));
+    }
+
+    const chart = document.createElement("div");
+    Object.assign(chart.style, {
+      display: "grid",
+      gridTemplateColumns: "repeat(6, minmax(0, 1fr))",
+      gap: "18px",
+      alignItems: "end",
+      height: "320px",
+      paddingTop: "8px",
+    });
+
+    const values = Array.isArray(props.values) ? props.values : [38, 52, 24, 71, 43, 66];
+    const labels = Array.isArray(props.labels) ? props.labels : [];
+    const max = Math.max(...values.map((v: number) => Number(v) || 0), 1);
+    const accent = props.accent ?? theme.accent;
+    this.barNodes = [];
+
+    values.forEach((raw: number, idx: number) => {
+      const base = (Number(raw) || 0) / max;
+      const col = document.createElement("div");
+      Object.assign(col.style, { display: "flex", flexDirection: "column", gap: "8px", alignItems: "center" });
+      const bar = document.createElement("div");
+      bar.dataset.base = String(base);
+      Object.assign(bar.style, {
+        width: "100%",
+        height: `${Math.max(0.1, base) * 100}%`,
+        background: accent,
+        borderRadius: "12px",
+        transformOrigin: "bottom",
+        transform: `scaleY(${Math.max(0.1, base)})`,
+        transition: "none",
+        willChange: "transform",
+      });
+      const label = document.createElement("div");
+      label.textContent = String(labels[idx] ?? "");
+      Object.assign(label.style, { fontSize: "14px", opacity: "0.7", textAlign: "center" });
+      col.appendChild(bar);
+      if (label.textContent) col.appendChild(label);
+      chart.appendChild(col);
+      this.barNodes.push(bar);
+    });
+
+    wrap.appendChild(chart);
+    this.appendChild(wrap);
+  }
+}
+
 class TwoColumnElement extends HTMLElement {
   static get observedAttributes() {
     return ["props"];
@@ -677,6 +785,7 @@ export const registerVideoMLComponents = () => {
   define("video-subtitle", VideoSubtitleElement);
   define("video-rectangle", VideoRectangleElement);
   define("video-background", BackgroundElement);
+  define("motion-bars", MotionBarsElement);
   define("progress-bar", ProgressBarElement);
   define("quote-card", QuoteCardElement);
   define("lower-third", LowerThirdElement);

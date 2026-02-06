@@ -27,6 +27,21 @@
     }
   ],
   "audio": {
-    "tracks": []
+    "tracks": [
+      {
+        "id": "narration",
+        "kind": "narration",
+        "clips": [
+          {
+            "id": "title-slide--voice--tts--64977d25e3a4--1",
+            "kind": "file",
+            "startSec": 0,
+            "durationSec": 2.1818181818181817,
+            "src": "/preview/title-slide-demo/env/development/segments/title-slide--voice--tts--64977d25e3a4--1.wav",
+            "volume": 1
+          }
+        ]
+      }
+    ]
   }
 }

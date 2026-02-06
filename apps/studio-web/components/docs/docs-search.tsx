@@ -2,13 +2,12 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import type { DocsEntry, DocsPersona } from "@/lib/docs-registry";
+import type { DocsEntry } from "@/lib/docs-registry";
 import { DOCS, docsHref } from "@/lib/docs-registry";
 
 export type DocsSearchProps = {
   isOpen: boolean;
   onClose: () => void;
-  persona?: DocsPersona | null;
 };
 
 type SearchResult = {
@@ -17,7 +16,7 @@ type SearchResult = {
   matchType: "title" | "description" | "content";
 };
 
-export function DocsSearch({ isOpen, onClose, persona = null }: DocsSearchProps) {
+export function DocsSearch({ isOpen, onClose }: DocsSearchProps) {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<SearchResult[]>([]);
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -41,10 +40,10 @@ export function DocsSearch({ isOpen, onClose, persona = null }: DocsSearchProps)
       return;
     }
 
-    const searchResults = searchDocs(query, persona);
+    const searchResults = searchDocs(query);
     setResults(searchResults);
     setSelectedIndex(0);
-  }, [query, persona]);
+  }, [query]);
 
   const navigateToResult = useCallback(
     (doc: DocsEntry) => {
@@ -138,21 +137,13 @@ export function DocsSearch({ isOpen, onClose, persona = null }: DocsSearchProps)
 /**
  * Search documentation entries
  */
-function searchDocs(query: string, persona: DocsPersona | null): SearchResult[] {
+function searchDocs(query: string): SearchResult[] {
   const normalizedQuery = query.toLowerCase().trim();
   const results: SearchResult[] = [];
 
   for (const doc of DOCS) {
     // Skip hidden docs
     if (doc.navHidden) continue;
-
-    // Filter by persona
-    if (persona) {
-      const docPersonas = doc.personas ?? ["all"];
-      if (!docPersonas.includes("all") && !docPersonas.includes(persona)) {
-        continue;
-      }
-    }
 
     // Check title match
     if (doc.title.toLowerCase().includes(normalizedQuery)) {

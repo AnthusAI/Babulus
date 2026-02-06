@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { ScriptData } from "@babulus/shared";
 import { PreviewPlayer } from "@/components/preview-player";
 import { COLOR_SCHEMES } from "@/lib/theme/color-schemes";
@@ -29,6 +29,11 @@ export function PreviewEmbed({
   const [error, setError] = useState<string | null>(null);
   const [colorSchemeId, setColorSchemeId] = useState(defaultColorScheme);
   const [typographySchemeId, setTypographySchemeId] = useState(defaultTypographyScheme);
+  const [audioSrc, setAudioSrc] = useState<string | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const lastSyncLogRef = useRef(0);
+  const isPlayingRef = useRef(false);
+  const lastTimeRef = useRef(0);
 
   useEffect(() => {
     let isActive = true;
@@ -61,6 +66,51 @@ export function PreviewEmbed({
       controller.abort();
     };
   }, [id]);
+
+  useEffect(() => {
+    let isActive = true;
+    const controller = new AbortController();
+
+    const loadIndex = async () => {
+      try {
+        const response = await fetch(`/preview/index.json?ts=${Date.now()}`, {
+          cache: "no-store",
+          signal: controller.signal,
+        });
+        if (!response.ok) {
+          throw new Error("Preview index not found.");
+        }
+        const data = (await response.json()) as {
+          compositions?: Array<{ id: string; audio?: string | null }>;
+        };
+        if (!isActive) return;
+        const entry = data.compositions?.find((comp) => comp.id === id);
+        const nextAudio = entry?.audio ? `/preview/${entry.audio}` : `/preview/${id}.wav`;
+        setAudioSrc(nextAudio);
+        console.info("[preview-audio] source", nextAudio);
+      } catch {
+        if (!isActive) return;
+        const fallback = `/preview/${id}.wav`;
+        setAudioSrc(fallback);
+        console.info("[preview-audio] source", fallback);
+      }
+    };
+
+    loadIndex();
+    return () => {
+      isActive = false;
+      controller.abort();
+    };
+  }, [id]);
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio || !audioSrc) return;
+    audio.muted = false;
+    audio.volume = 1;
+    audio.load();
+    console.info("[preview-audio] load", audioSrc);
+  }, [audioSrc]);
 
   const colorScheme =
     COLOR_SCHEMES.find((scheme) => scheme.id === colorSchemeId) ?? COLOR_SCHEMES[0];
@@ -109,6 +159,51 @@ export function PreviewEmbed({
     );
   }
 
+  const handlePlayStateChange = (playing: boolean) => {
+    isPlayingRef.current = playing;
+    const audio = audioRef.current;
+    if (!audio || !audioSrc) {
+      if (playing) {
+        console.info("[preview-audio] no audio source available.");
+      }
+      return;
+    }
+    if (playing) {
+      audio.currentTime = audio.currentTime || 0;
+      void audio.play().catch((err) => {
+        console.warn("[preview-audio] play failed", err);
+      });
+      console.info("[preview-audio] play", audioSrc);
+    } else {
+      audio.pause();
+      console.info("[preview-audio] pause");
+    }
+  };
+
+  const handleTimeUpdate = (timeSec: number) => {
+    const audio = audioRef.current;
+    if (!audio || !audioSrc || !Number.isFinite(audio.currentTime)) {
+      return;
+    }
+    if (isPlayingRef.current && audio.paused) {
+      void audio.play().catch((err) => {
+        console.warn("[preview-audio] resume failed", err);
+      });
+    }
+    const last = lastTimeRef.current;
+    lastTimeRef.current = timeSec;
+    const delta = Math.abs(audio.currentTime - timeSec);
+    const looped = timeSec + 0.05 < last;
+    if (looped || delta > 0.5) {
+      audio.currentTime = timeSec;
+      const now = performance.now();
+      if (now - lastSyncLogRef.current > 1000) {
+        console.info("[preview-audio] sync", { timeSec, delta });
+        lastSyncLogRef.current = now;
+      }
+    }
+  };
+
   return (
     <div className="relative w-full">
       {showThemeControls ? (
@@ -148,6 +243,24 @@ export function PreviewEmbed({
         align="start"
         fillHeight={false}
         themeStyle={themeStyle}
+        onPlayStateChange={handlePlayStateChange}
+        onTimeUpdate={handleTimeUpdate}
+      />
+      <audio
+        ref={audioRef}
+        src={audioSrc ?? undefined}
+        preload="auto"
+        onCanPlay={() => {
+          if (audioSrc) {
+            console.info("[preview-audio] canplay", audioSrc);
+          }
+        }}
+        onEnded={() => {
+          console.info("[preview-audio] ended");
+        }}
+        onError={(event) => {
+          console.warn("[preview-audio] error", audioSrc, event);
+        }}
       />
     </div>
   );

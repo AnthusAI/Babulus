@@ -25,7 +25,7 @@ import { cn } from "@/lib/utils";
 import Editor from "@monaco-editor/react";
 import { configureAmplify } from "@/lib/amplify-config";
 import { PreviewPlayer } from "@/components/preview-player";
-import { dslToScriptData } from "@babulus/shared/dsl-to-script";
+import { dslToScriptData } from "@babulus/shared";
 import { executeDslFile } from "@/lib/dsl-executor";
 
 // Ensure Amplify is configured before using storage APIs
