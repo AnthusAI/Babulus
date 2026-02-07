@@ -201,7 +201,7 @@ const studioSchema = schema.schema({
     })
     .secondaryIndexes((index) => [index("key")])
     .authorization((allow) => [
-      allow.publicApiKey().to(["read"]),
+      allow.publicApiKey().to(["create", "read"]),
       allow.authenticated(),
     ]),
   MarketingProgramStep: schema
@@ -214,7 +214,7 @@ const studioSchema = schema.schema({
     })
     .secondaryIndexes((index) => [index("programId"), index("key")])
     .authorization((allow) => [
-      allow.publicApiKey().to(["read"]),
+      allow.publicApiKey().to(["create", "read"]),
       allow.authenticated(),
     ]),
   MarketingEnrollment: schema
@@ -265,7 +265,7 @@ const studioSchema = schema.schema({
     })
     .secondaryIndexes((index) => [index("programId")])
     .authorization((allow) => [
-      allow.publicApiKey().to(["read"]),
+      allow.publicApiKey().to(["create", "read"]),
       allow.authenticated(),
     ]),
   MarketingProgramTrigger: schema
@@ -280,7 +280,7 @@ const studioSchema = schema.schema({
     })
     .secondaryIndexes((index) => [index("ruleId")])
     .authorization((allow) => [
-      allow.publicApiKey().to(["read"]),
+      allow.publicApiKey().to(["create", "read"]),
       allow.authenticated(),
     ]),
   MarketingInteraction: schema
