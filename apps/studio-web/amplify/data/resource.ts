@@ -177,6 +177,130 @@ const studioSchema = schema.schema({
       usageVisibilityMode: schema.enum(["full", "redacted"]),
     })
     .authorization((allow) => [allow.authenticated()]),
+  MarketingLead: schema
+    .model({
+      email: schema.string().required(),
+      name: schema.string(),
+      persona: schema.enum(["business", "agency", "marketer", "creator", "developer", "other"]),
+      wantsUpdates: schema.boolean(),
+      source: schema.string(),
+      createdAt: schema.string(),
+      lastSignupAt: schema.string(),
+    })
+    .secondaryIndexes((index) => [index("email")])
+    .authorization((allow) => [
+      allow.publicApiKey().to(["create"]),
+      allow.authenticated(),
+    ]),
+  MarketingProgram: schema
+    .model({
+      key: schema.string().required(),
+      name: schema.string().required(),
+      status: schema.enum(["draft", "active", "paused", "archived"]),
+      createdAt: schema.string(),
+    })
+    .secondaryIndexes((index) => [index("key")])
+    .authorization((allow) => [
+      allow.publicApiKey().to(["read"]),
+      allow.authenticated(),
+    ]),
+  MarketingProgramStep: schema
+    .model({
+      programId: schema.string().required(),
+      key: schema.string().required(),
+      name: schema.string().required(),
+      order: schema.integer().required(),
+      description: schema.string(),
+    })
+    .secondaryIndexes((index) => [index("programId"), index("key")])
+    .authorization((allow) => [
+      allow.publicApiKey().to(["read"]),
+      allow.authenticated(),
+    ]),
+  MarketingEnrollment: schema
+    .model({
+      leadId: schema.string().required(),
+      programId: schema.string().required(),
+      status: schema.enum(["active", "paused", "completed", "canceled"]),
+      currentStepKey: schema.string(),
+      enrolledAt: schema.string(),
+      lastStepAt: schema.string(),
+      source: schema.string(),
+    })
+    .secondaryIndexes((index) => [index("leadId"), index("programId")])
+    .authorization((allow) => [
+      allow.publicApiKey().to(["create"]),
+      allow.authenticated(),
+    ]),
+  MarketingEnrollmentEvent: schema
+    .model({
+      enrollmentId: schema.string().required(),
+      eventType: schema.enum([
+        "enrolled",
+        "entered_step",
+        "exited_step",
+        "completed",
+        "paused",
+        "canceled",
+        "triggered",
+      ]),
+      fromStepKey: schema.string(),
+      toStepKey: schema.string(),
+      occurredAt: schema.string().required(),
+      metadata: schema.json(),
+    })
+    .secondaryIndexes((index) => [index("enrollmentId")])
+    .authorization((allow) => [
+      allow.publicApiKey().to(["create"]),
+      allow.authenticated(),
+    ]),
+  MarketingProgramRule: schema
+    .model({
+      programId: schema.string().required(),
+      fromStepKey: schema.string(),
+      toStepKey: schema.string().required(),
+      isActive: schema.boolean(),
+      order: schema.integer(),
+      name: schema.string(),
+    })
+    .secondaryIndexes((index) => [index("programId")])
+    .authorization((allow) => [
+      allow.publicApiKey().to(["read"]),
+      allow.authenticated(),
+    ]),
+  MarketingProgramTrigger: schema
+    .model({
+      ruleId: schema.string().required(),
+      type: schema.enum(["event", "time", "attribute"]),
+      eventType: schema.string(),
+      delaySeconds: schema.integer(),
+      attributeKey: schema.string(),
+      operator: schema.enum(["eq", "neq", "contains", "exists", "not_exists"]),
+      attributeValue: schema.string(),
+    })
+    .secondaryIndexes((index) => [index("ruleId")])
+    .authorization((allow) => [
+      allow.publicApiKey().to(["read"]),
+      allow.authenticated(),
+    ]),
+  MarketingInteraction: schema
+    .model({
+      leadId: schema.string().required(),
+      programId: schema.string(),
+      enrollmentId: schema.string(),
+      channel: schema.enum(["email", "sms", "push", "webhook", "other"]),
+      direction: schema.enum(["inbound", "outbound"]),
+      subject: schema.string(),
+      body: schema.string(),
+      messageId: schema.string(),
+      occurredAt: schema.string().required(),
+      metadata: schema.json(),
+    })
+    .secondaryIndexes((index) => [index("leadId"), index("programId")])
+    .authorization((allow) => [
+      allow.publicApiKey().to(["create"]),
+      allow.authenticated(),
+    ]),
   WaitlistSignup: schema
     .model({
       email: schema.string().required(),
