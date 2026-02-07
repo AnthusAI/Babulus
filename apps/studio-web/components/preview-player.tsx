@@ -34,6 +34,32 @@ export type PreviewPlayerProps = {
   themeStyle?: React.CSSProperties;
 };
 
+type PreviewErrorBoundaryState = { error: Error | null };
+
+class PreviewErrorBoundary extends React.Component<{ children: React.ReactNode }, PreviewErrorBoundaryState> {
+  state: PreviewErrorBoundaryState = { error: null };
+
+  static getDerivedStateFromError(error: Error) {
+    return { error };
+  }
+
+  componentDidCatch(error: Error) {
+    console.error("[preview-player] render error", error);
+  }
+
+  render() {
+    const { error } = this.state;
+    if (error) {
+      return (
+        <div className="flex h-full w-full items-center justify-center rounded-2xl bg-muted p-6 text-center text-sm text-muted-foreground">
+          Preview failed: {error.message}
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
 /**
  * Preview player component with timeline controls.
  *
@@ -307,7 +333,9 @@ export function PreviewPlayer({
                   durationFrames: Math.floor(renderDuration * fps),
                 }}
               >
-                <ComposableRenderer script={script} liveMode={clockMode === 'live'} />
+                <PreviewErrorBoundary>
+                  <ComposableRenderer script={script} liveMode={clockMode === 'live'} />
+                </PreviewErrorBoundary>
               </RendererProvider>
             </div>
         </div>

@@ -1,0 +1,68 @@
+{
+  "items": [
+    {
+      "type": "tts",
+      "sceneId": "insert-a",
+      "cueId": "hold-a",
+      "startSec": 0,
+      "endSec": 2,
+      "segments": [
+        {
+          "type": "pause",
+          "startSec": 0,
+          "endSec": 2,
+          "seconds": 2
+        }
+      ]
+    },
+    {
+      "type": "tts",
+      "sceneId": "insert-b",
+      "cueId": "hold-b",
+      "startSec": 3.5,
+      "endSec": 5.5,
+      "segments": [
+        {
+          "type": "pause",
+          "startSec": 3.5,
+          "endSec": 5.5,
+          "seconds": 2
+        }
+      ]
+    }
+  ],
+  "audio": {
+    "tracks": [
+      {
+        "id": "sfx",
+        "kind": "sfx",
+        "clips": [
+          {
+            "id": "transition-hit",
+            "kind": "sfx",
+            "startSec": 2.2,
+            "volume": 1,
+            "prompt": "short impact",
+            "pick": 0,
+            "selectionPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/transitions-insert-audio/env/development/selections.json",
+            "variants": [
+              {
+                "variant": 0,
+                "seed": 1745462835,
+                "path": "/Users/ryan.porter/Projects/Babulus/.babulus/out/transitions-insert-audio/env/development/sfx/transition-hit--v1--6809a6330b63.wav",
+                "durationSec": 0.6
+              }
+            ],
+            "chosen": {
+              "variant": 0,
+              "seed": 1745462835,
+              "path": "/Users/ryan.porter/Projects/Babulus/.babulus/out/transitions-insert-audio/env/development/sfx/transition-hit--v1--6809a6330b63.wav",
+              "durationSec": 0.6
+            },
+            "src": null
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Hero } from "@/components/marketing/hero";
 import { FeatureCard } from "@/components/marketing/feature-grid";
 import { CodeReveal } from "@/components/marketing/code-reveal";
+import { PreviewEmbed } from "@/components/marketing/preview-embed";
 import {
   Bot,
   Share2,
@@ -86,6 +87,26 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* Feature: VideoML capabilities */}
+      <section className="container py-12 md:py-16 lg:py-24">
+        <div className="mx-auto flex max-w-[58rem] flex-col items-center space-y-4 text-center mb-12">
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-foreground/60">
+            Creative range
+          </p>
+          <h2 className="font-heading text-3xl leading-[1.1] sm:text-3xl md:text-6xl">
+            Anything you can do on the web.
+          </h2>
+          <p className="max-w-[85%] leading-normal text-muted-foreground sm:text-lg sm:leading-7">
+            Babulus turns modern web technology into a production engine. If you can build it on a screen,
+            you can render it as a video—animations, data visuals, 3D, and custom transitions included.
+          </p>
+        </div>
+
+        <div className="mx-auto w-full max-w-[80rem]">
+          <PreviewEmbed id="home-elevator-preview" showControls />
+        </div>
+      </section>
+
       {/* Feature: Broadcasting */}
       <section className="container py-12 md:py-16 lg:py-24">
         <div className="mx-auto flex max-w-[58rem] flex-col items-center space-y-4 text-center mb-12">
@@ -153,7 +174,7 @@ export default function LandingPage() {
       </section>
 
       {/* Feature: No Vendor Lock-in */}
-      <section className="bg-recess py-12 md:py-16 lg:py-24">
+      <section className="bg-recess py-12 md:py-16 lg:py-24" id="no-lock-in">
         <div className="container space-y-6">
           <div className="mx-auto flex max-w-[58rem] flex-col items-center space-y-4 text-center">
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-foreground/60">
@@ -163,8 +184,9 @@ export default function LandingPage() {
               Your content. Your keys.
             </h2>
             <p className="max-w-[85%] leading-normal text-muted-foreground sm:text-lg sm:leading-7">
-              Don’t get locked into “magic” platforms like HeyGen, Synthesia, or D-ID. With Babulus, you can
-              export projects, run locally, and plug rendered outputs into your own publishing system.
+              Don’t get locked into “magic” platforms like HeyGen, Synthesia, or D-ID. Babulus is built on an
+              open VideoML standard, so you can export projects, run locally, and manage everything yourself
+              if you want — you just take on the manual work the service handles for you.
             </p>
           </div>
           <div className="mx-auto grid justify-center gap-4 sm:grid-cols-2 md:max-w-[64rem]">

@@ -1,4 +1,4 @@
-<videoml id="components-quote" title="Components Quote" fps="30" width="1920" height="1080">
+<vml id="components-quote" title="Components Quote" fps="30" width="1920" height="1080">
   <voiceover provider="dry-run" />
   <scene id="quote-demo" title="quote-demo" styles='{"background":"var(--color-bg)"}'>
     <layer id="quote" z="10">
@@ -8,4 +8,4 @@
       <pause seconds="6s" />
     </cue>
   </scene>
-</videoml>
+</vml>

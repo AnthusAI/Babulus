@@ -14,7 +14,7 @@ export const babulusLanguageDesignDoc = {
 <h2 id="canonical-source">Canonical Source</h2>
 <ul>
 <li>Canonical file type: <code>.babulus.xml</code> (VideoML)</li>
-<li>Canonical root tag: <code>&lt;videoml&gt;</code></li>
+<li>Canonical root tag: <code>&lt;vml&gt;</code></li>
 <li>XML is the recording. Derived artifacts (script/timeline/audio) are outputs.</li>
 </ul>
 <h2 id="project-organization">Project Organization</h2>
@@ -52,14 +52,14 @@ export const babulusLanguageDesignDoc = {
 <li><strong>Recording:</strong> The XML itself is the recording; it can be exported as <code>.babulus.xml</code>.</li>
 </ul>
 <div class="sourceCode" id="cb-live"><pre class="sourceCode xml"><code class="sourceCode xml">
-<span class="fu">&lt;videoml</span> id=<span class="st">"live"</span> title=<span class="st">"Live Session"</span> recordedAt=<span class="st">"2026-02-05T06:36:19.852Z"</span> fps=<span class="st">"30"</span> width=<span class="st">"1920"</span> height=<span class="st">"1080"</span><span class="fu">&gt;</span>
+<span class="fu">&lt;vml</span> id=<span class="st">"live"</span> title=<span class="st">"Live Session"</span> recordedAt=<span class="st">"2026-02-05T06:36:19.852Z"</span> fps=<span class="st">"30"</span> width=<span class="st">"1920"</span> height=<span class="st">"1080"</span><span class="fu">&gt;</span>
   <span class="fu">&lt;scene</span> id=<span class="st">"scene-001"</span> start=<span class="st">"0s"</span><span class="fu">&gt;</span>
     <span class="fu">&lt;layer&gt;</span><span class="fu">&lt;title-slide</span> <span class="fu">/&gt;</span><span class="fu">&lt;/layer&gt;</span>
   <span class="fu">&lt;/scene&gt;</span>
   <span class="fu">&lt;scene</span> id=<span class="st">"scene-002"</span> start=<span class="st">"2.6s"</span> duration=<span class="st">"1.8s"</span><span class="fu">&gt;</span>
     <span class="fu">&lt;layer&gt;</span><span class="fu">&lt;bullet-list-screen</span> <span class="fu">/&gt;</span><span class="fu">&lt;/layer&gt;</span>
   <span class="fu">&lt;/scene&gt;</span>
-<span class="fu">&lt;/videoml&gt;</span>
+<span class="fu">&lt;/vml&gt;</span>
 </code></pre></div>
 <hr />
 <h2 id="timeline-api">Timeline API</h2>
@@ -80,7 +80,7 @@ export const babulusLanguageDesignDoc = {
 <hr />
 <h2 id="inline-js">Inline JS</h2>
 <ul>
-<li><code>&lt;script&gt;</code> blocks inside <code>&lt;videoml&gt;</code> are executed on insertion.</li>
+<li><code>&lt;script&gt;</code> blocks inside <code>&lt;vml&gt;</code> are executed on insertion.</li>
 <li><code>on:*</code> attributes attach event handlers (e.g., <code>on:click</code>).</li>
 <li>Handler scope includes <code>event</code>, <code>target</code>, <code>timeline</code>, <code>root</code>.</li>
 </ul>

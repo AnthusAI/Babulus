@@ -27,10 +27,10 @@ export const videomlStandardDoc: DocsEntry = {
 <hr />
 
 <h2 id="canonical-root">Canonical Root Element</h2>
-<p>Every VideoML document starts with a <code>&lt;videoml&gt;</code> root element. This is the canonical format—XML files are the source of truth, and all derived outputs (MP4 videos, JSON timelines) are generated artifacts.</p>
+<p>Every VideoML document starts with a <code>&lt;vml&gt;</code> root element. This is the canonical format—XML files are the source of truth, and all derived outputs (MP4 videos, JSON timelines) are generated artifacts.</p>
 
 <h3 id="root-attributes">Required Attributes</h3>
-<div class="sourceCode"><pre class="sourceCode xml"><code class="sourceCode xml"><span class="fu">&lt;videoml</span>
+<div class="sourceCode"><pre class="sourceCode xml"><code class="sourceCode xml"><span class="fu">&lt;vml</span>
   id=<span class="st">"intro"</span>
   title=<span class="st">"Introduction Video"</span>
   fps=<span class="st">"30"</span>
@@ -38,7 +38,7 @@ export const videomlStandardDoc: DocsEntry = {
   height=<span class="st">"1080"</span>
 <span class="fu">&gt;</span>
   <span class="co">&lt;!-- scenes go here --&gt;</span>
-<span class="fu">&lt;/videoml&gt;</span></code></pre></div>
+<span class="fu">&lt;/vml&gt;</span></code></pre></div>
 
 <ul>
   <li><code>id</code>: Unique identifier for this video</li>
@@ -175,7 +175,7 @@ export const videomlStandardDoc: DocsEntry = {
   <tbody>
     <tr>
       <td><code>timeline:tick</code></td>
-      <td><code>&lt;videoml&gt;</code>, <code>window</code></td>
+      <td><code>&lt;vml&gt;</code>, <code>window</code></td>
       <td><code>{ frame, time, fps }</code></td>
     </tr>
     <tr>
@@ -202,7 +202,7 @@ export const videomlStandardDoc: DocsEntry = {
 </table>
 
 <h3 id="event-example">Example: Scene Transitions</h3>
-<div class="sourceCode"><pre class="sourceCode xml"><code class="sourceCode xml"><span class="fu">&lt;videoml</span> id=<span class="st">"demo"</span> fps=<span class="st">"30"</span> width=<span class="st">"1920"</span> height=<span class="st">"1080"</span><span class="fu">&gt;</span>
+<div class="sourceCode"><pre class="sourceCode xml"><code class="sourceCode xml"><span class="fu">&lt;vml</span> id=<span class="st">"demo"</span> fps=<span class="st">"30"</span> width=<span class="st">"1920"</span> height=<span class="st">"1080"</span><span class="fu">&gt;</span>
   <span class="fu">&lt;script&gt;</span>
     <span class="co">// Log when scenes change</span>
     window<span class="op">.</span><span class="fu">addEventListener</span>(<span class="st">'scene:start'</span><span class="op">,</span> (e) <span class="kw">=&gt;</span> {
@@ -213,7 +213,7 @@ export const videomlStandardDoc: DocsEntry = {
   <span class="fu">&lt;scene</span> id=<span class="st">"intro"</span> duration=<span class="st">"3s"</span><span class="fu">&gt;</span>
     <span class="co">&lt;!-- scene content --&gt;</span>
   <span class="fu">&lt;/scene&gt;</span>
-<span class="fu">&lt;/videoml&gt;</span></code></pre></div>
+<span class="fu">&lt;/vml&gt;</span></code></pre></div>
 
 <hr />
 
@@ -221,7 +221,7 @@ export const videomlStandardDoc: DocsEntry = {
 <p>VideoML supports <code>&lt;script&gt;</code> tags and <code>on:*</code> event handler attributes. Scripts execute when inserted into the DOM, just like HTML.</p>
 
 <h3 id="script-blocks">Script Blocks</h3>
-<div class="sourceCode"><pre class="sourceCode xml"><code class="sourceCode xml"><span class="fu">&lt;videoml</span> id=<span class="st">"interactive"</span> fps=<span class="st">"30"</span> width=<span class="st">"1920"</span> height=<span class="st">"1080"</span><span class="fu">&gt;</span>
+<div class="sourceCode"><pre class="sourceCode xml"><code class="sourceCode xml"><span class="fu">&lt;vml</span> id=<span class="st">"interactive"</span> fps=<span class="st">"30"</span> width=<span class="st">"1920"</span> height=<span class="st">"1080"</span><span class="fu">&gt;</span>
   <span class="fu">&lt;script&gt;</span>
     <span class="co">// Initialize state</span>
     <span class="kw">let</span> clickCount <span class="op">=</span> <span class="dv">0</span><span class="op">;</span>
@@ -235,7 +235,7 @@ export const videomlStandardDoc: DocsEntry = {
   <span class="fu">&lt;scene</span> duration=<span class="st">"5s"</span><span class="fu">&gt;</span>
     <span class="fu">&lt;button</span> on:click=<span class="st">"handleClick()"</span><span class="fu">&gt;</span>Click Me<span class="fu">&lt;/button&gt;</span>
   <span class="fu">&lt;/scene&gt;</span>
-<span class="fu">&lt;/videoml&gt;</span></code></pre></div>
+<span class="fu">&lt;/vml&gt;</span></code></pre></div>
 
 <h3 id="event-handlers">Event Handler Attributes</h3>
 <p>Use <code>on:*</code> attributes to attach event handlers inline. The handler scope includes:</p>
@@ -243,7 +243,7 @@ export const videomlStandardDoc: DocsEntry = {
   <li><code>event</code>: The DOM event object</li>
   <li><code>target</code>: The element that triggered the event</li>
   <li><code>timeline</code>: The current timeline object</li>
-  <li><code>root</code>: The <code>&lt;videoml&gt;</code> root element</li>
+  <li><code>root</code>: The <code>&lt;vml&gt;</code> root element</li>
 </ul>
 
 <div class="sourceCode"><pre class="sourceCode xml"><code class="sourceCode xml"><span class="fu">&lt;button</span> on:click=<span class="st">"console.log(timeline.frame)"</span><span class="fu">&gt;</span>Log Frame<span class="fu">&lt;/button&gt;</span>
@@ -325,6 +325,18 @@ export const videomlStandardDoc: DocsEntry = {
 <span class="fu">&lt;/scene&gt;</span>
 <span class="co">&lt;!-- Total duration = sum of both audio clips --&gt;</span></code></pre></div>
 
+<h3 id="narration-track">Narration Track</h3>
+<p>Use <code>&lt;narration&gt;</code> for voiceover that spans multiple transitions. Narration items sit on the timeline (like scenes/transitions) but render no visuals.</p>
+
+<div class="sourceCode"><pre class="sourceCode xml"><code class="sourceCode xml"><span class="fu">&lt;transition</span> effect=<span class="st">"push"</span> duration=<span class="st">"12f"</span> <span class="fu">/&gt;</span>
+<span class="fu">&lt;narration</span> id=<span class="st">"layouts-voice"</span><span class="fu">&gt;</span>
+  <span class="fu">&lt;cue</span> id=<span class="st">"layouts"</span><span class="fu">&gt;</span>
+    Use one-column, two-column, three-column, and grid layouts.
+  <span class="fu">&lt;/cue&gt;</span>
+<span class="fu">&lt;/narration&gt;</span></code></pre></div>
+
+<p>Place <code>&lt;narration&gt;</code> just before the scenes it should align with. It will start at the next scene's start unless you provide <code>start</code> or <code>duration</code>.</p>
+
 <hr />
 
 <h2 id="web-components">Web Components</h2>
@@ -361,10 +373,95 @@ export const videomlStandardDoc: DocsEntry = {
 
 <hr />
 
+<h2 id="transitions">Transitions</h2>
+<p><a href="/docs/videoml/transitions">Full transitions guide & integration test gallery</a></p>
+<p>Transitions are first-class timeline items that sit between scenes. A transition is a container (like a scene) that can hold visuals and audio, and it can either <strong>overlap</strong> adjacent scenes or <strong>insert</strong> time between them.</p>
+
+<div class="callout callout-info">
+  <strong>Timing:</strong> All time values accept seconds or frames (e.g. <code>0.6s</code>, <code>12f</code>). Time expressions can reference <code>scene()</code>, <code>cue()</code>, and <code>mark()</code>.
+</div>
+
+<h3 id="transition-element">Transition Element</h3>
+<p>Use <code>&lt;transition&gt;</code> between scenes for crossfades, wipes, and any branded or custom transitions.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Attribute</th>
+      <th>Type</th>
+      <th>Notes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>id</code></td>
+      <td>string</td>
+      <td>Required unique id.</td>
+    </tr>
+    <tr>
+      <td><code>start</code> / <code>end</code> / <code>duration</code></td>
+      <td>time</td>
+      <td>Optional. Explicit timing for the transition window.</td>
+    </tr>
+    <tr>
+      <td><code>effect</code></td>
+      <td>string</td>
+      <td>Named transition preset (e.g. <code>crossfade</code>, <code>fade</code>, <code>wipe</code>).</td>
+    </tr>
+    <tr>
+      <td><code>ease</code></td>
+      <td>string</td>
+      <td>GSAP ease string (e.g. <code>power2.inOut</code>).</td>
+    </tr>
+    <tr>
+      <td><code>mode</code></td>
+      <td>string</td>
+      <td><code>overlap</code> (default) or <code>insert</code>.</td>
+    </tr>
+    <tr>
+      <td><code>overflow</code></td>
+      <td>string</td>
+      <td>Visual overflow behavior: <code>clip</code>, <code>extend</code>, <code>allow</code>.</td>
+    </tr>
+    <tr>
+      <td><code>overflow-audio</code></td>
+      <td>string</td>
+      <td>Audio overflow behavior: <code>clip</code>, <code>extend</code>, <code>allow</code>.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="transition-audio">Audio in Transitions</h3>
+<p>Transitions can include SFX and music via <code>&lt;sfx&gt;</code>, <code>&lt;music&gt;</code>, or <code>&lt;audio kind=...&gt;</code>.</p>
+
+<div class="sourceCode"><pre class="sourceCode xml"><code class="sourceCode xml"><span class="fu">&lt;transition</span> id=<span class="st">"wipe-01"</span> effect=<span class="st">"wipe"</span> duration=<span class="st">"18f"</span> ease=<span class="st">"power2.inOut"</span><span class="fu">&gt;</span>
+  <span class="fu">&lt;sfx</span> id=<span class="st">"whoosh"</span> start=<span class="st">"0f"</span> <span class="fu">/&gt;</span>
+<span class="fu">&lt;/transition&gt;</span></code></pre></div>
+
+<h3 id="scene-enter-exit">Scene Enter/Exit (Convenience)</h3>
+<p>For quick fades, use per-scene convenience attributes. These do not crossfade; they only animate the scene itself.</p>
+
+<div class="sourceCode"><pre class="sourceCode xml"><code class="sourceCode xml"><span class="fu">&lt;scene</span>
+  id=<span class="st">"intro"</span>
+  enter=<span class="st">"fade"</span>
+  enter-duration=<span class="st">"12f"</span>
+  exit=<span class="st">"fade"</span>
+  exit-duration=<span class="st">"12f"</span>
+<span class="fu">&gt;</span>
+  <span class="fu">&lt;cue</span> id=<span class="st">"intro"</span><span class="fu">&gt;</span>Welcome to the video.<span class="fu">&lt;/cue&gt;</span>
+<span class="fu">&lt;/scene&gt;</span></code></pre></div>
+
+<div class="callout callout-info">
+  <strong>Crossfade:</strong> Use a dedicated <code>&lt;transition&gt;</code> element for true crossfades between scenes.
+</div>
+
+<hr />
+
+
 <h2 id="complete-example">Complete Example</h2>
 <p>Here's a full VideoML document demonstrating all core features:</p>
 
-<div class="sourceCode"><pre class="sourceCode xml"><code class="sourceCode xml"><span class="fu">&lt;videoml</span>
+<div class="sourceCode"><pre class="sourceCode xml"><code class="sourceCode xml"><span class="fu">&lt;vml</span>
   id=<span class="st">"product-demo"</span>
   title=<span class="st">"Product Demo Video"</span>
   fps=<span class="st">"30"</span>
@@ -436,7 +533,7 @@ render({
       <span class="fu">/&gt;</span>
     <span class="fu">&lt;/layer&gt;</span>
   <span class="fu">&lt;/scene&gt;</span>
-<span class="fu">&lt;/videoml&gt;</span></code></pre></div>
+<span class="fu">&lt;/vml&gt;</span></code></pre></div>
 
 <hr />
 
@@ -490,7 +587,7 @@ render({
   </thead>
   <tbody>
     <tr>
-      <td><code>&lt;videoml&gt;</code></td>
+      <td><code>&lt;vml&gt;</code></td>
       <td>Root element</td>
       <td><code>id</code>, <code>fps</code>, <code>width</code>, <code>height</code></td>
     </tr>
@@ -604,7 +701,7 @@ render({
 <ul>
   <li><strong>Determinism Enforcement:</strong> VideoML does not guarantee reproducible output if scripts use randomness or external state</li>
   <li><strong>Sandboxed Scripting:</strong> No security isolation for <code>&lt;script&gt;</code> blocks (treat VideoML as trusted source code)</li>
-  <li><strong>Backward Compatibility:</strong> <code>&lt;video&gt;</code> root is deprecated; <code>&lt;videoml&gt;</code> is canonical</li>
+  <li><strong>Backward Compatibility:</strong> <code>&lt;video&gt;</code> root is deprecated; <code>&lt;vml&gt;</code> is canonical</li>
   <li><strong>Animation Keyframes:</strong> Use CSS animations or JavaScript—VideoML provides timing, not animation primitives</li>
 </ul>
 

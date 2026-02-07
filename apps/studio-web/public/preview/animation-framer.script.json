@@ -44,6 +44,14 @@
       ]
     }
   ],
+  "timeline": [
+    {
+      "kind": "scene",
+      "sceneId": "framer",
+      "startSec": 0,
+      "endSec": 6
+    }
+  ],
   "fps": 30,
   "meta": {
     "fps": 30,

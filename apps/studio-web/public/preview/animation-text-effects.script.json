@@ -43,6 +43,14 @@
       ]
     }
   ],
+  "timeline": [
+    {
+      "kind": "scene",
+      "sceneId": "text-effects",
+      "startSec": 0,
+      "endSec": 6
+    }
+  ],
   "fps": 30,
   "meta": {
     "fps": 30,

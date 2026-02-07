@@ -1,61 +1,167 @@
-<videoml id="home-elevator-preview" title="Home Elevator Preview" fps="30" width="1920" height="1080">
+<vml id="home-elevator-preview" title="Home Elevator Preview" fps="30" width="1920" height="1080">
   <voiceover />
 
-  <scene id="title" title="title" styles='{"background":"#0f1117","color":"#e8eaf0","vars":{"--color-bg":"#0f1117","--color-bg-subtle":"#151a27","--color-surface":"#151a27","--color-surface-strong":"#1c2333","--color-surface-2":"#1c2333","--color-text":"#e8eaf0","--color-text-muted":"#c4c8d6","--color-primary":"#5f7bff","--color-secondary":"#ff6ac1","--color-accent":"#5f7bff","--color-accent-2":"#ff6ac1","--color-muted":"#c4c8d6","--color-muted-more":"#c4c8d6","--font-eyebrow":"var(--font-preview-humanist), sans-serif","--font-headline":"var(--font-preview-sans), sans-serif","--font-subhead":"var(--font-preview-humanist), sans-serif"}}'>
-    <layer id="content">
-      <title-slide props='{"eyebrow":"Babulus","title":"Create videos like web pages","subtitle":"Write VideoML, render anywhere","verticalAlign":"center","horizontalAlign":"center","entranceStartFrame":-999}' />
+  <scene id="open-standard" title="open-standard" styles='{"background":"#0f1117","color":"#e8eaf0","vars":{"--color-bg":"#0f1117","--color-bg-subtle":"#151a27","--color-surface":"#151a27","--color-surface-strong":"#1c2333","--color-surface-2":"#1c2333","--color-text":"#e8eaf0","--color-text-muted":"#c4c8d6","--color-primary":"#5f7bff","--color-secondary":"#ff6ac1","--color-accent":"#5f7bff","--color-accent-2":"#ff6ac1","--color-muted":"#c4c8d6","--color-muted-more":"#c4c8d6","--font-eyebrow":"var(--font-preview-humanist), sans-serif","--font-headline":"var(--font-preview-sans), sans-serif","--font-subhead":"var(--font-preview-humanist), sans-serif"}}'>
+    <layer id="processing" z="10">
+      <p5-particles props='{"particleCount":30,"overscanX":320,"focusX":0.5,"backgroundDarken":0.45}' />
     </layer>
-    <cue id="title-cue" label="title-cue">
-      <voice>Babulus lets you create videos the same way you build web pages. Write VideoML and render it as a video or as live HTML.</voice>
+    <layer id="code" z="20">
+      <code-block props='{"language":"html","code":"&lt;vml id=\"demo\" fps=\"30\" width=\"1920\" height=\"1080\"&gt;\n  &lt;scene id=\"intro\"&gt;\n    &lt;title-slide title=\"Hello\" subtitle=\"From code\" /&gt;\n    &lt;cue id=\"line-1\"&gt;&lt;voice&gt;Hello world.&lt;/voice&gt;&lt;/cue&gt;\n  &lt;/scene&gt;\n&lt;/vml&gt;","theme":"nord","showLineNumbers":false,"width":760,"height":420,"xFrom":2100,"xTo":1040,"yFrom":140,"yTo":140,"slideDurationFrames":18,"slideEase":"power2.out","revealStyle":"typewriter","typewriterSpeed":2,"startFrame":6}' />
+    </layer>
+    <cue id="open-standard-cue" label="open-standard-cue">
+      <voice>Babulus uses the open VideoML standard, where code defines every scene and cue.</voice>
     </cue>
   </scene>
 
-  <scene id="layout-title" title="layout-title" styles='{"background":"#0f1117","color":"#e8eaf0","vars":{"--color-bg":"#0f1117","--color-bg-subtle":"#151a27","--color-surface":"#151a27","--color-surface-strong":"#1c2333","--color-surface-2":"#1c2333","--color-text":"#e8eaf0","--color-text-muted":"#c4c8d6","--color-primary":"#5f7bff","--color-secondary":"#ff6ac1","--color-accent":"#5f7bff","--color-accent-2":"#ff6ac1","--color-muted":"#c4c8d6","--color-muted-more":"#c4c8d6","--font-eyebrow":"var(--font-preview-humanist), sans-serif","--font-headline":"var(--font-preview-sans), sans-serif","--font-subhead":"var(--font-preview-humanist), sans-serif"}}'>
-    <layer id="background" z="0">
-      <video-background props='{"variant":"linear","gradient":{"angle":135,"colors":["#101010","#1f2a44"]}}' />
+  <transition id="home-push-0" effect="push" duration="12f" mode="insert" ease="power2.inOut" props='{"direction":"left"}' />
+
+  <scene id="ai-agents" title="ai-agents" styles='{"background":"#0f1117","color":"#e8eaf0","vars":{"--color-bg":"#0f1117","--color-bg-subtle":"#151a27","--color-surface":"#151a27","--color-surface-strong":"#1c2333","--color-surface-2":"#1c2333","--color-text":"#e8eaf0","--color-text-muted":"#c4c8d6","--color-primary":"#5f7bff","--color-secondary":"#ff6ac1","--color-accent":"#5f7bff","--color-accent-2":"#ff6ac1","--color-muted":"#c4c8d6","--color-muted-more":"#c4c8d6","--font-eyebrow":"var(--font-preview-humanist), sans-serif","--font-headline":"var(--font-preview-sans), sans-serif","--font-subhead":"var(--font-preview-humanist), sans-serif"}}'>
+    <layer id="bot" z="10">
+      <icon props='{"kind":"lucide","name":"bot","size":96,"strokeWidth":2.5,"color":"var(--color-text)","position":{"x":912,"y":140}}' />
     </layer>
-    <layer id="content" z="10">
+    <layer id="code" z="20">
+      <code-block props='{"language":"typescript","code":"const scene = video.scene(\"intro\");\nscene.title(\"Launch\");\nscene.cue(\"line\", \"Ship today.\");","theme":"nord","showLineNumbers":false,"width":860,"height":320,"position":{"x":530,"y":280},"revealStyle":"typewriter","typewriterSpeed":2,"startFrame":6}' />
+    </layer>
+    <cue id="ai-agents-cue" label="ai-agents-cue">
+      <voice>AI agents are great at writing code, which means they can now produce videos through VideoML.</voice>
+    </cue>
+  </scene>
+
+  <transition id="home-push-1" effect="push" duration="12f" mode="insert" ease="power2.inOut" props='{"direction":"left"}' />
+
+  <scene id="layout-one" title="layout-one" duration="0.9s" styles='{"background":"#0f1117","color":"#e8eaf0","vars":{"--color-bg":"#0f1117","--color-bg-subtle":"#151a27","--color-surface":"#151a27","--color-surface-strong":"#1c2333","--color-surface-2":"#1c2333","--color-text":"#e8eaf0","--color-text-muted":"#c4c8d6","--color-primary":"#5f7bff","--color-secondary":"#ff6ac1","--color-accent":"#5f7bff","--color-accent-2":"#ff6ac1","--color-muted":"#c4c8d6","--color-muted-more":"#c4c8d6","--font-eyebrow":"var(--font-preview-humanist), sans-serif","--font-headline":"var(--font-preview-sans), sans-serif","--font-subhead":"var(--font-preview-humanist), sans-serif"}}'>
+    <layer id="content">
       <title-slide-layout-demo />
     </layer>
-    <cue id="layout-title-cue" label="layout-title-cue">
-      <voice>Start with polished layout primitives like title slides, chapter breaks, and branded screens.</voice>
+    <cue id="library-voice-1" label="library-voice-1">
+      <voice>Babulus adds a library of off-the-shelf components on top of VideoML: layouts, transitions, motion, and more.</voice>
     </cue>
   </scene>
 
-  <scene id="layout-two-column" title="layout-two-column" styles='{"background":"#0f1117","color":"#e8eaf0","vars":{"--color-bg":"#0f1117","--color-bg-subtle":"#151a27","--color-surface":"#151a27","--color-surface-strong":"#1c2333","--color-surface-2":"#1c2333","--color-text":"#e8eaf0","--color-text-muted":"#c4c8d6","--color-primary":"#5f7bff","--color-secondary":"#ff6ac1","--color-accent":"#5f7bff","--color-accent-2":"#ff6ac1","--color-muted":"#c4c8d6","--color-muted-more":"#c4c8d6","--font-eyebrow":"var(--font-preview-humanist), sans-serif","--font-headline":"var(--font-preview-sans), sans-serif","--font-subhead":"var(--font-preview-humanist), sans-serif"}}'>
+  <transition id="home-push-2" effect="push" duration="10f" mode="insert" ease="power2.inOut" props='{"direction":"left"}' />
+
+  <scene id="layout-two" title="layout-two" duration="0.9s" styles='{"background":"#0f1117","color":"#e8eaf0","vars":{"--color-bg":"#0f1117","--color-bg-subtle":"#151a27","--color-surface":"#151a27","--color-surface-strong":"#1c2333","--color-surface-2":"#1c2333","--color-text":"#e8eaf0","--color-text-muted":"#c4c8d6","--color-primary":"#5f7bff","--color-secondary":"#ff6ac1","--color-accent":"#5f7bff","--color-accent-2":"#ff6ac1","--color-muted":"#c4c8d6","--color-muted-more":"#c4c8d6","--font-eyebrow":"var(--font-preview-humanist), sans-serif","--font-headline":"var(--font-preview-sans), sans-serif","--font-subhead":"var(--font-preview-humanist), sans-serif"}}'>
     <layer id="content">
       <two-column-layout-demo />
     </layer>
-    <cue id="layout-two-column-cue" label="layout-two-column-cue">
-      <voice>Drop in structured layouts like two-column and three-column screens without hand-tuning motion.</voice>
-    </cue>
   </scene>
 
-  <scene id="layout-grid" title="layout-grid" styles='{"background":"#0f1117","color":"#e8eaf0","vars":{"--color-bg":"#0f1117","--color-bg-subtle":"#151a27","--color-surface":"#151a27","--color-surface-strong":"#1c2333","--color-surface-2":"#1c2333","--color-text":"#e8eaf0","--color-text-muted":"#c4c8d6","--color-primary":"#5f7bff","--color-secondary":"#ff6ac1","--color-accent":"#5f7bff","--color-accent-2":"#ff6ac1","--color-muted":"#c4c8d6","--color-muted-more":"#c4c8d6","--font-eyebrow":"var(--font-preview-humanist), sans-serif","--font-headline":"var(--font-preview-sans), sans-serif","--font-subhead":"var(--font-preview-humanist), sans-serif"}}'>
+  <transition id="home-push-3" effect="push" duration="10f" mode="insert" ease="power2.inOut" props='{"direction":"left"}' />
+
+  <scene id="layout-three" title="layout-three" duration="0.9s" styles='{"background":"#0f1117","color":"#e8eaf0","vars":{"--color-bg":"#0f1117","--color-bg-subtle":"#151a27","--color-surface":"#151a27","--color-surface-strong":"#1c2333","--color-surface-2":"#1c2333","--color-text":"#e8eaf0","--color-text-muted":"#c4c8d6","--color-primary":"#5f7bff","--color-secondary":"#ff6ac1","--color-accent":"#5f7bff","--color-accent-2":"#ff6ac1","--color-muted":"#c4c8d6","--color-muted-more":"#c4c8d6","--font-eyebrow":"var(--font-preview-humanist), sans-serif","--font-headline":"var(--font-preview-sans), sans-serif","--font-subhead":"var(--font-preview-humanist), sans-serif"}}'>
+    <layer id="content">
+      <three-column-screen props='{"eyebrow":"Three Column","title":"Three Column Screen","subtitle":"Three panels, one layout","columns":[{"type":"PlaceholderPanel","props":{"label":"Column A","text":"Left"}},{"type":"PlaceholderPanel","props":{"label":"Column B","text":"Middle","tone":"secondary"}},{"type":"PlaceholderPanel","props":{"label":"Column C","text":"Right"}}]}' />
+    </layer>
+  </scene>
+
+  <transition id="home-push-4" effect="push" duration="10f" mode="insert" ease="power2.inOut" props='{"direction":"left"}' />
+
+  <scene id="layout-grid" title="layout-grid" duration="0.9s" styles='{"background":"#0f1117","color":"#e8eaf0","vars":{"--color-bg":"#0f1117","--color-bg-subtle":"#151a27","--color-surface":"#151a27","--color-surface-strong":"#1c2333","--color-surface-2":"#1c2333","--color-text":"#e8eaf0","--color-text-muted":"#c4c8d6","--color-primary":"#5f7bff","--color-secondary":"#ff6ac1","--color-accent":"#5f7bff","--color-accent-2":"#ff6ac1","--color-muted":"#c4c8d6","--color-muted-more":"#c4c8d6","--font-eyebrow":"var(--font-preview-humanist), sans-serif","--font-headline":"var(--font-preview-sans), sans-serif","--font-subhead":"var(--font-preview-humanist), sans-serif"}}'>
     <layer id="content">
       <grid-screen props='{"eyebrow":"Grid Layout","title":"Grid Screen","subtitle":"Header + multi-tile content area","grid":{"columns":4,"items":["Tile 1","Tile 2","Tile 3","Tile 4","Tile 5","Tile 6","Tile 7","Tile 8"],"gap":20,"entranceStartFrame":-999}}' />
     </layer>
-    <cue id="layout-grid-cue" label="layout-grid-cue">
-      <voice>Compose dashboards, highlights, and feature grids with reusable templates.</voice>
+  </scene>
+
+  <transition id="home-fade-1" effect="crossfade" duration="12f" mode="insert" ease="power2.inOut" />
+
+  <scene id="brand-a" title="Scene A" duration="0.6s" styles='{"background":"#7a1f1f"}'>
+    <layer id="bg" z="0">
+      <video-background props='{"color":"#7a1f1f"}' />
+    </layer>
+    <layer id="title" z="10">
+      <video-title props='{"text":"Scene A","color":"var(--color-primary)","textColor":"var(--color-text)","position":{"y":540},"textAlign":"center"}' />
+    </layer>
+    <cue id="transitions-voice-1" label="transitions-voice-1">
+      <voice>Use common transitions, or build branded ones.</voice>
     </cue>
   </scene>
 
-  <scene id="bullets" title="bullets" styles='{"background":"#0f1117","color":"#e8eaf0","vars":{"--color-bg":"#0f1117","--color-bg-subtle":"#151a27","--color-surface":"#151a27","--color-surface-strong":"#1c2333","--color-surface-2":"#1c2333","--color-text":"#e8eaf0","--color-text-muted":"#c4c8d6","--color-primary":"#5f7bff","--color-secondary":"#ff6ac1","--color-accent":"#5f7bff","--color-accent-2":"#ff6ac1","--color-muted":"#c4c8d6","--color-muted-more":"#c4c8d6","--font-eyebrow":"var(--font-preview-humanist), sans-serif","--font-headline":"var(--font-preview-sans), sans-serif","--font-subhead":"var(--font-preview-humanist), sans-serif"}}'>
-    <layer id="content">
-      <bullet-list-screen props='{"eyebrow":"One system","title":"Render anywhere","subtitle":"Live HTML or exported video","align":"left","bullets":{"items":["Build screens with reusable layouts","Export MP4s for YouTube and socials","Embed live players inside web pages"],"bulletStyle":"icon","bulletIcon":{"kind":"lucide","name":"check","color":"var(--color-accent)","strokeWidth":3,"size":36},"fontSize":52,"lineHeight":1.3,"spacing":36,"textColor":"var(--color-text)","justify":"start"}}' />
+  <transition id="brand-overlay" effect="wipe" duration="60f" ease="power2.inOut" props='{"direction":"right"}'>
+    <layer id="overlay" z="20" styles='{"opacity":0.95}'>
+      <video-rectangle props='{"color":"#1f7a3a","xFrom":1920,"xTo":-260,"y":0,"width":260,"height":1080}' />
+      <video-title props='{"text":"Company Name","color":"#0b0f1a","textColor":"#0b0f1a","fontSize":64,"fontWeight":700,"xFrom":2050,"xTo":-130,"yFrom":540,"yTo":540,"textAlign":"center","rotateDeg":90,"centerY":true}' />
     </layer>
-    <cue id="bullets-cue" label="bullets-cue">
-      <voice>Render to MP4 for distribution, or embed the same VideoML as live, interactive HTML on your site.</voice>
+  </transition>
+
+  <scene id="brand-b" title="Scene B" duration="0.6s" styles='{"background":"#1f3a7a"}'>
+    <layer id="bg" z="0">
+      <video-background props='{"color":"#1f3a7a"}' />
+    </layer>
+    <layer id="title" z="10">
+      <video-title props='{"text":"Scene B","color":"var(--color-primary)","textColor":"var(--color-text)","position":{"y":540},"textAlign":"center"}' />
+    </layer>
+  </scene>
+
+  <transition id="home-push-5" effect="push" duration="12f" mode="insert" ease="power2.inOut" props='{"direction":"left"}' />
+
+  <scene id="animations-framer" title="animations-framer" duration="0.9s" styles='{"background":"#0f1117","color":"#e8eaf0","vars":{"--color-bg":"#0f1117","--color-bg-subtle":"#151a27","--color-surface":"#151a27","--color-surface-strong":"#1c2333","--color-surface-2":"#1c2333","--color-text":"#e8eaf0","--color-text-muted":"#c4c8d6","--color-primary":"#5f7bff","--color-secondary":"#ff6ac1","--color-accent":"#5f7bff","--color-accent-2":"#ff6ac1","--color-muted":"#c4c8d6","--color-muted-more":"#c4c8d6","--font-eyebrow":"var(--font-preview-humanist), sans-serif","--font-headline":"var(--font-preview-sans), sans-serif","--font-subhead":"var(--font-preview-humanist), sans-serif"}}'>
+    <layer id="engine" z="10">
+      <framer-motion-demo props='{"size":260}' />
+    </layer>
+    <cue id="animations-voice-1" label="animations-voice-1">
+      <voice>Any animation you can do on a web page can be part of your video.</voice>
     </cue>
   </scene>
 
-  <scene id="close" title="close" styles='{"background":"#0f1117","color":"#e8eaf0","vars":{"--color-bg":"#0f1117","--color-bg-subtle":"#151a27","--color-surface":"#151a27","--color-surface-strong":"#1c2333","--color-surface-2":"#1c2333","--color-text":"#e8eaf0","--color-text-muted":"#c4c8d6","--color-primary":"#5f7bff","--color-secondary":"#ff6ac1","--color-accent":"#5f7bff","--color-accent-2":"#ff6ac1","--color-muted":"#c4c8d6","--color-muted-more":"#c4c8d6","--font-eyebrow":"var(--font-preview-humanist), sans-serif","--font-headline":"var(--font-preview-sans), sans-serif","--font-subhead":"var(--font-preview-humanist), sans-serif"}}'>
-    <layer id="content">
-      <title-slide props='{"eyebrow":"VideoML","title":"Design once. Play everywhere.","subtitle":"Code-to-video without timelines","verticalAlign":"center","horizontalAlign":"center","entranceStartFrame":-999}' />
+  <transition id="home-anim-1" effect="push" duration="10f" mode="insert" ease="power2.inOut" props='{"direction":"left"}' />
+
+  <scene id="animations-d3" title="animations-d3" duration="0.9s" styles='{"background":"#0f1117","color":"#e8eaf0","vars":{"--color-bg":"#0f1117","--color-bg-subtle":"#151a27","--color-surface":"#151a27","--color-surface-strong":"#1c2333","--color-surface-2":"#1c2333","--color-text":"#e8eaf0","--color-text-muted":"#c4c8d6","--color-primary":"#5f7bff","--color-secondary":"#ff6ac1","--color-accent":"#5f7bff","--color-accent-2":"#ff6ac1","--color-muted":"#c4c8d6","--color-muted-more":"#c4c8d6","--font-eyebrow":"var(--font-preview-humanist), sans-serif","--font-headline":"var(--font-preview-sans), sans-serif","--font-subhead":"var(--font-preview-humanist), sans-serif"}}'>
+    <layer id="engine" z="10">
+      <d3-bar-chart />
     </layer>
-    <cue id="close-cue" label="close-cue">
-      <voice>Babulus is the code-to-video stack. Play consistent visuals across your website and your videos.</voice>
-      <pause seconds="2s" />
+  </scene>
+
+  <transition id="home-anim-2" effect="push" duration="10f" mode="insert" ease="power2.inOut" props='{"direction":"left"}' />
+
+  <scene id="animations-processing" title="animations-processing" duration="0.9s" styles='{"background":"#0f1117","color":"#e8eaf0","vars":{"--color-bg":"#0f1117","--color-bg-subtle":"#151a27","--color-surface":"#151a27","--color-surface-strong":"#1c2333","--color-surface-2":"#1c2333","--color-text":"#e8eaf0","--color-text-muted":"#c4c8d6","--color-primary":"#5f7bff","--color-secondary":"#ff6ac1","--color-accent":"#5f7bff","--color-accent-2":"#ff6ac1","--color-muted":"#c4c8d6","--color-muted-more":"#c4c8d6","--font-eyebrow":"var(--font-preview-humanist), sans-serif","--font-headline":"var(--font-preview-sans), sans-serif","--font-subhead":"var(--font-preview-humanist), sans-serif"}}'>
+    <layer id="engine" z="10">
+      <p5-particles props='{"particleCount":30,"overscanX":320,"focusX":0.5,"backgroundDarken":0.35}' />
+    </layer>
+  </scene>
+
+  <transition id="home-anim-3" effect="push" duration="10f" mode="insert" ease="power2.inOut" props='{"direction":"left"}' />
+
+  <scene id="animations-three" title="animations-three" duration="0.9s" styles='{"background":"#0f1117","color":"#e8eaf0","vars":{"--color-bg":"#0f1117","--color-bg-subtle":"#151a27","--color-surface":"#151a27","--color-surface-strong":"#1c2333","--color-surface-2":"#1c2333","--color-text":"#e8eaf0","--color-text-muted":"#c4c8d6","--color-primary":"#5f7bff","--color-secondary":"#ff6ac1","--color-accent":"#5f7bff","--color-accent-2":"#ff6ac1","--color-muted":"#c4c8d6","--color-muted-more":"#c4c8d6","--font-eyebrow":"var(--font-preview-humanist), sans-serif","--font-headline":"var(--font-preview-sans), sans-serif","--font-subhead":"var(--font-preview-humanist), sans-serif"}}'>
+    <layer id="engine" z="10">
+      <three-orbit props='{"cubeSize":160,"overscanX":320,"focusX":0.5}' />
+    </layer>
+  </scene>
+
+  <transition id="home-anim-4" effect="push" duration="10f" mode="insert" ease="power2.inOut" props='{"direction":"left"}' />
+
+  <scene id="animations-lottie" title="animations-lottie" duration="0.9s" styles='{"background":"#0f1117","color":"#e8eaf0","vars":{"--color-bg":"#0f1117","--color-bg-subtle":"#151a27","--color-surface":"#151a27","--color-surface-strong":"#1c2333","--color-surface-2":"#1c2333","--color-text":"#e8eaf0","--color-text-muted":"#c4c8d6","--color-primary":"#5f7bff","--color-secondary":"#ff6ac1","--color-accent":"#5f7bff","--color-accent-2":"#ff6ac1","--color-muted":"#c4c8d6","--color-muted-more":"#c4c8d6","--font-eyebrow":"var(--font-preview-humanist), sans-serif","--font-headline":"var(--font-preview-sans), sans-serif","--font-subhead":"var(--font-preview-humanist), sans-serif"}}'>
+    <layer id="engine" z="10">
+      <lottie-badge props='{"size":980}' />
+    </layer>
+  </scene>
+
+  <transition id="home-anim-5" effect="push" duration="10f" mode="insert" ease="power2.inOut" props='{"direction":"left"}' />
+
+  <scene id="animations-text" title="animations-text" duration="0.9s" styles='{"background":"#0f1117","color":"#e8eaf0","vars":{"--color-bg":"#0f1117","--color-bg-subtle":"#151a27","--color-surface":"#151a27","--color-surface-strong":"#1c2333","--color-surface-2":"#1c2333","--color-text":"#e8eaf0","--color-text-muted":"#c4c8d6","--color-primary":"#5f7bff","--color-secondary":"#ff6ac1","--color-accent":"#5f7bff","--color-accent-2":"#ff6ac1","--color-muted":"#c4c8d6","--color-muted-more":"#c4c8d6","--font-eyebrow":"var(--font-preview-humanist), sans-serif","--font-headline":"var(--font-preview-sans), sans-serif","--font-subhead":"var(--font-preview-humanist), sans-serif"}}'>
+    <layer id="engine" z="10">
+      <text-effects-demo />
+    </layer>
+  </scene>
+
+  <transition id="home-push-6" effect="push" duration="12f" mode="insert" ease="power2.inOut" props='{"direction":"left"}' />
+
+  <scene id="typefaces" title="typefaces" styles='{"background":"#0f1117","color":"#e8eaf0","vars":{"--color-bg":"#0f1117","--color-bg-subtle":"#151a27","--color-surface":"#151a27","--color-surface-strong":"#1c2333","--color-surface-2":"#1c2333","--color-text":"#e8eaf0","--color-text-muted":"#c4c8d6","--color-primary":"#5f7bff","--color-secondary":"#ff6ac1","--color-accent":"#5f7bff","--color-accent-2":"#ff6ac1","--color-muted":"#c4c8d6","--color-muted-more":"#c4c8d6","--font-eyebrow":"var(--font-preview-humanist), sans-serif","--font-headline":"var(--font-preview-sans), sans-serif","--font-subhead":"var(--font-preview-humanist), sans-serif"}}'>
+    <layer id="content">
+      <typeface-color-demo />
+    </layer>
+    <cue id="typefaces-cue" label="typefaces-cue">
+      <voice>Style everything with typefaces and color themes.</voice>
     </cue>
   </scene>
-</videoml>
+
+  <transition id="home-push-7" effect="push" duration="12f" mode="insert" ease="power2.inOut" props='{"direction":"left"}' />
+
+  <scene id="cta" title="cta" styles='{"background":"#0f1117","color":"#e8eaf0","vars":{"--color-bg":"#0f1117","--color-bg-subtle":"#151a27","--color-surface":"#151a27","--color-surface-strong":"#1c2333","--color-surface-2":"#1c2333","--color-text":"#e8eaf0","--color-text-muted":"#c4c8d6","--color-primary":"#5f7bff","--color-secondary":"#ff6ac1","--color-accent":"#5f7bff","--color-accent-2":"#ff6ac1","--color-muted":"#c4c8d6","--color-muted-more":"#c4c8d6","--font-eyebrow":"var(--font-preview-humanist), sans-serif","--font-headline":"var(--font-preview-sans), sans-serif","--font-subhead":"var(--font-preview-humanist), sans-serif"}}'>
+    <layer id="content">
+      <cta-slide />
+    </layer>
+    <cue id="cta-cue" label="cta-cue">
+      <voice>Dive into the demo videos and code to learn more, and join the waitlist to keep up with Babulus as we launch it. We'll send you videos.</voice>
+    </cue>
+  </scene>
+</vml>

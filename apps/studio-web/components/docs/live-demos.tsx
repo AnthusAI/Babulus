@@ -22,7 +22,7 @@ function DemoShell({ children, note }: DemoShellProps) {
 export function TemporalReflowDemo({ autoPlay }: { autoPlay?: boolean }) {
   const xml = useMemo(
     () => `
-<videoml id="temporal-reflow" title="Temporal Reflow" fps="30" width="1280" height="720">
+<vml id="temporal-reflow" title="Temporal Reflow" fps="30" width="1280" height="720">
   <scene id="reflow">
     <layer id="content">
       <sequence>
@@ -32,7 +32,7 @@ export function TemporalReflowDemo({ autoPlay }: { autoPlay?: boolean }) {
       </sequence>
     </layer>
   </scene>
-</videoml>`.trim(),
+</vml>`.trim(),
     [],
   );
   return (
@@ -45,7 +45,7 @@ export function TemporalReflowDemo({ autoPlay }: { autoPlay?: boolean }) {
 export function SequenceStackDemo() {
   const sequenceXml = useMemo(
     () => `
-<videoml id="sequence-demo" title="Sequence Demo" fps="30" width="1280" height="720">
+<vml id="sequence-demo" title="Sequence Demo" fps="30" width="1280" height="720">
   <scene id="sequence">
     <layer id="content">
       <sequence>
@@ -55,12 +55,12 @@ export function SequenceStackDemo() {
       </sequence>
     </layer>
   </scene>
-</videoml>`.trim(),
+</vml>`.trim(),
     [],
   );
   const stackXml = useMemo(
     () => `
-<videoml id="stack-demo" title="Stack Demo" fps="30" width="1280" height="720">
+<vml id="stack-demo" title="Stack Demo" fps="30" width="1280" height="720">
   <scene id="stack">
     <layer id="content">
       <stack>
@@ -70,7 +70,7 @@ export function SequenceStackDemo() {
       </stack>
     </layer>
   </scene>
-</videoml>`.trim(),
+</vml>`.trim(),
     [],
   );
   return (
@@ -109,8 +109,8 @@ export function LiveOpenEndedDemo() {
       })
       .join("\n");
     return `
-<videoml id="live-open" title="Live Open" fps="30" width="1280" height="720">${body}
-</videoml>`.trim();
+<vml id="live-open" title="Live Open" fps="30" width="1280" height="720">${body}
+</vml>`.trim();
   }, [scenes]);
 
   const appendScene = useCallback(() => {
@@ -158,23 +158,23 @@ export function LiveOpenEndedDemo() {
 export function LiveDomEditDemo() {
   const [title, setTitle] = useState("Live DOM edit");
   const [xml, setXml] = useState(() => `
-<videoml id="live-dom" title="Live DOM" fps="30" width="1280" height="720">
+<vml id="live-dom" title="Live DOM" fps="30" width="1280" height="720">
   <scene id="scene-001" start="0s">
     <layer id="content">
       <video-title props='{"text":"${title}","position":{"x":96,"y":220},"fontSize":64,"color":"#a78bfa"}' />
     </layer>
   </scene>
-</videoml>`.trim());
+</vml>`.trim());
 
   useEffect(() => {
     setXml(`
-<videoml id="live-dom" title="Live DOM" fps="30" width="1280" height="720">
+<vml id="live-dom" title="Live DOM" fps="30" width="1280" height="720">
   <scene id="scene-001" start="0s">
     <layer id="content">
       <video-title props='{"text":"${title}","position":{"x":96,"y":220},"fontSize":64,"color":"#a78bfa"}' />
     </layer>
   </scene>
-</videoml>`.trim());
+</vml>`.trim());
   }, [title]);
 
   const updateTitle = useCallback(() => {
@@ -197,7 +197,7 @@ export function LiveDomEditDemo() {
 export function NamedActionsDemo() {
   const xml = useMemo(
     () => `
-<videoml id="named-actions" title="Named Actions" fps="30" width="1280" height="720">
+<vml id="named-actions" title="Named Actions" fps="30" width="1280" height="720">
   <scene id="scene-001" start="0s">
     <layer id="content">
       <title-slide id="inline-demo" props='{"eyebrow":"Inline JS","title":"Click to mutate DOM","subtitle":"Events run in the live VOM","verticalAlign":"center","horizontalAlign":"center","entranceStartFrame":-999}' />
@@ -206,7 +206,7 @@ export function NamedActionsDemo() {
       </button>
     </layer>
   </scene>
-</videoml>`.trim(),
+</vml>`.trim(),
     [],
   );
 
@@ -222,7 +222,7 @@ export function NamedActionsDemo() {
 export function MultiScreenSyncDemo() {
   const xml = useMemo(
     () => `
-<videoml id="sync-demo" title="Sync Demo" fps="30" width="1280" height="720">
+<vml id="sync-demo" title="Sync Demo" fps="30" width="1280" height="720">
   <scene id="scene-001" start="0s">
     <layer id="content">
       <sequence>
@@ -232,7 +232,7 @@ export function MultiScreenSyncDemo() {
       </sequence>
     </layer>
   </scene>
-</videoml>`.trim(),
+</vml>`.trim(),
     [],
   );
   const [sync, setSync] = useState(true);

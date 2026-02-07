@@ -15,7 +15,7 @@ export function DocsContent({ className, children }: { className?: string; child
         "[&_li]:text-muted-foreground [&_li]:leading-7",
         "[&_a]:text-foreground [&_a]:underline [&_a]:underline-offset-4 hover:[&_a]:text-foreground/80",
         "[&_code]:rounded-md [&_code]:bg-muted [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:font-mono [&_code]:text-[0.9em]",
-        "[&_pre]:mt-4 [&_pre]:overflow-x-auto [&_pre]:rounded-xl [&_pre]:bg-muted [&_pre]:p-4",
+        "[&_pre]:mt-4 [&_pre]:max-w-full [&_pre]:overflow-x-auto [&_pre]:rounded-xl [&_pre]:bg-muted [&_pre]:p-4",
         "[&_pre_a]:no-underline [&_pre_a]:text-muted-foreground [&_pre_a]:opacity-70",
         "[&_pre_code]:rounded-none [&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_pre_code]:px-0 [&_pre_code]:py-0 [&_pre_code]:text-[0.85em]",
         "[&_hr]:my-10 [&_hr]:h-3 [&_hr]:rounded-full [&_hr]:bg-card",

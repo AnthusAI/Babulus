@@ -17,7 +17,7 @@
               "id": "lottie-badge-0",
               "type": "LottieBadge",
               "props": {
-                "size": 260,
+                "size": 980,
                 "sceneStartSec": 0
               }
             }
@@ -42,6 +42,14 @@
           "bullets": []
         }
       ]
+    }
+  ],
+  "timeline": [
+    {
+      "kind": "scene",
+      "sceneId": "lottie",
+      "startSec": 0,
+      "endSec": 6
     }
   ],
   "fps": 30,

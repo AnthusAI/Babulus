@@ -1,11 +1,11 @@
-<videoml id="animation-three" title="Animation Three" fps="30" width="1920" height="1080">
+<vml id="animation-three" title="Animation Three" fps="30" width="1920" height="1080">
   <voiceover provider="dry-run" />
   <scene id="three" title="three" styles='{"background":"var(--color-bg)"}'>
     <layer id="three" z="10">
-      <three-orbit props='{"cubeSize":160}' />
+      <three-orbit props='{"cubeSize":160,"overscanX":320,"focusX":0.5}' />
     </layer>
     <cue id="hold" label="hold">
       <pause seconds="6s" />
     </cue>
   </scene>
-</videoml>
+</vml>

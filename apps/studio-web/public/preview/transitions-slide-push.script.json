@@ -1,0 +1,292 @@
+{
+  "scenes": [
+    {
+      "id": "slide-a",
+      "title": "Slide A",
+      "startSec": 0,
+      "endSec": 2,
+      "styles": {
+        "background": "#7a1f1f"
+      },
+      "layers": [
+        {
+          "id": "bg",
+          "zIndex": 0,
+          "components": [
+            {
+              "id": "video-background-0",
+              "type": "VideoBackground",
+              "props": {
+                "color": "#7a1f1f",
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        },
+        {
+          "id": "title",
+          "zIndex": 10,
+          "components": [
+            {
+              "id": "video-title-0",
+              "type": "VideoTitle",
+              "props": {
+                "text": "Slide Left",
+                "color": "var(--color-primary)",
+                "textColor": "var(--color-text)",
+                "position": {
+                  "x": 180,
+                  "y": 320
+                },
+                "sceneStartSec": 0
+              }
+            },
+            {
+              "id": "video-subtitle-1",
+              "type": "VideoSubtitle",
+              "props": {
+                "text": "Incoming scene slides in",
+                "color": "var(--color-text-muted)",
+                "fontSize": 30,
+                "fontWeight": 500,
+                "position": {
+                  "x": 180,
+                  "y": 420
+                },
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "hold-a",
+          "label": "hold-a",
+          "startSec": 0,
+          "endSec": 2,
+          "text": "",
+          "segments": [
+            {
+              "type": "pause",
+              "startSec": 0,
+              "endSec": 2,
+              "durationSec": 2
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "slide-b",
+      "title": "Slide B",
+      "startSec": 1.4666666666666668,
+      "endSec": 4,
+      "styles": {
+        "background": "#1f7a3a"
+      },
+      "layers": [
+        {
+          "id": "bg",
+          "zIndex": 0,
+          "components": [
+            {
+              "id": "video-background-0",
+              "type": "VideoBackground",
+              "props": {
+                "color": "#1f7a3a",
+                "sceneStartSec": 2
+              }
+            }
+          ]
+        },
+        {
+          "id": "title",
+          "zIndex": 10,
+          "components": [
+            {
+              "id": "video-title-0",
+              "type": "VideoTitle",
+              "props": {
+                "text": "Push Up",
+                "color": "var(--color-primary)",
+                "textColor": "var(--color-text)",
+                "position": {
+                  "x": 180,
+                  "y": 320
+                },
+                "sceneStartSec": 2
+              }
+            },
+            {
+              "id": "video-subtitle-1",
+              "type": "VideoSubtitle",
+              "props": {
+                "text": "Outgoing scene moves too",
+                "color": "var(--color-text-muted)",
+                "fontSize": 30,
+                "fontWeight": 500,
+                "position": {
+                  "x": 180,
+                  "y": 420
+                },
+                "sceneStartSec": 2
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "hold-b",
+          "label": "hold-b",
+          "startSec": 2,
+          "endSec": 4,
+          "text": "",
+          "segments": [
+            {
+              "type": "pause",
+              "startSec": 2,
+              "endSec": 4,
+              "durationSec": 2
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "slide-c",
+      "title": "Slide C",
+      "startSec": 3.4,
+      "endSec": 6,
+      "styles": {
+        "background": "#1f3a7a"
+      },
+      "layers": [
+        {
+          "id": "bg",
+          "zIndex": 0,
+          "components": [
+            {
+              "id": "video-background-0",
+              "type": "VideoBackground",
+              "props": {
+                "color": "#1f3a7a",
+                "sceneStartSec": 4
+              }
+            }
+          ]
+        },
+        {
+          "id": "title",
+          "zIndex": 10,
+          "components": [
+            {
+              "id": "video-title-0",
+              "type": "VideoTitle",
+              "props": {
+                "text": "Done",
+                "color": "var(--color-primary)",
+                "textColor": "var(--color-text)",
+                "position": {
+                  "x": 180,
+                  "y": 320
+                },
+                "sceneStartSec": 4
+              }
+            },
+            {
+              "id": "video-subtitle-1",
+              "type": "VideoSubtitle",
+              "props": {
+                "text": "Slide + push demo",
+                "color": "var(--color-text-muted)",
+                "fontSize": 30,
+                "fontWeight": 500,
+                "position": {
+                  "x": 180,
+                  "y": 420
+                },
+                "sceneStartSec": 4
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "hold-c",
+          "label": "hold-c",
+          "startSec": 4,
+          "endSec": 6,
+          "text": "",
+          "segments": [
+            {
+              "type": "pause",
+              "startSec": 4,
+              "endSec": 6,
+              "durationSec": 2
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    }
+  ],
+  "timeline": [
+    {
+      "kind": "scene",
+      "sceneId": "slide-a",
+      "startSec": 0,
+      "endSec": 2
+    },
+    {
+      "kind": "transition",
+      "id": "slide-left",
+      "startSec": 1.4666666666666668,
+      "endSec": 2,
+      "effect": "slide",
+      "ease": "power3.inOut",
+      "props": {
+        "direction": "left"
+      },
+      "mode": "overlap",
+      "fromSceneId": "slide-a",
+      "toSceneId": "slide-b"
+    },
+    {
+      "kind": "scene",
+      "sceneId": "slide-b",
+      "startSec": 1.4666666666666668,
+      "endSec": 4
+    },
+    {
+      "kind": "transition",
+      "id": "push-up",
+      "startSec": 3.4,
+      "endSec": 4,
+      "effect": "push",
+      "ease": "power2.inOut",
+      "props": {
+        "direction": "up"
+      },
+      "mode": "overlap",
+      "fromSceneId": "slide-b",
+      "toSceneId": "slide-c"
+    },
+    {
+      "kind": "scene",
+      "sceneId": "slide-c",
+      "startSec": 3.4,
+      "endSec": 6
+    }
+  ],
+  "fps": 30,
+  "meta": {
+    "fps": 30,
+    "width": 1920,
+    "height": 1080
+  }
+}

@@ -34,8 +34,8 @@ Define a DOM-first, browser-native VideoML runtime where the XML document is the
 ---
 
 ## Canonical Root
-- Canonical root tag: `<videoml>`
-- The browser DOM uses `<videoml>` as the root element.
+- Canonical root tag: `<vml>`
+- The browser DOM uses `<vml>` as the root element.
 - `<video>` is not supported.
 
 ---
@@ -75,7 +75,7 @@ Dispatched on the root and bubbled to `window`:
 ---
 
 ## Inline JavaScript
-- `<script>` blocks inside `<videoml>` are executed when inserted.
+- `<script>` blocks inside `<vml>` are executed when inserted.
 - `on:*` attributes are compiled to event listeners.
 - Handler scope includes `event`, `target`, `timeline`, `root`.
 
@@ -125,11 +125,11 @@ Playback ignores `<events>`; it uses the recorded DOM state.
 ---
 
 ## Implementation Map
-- `src/dsl/xml.ts`: parse `<videoml>` root.
-- `apps/studio-web/lib/dsl-executor.ts`: parse `<videoml>` root for preview.
+- `src/dsl/xml.ts`: parse `<vml>` root.
+- `apps/studio-web/lib/dsl-executor.ts`: parse `<vml>` root for preview.
 - `apps/studio-web/components/vom-preview-player.tsx`: use DOM runtime.
-- `apps/studio-web/components/live-vom-page.tsx`: emit `<videoml>`.
-- `apps/studio-web/components/docs/live-demos.tsx`: update examples to `<videoml>`.
+- `apps/studio-web/components/live-vom-page.tsx`: emit `<vml>`.
+- `apps/studio-web/components/docs/live-demos.tsx`: update examples to `<vml>`.
 
 ---
 
@@ -159,7 +159,7 @@ Only the first demo auto-plays.
 
 ## Build Order
 1. Update canonical plan (this doc).
-2. Switch parser roots to `<videoml>`.
+2. Switch parser roots to `<vml>`.
 3. Implement DOM runtime + timeline core.
 4. Implement first-wave Web Components.
 5. Update docs demos and live page.

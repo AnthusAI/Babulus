@@ -110,6 +110,7 @@ export default function DocsLandingPage() {
                   ["components/colors", "Color Schemes", "Radix-based palettes for light and dark modes."],
                   ["components/typography", "Typefaces", "Curated font pairings for different video moods."],
                   ["animation", "Animation", "Frame-driven motion across layout, data, generative art, 3D, and motion graphics."],
+                  ["videoml/transitions", "Transitions", "Scene-to-scene motion, easing, and audio cues."],
                   ["components", "Components", "Off-the-shelf titles, overlays, callouts, and motion UI."],
                 ].map(([slug, label, description]) => (
                   <Link

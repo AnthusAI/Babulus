@@ -28,15 +28,15 @@ export const videomlConformanceDoc: DocsEntry = {
 
 <h2 id="required-elements">Required Elements</h2>
 <ul>
-  <li><code>&lt;videoml&gt;</code> root</li>
+  <li><code>&lt;vml&gt;</code> root</li>
   <li><code>&lt;scene&gt;</code>, <code>&lt;layer&gt;</code></li>
   <li><code>&lt;sequence&gt;</code>, <code>&lt;stack&gt;</code></li>
 </ul>
 
 <h2 id="required-attributes">Required Attributes</h2>
 <ul>
-  <li><code>id</code> on <code>&lt;videoml&gt;</code> and <code>&lt;scene&gt;</code></li>
-  <li><code>fps</code>, <code>width</code>, <code>height</code> on <code>&lt;videoml&gt;</code></li>
+  <li><code>id</code> on <code>&lt;vml&gt;</code> and <code>&lt;scene&gt;</code></li>
+  <li><code>fps</code>, <code>width</code>, <code>height</code> on <code>&lt;vml&gt;</code></li>
 </ul>
 
 <h2 id="timeline-api">Timeline API</h2>

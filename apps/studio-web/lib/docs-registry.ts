@@ -6,6 +6,7 @@ import { ttsAwsPollyQuickstartDoc } from "@/lib/docs-content/tts-aws-polly-quick
 import { ttsAzureSpeechQuickstartDoc } from "@/lib/docs-content/tts-azure-speech-quickstart";
 import { babulusLanguageDesignDoc } from "@/lib/docs-content/babulus-language-design";
 import { videomlStandardDoc } from "@/lib/docs-content/videoml-standard";
+import { videomlTransitionsDoc } from "@/lib/docs-content/videoml-transitions";
 import { videomlConformanceDoc } from "@/lib/docs-content/videoml-conformance";
 import { ttsElevenlabsGuideDoc } from "@/lib/docs-content/tts-elevenlabs-guide";
 import { technicalDoc } from "@/lib/docs-content/technical";
@@ -153,6 +154,7 @@ const RAW_DOCS: readonly DocsEntry[] = [
   componentsColorsDoc,
   componentsTypographyDoc,
   animationDoc,
+  videomlTransitionsDoc,
   componentsDoc,
   technicalDoc,
   configSetupDoc,

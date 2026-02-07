@@ -1,4 +1,4 @@
-<videoml id="animation-mix" title="Animation Mix" fps="30" width="1920" height="1080">
+<vml id="animation-mix" title="Animation Mix" fps="30" width="1920" height="1080">
   <voiceover provider="dry-run" />
   <scene id="mix" title="mix" styles='{"background":"var(--color-bg)"}'>
     <layer id="mix" z="10">
@@ -8,4 +8,4 @@
       <pause seconds="8s" />
     </cue>
   </scene>
-</videoml>
+</vml>

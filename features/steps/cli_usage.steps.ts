@@ -88,9 +88,9 @@ Given("a usage DSL file {string} with composition {string}", (relativePath: stri
   mkdirSync(join(workspace, "content"), { recursive: true });
   writeFileSync(
     path,
-    `<videoml id="${compositionId}" title="${compositionId}" fps="30" width="1280" height="720">
+    `<vml id="${compositionId}" title="${compositionId}" fps="30" width="1280" height="720">
   <scene id="scene" title="Scene" />
-</videoml>
+</vml>
 `,
   );
 });

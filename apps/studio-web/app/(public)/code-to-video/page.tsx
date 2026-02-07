@@ -9,38 +9,72 @@ export const metadata: Metadata = {
   description: "Write declarative XML and Babulus generates complete videos automatically—with AI voiceovers, automatic timing, and animated visuals.",
 };
 
-const exampleCode = `<videoml id="code-to-video-preview" title="Code to Video Preview" fps="30" width="1920" height="1080">
-  <scene id="intro">
+const exampleCode = `<vml id="code-to-video-preview" title="Code to Video Preview" fps="30" width="1920" height="1080">
+  <scene id="intro" title="intro">
     <layer id="content">
       <title-slide
-        props='{"eyebrow":"Code to Video","title":"Write Video. Ship Video.","subtitle":"From XML to cinematic motion in minutes.","verticalAlign":"center","horizontalAlign":"center","entranceStartFrame":-999}'
+        props='{"eyebrow":"Code to Video","title":"This video was made from code.","subtitle":"VideoML → motion, timing, and audio.","verticalAlign":"center","horizontalAlign":"center","entranceStartFrame":-999}'
       />
     </layer>
     <cue id="intro-vo">
-      <voice>Watch this. I write a few lines of VideoML, and Babulus turns them into a fully timed video—voiceover, motion, and layout all synchronized.</voice>
+      <voice>This video was made from code.</voice>
     </cue>
   </scene>
 
-  <scene id="layouts">
-    <layer id="content">
-      <two-column-layout-demo />
-    </layer>
-    <cue id="layouts-vo">
-      <voice>Babulus ships a library of off-the-shelf layouts you can drop in instantly—then move on.</voice>
-    </cue>
-  </scene>
+  <transition id="code-push-1" effect="push" duration="18f" ease="power2.inOut" props='{"direction":"left"}' />
 
-  <scene id="code">
+  <scene id="transition" title="transition">
     <layer id="content">
-      <bullet-list-screen
-        props='{"eyebrow":"Pipeline","title":"Your code becomes a production","subtitle":"Structure + cues = timing + motion","bullets":{"items":["Describe scenes, cues, and layout","AI narrates and times each beat","Reusable React components + motion UI","Render to MP4 or embed live"],"bulletStyle":"icon","bulletIcon":{"kind":"lucide","name":"check","size":44,"strokeWidth":3.2},"fontSize":48,"lineHeight":1.2,"spacing":24}}'
+      <title-slide
+        props='{"eyebrow":"Transition","title":"This transition was made from code.","subtitle":"Scene-to-scene motion is data-driven.","verticalAlign":"center","horizontalAlign":"center","entranceStartFrame":-999}'
       />
     </layer>
-    <cue id="code-vo">
-      <voice>Voiceover comes straight from this file. Babulus generates audio using pluggable providers like ElevenLabs, OpenAI, and AWS Polly, then computes cue timing from the real clip durations. Add a few words and it regenerates the voice and retimes every scene so everything stays perfectly in sync.</voice>
+    <cue id="transition-vo">
+      <voice>This transition was made from code.</voice>
     </cue>
   </scene>
-</videoml>`;
+
+  <transition id="code-push-2" effect="push" duration="18f" ease="power2.inOut" props='{"direction":"left"}' />
+
+  <scene id="animation" title="animation">
+    <layer id="content">
+      <anime-harness-demo />
+    </layer>
+    <cue id="animation-vo">
+      <voice>This animation was made from code.</voice>
+    </cue>
+  </scene>
+
+  <transition id="code-push-3" effect="push" duration="18f" ease="power2.inOut" props='{"direction":"left"}' />
+
+  <transition id="sfx-hit" effect="fade" duration="18f" ease="power2.out" overflow-audio="clip">
+    <sfx id="transition-hit" start="4f" clip-duration="0.6s" prompt="short impact" />
+  </transition>
+
+  <scene id="sfx" title="sound effects">
+    <layer id="content">
+      <title-slide
+        props='{"eyebrow":"Sound Effects","title":"This sound effect was made from code.","subtitle":"SFX cues can be attached to transitions.","verticalAlign":"center","horizontalAlign":"center","entranceStartFrame":-999}'
+      />
+    </layer>
+    <cue id="sfx-vo">
+      <voice>This sound effect was made from code.</voice>
+    </cue>
+  </scene>
+
+  <transition id="code-push-4" effect="push" duration="18f" ease="power2.inOut" props='{"direction":"left"}' />
+
+  <scene id="close" title="close">
+    <layer id="content">
+      <title-slide
+        props='{"eyebrow":"VideoML","title":"Make videos with code.","subtitle":"Render as MP4 or live HTML.","verticalAlign":"center","horizontalAlign":"center","entranceStartFrame":-999}'
+      />
+    </layer>
+    <cue id="close-vo">
+      <voice>Make videos with code.</voice>
+    </cue>
+  </scene>
+</vml>`;
 
 export default async function CodeToVideoPage() {
   const highlightedCode = await codeToHtml(exampleCode, {

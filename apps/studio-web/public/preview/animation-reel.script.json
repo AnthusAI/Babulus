@@ -1,421 +1,74 @@
 {
   "scenes": [
     {
-      "id": "reel",
-      "title": "reel",
+      "id": "reel-intro",
+      "title": "Animation",
       "startSec": 0,
-      "endSec": 17.6,
+      "endSec": 5.45,
       "styles": {
         "background": "var(--color-bg)"
       },
       "layers": [
         {
-          "id": "engine-framer",
-          "timing": {
-            "startSec": 0,
-            "endSec": 2.2
-          },
-          "zIndex": 10,
-          "components": [
-            {
-              "id": "framer-motion-demo-0",
-              "type": "FramerMotionDemo",
-              "props": {
-                "size": 240,
-                "sceneStartSec": 0
-              }
-            }
-          ]
-        },
-        {
-          "id": "label-framer",
-          "timing": {
-            "startSec": 0,
-            "endSec": 2.2
-          },
+          "id": "intro-title",
           "zIndex": 20,
           "components": [
             {
-              "id": "chapter-heading-0",
-              "type": "ChapterHeading",
+              "id": "title-0",
+              "type": "Title",
               "props": {
-                "number": "01",
-                "title": "Framer Motion",
-                "subtitle": "Layout + motion graphics",
-                "numberColor": "var(--color-accent)",
-                "layout": "side-by-side",
-                "numberEntrance": {
-                  "type": "fade",
-                  "from": 1,
-                  "to": 1,
-                  "durationFrames": 1
+                "text": "Animation",
+                "textAlign": "center",
+                "position": {
+                  "x": "50%",
+                  "y": 210
                 },
-                "titleEntrance": {
-                  "type": "fade",
-                  "from": 1,
-                  "to": 1,
-                  "durationFrames": 1
+                "fontSize": 96,
+                "fontWeight": 700,
+                "textColor": "var(--color-text, #ffffff)",
+                "color": "transparent",
+                "textEffect": {
+                  "effect": "shimmer",
+                  "unit": "chars",
+                  "durationFrames": 22,
+                  "staggerFrames": 2,
+                  "shimmerBrightness": 1.6,
+                  "shimmerColorFrom": "var(--color-text, #f2f4f8)",
+                  "shimmerColorTo": "var(--color-text-strong, #ffffff)"
                 },
+                "sceneStartSec": 0
+              }
+            },
+            {
+              "id": "subtitle-1",
+              "type": "Subtitle",
+              "props": {
+                "text": "A menu of built-in features, or roll your own.",
+                "textAlign": "center",
+                "position": {
+                  "x": "50%",
+                  "y": 340
+                },
+                "fontSize": 30,
+                "fontWeight": 500,
+                "color": "var(--color-text-muted, #c7c2bc)",
                 "sceneStartSec": 0
               }
             }
           ]
         },
         {
-          "id": "engine-d3",
-          "timing": {
-            "startSec": 2.2,
-            "endSec": 4.4
-          },
+          "id": "intro-demo",
           "zIndex": 10,
           "components": [
             {
-              "id": "d3-bar-chart-0",
-              "type": "D3BarChart",
+              "id": "gsap-principles-demo-0",
+              "type": "GsapPrinciplesDemo",
               "props": {
-                "sceneStartSec": 0
-              }
-            }
-          ]
-        },
-        {
-          "id": "label-d3",
-          "timing": {
-            "startSec": 2.2,
-            "endSec": 4.4
-          },
-          "zIndex": 20,
-          "components": [
-            {
-              "id": "chapter-heading-0",
-              "type": "ChapterHeading",
-              "props": {
-                "number": "02",
-                "title": "D3",
-                "subtitle": "Data visualization",
-                "numberColor": "var(--color-accent)",
-                "layout": "side-by-side",
-                "numberEntrance": {
-                  "type": "fade",
-                  "from": 1,
-                  "to": 1,
-                  "durationFrames": 1
-                },
-                "titleEntrance": {
-                  "type": "fade",
-                  "from": 1,
-                  "to": 1,
-                  "durationFrames": 1
-                },
-                "sceneStartSec": 0
-              }
-            }
-          ]
-        },
-        {
-          "id": "engine-processing",
-          "timing": {
-            "startSec": 4.4,
-            "endSec": 6.6
-          },
-          "zIndex": 10,
-          "components": [
-            {
-              "id": "p5-particles-0",
-              "type": "P5Particles",
-              "props": {
-                "particleCount": 30,
-                "sceneStartSec": 0
-              }
-            }
-          ]
-        },
-        {
-          "id": "label-processing",
-          "timing": {
-            "startSec": 4.4,
-            "endSec": 6.6
-          },
-          "zIndex": 20,
-          "components": [
-            {
-              "id": "chapter-heading-0",
-              "type": "ChapterHeading",
-              "props": {
-                "number": "03",
-                "title": "Processing / p5.js",
-                "subtitle": "Generative art",
-                "numberColor": "var(--color-accent)",
-                "layout": "side-by-side",
-                "numberEntrance": {
-                  "type": "fade",
-                  "from": 1,
-                  "to": 1,
-                  "durationFrames": 1
-                },
-                "titleEntrance": {
-                  "type": "fade",
-                  "from": 1,
-                  "to": 1,
-                  "durationFrames": 1
-                },
-                "sceneStartSec": 0
-              }
-            }
-          ]
-        },
-        {
-          "id": "engine-three",
-          "timing": {
-            "startSec": 6.6,
-            "endSec": 8.8
-          },
-          "zIndex": 10,
-          "components": [
-            {
-              "id": "three-orbit-0",
-              "type": "ThreeOrbit",
-              "props": {
-                "cubeSize": 160,
-                "sceneStartSec": 0
-              }
-            }
-          ]
-        },
-        {
-          "id": "label-three",
-          "timing": {
-            "startSec": 6.6,
-            "endSec": 8.8
-          },
-          "zIndex": 20,
-          "components": [
-            {
-              "id": "chapter-heading-0",
-              "type": "ChapterHeading",
-              "props": {
-                "number": "04",
-                "title": "Three.js",
-                "subtitle": "3D scenes",
-                "numberColor": "var(--color-accent)",
-                "layout": "side-by-side",
-                "numberEntrance": {
-                  "type": "fade",
-                  "from": 1,
-                  "to": 1,
-                  "durationFrames": 1
-                },
-                "titleEntrance": {
-                  "type": "fade",
-                  "from": 1,
-                  "to": 1,
-                  "durationFrames": 1
-                },
-                "sceneStartSec": 0
-              }
-            }
-          ]
-        },
-        {
-          "id": "engine-lottie",
-          "timing": {
-            "startSec": 8.8,
-            "endSec": 11
-          },
-          "zIndex": 10,
-          "components": [
-            {
-              "id": "lottie-badge-0",
-              "type": "LottieBadge",
-              "props": {
-                "size": 260,
-                "sceneStartSec": 0
-              }
-            }
-          ]
-        },
-        {
-          "id": "label-lottie",
-          "timing": {
-            "startSec": 8.8,
-            "endSec": 11
-          },
-          "zIndex": 20,
-          "components": [
-            {
-              "id": "chapter-heading-0",
-              "type": "ChapterHeading",
-              "props": {
-                "number": "05",
-                "title": "Lottie",
-                "subtitle": "After Effects assets",
-                "numberColor": "var(--color-accent)",
-                "layout": "side-by-side",
-                "numberEntrance": {
-                  "type": "fade",
-                  "from": 1,
-                  "to": 1,
-                  "durationFrames": 1
-                },
-                "titleEntrance": {
-                  "type": "fade",
-                  "from": 1,
-                  "to": 1,
-                  "durationFrames": 1
-                },
-                "sceneStartSec": 0
-              }
-            }
-          ]
-        },
-        {
-          "id": "engine-text",
-          "timing": {
-            "startSec": 11,
-            "endSec": 13.2
-          },
-          "zIndex": 10,
-          "components": [
-            {
-              "id": "text-effects-demo-0",
-              "type": "TextEffectsDemo",
-              "props": {
-                "sceneStartSec": 0
-              }
-            }
-          ]
-        },
-        {
-          "id": "label-text",
-          "timing": {
-            "startSec": 11,
-            "endSec": 13.2
-          },
-          "zIndex": 20,
-          "components": [
-            {
-              "id": "chapter-heading-0",
-              "type": "ChapterHeading",
-              "props": {
-                "number": "06",
-                "title": "Text Effects",
-                "subtitle": "Named effects vocabulary",
-                "numberColor": "var(--color-accent)",
-                "layout": "side-by-side",
-                "numberEntrance": {
-                  "type": "fade",
-                  "from": 1,
-                  "to": 1,
-                  "durationFrames": 1
-                },
-                "titleEntrance": {
-                  "type": "fade",
-                  "from": 1,
-                  "to": 1,
-                  "durationFrames": 1
-                },
-                "sceneStartSec": 0
-              }
-            }
-          ]
-        },
-        {
-          "id": "engine-anime",
-          "timing": {
-            "startSec": 13.2,
-            "endSec": 15.4
-          },
-          "zIndex": 10,
-          "components": [
-            {
-              "id": "anime-harness-demo-0",
-              "type": "AnimeHarnessDemo",
-              "props": {
-                "sceneStartSec": 0
-              }
-            }
-          ]
-        },
-        {
-          "id": "label-anime",
-          "timing": {
-            "startSec": 13.2,
-            "endSec": 15.4
-          },
-          "zIndex": 20,
-          "components": [
-            {
-              "id": "chapter-heading-0",
-              "type": "ChapterHeading",
-              "props": {
-                "number": "07",
-                "title": "Anime.js",
-                "subtitle": "Low-level animation engine",
-                "numberColor": "var(--color-accent)",
-                "layout": "side-by-side",
-                "numberEntrance": {
-                  "type": "fade",
-                  "from": 1,
-                  "to": 1,
-                  "durationFrames": 1
-                },
-                "titleEntrance": {
-                  "type": "fade",
-                  "from": 1,
-                  "to": 1,
-                  "durationFrames": 1
-                },
-                "sceneStartSec": 0
-              }
-            }
-          ]
-        },
-        {
-          "id": "engine-mix",
-          "timing": {
-            "startSec": 15.4,
-            "endSec": 17.6
-          },
-          "zIndex": 10,
-          "components": [
-            {
-              "id": "mix-and-match-demo-0",
-              "type": "MixAndMatchDemo",
-              "props": {
-                "sceneStartSec": 0
-              }
-            }
-          ]
-        },
-        {
-          "id": "label-mix",
-          "timing": {
-            "startSec": 15.4,
-            "endSec": 17.6
-          },
-          "zIndex": 20,
-          "components": [
-            {
-              "id": "chapter-heading-0",
-              "type": "ChapterHeading",
-              "props": {
-                "number": "08",
-                "title": "Mix + Match",
-                "subtitle": "Multiple engines in one scene",
-                "numberColor": "var(--color-accent)",
-                "layout": "side-by-side",
-                "numberEntrance": {
-                  "type": "fade",
-                  "from": 1,
-                  "to": 1,
-                  "durationFrames": 1
-                },
-                "titleEntrance": {
-                  "type": "fade",
-                  "from": 1,
-                  "to": 1,
-                  "durationFrames": 1
-                },
+                "centerX": 960,
+                "centerY": 420,
+                "width": 1200,
+                "height": 320,
                 "sceneStartSec": 0
               }
             }
@@ -424,22 +77,883 @@
       ],
       "cues": [
         {
-          "id": "hold",
-          "label": "hold",
+          "id": "hold-intro",
+          "label": "hold-intro",
           "startSec": 0,
-          "endSec": 17.6,
-          "text": "",
+          "endSec": 5.45,
+          "text": "Use any animation framework to create motion graphics and effects.",
           "segments": [
             {
-              "type": "pause",
+              "type": "tts",
               "startSec": 0,
-              "endSec": 17.6,
-              "durationSec": 17.6
+              "endSec": 4.45,
+              "text": "Use any animation framework to create motion graphics and effects."
+            },
+            {
+              "type": "pause",
+              "startSec": 4.45,
+              "endSec": 5.45,
+              "durationSec": 1
             }
           ],
           "bullets": []
         }
       ]
+    },
+    {
+      "id": "reel-framer",
+      "title": "Framer",
+      "startSec": 5.8500000000000005,
+      "endSec": 12.4,
+      "styles": {
+        "background": "var(--color-bg)"
+      },
+      "layers": [
+        {
+          "id": "engine-framer",
+          "styles": {
+            "transform": "translateX(320px)"
+          },
+          "zIndex": 10,
+          "components": [
+            {
+              "id": "framer-motion-demo-0",
+              "type": "FramerMotionDemo",
+              "props": {
+                "size": 240,
+                "centerX": 1280,
+                "centerY": 540,
+                "sceneStartSec": 5.45
+              }
+            }
+          ]
+        },
+        {
+          "id": "label-framer",
+          "zIndex": 20,
+          "components": [
+            {
+              "id": "chapter-heading-0",
+              "type": "ChapterHeading",
+              "props": {
+                "number": "01",
+                "showNumber": false,
+                "title": "Animate your layout",
+                "subtitle": "With frameworks like GSAP, Framer Motion, etc",
+                "numberColor": "var(--color-accent)",
+                "layout": "stacked",
+                "align": "left",
+                "background": "transparent",
+                "numberEntrance": {
+                  "type": "fade",
+                  "from": 1,
+                  "to": 1,
+                  "durationFrames": 1
+                },
+                "titleEntrance": {
+                  "type": "fade",
+                  "from": 1,
+                  "to": 1,
+                  "durationFrames": 1
+                },
+                "sceneStartSec": 5.45
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "hold-framer",
+          "label": "hold-framer",
+          "startSec": 5.8500000000000005,
+          "endSec": 12.4,
+          "text": "The elements in your design don\\u2019t need to sit still. Animate them with frameworks like Framer Motion.",
+          "segments": [
+            {
+              "type": "tts",
+              "startSec": 5.8500000000000005,
+              "endSec": 11.4,
+              "text": "The elements in your design don\\u2019t need to sit still. Animate them with frameworks like Framer Motion."
+            },
+            {
+              "type": "pause",
+              "startSec": 11.4,
+              "endSec": 12.4,
+              "durationSec": 1
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "reel-d3",
+      "title": "D3",
+      "startSec": 12.8,
+      "endSec": 19.8,
+      "styles": {
+        "background": "var(--color-bg)"
+      },
+      "layers": [
+        {
+          "id": "engine-d3",
+          "styles": {
+            "transform": "translateX(320px) scale(0.75)",
+            "transformOrigin": "center center"
+          },
+          "zIndex": 10,
+          "components": [
+            {
+              "id": "d3-bar-chart-0",
+              "type": "D3BarChart",
+              "props": {
+                "padding": 180,
+                "sceneStartSec": 12
+              }
+            }
+          ]
+        },
+        {
+          "id": "label-d3",
+          "zIndex": 20,
+          "components": [
+            {
+              "id": "chapter-heading-0",
+              "type": "ChapterHeading",
+              "props": {
+                "number": "02",
+                "showNumber": false,
+                "title": "Visualize your data",
+                "subtitle": "With tools like D3.js",
+                "numberColor": "var(--color-accent)",
+                "layout": "stacked",
+                "align": "left",
+                "background": "transparent",
+                "numberEntrance": {
+                  "type": "fade",
+                  "from": 1,
+                  "to": 1,
+                  "durationFrames": 1
+                },
+                "titleEntrance": {
+                  "type": "fade",
+                  "from": 1,
+                  "to": 1,
+                  "durationFrames": 1
+                },
+                "sceneStartSec": 12
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "hold-d3",
+          "label": "hold-d3",
+          "startSec": 12.8,
+          "endSec": 19.8,
+          "text": "Visualize data to tell the story behind the numbers, with tools like D3.js.",
+          "segments": [
+            {
+              "type": "tts",
+              "startSec": 12.8,
+              "endSec": 18.8,
+              "text": "Visualize data to tell the story behind the numbers, with tools like D3.js."
+            },
+            {
+              "type": "pause",
+              "startSec": 18.8,
+              "endSec": 19.8,
+              "durationSec": 1
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "reel-processing",
+      "title": "Processing",
+      "startSec": 20.2,
+      "endSec": 27.75,
+      "styles": {
+        "background": "var(--color-bg)"
+      },
+      "layers": [
+        {
+          "id": "engine-processing",
+          "zIndex": 10,
+          "components": [
+            {
+              "id": "p5-particles-0",
+              "type": "P5Particles",
+              "props": {
+                "particleCount": 30,
+                "overscanX": 320,
+                "focusX": 0.66,
+                "backgroundDarken": 0.45,
+                "sceneStartSec": 19
+              }
+            }
+          ]
+        },
+        {
+          "id": "label-processing",
+          "zIndex": 20,
+          "components": [
+            {
+              "id": "chapter-heading-0",
+              "type": "ChapterHeading",
+              "props": {
+                "number": "04",
+                "showNumber": false,
+                "title": "Generative visuals",
+                "subtitle": "Built with Processing",
+                "numberColor": "var(--color-accent)",
+                "layout": "stacked",
+                "align": "left",
+                "background": "transparent",
+                "numberEntrance": {
+                  "type": "fade",
+                  "from": 1,
+                  "to": 1,
+                  "durationFrames": 1
+                },
+                "titleEntrance": {
+                  "type": "fade",
+                  "from": 1,
+                  "to": 1,
+                  "durationFrames": 1
+                },
+                "sceneStartSec": 19
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "hold-processing",
+          "label": "hold-processing",
+          "startSec": 20.2,
+          "endSec": 27.75,
+          "text": "Create stunning visual art for backgrounds, transitions, and content with Processing.",
+          "segments": [
+            {
+              "type": "tts",
+              "startSec": 20.2,
+              "endSec": 26.75,
+              "text": "Create stunning visual art for backgrounds, transitions, and content with Processing."
+            },
+            {
+              "type": "pause",
+              "startSec": 26.75,
+              "endSec": 27.75,
+              "durationSec": 1
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "reel-three",
+      "title": "Three",
+      "startSec": 28.15,
+      "endSec": 34.7,
+      "styles": {
+        "background": "var(--color-bg)"
+      },
+      "layers": [
+        {
+          "id": "engine-three",
+          "zIndex": 10,
+          "components": [
+            {
+              "id": "three-orbit-0",
+              "type": "ThreeOrbit",
+              "props": {
+                "cubeSize": 160,
+                "overscanX": 320,
+                "focusX": 0.66,
+                "sceneStartSec": 26.55
+              }
+            }
+          ]
+        },
+        {
+          "id": "label-three",
+          "zIndex": 20,
+          "components": [
+            {
+              "id": "chapter-heading-0",
+              "type": "ChapterHeading",
+              "props": {
+                "number": "03",
+                "showNumber": false,
+                "title": "3D worlds and depth",
+                "subtitle": "Built with Three.js",
+                "numberColor": "var(--color-accent)",
+                "layout": "stacked",
+                "align": "left",
+                "background": "transparent",
+                "numberEntrance": {
+                  "type": "fade",
+                  "from": 1,
+                  "to": 1,
+                  "durationFrames": 1
+                },
+                "titleEntrance": {
+                  "type": "fade",
+                  "from": 1,
+                  "to": 1,
+                  "durationFrames": 1
+                },
+                "sceneStartSec": 26.55
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "hold-three",
+          "label": "hold-three",
+          "startSec": 28.15,
+          "endSec": 34.7,
+          "text": "Build rich 3D scenes and spatial layers with Three.js.",
+          "segments": [
+            {
+              "type": "tts",
+              "startSec": 28.15,
+              "endSec": 33.7,
+              "text": "Build rich 3D scenes and spatial layers with Three.js."
+            },
+            {
+              "type": "pause",
+              "startSec": 33.7,
+              "endSec": 34.7,
+              "durationSec": 1
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "reel-lottie",
+      "title": "Lottie",
+      "startSec": 35.099999999999994,
+      "endSec": 41.95,
+      "styles": {
+        "background": "var(--color-bg)"
+      },
+      "layers": [
+        {
+          "id": "engine-lottie",
+          "styles": {
+            "transform": "translateX(320px)"
+          },
+          "zIndex": 10,
+          "components": [
+            {
+              "id": "lottie-badge-0",
+              "type": "LottieBadge",
+              "props": {
+                "size": 980,
+                "sceneStartSec": 33.1
+              }
+            }
+          ]
+        },
+        {
+          "id": "label-lottie",
+          "zIndex": 20,
+          "components": [
+            {
+              "id": "chapter-heading-0",
+              "type": "ChapterHeading",
+              "props": {
+                "number": "05",
+                "showNumber": false,
+                "title": "After Effects motion",
+                "subtitle": "Delivered with Lottie",
+                "numberColor": "var(--color-accent)",
+                "layout": "stacked",
+                "align": "left",
+                "background": "transparent",
+                "numberEntrance": {
+                  "type": "fade",
+                  "from": 1,
+                  "to": 1,
+                  "durationFrames": 1
+                },
+                "titleEntrance": {
+                  "type": "fade",
+                  "from": 1,
+                  "to": 1,
+                  "durationFrames": 1
+                },
+                "sceneStartSec": 33.1
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "hold-lottie",
+          "label": "hold-lottie",
+          "startSec": 35.099999999999994,
+          "endSec": 41.95,
+          "text": "Bring motion graphics designed in After Effects straight into your video with Lottie.",
+          "segments": [
+            {
+              "type": "tts",
+              "startSec": 35.099999999999994,
+              "endSec": 40.95,
+              "text": "Bring motion graphics designed in After Effects straight into your video with Lottie."
+            },
+            {
+              "type": "pause",
+              "startSec": 40.95,
+              "endSec": 41.95,
+              "durationSec": 1
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "reel-text",
+      "title": "Text Effects",
+      "startSec": 42.349999999999994,
+      "endSec": 48.05,
+      "styles": {
+        "background": "var(--color-bg)"
+      },
+      "layers": [
+        {
+          "id": "engine-text",
+          "styles": {
+            "transform": "translateX(420px)"
+          },
+          "zIndex": 10,
+          "components": [
+            {
+              "id": "text-effects-demo-0",
+              "type": "TextEffectsDemo",
+              "props": {
+                "sceneStartSec": 39.95
+              }
+            }
+          ]
+        },
+        {
+          "id": "label-text",
+          "zIndex": 20,
+          "components": [
+            {
+              "id": "chapter-heading-0",
+              "type": "ChapterHeading",
+              "props": {
+                "number": "06",
+                "showNumber": false,
+                "title": "Text effects",
+                "subtitle": "Curated effects + custom",
+                "numberColor": "var(--color-accent)",
+                "layout": "stacked",
+                "align": "left",
+                "background": "transparent",
+                "numberEntrance": {
+                  "type": "fade",
+                  "from": 1,
+                  "to": 1,
+                  "durationFrames": 1
+                },
+                "titleEntrance": {
+                  "type": "fade",
+                  "from": 1,
+                  "to": 1,
+                  "durationFrames": 1
+                },
+                "titleEffect": {
+                  "effect": "shimmer",
+                  "unit": "chars",
+                  "durationFrames": 18,
+                  "staggerFrames": 2,
+                  "shimmerBrightness": 1.6,
+                  "shimmerColorFrom": "var(--color-text, #f2f4f8)",
+                  "shimmerColorTo": "var(--color-text-strong, #ffffff)"
+                },
+                "sceneStartSec": 39.95
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "hold-text",
+          "label": "hold-text",
+          "startSec": 42.349999999999994,
+          "endSec": 48.05,
+          "text": "Choose from a menu of text effects, or craft your own animations.",
+          "segments": [
+            {
+              "type": "tts",
+              "startSec": 42.349999999999994,
+              "endSec": 47.05,
+              "text": "Choose from a menu of text effects, or craft your own animations."
+            },
+            {
+              "type": "pause",
+              "startSec": 47.05,
+              "endSec": 48.05,
+              "durationSec": 1
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "reel-anime",
+      "title": "Anime",
+      "startSec": 48.45,
+      "endSec": 53.55,
+      "styles": {
+        "background": "var(--color-bg)"
+      },
+      "layers": [
+        {
+          "id": "engine-anime",
+          "styles": {
+            "transform": "translateX(270px) scale(0.74)",
+            "transformOrigin": "center center",
+            "overflow": "hidden"
+          },
+          "zIndex": 10,
+          "components": [
+            {
+              "id": "anime-harness-demo-0",
+              "type": "AnimeHarnessDemo",
+              "props": {
+                "sceneStartSec": 45.650000000000006
+              }
+            }
+          ]
+        },
+        {
+          "id": "label-anime",
+          "zIndex": 20,
+          "components": [
+            {
+              "id": "chapter-heading-0",
+              "type": "ChapterHeading",
+              "props": {
+                "number": "07",
+                "showNumber": false,
+                "title": "Layouts & grids",
+                "subtitle": "Powered by Anime.js",
+                "numberColor": "var(--color-accent)",
+                "layout": "stacked",
+                "align": "left",
+                "background": "transparent",
+                "numberEntrance": {
+                  "type": "fade",
+                  "from": 1,
+                  "to": 1,
+                  "durationFrames": 1
+                },
+                "titleEntrance": {
+                  "type": "fade",
+                  "from": 1,
+                  "to": 1,
+                  "durationFrames": 1
+                },
+                "sceneStartSec": 45.650000000000006
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "hold-anime",
+          "label": "hold-anime",
+          "startSec": 48.45,
+          "endSec": 53.55,
+          "text": "Animate layout changes and responsive grids with Anime.js.",
+          "segments": [
+            {
+              "type": "tts",
+              "startSec": 48.45,
+              "endSec": 52.55,
+              "text": "Animate layout changes and responsive grids with Anime.js."
+            },
+            {
+              "type": "pause",
+              "startSec": 52.55,
+              "endSec": 53.55,
+              "durationSec": 1
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "reel-mix",
+      "title": "Mix",
+      "startSec": 53.95,
+      "endSec": 58.75,
+      "styles": {
+        "background": "var(--color-bg)"
+      },
+      "layers": [
+        {
+          "id": "engine-mix",
+          "zIndex": 10,
+          "components": [
+            {
+              "id": "mix-and-match-demo-0",
+              "type": "MixAndMatchDemo",
+              "props": {
+                "sceneStartSec": 50.75000000000001
+              }
+            }
+          ]
+        },
+        {
+          "id": "label-mix",
+          "zIndex": 20,
+          "components": [
+            {
+              "id": "chapter-heading-0",
+              "type": "ChapterHeading",
+              "props": {
+                "number": "08",
+                "showNumber": false,
+                "title": "Mix and match engines",
+                "subtitle": "Combine tools in one scene",
+                "numberColor": "var(--color-accent)",
+                "layout": "stacked",
+                "align": "left",
+                "background": "transparent",
+                "numberEntrance": {
+                  "type": "fade",
+                  "from": 1,
+                  "to": 1,
+                  "durationFrames": 1
+                },
+                "titleEntrance": {
+                  "type": "fade",
+                  "from": 1,
+                  "to": 1,
+                  "durationFrames": 1
+                },
+                "sceneStartSec": 50.75000000000001
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "hold-mix",
+          "label": "hold-mix",
+          "startSec": 53.95,
+          "endSec": 58.75,
+          "text": "Mix multiple engines together in a single scene.",
+          "segments": [
+            {
+              "type": "tts",
+              "startSec": 53.95,
+              "endSec": 57.75,
+              "text": "Mix multiple engines together in a single scene."
+            },
+            {
+              "type": "pause",
+              "startSec": 57.75,
+              "endSec": 58.75,
+              "durationSec": 1
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    }
+  ],
+  "timeline": [
+    {
+      "kind": "scene",
+      "sceneId": "reel-intro",
+      "startSec": 0,
+      "endSec": 5.45
+    },
+    {
+      "kind": "transition",
+      "id": "reel-push-0",
+      "startSec": 5.45,
+      "endSec": 5.8500000000000005,
+      "effect": "push",
+      "ease": "power2.inOut",
+      "props": {
+        "direction": "left"
+      },
+      "mode": "insert",
+      "fromSceneId": "reel-intro",
+      "toSceneId": "reel-framer"
+    },
+    {
+      "kind": "scene",
+      "sceneId": "reel-framer",
+      "startSec": 5.8500000000000005,
+      "endSec": 12.4
+    },
+    {
+      "kind": "transition",
+      "id": "reel-push-1",
+      "startSec": 12.4,
+      "endSec": 12.8,
+      "effect": "push",
+      "ease": "power2.inOut",
+      "props": {
+        "direction": "left"
+      },
+      "mode": "insert",
+      "fromSceneId": "reel-framer",
+      "toSceneId": "reel-d3"
+    },
+    {
+      "kind": "scene",
+      "sceneId": "reel-d3",
+      "startSec": 12.8,
+      "endSec": 19.8
+    },
+    {
+      "kind": "transition",
+      "id": "reel-push-2",
+      "startSec": 19.8,
+      "endSec": 20.2,
+      "effect": "push",
+      "ease": "power2.inOut",
+      "props": {
+        "direction": "left"
+      },
+      "mode": "insert",
+      "fromSceneId": "reel-d3",
+      "toSceneId": "reel-processing"
+    },
+    {
+      "kind": "scene",
+      "sceneId": "reel-processing",
+      "startSec": 20.2,
+      "endSec": 27.75
+    },
+    {
+      "kind": "transition",
+      "id": "reel-push-3",
+      "startSec": 27.75,
+      "endSec": 28.15,
+      "effect": "push",
+      "ease": "power2.inOut",
+      "props": {
+        "direction": "left"
+      },
+      "mode": "insert",
+      "fromSceneId": "reel-processing",
+      "toSceneId": "reel-three"
+    },
+    {
+      "kind": "scene",
+      "sceneId": "reel-three",
+      "startSec": 28.15,
+      "endSec": 34.7
+    },
+    {
+      "kind": "transition",
+      "id": "reel-push-4",
+      "startSec": 34.7,
+      "endSec": 35.1,
+      "effect": "push",
+      "ease": "power2.inOut",
+      "props": {
+        "direction": "left"
+      },
+      "mode": "insert",
+      "fromSceneId": "reel-three",
+      "toSceneId": "reel-lottie"
+    },
+    {
+      "kind": "scene",
+      "sceneId": "reel-lottie",
+      "startSec": 35.099999999999994,
+      "endSec": 41.95
+    },
+    {
+      "kind": "transition",
+      "id": "reel-push-5",
+      "startSec": 41.95,
+      "endSec": 42.35,
+      "effect": "push",
+      "ease": "power2.inOut",
+      "props": {
+        "direction": "left"
+      },
+      "mode": "insert",
+      "fromSceneId": "reel-lottie",
+      "toSceneId": "reel-text"
+    },
+    {
+      "kind": "scene",
+      "sceneId": "reel-text",
+      "startSec": 42.349999999999994,
+      "endSec": 48.05
+    },
+    {
+      "kind": "transition",
+      "id": "reel-push-6",
+      "startSec": 48.05,
+      "endSec": 48.449999999999996,
+      "effect": "push",
+      "ease": "power2.inOut",
+      "props": {
+        "direction": "left"
+      },
+      "mode": "insert",
+      "fromSceneId": "reel-text",
+      "toSceneId": "reel-anime"
+    },
+    {
+      "kind": "scene",
+      "sceneId": "reel-anime",
+      "startSec": 48.45,
+      "endSec": 53.55
+    },
+    {
+      "kind": "transition",
+      "id": "reel-push-7",
+      "startSec": 53.55,
+      "endSec": 53.949999999999996,
+      "effect": "push",
+      "ease": "power2.inOut",
+      "props": {
+        "direction": "left"
+      },
+      "mode": "insert",
+      "fromSceneId": "reel-anime",
+      "toSceneId": "reel-mix"
+    },
+    {
+      "kind": "scene",
+      "sceneId": "reel-mix",
+      "startSec": 53.95,
+      "endSec": 58.75
     }
   ],
   "fps": 30,

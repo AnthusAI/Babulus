@@ -5,7 +5,7 @@ import { PreviewEmbed } from "@/components/marketing/preview-embed";
 export function Hero() {
   return (
     <section className="space-y-6 pb-8 pt-6 md:pb-12 md:pt-10 lg:py-32">
-      <div className="container flex max-w-[64rem] flex-col items-center gap-4 text-center">
+      <div className="container flex max-w-[80rem] flex-col items-center gap-4 text-center">
         <p className="text-xs font-semibold uppercase tracking-[0.2em] text-foreground/60">
           Videos produced for you, not by you.
         </p>
@@ -28,8 +28,8 @@ export function Hero() {
           </Link>
         </div>
 
-        <div className="w-full max-w-[56rem] pt-8">
-            <PreviewEmbed id="home-elevator-preview" showControls />
+        <div className="w-full max-w-[80rem] pt-8">
+          <PreviewEmbed id="home-intro-preview" showControls />
         </div>
       </div>
     </section>

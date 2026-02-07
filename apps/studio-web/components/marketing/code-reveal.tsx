@@ -43,14 +43,14 @@ export function CodeReveal() {
         ) : (
           <div className="absolute inset-0 bg-[#1e1e1e] p-6 overflow-auto text-sm font-mono text-white/80">
             <pre>
-              {`<videoml id="hello-world" title="Hello World" fps="30" width="1920" height="1080">
+              {`<vml id="hello-world" title="Hello World" fps="30" width="1920" height="1080">
   <scene id="intro" duration="5s">
     <layer id="content">
       <text props='{"content":"HELLO WORLD","fontSize":120,"fontWeight":"bold","color":"white"}' />
     </layer>
     <audio src="./assets/intro.mp3" />
   </scene>
-</videoml>`}
+</vml>`}
             </pre>
           </div>
         )}

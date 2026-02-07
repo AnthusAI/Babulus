@@ -1,4 +1,4 @@
-<videoml id="components-callout" title="Components Callout" fps="30" width="1920" height="1080">
+<vml id="components-callout" title="Components Callout" fps="30" width="1920" height="1080">
   <voiceover provider="dry-run" />
   <scene id="callout-demo" title="callout-demo" styles='{"background":"var(--color-bg)"}'>
     <layer id="code" z="10">
@@ -11,4 +11,4 @@
       <pause seconds="6s" />
     </cue>
   </scene>
-</videoml>
+</vml>

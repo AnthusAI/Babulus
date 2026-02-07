@@ -1,0 +1,31 @@
+<vml id="transitions-wipe" title="Transitions Wipe" fps="30" width="1920" height="1080">
+  <voiceover provider="dry-run" />
+
+  <scene id="wipe-a" title="Wipe A" styles='{"background":"#7a1f1f"}'>
+    <layer id="bg" z="0">
+      <video-background props='{"color":"#7a1f1f"}' />
+    </layer>
+    <layer id="title" z="10">
+      <video-title props='{"text":"Wipe Right","color":"var(--color-primary)","textColor":"var(--color-text)","position":{"x":180,"y":320}}' />
+      <video-subtitle props='{"text":"Hard edge, custom ease","color":"var(--color-text-muted)","fontSize":30,"fontWeight":500,"position":{"x":180,"y":420}}' />
+    </layer>
+    <cue id="hold-a" label="hold-a">
+      <pause seconds="2s" />
+    </cue>
+  </scene>
+
+  <transition id="wipe-right" effect="wipe" duration="20f" ease="expo.inOut" props='{"direction":"right"}' />
+
+  <scene id="wipe-b" title="Wipe B" styles='{"background":"#1f3a7a"}'>
+    <layer id="bg" z="0">
+      <video-background props='{"color":"#1f3a7a"}' />
+    </layer>
+    <layer id="title" z="10">
+      <video-title props='{"text":"Wipe Complete","color":"var(--color-primary)","textColor":"var(--color-text)","position":{"x":180,"y":320}}' />
+      <video-subtitle props='{"text":"Scene B revealed","color":"var(--color-text-muted)","fontSize":30,"fontWeight":500,"position":{"x":180,"y":420}}' />
+    </layer>
+    <cue id="hold-b" label="hold-b">
+      <pause seconds="2s" />
+    </cue>
+  </scene>
+</vml>

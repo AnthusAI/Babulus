@@ -18,6 +18,9 @@
               "type": "P5Particles",
               "props": {
                 "particleCount": 30,
+                "overscanX": 320,
+                "focusX": 0.5,
+                "backgroundDarken": 0.35,
                 "sceneStartSec": 0
               }
             }
@@ -42,6 +45,14 @@
           "bullets": []
         }
       ]
+    }
+  ],
+  "timeline": [
+    {
+      "kind": "scene",
+      "sceneId": "processing",
+      "startSec": 0,
+      "endSec": 6
     }
   ],
   "fps": 30,

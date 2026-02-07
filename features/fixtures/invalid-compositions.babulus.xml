@@ -1,8 +1,8 @@
-<videoml id="intro" title="Intro" fps="30" width="1920" height="1080">
+<vml id="intro" title="Intro" fps="30" width="1920" height="1080">
   <scene id="title" title="Title">
     <cue id="hook">
       <voice>Hello</voice>
     </cue>
   </scene>
   <scene title="Missing Id" />
-</videoml>
+</vml>

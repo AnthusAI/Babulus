@@ -2,55 +2,55 @@
   "items": [
     {
       "type": "tts",
-      "sceneId": "title",
-      "cueId": "title-cue",
+      "sceneId": "open-standard",
+      "cueId": "open-standard-cue",
       "startSec": 0,
-      "endSec": 10.4,
+      "endSec": 6.2,
       "segments": [
         {
           "type": "tts",
           "startSec": 0,
-          "endSec": 10.4,
-          "text": "Babulus lets you create videos the same way you build web pages. Write VideoML and render it as a video or as live HTML.",
-          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/home-elevator-preview/env/development/segments/title--title-cue--tts--92b34b49a4e9--1.wav",
-          "durationSec": 10.4,
-          "rawDurationSec": 10.4,
+          "endSec": 6.2,
+          "text": "Babulus uses the open VideoML standard, where code defines every scene and cue.",
+          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/home-elevator-preview/env/development/segments/open-standard--open-standard-cue--tts--4173f4e7e2ba--1.wav",
+          "durationSec": 6.2,
+          "rawDurationSec": 6.2,
           "trimEndSec": 0
         }
       ]
     },
     {
       "type": "tts",
-      "sceneId": "layout-title",
-      "cueId": "layout-title-cue",
-      "startSec": 10.4,
-      "endSec": 16.75,
+      "sceneId": "ai-agents",
+      "cueId": "ai-agents-cue",
+      "startSec": 6.6000000000000005,
+      "endSec": 13.9,
       "segments": [
         {
           "type": "tts",
-          "startSec": 10.4,
-          "endSec": 16.75,
-          "text": "Start with polished layout primitives like title slides, chapter breaks, and branded screens.",
-          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/home-elevator-preview/env/development/segments/layout-title--layout-title-cue--tts--de845e6382eb--1.wav",
-          "durationSec": 6.35,
-          "rawDurationSec": 6.35,
+          "startSec": 6.6000000000000005,
+          "endSec": 13.9,
+          "text": "AI agents are great at writing code, which means they can now produce videos through VideoML.",
+          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/home-elevator-preview/env/development/segments/ai-agents--ai-agents-cue--tts--68d3af63cb49--1.wav",
+          "durationSec": 7.3,
+          "rawDurationSec": 7.3,
           "trimEndSec": 0
         }
       ]
     },
     {
       "type": "tts",
-      "sceneId": "layout-two-column",
-      "cueId": "layout-two-column-cue",
-      "startSec": 16.75,
-      "endSec": 24.6,
+      "sceneId": "layout-one",
+      "cueId": "library-voice-1",
+      "startSec": 14.3,
+      "endSec": 22.150000000000002,
       "segments": [
         {
           "type": "tts",
-          "startSec": 16.75,
-          "endSec": 24.6,
-          "text": "Drop in structured layouts like two-column and three-column screens without hand-tuning motion.",
-          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/home-elevator-preview/env/development/segments/layout-two-column--layout-two-column-cue--tts--122c830925f4--1.wav",
+          "startSec": 14.3,
+          "endSec": 22.150000000000002,
+          "text": "Babulus adds a library of off-the-shelf components on top of VideoML: layouts, transitions, motion, and more.",
+          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/home-elevator-preview/env/development/segments/layout-one--library-voice-1--tts--5919b8f7a903--1.wav",
           "durationSec": 7.85,
           "rawDurationSec": 7.85,
           "trimEndSec": 0
@@ -59,64 +59,77 @@
     },
     {
       "type": "tts",
-      "sceneId": "layout-grid",
-      "cueId": "layout-grid-cue",
-      "startSec": 24.6,
-      "endSec": 29.700000000000003,
+      "sceneId": "brand-a",
+      "cueId": "transitions-voice-1",
+      "startSec": 26.249999999999993,
+      "endSec": 29.999999999999993,
       "segments": [
         {
           "type": "tts",
-          "startSec": 24.6,
-          "endSec": 29.700000000000003,
-          "text": "Compose dashboards, highlights, and feature grids with reusable templates.",
-          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/home-elevator-preview/env/development/segments/layout-grid--layout-grid-cue--tts--f92c565ca942--1.wav",
-          "durationSec": 5.1,
-          "rawDurationSec": 5.1,
+          "startSec": 26.249999999999993,
+          "endSec": 29.999999999999993,
+          "text": "Use common transitions, or build branded ones.",
+          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/home-elevator-preview/env/development/segments/brand-a--transitions-voice-1--tts--626fd44c3078--1.wav",
+          "durationSec": 3.75,
+          "rawDurationSec": 3.75,
           "trimEndSec": 0
         }
       ]
     },
     {
       "type": "tts",
-      "sceneId": "bullets",
-      "cueId": "bullets-cue",
-      "startSec": 29.700000000000003,
-      "endSec": 37.050000000000004,
+      "sceneId": "animations-framer",
+      "cueId": "animations-voice-1",
+      "startSec": 30.999999999999993,
+      "endSec": 34.79999999999999,
       "segments": [
         {
           "type": "tts",
-          "startSec": 29.700000000000003,
-          "endSec": 37.050000000000004,
-          "text": "Render to MP4 for distribution, or embed the same VideoML as live, interactive HTML on your site.",
-          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/home-elevator-preview/env/development/segments/bullets--bullets-cue--tts--1cfaa8d6cbf3--1.wav",
-          "durationSec": 7.35,
-          "rawDurationSec": 7.35,
+          "startSec": 30.999999999999993,
+          "endSec": 34.79999999999999,
+          "text": "Any animation you can do on a web page can be part of your video.",
+          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/home-elevator-preview/env/development/segments/animations-framer--animations-voice-1--tts--66b5ed9ee086--1.wav",
+          "durationSec": 3.8,
+          "rawDurationSec": 3.8,
           "trimEndSec": 0
         }
       ]
     },
     {
       "type": "tts",
-      "sceneId": "close",
-      "cueId": "close-cue",
-      "startSec": 37.050000000000004,
-      "endSec": 47.35000000000001,
+      "sceneId": "typefaces",
+      "cueId": "typefaces-cue",
+      "startSec": 41.36666666666666,
+      "endSec": 45.11666666666666,
       "segments": [
         {
           "type": "tts",
-          "startSec": 37.050000000000004,
-          "endSec": 45.35000000000001,
-          "text": "Babulus is the code-to-video stack. Play consistent visuals across your website and your videos.",
-          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/home-elevator-preview/env/development/segments/close--close-cue--tts--60e2b68f407f--1.wav",
-          "durationSec": 8.3,
-          "rawDurationSec": 8.3,
+          "startSec": 41.36666666666666,
+          "endSec": 45.11666666666666,
+          "text": "Style everything with typefaces and color themes.",
+          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/home-elevator-preview/env/development/segments/typefaces--typefaces-cue--tts--dd0029277e01--1.wav",
+          "durationSec": 3.75,
+          "rawDurationSec": 3.75,
           "trimEndSec": 0
-        },
+        }
+      ]
+    },
+    {
+      "type": "tts",
+      "sceneId": "cta",
+      "cueId": "cta-cue",
+      "startSec": 45.51666666666666,
+      "endSec": 54.316666666666656,
+      "segments": [
         {
-          "type": "pause",
-          "startSec": 45.35000000000001,
-          "endSec": 47.35000000000001,
-          "seconds": 2
+          "type": "tts",
+          "startSec": 45.51666666666666,
+          "endSec": 54.316666666666656,
+          "text": "Dive into the demo videos and code to learn more, and join the waitlist to keep up with Babulus as we launch it. We'll send you videos.",
+          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/home-elevator-preview/env/development/segments/cta--cta-cue--tts--f9ffed27e2f3--1.wav",
+          "durationSec": 8.8,
+          "rawDurationSec": 8.8,
+          "trimEndSec": 0
         }
       ]
     }
@@ -128,51 +141,59 @@
         "kind": "narration",
         "clips": [
           {
-            "id": "title--title-cue--tts--92b34b49a4e9--1",
+            "id": "open-standard--open-standard-cue--tts--4173f4e7e2ba--1",
             "kind": "file",
             "startSec": 0,
-            "durationSec": 10.4,
-            "src": "/preview/home-elevator-preview/env/development/segments/title--title-cue--tts--92b34b49a4e9--1.wav",
+            "durationSec": 6.2,
+            "src": "/preview/home-elevator-preview/env/development/segments/open-standard--open-standard-cue--tts--4173f4e7e2ba--1.wav",
             "volume": 1
           },
           {
-            "id": "layout-title--layout-title-cue--tts--de845e6382eb--1",
+            "id": "ai-agents--ai-agents-cue--tts--68d3af63cb49--1",
             "kind": "file",
-            "startSec": 10.4,
-            "durationSec": 6.35,
-            "src": "/preview/home-elevator-preview/env/development/segments/layout-title--layout-title-cue--tts--de845e6382eb--1.wav",
+            "startSec": 6.6000000000000005,
+            "durationSec": 7.3,
+            "src": "/preview/home-elevator-preview/env/development/segments/ai-agents--ai-agents-cue--tts--68d3af63cb49--1.wav",
             "volume": 1
           },
           {
-            "id": "layout-two-column--layout-two-column-cue--tts--122c830925f4--1",
+            "id": "layout-one--library-voice-1--tts--5919b8f7a903--1",
             "kind": "file",
-            "startSec": 16.75,
+            "startSec": 14.3,
             "durationSec": 7.85,
-            "src": "/preview/home-elevator-preview/env/development/segments/layout-two-column--layout-two-column-cue--tts--122c830925f4--1.wav",
+            "src": "/preview/home-elevator-preview/env/development/segments/layout-one--library-voice-1--tts--5919b8f7a903--1.wav",
             "volume": 1
           },
           {
-            "id": "layout-grid--layout-grid-cue--tts--f92c565ca942--1",
+            "id": "brand-a--transitions-voice-1--tts--626fd44c3078--1",
             "kind": "file",
-            "startSec": 24.6,
-            "durationSec": 5.1,
-            "src": "/preview/home-elevator-preview/env/development/segments/layout-grid--layout-grid-cue--tts--f92c565ca942--1.wav",
+            "startSec": 26.249999999999993,
+            "durationSec": 3.75,
+            "src": "/preview/home-elevator-preview/env/development/segments/brand-a--transitions-voice-1--tts--626fd44c3078--1.wav",
             "volume": 1
           },
           {
-            "id": "bullets--bullets-cue--tts--1cfaa8d6cbf3--1",
+            "id": "animations-framer--animations-voice-1--tts--66b5ed9ee086--1",
             "kind": "file",
-            "startSec": 29.700000000000003,
-            "durationSec": 7.35,
-            "src": "/preview/home-elevator-preview/env/development/segments/bullets--bullets-cue--tts--1cfaa8d6cbf3--1.wav",
+            "startSec": 30.999999999999993,
+            "durationSec": 3.8,
+            "src": "/preview/home-elevator-preview/env/development/segments/animations-framer--animations-voice-1--tts--66b5ed9ee086--1.wav",
             "volume": 1
           },
           {
-            "id": "close--close-cue--tts--60e2b68f407f--1",
+            "id": "typefaces--typefaces-cue--tts--dd0029277e01--1",
             "kind": "file",
-            "startSec": 37.050000000000004,
-            "durationSec": 8.3,
-            "src": "/preview/home-elevator-preview/env/development/segments/close--close-cue--tts--60e2b68f407f--1.wav",
+            "startSec": 41.36666666666666,
+            "durationSec": 3.75,
+            "src": "/preview/home-elevator-preview/env/development/segments/typefaces--typefaces-cue--tts--dd0029277e01--1.wav",
+            "volume": 1
+          },
+          {
+            "id": "cta--cta-cue--tts--f9ffed27e2f3--1",
+            "kind": "file",
+            "startSec": 45.51666666666666,
+            "durationSec": 8.8,
+            "src": "/preview/home-elevator-preview/env/development/segments/cta--cta-cue--tts--f9ffed27e2f3--1.wav",
             "volume": 1
           }
         ]

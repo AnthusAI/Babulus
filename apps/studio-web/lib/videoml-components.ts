@@ -18,6 +18,8 @@ const makeText = (text: string, style: Partial<CSSStyleDeclaration>) => {
   return node;
 };
 
+const BaseElement = (typeof HTMLElement === "undefined" ? class {} : HTMLElement) as typeof HTMLElement;
+
 const BASE_FONT = "\"DM Sans\", \"Helvetica Neue\", Arial, sans-serif";
 const HEADING_FONT = "\"Space Grotesk\", \"Helvetica Neue\", Arial, sans-serif";
 
@@ -53,13 +55,13 @@ const resolveTheme = (root: HTMLElement | null) => {
 };
 
 const getRootTheme = (el: HTMLElement) => {
-  const root = el.closest("videoml") as HTMLElement | null;
+  const root = el.closest("vml, videoml, video-ml") as HTMLElement | null;
   return resolveTheme(root);
 };
 
 const makeCard = (padding = 32) => {
   const node = document.createElement("div");
-  const theme = resolveTheme(node.closest?.("videoml") as HTMLElement | null);
+  const theme = resolveTheme(node.closest?.("vml, videoml, video-ml") as HTMLElement | null);
   Object.assign(node.style, {
     display: "flex",
     flexDirection: "column",
@@ -75,7 +77,7 @@ const makeCard = (padding = 32) => {
   return node;
 };
 
-class TitleSlideElement extends HTMLElement {
+class TitleSlideElement extends BaseElement {
   static get observedAttributes() {
     return ["props"];
   }
@@ -116,7 +118,7 @@ class TitleSlideElement extends HTMLElement {
   }
 }
 
-class BulletListElement extends HTMLElement {
+class BulletListElement extends BaseElement {
   static get observedAttributes() {
     return ["props"];
   }
@@ -162,7 +164,7 @@ class BulletListElement extends HTMLElement {
   }
 }
 
-class MotionBarsElement extends HTMLElement {
+class MotionBarsElement extends BaseElement {
   static get observedAttributes() {
     return ["props"];
   }
@@ -173,7 +175,7 @@ class MotionBarsElement extends HTMLElement {
     this.bindTimeline();
   }
   disconnectedCallback() {
-    const root = this.closest("videoml");
+    const root = this.closest("vml, videoml, video-ml");
     if (root && this.tickHandler) {
       root.removeEventListener("timeline:tick", this.tickHandler as EventListener);
     }
@@ -182,7 +184,7 @@ class MotionBarsElement extends HTMLElement {
     this.render();
   }
   bindTimeline() {
-    const root = this.closest("videoml");
+    const root = this.closest("vml, videoml, video-ml");
     if (!root) return;
     if (this.tickHandler) {
       root.removeEventListener("timeline:tick", this.tickHandler as EventListener);
@@ -270,7 +272,7 @@ class MotionBarsElement extends HTMLElement {
   }
 }
 
-class TwoColumnElement extends HTMLElement {
+class TwoColumnElement extends BaseElement {
   static get observedAttributes() {
     return ["props"];
   }
@@ -315,7 +317,7 @@ class TwoColumnElement extends HTMLElement {
   }
 }
 
-class ChapterHeadingElement extends HTMLElement {
+class ChapterHeadingElement extends BaseElement {
   static get observedAttributes() {
     return ["props"];
   }
@@ -340,17 +342,18 @@ class ChapterHeadingElement extends HTMLElement {
       fontFamily: BASE_FONT,
       height: "100%",
     });
+    const showNumber = props.showNumber !== false;
     const number = makeText(String(props.number ?? "01"), { fontSize: "80px", fontWeight: "700", opacity: "0.8", fontFamily: HEADING_FONT });
     const titles = document.createElement("div");
     if (props.title) titles.appendChild(makeText(String(props.title), { fontSize: "48px", fontWeight: "600", fontFamily: HEADING_FONT }));
     if (props.subtitle) titles.appendChild(makeText(String(props.subtitle), { fontSize: "24px", opacity: "0.8" }));
-    wrap.appendChild(number);
+    if (showNumber) wrap.appendChild(number);
     wrap.appendChild(titles);
     this.appendChild(wrap);
   }
 }
 
-class VideoTitleElement extends HTMLElement {
+class VideoTitleElement extends BaseElement {
   static get observedAttributes() {
     return ["props"];
   }
@@ -377,7 +380,7 @@ class VideoTitleElement extends HTMLElement {
   }
 }
 
-class VideoSubtitleElement extends HTMLElement {
+class VideoSubtitleElement extends BaseElement {
   static get observedAttributes() {
     return ["props"];
   }
@@ -404,7 +407,7 @@ class VideoSubtitleElement extends HTMLElement {
   }
 }
 
-class VideoRectangleElement extends HTMLElement {
+class VideoRectangleElement extends BaseElement {
   static get observedAttributes() {
     return ["props"];
   }
@@ -431,7 +434,7 @@ class VideoRectangleElement extends HTMLElement {
   }
 }
 
-class BackgroundElement extends HTMLElement {
+class BackgroundElement extends BaseElement {
   static get observedAttributes() {
     return ["props"];
   }
@@ -457,7 +460,7 @@ class BackgroundElement extends HTMLElement {
   }
 }
 
-class ProgressBarElement extends HTMLElement {
+class ProgressBarElement extends BaseElement {
   static get observedAttributes() {
     return ["props"];
   }
@@ -504,7 +507,7 @@ class ProgressBarElement extends HTMLElement {
   }
 }
 
-class QuoteCardElement extends HTMLElement {
+class QuoteCardElement extends BaseElement {
   static get observedAttributes() {
     return ["props"];
   }
@@ -529,7 +532,7 @@ class QuoteCardElement extends HTMLElement {
   }
 }
 
-class LowerThirdElement extends HTMLElement {
+class LowerThirdElement extends BaseElement {
   static get observedAttributes() {
     return ["props"];
   }
@@ -557,7 +560,7 @@ class LowerThirdElement extends HTMLElement {
   }
 }
 
-class CalloutElement extends HTMLElement {
+class CalloutElement extends BaseElement {
   static get observedAttributes() {
     return ["props"];
   }
@@ -585,7 +588,7 @@ class CalloutElement extends HTMLElement {
   }
 }
 
-class ChyronElement extends HTMLElement {
+class ChyronElement extends BaseElement {
   static get observedAttributes() {
     return ["props"];
   }
@@ -611,7 +614,7 @@ class ChyronElement extends HTMLElement {
   }
 }
 
-class CodeBlockElement extends HTMLElement {
+class CodeBlockElement extends BaseElement {
   static get observedAttributes() {
     return ["props"];
   }
@@ -642,7 +645,7 @@ class CodeBlockElement extends HTMLElement {
   }
 }
 
-class ContentScreenElement extends HTMLElement {
+class ContentScreenElement extends BaseElement {
   static get observedAttributes() {
     return ["props"];
   }
@@ -671,7 +674,7 @@ class ContentScreenElement extends HTMLElement {
   }
 }
 
-class GridScreenElement extends HTMLElement {
+class GridScreenElement extends BaseElement {
   static get observedAttributes() {
     return ["props"];
   }
@@ -713,7 +716,7 @@ class GridScreenElement extends HTMLElement {
   }
 }
 
-class ThreeColumnElement extends HTMLElement {
+class ThreeColumnElement extends BaseElement {
   static get observedAttributes() {
     return ["props"];
   }
@@ -749,7 +752,7 @@ class ThreeColumnElement extends HTMLElement {
   }
 }
 
-class DemoPlaceholderElement extends HTMLElement {
+class DemoPlaceholderElement extends BaseElement {
   connectedCallback() {
     if (this.childNodes.length) return;
     const card = makeCard(24);
@@ -804,7 +807,7 @@ export const registerVideoMLComponents = () => {
   defineAlias("not-video", DemoPlaceholderElement);
 };
 
-class FallbackElement extends HTMLElement {
+class FallbackElement extends BaseElement {
   connectedCallback() {
     if (this.childNodes.length) return;
     const label = document.createElement("div");

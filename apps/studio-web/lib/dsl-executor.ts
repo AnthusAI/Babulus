@@ -97,8 +97,10 @@ export function applyVomPatchesInBrowser(xml: string, patches: VomPatchInput[], 
   const serializer = new XMLSerializer();
   const doc = parser.parseFromString(xml, "text/xml");
   const root = doc.documentElement as unknown as ElementLike;
-  if (!root || root.tagName !== "videoml") {
-    throw new Error("XML root must be <videoml>.");
+  const rootTag = root?.tagName ?? "";
+  const allowedRoots = new Set(["videoml", "video-ml", "vml"]);
+  if (!allowedRoots.has(rootTag)) {
+    throw new Error("XML root must be <vml>, <videoml>, or <video-ml>.");
   }
 
   const isElement = (node: NodeLike | null | undefined): node is ElementLike =>
@@ -237,8 +239,10 @@ function loadVideoFileFromXml(xml: string): any {
   const parser = new DOMParser();
   const doc = parser.parseFromString(xml, "text/xml");
   const root = doc.documentElement;
-  if (!root || root.tagName !== "videoml") {
-    throw new Error("XML root must be <videoml>.");
+  const rootTag = root?.tagName ?? "";
+  const allowedRoots = new Set(["videoml", "video-ml", "vml"]);
+  if (!allowedRoots.has(rootTag)) {
+    throw new Error("XML root must be <vml>, <videoml>, or <video-ml>.");
   }
   const getAttr = (el: Element, name: string) => el.getAttribute(name);
   const parseNumber = (value: string | null) => {
@@ -794,7 +798,7 @@ function loadVideoFileFromXml(xml: string): any {
   const width = parseNumber(getAttr(root, "width") ?? "") ?? 1280;
   const height = parseNumber(getAttr(root, "height") ?? "") ?? 720;
   const id = getAttr(root, "id");
-  if (!id) throw new Error("videoml requires id.");
+  if (!id) throw new Error("vml requires id.");
   const title = getAttr(root, "title");
   const baseCtx: TimeEvalContext = {
     fps,
@@ -981,7 +985,7 @@ function loadVideoFileFromXml(xml: string): any {
   }
 
   if (!scenes.length) {
-    throw new Error("videoml requires at least one scene.");
+    throw new Error("vml requires at least one scene.");
   }
 
   return {

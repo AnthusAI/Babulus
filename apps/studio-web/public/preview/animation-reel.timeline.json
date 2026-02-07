@@ -2,21 +2,310 @@
   "items": [
     {
       "type": "tts",
-      "sceneId": "reel",
-      "cueId": "hold",
+      "sceneId": "reel-intro",
+      "cueId": "hold-intro",
       "startSec": 0,
-      "endSec": 17.6,
+      "endSec": 5.45,
       "segments": [
         {
-          "type": "pause",
+          "type": "tts",
           "startSec": 0,
-          "endSec": 17.6,
-          "seconds": 17.6
+          "endSec": 4.45,
+          "text": "Use any animation framework to create motion graphics and effects.",
+          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/animation-reel/env/development/segments/reel-intro--hold-intro--tts--80e88c2ad286--1.wav",
+          "durationSec": 4.45,
+          "rawDurationSec": 4.45,
+          "trimEndSec": 0
+        },
+        {
+          "type": "pause",
+          "startSec": 4.45,
+          "endSec": 5.45,
+          "seconds": 1
+        }
+      ]
+    },
+    {
+      "type": "tts",
+      "sceneId": "reel-framer",
+      "cueId": "hold-framer",
+      "startSec": 5.8500000000000005,
+      "endSec": 12.4,
+      "segments": [
+        {
+          "type": "tts",
+          "startSec": 5.8500000000000005,
+          "endSec": 11.4,
+          "text": "The elements in your design don\\u2019t need to sit still. Animate them with frameworks like Framer Motion.",
+          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/animation-reel/env/development/segments/reel-framer--hold-framer--tts--c127756d0304--1.wav",
+          "durationSec": 5.55,
+          "rawDurationSec": 5.55,
+          "trimEndSec": 0
+        },
+        {
+          "type": "pause",
+          "startSec": 11.4,
+          "endSec": 12.4,
+          "seconds": 1
+        }
+      ]
+    },
+    {
+      "type": "tts",
+      "sceneId": "reel-d3",
+      "cueId": "hold-d3",
+      "startSec": 12.8,
+      "endSec": 19.8,
+      "segments": [
+        {
+          "type": "tts",
+          "startSec": 12.8,
+          "endSec": 18.8,
+          "text": "Visualize data to tell the story behind the numbers, with tools like D3.js.",
+          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/animation-reel/env/development/segments/reel-d3--hold-d3--tts--07ad0d5e567a--1.wav",
+          "durationSec": 6,
+          "rawDurationSec": 6,
+          "trimEndSec": 0
+        },
+        {
+          "type": "pause",
+          "startSec": 18.8,
+          "endSec": 19.8,
+          "seconds": 1
+        }
+      ]
+    },
+    {
+      "type": "tts",
+      "sceneId": "reel-processing",
+      "cueId": "hold-processing",
+      "startSec": 20.2,
+      "endSec": 27.75,
+      "segments": [
+        {
+          "type": "tts",
+          "startSec": 20.2,
+          "endSec": 26.75,
+          "text": "Create stunning visual art for backgrounds, transitions, and content with Processing.",
+          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/animation-reel/env/development/segments/reel-processing--hold-processing--tts--155cc3f1e6c3--1.wav",
+          "durationSec": 6.55,
+          "rawDurationSec": 6.55,
+          "trimEndSec": 0
+        },
+        {
+          "type": "pause",
+          "startSec": 26.75,
+          "endSec": 27.75,
+          "seconds": 1
+        }
+      ]
+    },
+    {
+      "type": "tts",
+      "sceneId": "reel-three",
+      "cueId": "hold-three",
+      "startSec": 28.15,
+      "endSec": 34.7,
+      "segments": [
+        {
+          "type": "tts",
+          "startSec": 28.15,
+          "endSec": 33.7,
+          "text": "Build rich 3D scenes and spatial layers with Three.js.",
+          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/animation-reel/env/development/segments/reel-three--hold-three--tts--228fcd492e44--1.wav",
+          "durationSec": 5.55,
+          "rawDurationSec": 5.55,
+          "trimEndSec": 0
+        },
+        {
+          "type": "pause",
+          "startSec": 33.7,
+          "endSec": 34.7,
+          "seconds": 1
+        }
+      ]
+    },
+    {
+      "type": "tts",
+      "sceneId": "reel-lottie",
+      "cueId": "hold-lottie",
+      "startSec": 35.099999999999994,
+      "endSec": 41.95,
+      "segments": [
+        {
+          "type": "tts",
+          "startSec": 35.099999999999994,
+          "endSec": 40.95,
+          "text": "Bring motion graphics designed in After Effects straight into your video with Lottie.",
+          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/animation-reel/env/development/segments/reel-lottie--hold-lottie--tts--3cdf15a8d031--1.wav",
+          "durationSec": 5.85,
+          "rawDurationSec": 5.85,
+          "trimEndSec": 0
+        },
+        {
+          "type": "pause",
+          "startSec": 40.95,
+          "endSec": 41.95,
+          "seconds": 1
+        }
+      ]
+    },
+    {
+      "type": "tts",
+      "sceneId": "reel-text",
+      "cueId": "hold-text",
+      "startSec": 42.349999999999994,
+      "endSec": 48.05,
+      "segments": [
+        {
+          "type": "tts",
+          "startSec": 42.349999999999994,
+          "endSec": 47.05,
+          "text": "Choose from a menu of text effects, or craft your own animations.",
+          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/animation-reel/env/development/segments/reel-text--hold-text--tts--f8fa23cf2f84--1.wav",
+          "durationSec": 4.7,
+          "rawDurationSec": 4.7,
+          "trimEndSec": 0
+        },
+        {
+          "type": "pause",
+          "startSec": 47.05,
+          "endSec": 48.05,
+          "seconds": 1
+        }
+      ]
+    },
+    {
+      "type": "tts",
+      "sceneId": "reel-anime",
+      "cueId": "hold-anime",
+      "startSec": 48.45,
+      "endSec": 53.55,
+      "segments": [
+        {
+          "type": "tts",
+          "startSec": 48.45,
+          "endSec": 52.55,
+          "text": "Animate layout changes and responsive grids with Anime.js.",
+          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/animation-reel/env/development/segments/reel-anime--hold-anime--tts--4ee06d85eaa5--1.wav",
+          "durationSec": 4.1,
+          "rawDurationSec": 4.1,
+          "trimEndSec": 0
+        },
+        {
+          "type": "pause",
+          "startSec": 52.55,
+          "endSec": 53.55,
+          "seconds": 1
+        }
+      ]
+    },
+    {
+      "type": "tts",
+      "sceneId": "reel-mix",
+      "cueId": "hold-mix",
+      "startSec": 53.95,
+      "endSec": 58.75,
+      "segments": [
+        {
+          "type": "tts",
+          "startSec": 53.95,
+          "endSec": 57.75,
+          "text": "Mix multiple engines together in a single scene.",
+          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/animation-reel/env/development/segments/reel-mix--hold-mix--tts--c0cfef0ccf73--1.wav",
+          "durationSec": 3.8,
+          "rawDurationSec": 3.8,
+          "trimEndSec": 0
+        },
+        {
+          "type": "pause",
+          "startSec": 57.75,
+          "endSec": 58.75,
+          "seconds": 1
         }
       ]
     }
   ],
   "audio": {
-    "tracks": []
+    "tracks": [
+      {
+        "id": "narration",
+        "kind": "narration",
+        "clips": [
+          {
+            "id": "reel-intro--hold-intro--tts--80e88c2ad286--1",
+            "kind": "file",
+            "startSec": 0,
+            "durationSec": 4.45,
+            "src": "/preview/animation-reel/env/development/segments/reel-intro--hold-intro--tts--80e88c2ad286--1.wav",
+            "volume": 1
+          },
+          {
+            "id": "reel-framer--hold-framer--tts--c127756d0304--1",
+            "kind": "file",
+            "startSec": 5.8500000000000005,
+            "durationSec": 5.55,
+            "src": "/preview/animation-reel/env/development/segments/reel-framer--hold-framer--tts--c127756d0304--1.wav",
+            "volume": 1
+          },
+          {
+            "id": "reel-d3--hold-d3--tts--07ad0d5e567a--1",
+            "kind": "file",
+            "startSec": 12.8,
+            "durationSec": 6,
+            "src": "/preview/animation-reel/env/development/segments/reel-d3--hold-d3--tts--07ad0d5e567a--1.wav",
+            "volume": 1
+          },
+          {
+            "id": "reel-processing--hold-processing--tts--155cc3f1e6c3--1",
+            "kind": "file",
+            "startSec": 20.2,
+            "durationSec": 6.55,
+            "src": "/preview/animation-reel/env/development/segments/reel-processing--hold-processing--tts--155cc3f1e6c3--1.wav",
+            "volume": 1
+          },
+          {
+            "id": "reel-three--hold-three--tts--228fcd492e44--1",
+            "kind": "file",
+            "startSec": 28.15,
+            "durationSec": 5.55,
+            "src": "/preview/animation-reel/env/development/segments/reel-three--hold-three--tts--228fcd492e44--1.wav",
+            "volume": 1
+          },
+          {
+            "id": "reel-lottie--hold-lottie--tts--3cdf15a8d031--1",
+            "kind": "file",
+            "startSec": 35.099999999999994,
+            "durationSec": 5.85,
+            "src": "/preview/animation-reel/env/development/segments/reel-lottie--hold-lottie--tts--3cdf15a8d031--1.wav",
+            "volume": 1
+          },
+          {
+            "id": "reel-text--hold-text--tts--f8fa23cf2f84--1",
+            "kind": "file",
+            "startSec": 42.349999999999994,
+            "durationSec": 4.7,
+            "src": "/preview/animation-reel/env/development/segments/reel-text--hold-text--tts--f8fa23cf2f84--1.wav",
+            "volume": 1
+          },
+          {
+            "id": "reel-anime--hold-anime--tts--4ee06d85eaa5--1",
+            "kind": "file",
+            "startSec": 48.45,
+            "durationSec": 4.1,
+            "src": "/preview/animation-reel/env/development/segments/reel-anime--hold-anime--tts--4ee06d85eaa5--1.wav",
+            "volume": 1
+          },
+          {
+            "id": "reel-mix--hold-mix--tts--c0cfef0ccf73--1",
+            "kind": "file",
+            "startSec": 53.95,
+            "durationSec": 3.8,
+            "src": "/preview/animation-reel/env/development/segments/reel-mix--hold-mix--tts--c0cfef0ccf73--1.wav",
+            "volume": 1
+          }
+        ]
+      }
+    ]
   }
 }

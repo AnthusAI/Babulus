@@ -119,10 +119,10 @@ export const glossaryTerms: GlossaryTerm[] = [
     term: "FPS",
     definition:
       "Frames Per Second. The number of still images (frames) shown per second of video. Standard values are 24fps (film), 30fps (TV/web), or 60fps (high frame rate). Higher FPS means smoother motion but larger file sizes.",
-    technicalNote: "Set on the root <videoml> element. All timing calculations use this FPS value.",
-    example: `<videoml fps="30" width="1920" height="1080">
+    technicalNote: "Set on the root <vml> element. All timing calculations use this FPS value.",
+    example: `<vml fps="30" width="1920" height="1080">
   <!-- 30 frames per second -->
-</videoml>`,
+</vml>`,
     relatedTerms: ["Timeline API", "Duration"],
   },
   {

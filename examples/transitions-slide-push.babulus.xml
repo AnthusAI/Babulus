@@ -1,0 +1,46 @@
+<vml id="transitions-slide-push" title="Transitions Slide + Push" fps="30" width="1920" height="1080">
+  <voiceover provider="dry-run" />
+
+  <scene id="slide-a" title="Slide A" styles='{"background":"#7a1f1f"}'>
+    <layer id="bg" z="0">
+      <video-background props='{"color":"#7a1f1f"}' />
+    </layer>
+    <layer id="title" z="10">
+      <video-title props='{"text":"Slide Left","color":"var(--color-primary)","textColor":"var(--color-text)","position":{"x":180,"y":320}}' />
+      <video-subtitle props='{"text":"Incoming scene slides in","color":"var(--color-text-muted)","fontSize":30,"fontWeight":500,"position":{"x":180,"y":420}}' />
+    </layer>
+    <cue id="hold-a" label="hold-a">
+      <pause seconds="2s" />
+    </cue>
+  </scene>
+
+  <transition id="slide-left" effect="slide" duration="16f" ease="power3.inOut" props='{"direction":"left"}' />
+
+  <scene id="slide-b" title="Slide B" styles='{"background":"#1f7a3a"}'>
+    <layer id="bg" z="0">
+      <video-background props='{"color":"#1f7a3a"}' />
+    </layer>
+    <layer id="title" z="10">
+      <video-title props='{"text":"Push Up","color":"var(--color-primary)","textColor":"var(--color-text)","position":{"x":180,"y":320}}' />
+      <video-subtitle props='{"text":"Outgoing scene moves too","color":"var(--color-text-muted)","fontSize":30,"fontWeight":500,"position":{"x":180,"y":420}}' />
+    </layer>
+    <cue id="hold-b" label="hold-b">
+      <pause seconds="2s" />
+    </cue>
+  </scene>
+
+  <transition id="push-up" effect="push" duration="18f" ease="power2.inOut" props='{"direction":"up"}' />
+
+  <scene id="slide-c" title="Slide C" styles='{"background":"#1f3a7a"}'>
+    <layer id="bg" z="0">
+      <video-background props='{"color":"#1f3a7a"}' />
+    </layer>
+    <layer id="title" z="10">
+      <video-title props='{"text":"Done","color":"var(--color-primary)","textColor":"var(--color-text)","position":{"x":180,"y":320}}' />
+      <video-subtitle props='{"text":"Slide + push demo","color":"var(--color-text-muted)","fontSize":30,"fontWeight":500,"position":{"x":180,"y":420}}' />
+    </layer>
+    <cue id="hold-c" label="hold-c">
+      <pause seconds="2s" />
+    </cue>
+  </scene>
+</vml>

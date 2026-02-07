@@ -1,0 +1,35 @@
+<vml id="transitions-insert-audio" title="Transitions Insert + Audio" fps="30" width="1920" height="1080">
+  <voiceover provider="dry-run" />
+
+  <scene id="insert-a" title="Scene A" styles='{"background":"#7a1f1f"}'>
+    <layer id="bg" z="0">
+      <video-background props='{"color":"#7a1f1f"}' />
+    </layer>
+    <layer id="title" z="10">
+      <video-title props='{"text":"Scene A","color":"var(--color-primary)","textColor":"var(--color-text)","position":{"y":540},"textAlign":"center"}' />
+    </layer>
+    <cue id="hold-a" label="hold-a">
+      <pause seconds="2s" />
+    </cue>
+  </scene>
+
+  <transition id="insert-gap" mode="insert" effect="fade" duration="1.5s" ease="power2.out" overflow-audio="clip">
+    <layer id="gap-card" z="20">
+      <video-rectangle props='{"color":"#0f1117","x":0,"y":0,"width":"100%","height":"100%"}' />
+      <video-title props='{"text":"Gap","color":"#e8eaf0","textColor":"#e8eaf0","position":{"y":540},"textAlign":"center"}' />
+    </layer>
+    <sfx id="transition-hit" start="6f" clip-duration="0.6s" prompt="short impact" />
+  </transition>
+
+  <scene id="insert-b" title="Scene B" styles='{"background":"#1f7a3a"}'>
+    <layer id="bg" z="0">
+      <video-background props='{"color":"#1f7a3a"}' />
+    </layer>
+    <layer id="title" z="10">
+      <video-title props='{"text":"Scene B","color":"var(--color-primary)","textColor":"var(--color-text)","position":{"y":540},"textAlign":"center"}' />
+    </layer>
+    <cue id="hold-b" label="hold-b">
+      <pause seconds="2s" />
+    </cue>
+  </scene>
+</vml>

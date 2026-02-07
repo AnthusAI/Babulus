@@ -7,6 +7,7 @@ export type ColorScheme = {
     surface: string;
     surfaceStrong: string;
     text: string;
+    textStrong: string;
     textMuted: string;
     primary: string;
     secondary: string;
@@ -25,6 +26,7 @@ export const COLOR_SCHEMES: ColorScheme[] = [
       surface: "#e9edff",
       surfaceStrong: "#dfe4ff",
       text: "#1f2d5c",
+      textStrong: "#0b0f1f",
       textMuted: "#4f5d88",
       primary: "#d948b8",
       secondary: "#4d6bff",
@@ -41,6 +43,7 @@ export const COLOR_SCHEMES: ColorScheme[] = [
       surface: "#151b32",
       surfaceStrong: "#1e2645",
       text: "#eef1ff",
+      textStrong: "#ffffff",
       textMuted: "#c8cff6",
       primary: "#ff5ec4",
       secondary: "#6a7dff",
@@ -57,6 +60,7 @@ export const COLOR_SCHEMES: ColorScheme[] = [
       surface: "#ffe9db",
       surfaceStrong: "#f9dcc6",
       text: "#5a2f13",
+      textStrong: "#2b1306",
       textMuted: "#84533b",
       primary: "#d948b8",
       secondary: "#5177ff",
@@ -73,6 +77,7 @@ export const COLOR_SCHEMES: ColorScheme[] = [
       surface: "#24180b",
       surfaceStrong: "#2f210f",
       text: "#ffe7c4",
+      textStrong: "#ffffff",
       textMuted: "#f2c89a",
       primary: "#ff5ec4",
       secondary: "#5b8cff",
@@ -89,6 +94,7 @@ export const COLOR_SCHEMES: ColorScheme[] = [
       surface: "#e9e7e4",
       surfaceStrong: "#dedbd7",
       text: "#2a2623",
+      textStrong: "#0b0f0e",
       textMuted: "#5a534d",
       primary: "#d948b8",
       secondary: "#556eff",
@@ -105,6 +111,7 @@ export const COLOR_SCHEMES: ColorScheme[] = [
       surface: "#171615",
       surfaceStrong: "#211f1e",
       text: "#f5f5f4",
+      textStrong: "#ffffff",
       textMuted: "#c7c2bc",
       primary: "#ff5ec4",
       secondary: "#5f7bff",

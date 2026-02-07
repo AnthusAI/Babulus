@@ -5,61 +5,93 @@
       "sceneId": "intro",
       "cueId": "intro-vo",
       "startSec": 0,
-      "endSec": 10.7,
+      "endSec": 2.6,
       "segments": [
         {
           "type": "tts",
           "startSec": 0,
-          "endSec": 10.7,
-          "text": "Watch this. I write a few lines of VideoML, and Babulus turns them into a fully timed video—voiceover, motion, and layout all synchronized.",
-          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/code-to-video-preview/env/development/segments/intro--intro-vo--tts--5bb0beb3bf49--1.wav",
-          "durationSec": 10.7,
-          "rawDurationSec": 10.7,
+          "endSec": 2.6,
+          "text": "This video was made from code.",
+          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/code-to-video-preview/env/development/segments/intro--intro-vo--tts--718f7a0f93c2--1.wav",
+          "durationSec": 2.6,
+          "rawDurationSec": 2.6,
           "trimEndSec": 0
         }
       ]
     },
     {
       "type": "tts",
-      "sceneId": "layouts",
-      "cueId": "layouts-vo",
-      "startSec": 10.7,
-      "endSec": 17.25,
+      "sceneId": "transition",
+      "cueId": "transition-vo",
+      "startSec": 2.6,
+      "endSec": 5.300000000000001,
       "segments": [
         {
           "type": "tts",
-          "startSec": 10.7,
-          "endSec": 17.25,
-          "text": "Babulus ships a library of off-the-shelf layouts you can drop in instantly—then move on.",
-          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/code-to-video-preview/env/development/segments/layouts--layouts-vo--tts--c9ddb2c0bd85--1.wav",
-          "durationSec": 6.55,
-          "rawDurationSec": 6.55,
+          "startSec": 2.6,
+          "endSec": 5.300000000000001,
+          "text": "This transition was made from code.",
+          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/code-to-video-preview/env/development/segments/transition--transition-vo--tts--239d15c255a9--1.wav",
+          "durationSec": 2.7,
+          "rawDurationSec": 2.7,
           "trimEndSec": 0
         }
       ]
     },
     {
       "type": "tts",
-      "sceneId": "code",
-      "cueId": "code-vo",
-      "startSec": 17.25,
-      "endSec": 40.4,
+      "sceneId": "animation",
+      "cueId": "animation-vo",
+      "startSec": 5.300000000000001,
+      "endSec": 8.3,
       "segments": [
         {
           "type": "tts",
-          "startSec": 17.25,
-          "endSec": 38.4,
-          "text": "Voiceover comes straight from this file. Babulus generates audio using pluggable providers like ElevenLabs, OpenAI, and AWS Polly, then computes cue timing from the real clip durations. Add a few words and it regenerates the voice and retimes every scene so everything stays perfectly in sync.",
-          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/code-to-video-preview/env/development/segments/code--code-vo--tts--67bf499563a2--1.wav",
-          "durationSec": 21.15,
-          "rawDurationSec": 21.15,
+          "startSec": 5.300000000000001,
+          "endSec": 8.3,
+          "text": "This animation was made from code.",
+          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/code-to-video-preview/env/development/segments/animation--animation-vo--tts--388b1c443795--1.wav",
+          "durationSec": 3,
+          "rawDurationSec": 3,
           "trimEndSec": 0
-        },
+        }
+      ]
+    },
+    {
+      "type": "tts",
+      "sceneId": "sfx",
+      "cueId": "sfx-vo",
+      "startSec": 8.3,
+      "endSec": 11.100000000000001,
+      "segments": [
         {
-          "type": "pause",
-          "startSec": 38.4,
-          "endSec": 40.4,
-          "seconds": 2
+          "type": "tts",
+          "startSec": 8.3,
+          "endSec": 11.100000000000001,
+          "text": "This sound effect was made from code.",
+          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/code-to-video-preview/env/development/segments/sfx--sfx-vo--tts--65d6dd8ca3cc--1.wav",
+          "durationSec": 2.8,
+          "rawDurationSec": 2.8,
+          "trimEndSec": 0
+        }
+      ]
+    },
+    {
+      "type": "tts",
+      "sceneId": "close",
+      "cueId": "close-vo",
+      "startSec": 11.100000000000001,
+      "endSec": 13.700000000000001,
+      "segments": [
+        {
+          "type": "tts",
+          "startSec": 11.100000000000001,
+          "endSec": 13.700000000000001,
+          "text": "Make videos with code.",
+          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/code-to-video-preview/env/development/segments/close--close-vo--tts--aa5f975097a8--1.wav",
+          "durationSec": 2.6,
+          "rawDurationSec": 2.6,
+          "trimEndSec": 0
         }
       ]
     }
@@ -67,32 +99,32 @@
   "audio": {
     "tracks": [
       {
-        "id": "narration",
-        "kind": "narration",
+        "id": "sfx",
+        "kind": "sfx",
         "clips": [
           {
-            "id": "intro--intro-vo--tts--5bb0beb3bf49--1",
-            "kind": "file",
-            "startSec": 0,
-            "durationSec": 10.7,
-            "src": "/preview/code-to-video-preview/env/development/segments/intro--intro-vo--tts--5bb0beb3bf49--1.wav",
-            "volume": 1
-          },
-          {
-            "id": "layouts--layouts-vo--tts--c9ddb2c0bd85--1",
-            "kind": "file",
-            "startSec": 10.7,
-            "durationSec": 6.55,
-            "src": "/preview/code-to-video-preview/env/development/segments/layouts--layouts-vo--tts--c9ddb2c0bd85--1.wav",
-            "volume": 1
-          },
-          {
-            "id": "code--code-vo--tts--67bf499563a2--1",
-            "kind": "file",
-            "startSec": 17.25,
-            "durationSec": 21.15,
-            "src": "/preview/code-to-video-preview/env/development/segments/code--code-vo--tts--67bf499563a2--1.wav",
-            "volume": 1
+            "id": "transition-hit",
+            "kind": "sfx",
+            "startSec": 7.833333333333335,
+            "volume": 1,
+            "prompt": "short impact",
+            "pick": 0,
+            "selectionPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/code-to-video-preview/env/development/selections.json",
+            "variants": [
+              {
+                "variant": 0,
+                "seed": 42727098,
+                "path": "/Users/ryan.porter/Projects/Babulus/.babulus/out/code-to-video-preview/env/development/sfx/transition-hit--v1--028bf6ba250c.wav",
+                "durationSec": 0.4666666666666659
+              }
+            ],
+            "chosen": {
+              "variant": 0,
+              "seed": 42727098,
+              "path": "/Users/ryan.porter/Projects/Babulus/.babulus/out/code-to-video-preview/env/development/sfx/transition-hit--v1--028bf6ba250c.wav",
+              "durationSec": 0.4666666666666659
+            },
+            "src": null
           }
         ]
       }

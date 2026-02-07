@@ -179,12 +179,12 @@ Then("the usage ledger should not exist for composition {string} env {string}", 
 
 const buildDsl = (compositionIds: string[]) => {
   const id = compositionIds[0] ?? "demo";
-  return `<videoml id="${id}" title="${id}" fps="30" width="1280" height="720">
+  return `<vml id="${id}" title="${id}" fps="30" width="1280" height="720">
   <scene id="scene" title="Scene">
     <cue id="cue">
       <voice>Hello world</voice>
     </cue>
   </scene>
-</videoml>
+</vml>
 `;
 };

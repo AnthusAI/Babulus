@@ -1,0 +1,45 @@
+<vml id="home-intro-preview" title="Home Intro Preview" fps="30" width="1920" height="1080">
+  <voiceover />
+
+  <scene id="intro-hero" title="intro-hero" styles='{"background":"#0f1117","color":"#e8eaf0","vars":{"--color-bg":"#0f1117","--color-bg-subtle":"#151a27","--color-surface":"#151a27","--color-surface-strong":"#1c2333","--color-surface-2":"#1c2333","--color-text":"#e8eaf0","--color-text-muted":"#c4c8d6","--color-primary":"#5f7bff","--color-secondary":"#ff6ac1","--color-accent":"#5f7bff","--color-accent-2":"#ff6ac1","--color-muted":"#c4c8d6","--color-muted-more":"#c4c8d6","--font-eyebrow":"var(--font-preview-humanist), sans-serif","--font-headline":"var(--font-preview-sans), sans-serif","--font-subhead":"var(--font-preview-humanist), sans-serif"}}'>
+    <layer id="content">
+      <title-slide props='{"eyebrow":"Babulus","title":"AI-native marketing automation","subtitle":"Built-in CRM intelligence","verticalAlign":"center","horizontalAlign":"center","entranceStartFrame":-999}' />
+    </layer>
+    <cue id="intro-hero-cue">
+      <voice>Babulus is an AI native marketing automation system with built in CRM intelligence.</voice>
+    </cue>
+  </scene>
+
+  <transition id="intro-push-1" effect="push" duration="12f" mode="insert" ease="power2.inOut" props='{"direction":"left"}' />
+
+  <scene id="intro-flow" title="intro-flow" styles='{"background":"#0f1117","color":"#e8eaf0","vars":{"--color-bg":"#0f1117","--color-bg-subtle":"#151a27","--color-surface":"#151a27","--color-surface-strong":"#1c2333","--color-surface-2":"#1c2333","--color-text":"#e8eaf0","--color-text-muted":"#c4c8d6","--color-primary":"#5f7bff","--color-secondary":"#ff6ac1","--color-accent":"#5f7bff","--color-accent-2":"#ff6ac1","--color-muted":"#c4c8d6","--color-muted-more":"#c4c8d6","--font-eyebrow":"var(--font-preview-humanist), sans-serif","--font-headline":"var(--font-preview-sans), sans-serif","--font-subhead":"var(--font-preview-humanist), sans-serif"}}'>
+    <layer id="content">
+      <title-slide props='{"eyebrow":"Automation","title":"From leads to lifecycle","subtitle":"Capture, segment, and publish without manual bottlenecks","verticalAlign":"center","horizontalAlign":"center","entranceStartFrame":-999}' />
+    </layer>
+    <cue id="intro-flow-cue">
+      <voice>Connect lead capture, segmentation, and lifecycle messaging with automated video production.</voice>
+    </cue>
+  </scene>
+
+  <transition id="intro-push-2" effect="push" duration="12f" mode="insert" ease="power2.inOut" props='{"direction":"left"}' />
+
+  <scene id="intro-loop" title="intro-loop" styles='{"background":"#0f1117","color":"#e8eaf0","vars":{"--color-bg":"#0f1117","--color-bg-subtle":"#151a27","--color-surface":"#151a27","--color-surface-strong":"#1c2333","--color-surface-2":"#1c2333","--color-text":"#e8eaf0","--color-text-muted":"#c4c8d6","--color-primary":"#5f7bff","--color-secondary":"#ff6ac1","--color-accent":"#5f7bff","--color-accent-2":"#ff6ac1","--color-muted":"#c4c8d6","--color-muted-more":"#c4c8d6","--font-eyebrow":"var(--font-preview-humanist), sans-serif","--font-headline":"var(--font-preview-sans), sans-serif","--font-subhead":"var(--font-preview-humanist), sans-serif"}}'>
+    <layer id="content">
+      <title-slide props='{"eyebrow":"CRM intelligence","title":"Close the loop","subtitle":"Measure performance and feed learnings back into your CRM","verticalAlign":"center","horizontalAlign":"center","entranceStartFrame":-999}' />
+    </layer>
+    <cue id="intro-loop-cue">
+      <voice>Measure performance, feed learnings back into your CRM, and scale what works.</voice>
+    </cue>
+  </scene>
+
+  <transition id="intro-push-3" effect="push" duration="12f" mode="insert" ease="power2.inOut" props='{"direction":"left"}' />
+
+  <scene id="intro-cta" title="intro-cta" styles='{"background":"#0f1117","color":"#e8eaf0","vars":{"--color-bg":"#0f1117","--color-bg-subtle":"#151a27","--color-surface":"#151a27","--color-surface-strong":"#1c2333","--color-surface-2":"#1c2333","--color-text":"#e8eaf0","--color-text-muted":"#c4c8d6","--color-primary":"#5f7bff","--color-secondary":"#ff6ac1","--color-accent":"#5f7bff","--color-accent-2":"#ff6ac1","--color-muted":"#c4c8d6","--color-muted-more":"#c4c8d6","--font-eyebrow":"var(--font-preview-humanist), sans-serif","--font-headline":"var(--font-preview-sans), sans-serif","--font-subhead":"var(--font-preview-humanist), sans-serif"}}'>
+    <layer id="content">
+      <cta-slide />
+    </layer>
+    <cue id="intro-cta-cue">
+      <voice>Dive into the demo videos and code to learn more, and join the waitlist to keep up with Babulus as we launch it. We'll send you videos.</voice>
+    </cue>
+  </scene>
+</vml>

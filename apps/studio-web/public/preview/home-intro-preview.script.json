@@ -1,0 +1,336 @@
+{
+  "scenes": [
+    {
+      "id": "intro-hero",
+      "title": "intro-hero",
+      "startSec": 0,
+      "endSec": 6.65,
+      "styles": {
+        "background": "#0f1117",
+        "color": "#e8eaf0",
+        "vars": {
+          "--color-bg": "#0f1117",
+          "--color-bg-subtle": "#151a27",
+          "--color-surface": "#151a27",
+          "--color-surface-strong": "#1c2333",
+          "--color-surface-2": "#1c2333",
+          "--color-text": "#e8eaf0",
+          "--color-text-muted": "#c4c8d6",
+          "--color-primary": "#5f7bff",
+          "--color-secondary": "#ff6ac1",
+          "--color-accent": "#5f7bff",
+          "--color-accent-2": "#ff6ac1",
+          "--color-muted": "#c4c8d6",
+          "--color-muted-more": "#c4c8d6",
+          "--font-eyebrow": "var(--font-preview-humanist), sans-serif",
+          "--font-headline": "var(--font-preview-sans), sans-serif",
+          "--font-subhead": "var(--font-preview-humanist), sans-serif"
+        }
+      },
+      "layers": [
+        {
+          "id": "content",
+          "components": [
+            {
+              "id": "title-slide-0",
+              "type": "TitleSlide",
+              "props": {
+                "eyebrow": "Babulus",
+                "title": "AI-native marketing automation",
+                "subtitle": "Built-in CRM intelligence",
+                "verticalAlign": "center",
+                "horizontalAlign": "center",
+                "entranceStartFrame": -999,
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "intro-hero-cue",
+          "label": "intro-hero-cue",
+          "startSec": 0,
+          "endSec": 6.65,
+          "text": "Babulus is an AI native marketing automation system with built in CRM intelligence.",
+          "segments": [
+            {
+              "type": "tts",
+              "startSec": 0,
+              "endSec": 6.65,
+              "text": "Babulus is an AI native marketing automation system with built in CRM intelligence."
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "intro-flow",
+      "title": "intro-flow",
+      "startSec": 7.050000000000001,
+      "endSec": 14.950000000000001,
+      "styles": {
+        "background": "#0f1117",
+        "color": "#e8eaf0",
+        "vars": {
+          "--color-bg": "#0f1117",
+          "--color-bg-subtle": "#151a27",
+          "--color-surface": "#151a27",
+          "--color-surface-strong": "#1c2333",
+          "--color-surface-2": "#1c2333",
+          "--color-text": "#e8eaf0",
+          "--color-text-muted": "#c4c8d6",
+          "--color-primary": "#5f7bff",
+          "--color-secondary": "#ff6ac1",
+          "--color-accent": "#5f7bff",
+          "--color-accent-2": "#ff6ac1",
+          "--color-muted": "#c4c8d6",
+          "--color-muted-more": "#c4c8d6",
+          "--font-eyebrow": "var(--font-preview-humanist), sans-serif",
+          "--font-headline": "var(--font-preview-sans), sans-serif",
+          "--font-subhead": "var(--font-preview-humanist), sans-serif"
+        }
+      },
+      "layers": [
+        {
+          "id": "content",
+          "components": [
+            {
+              "id": "title-slide-0",
+              "type": "TitleSlide",
+              "props": {
+                "eyebrow": "Automation",
+                "title": "From leads to lifecycle",
+                "subtitle": "Capture, segment, and publish without manual bottlenecks",
+                "verticalAlign": "center",
+                "horizontalAlign": "center",
+                "entranceStartFrame": -999,
+                "sceneStartSec": 6.65
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "intro-flow-cue",
+          "label": "intro-flow-cue",
+          "startSec": 7.050000000000001,
+          "endSec": 14.950000000000001,
+          "text": "Connect lead capture, segmentation, and lifecycle messaging with automated video production.",
+          "segments": [
+            {
+              "type": "tts",
+              "startSec": 7.050000000000001,
+              "endSec": 14.950000000000001,
+              "text": "Connect lead capture, segmentation, and lifecycle messaging with automated video production."
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "intro-loop",
+      "title": "intro-loop",
+      "startSec": 15.350000000000001,
+      "endSec": 20.650000000000002,
+      "styles": {
+        "background": "#0f1117",
+        "color": "#e8eaf0",
+        "vars": {
+          "--color-bg": "#0f1117",
+          "--color-bg-subtle": "#151a27",
+          "--color-surface": "#151a27",
+          "--color-surface-strong": "#1c2333",
+          "--color-surface-2": "#1c2333",
+          "--color-text": "#e8eaf0",
+          "--color-text-muted": "#c4c8d6",
+          "--color-primary": "#5f7bff",
+          "--color-secondary": "#ff6ac1",
+          "--color-accent": "#5f7bff",
+          "--color-accent-2": "#ff6ac1",
+          "--color-muted": "#c4c8d6",
+          "--color-muted-more": "#c4c8d6",
+          "--font-eyebrow": "var(--font-preview-humanist), sans-serif",
+          "--font-headline": "var(--font-preview-sans), sans-serif",
+          "--font-subhead": "var(--font-preview-humanist), sans-serif"
+        }
+      },
+      "layers": [
+        {
+          "id": "content",
+          "components": [
+            {
+              "id": "title-slide-0",
+              "type": "TitleSlide",
+              "props": {
+                "eyebrow": "CRM intelligence",
+                "title": "Close the loop",
+                "subtitle": "Measure performance and feed learnings back into your CRM",
+                "verticalAlign": "center",
+                "horizontalAlign": "center",
+                "entranceStartFrame": -999,
+                "sceneStartSec": 14.55
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "intro-loop-cue",
+          "label": "intro-loop-cue",
+          "startSec": 15.350000000000001,
+          "endSec": 20.650000000000002,
+          "text": "Measure performance, feed learnings back into your CRM, and scale what works.",
+          "segments": [
+            {
+              "type": "tts",
+              "startSec": 15.350000000000001,
+              "endSec": 20.650000000000002,
+              "text": "Measure performance, feed learnings back into your CRM, and scale what works."
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "intro-cta",
+      "title": "intro-cta",
+      "startSec": 21.05,
+      "endSec": 30.6,
+      "styles": {
+        "background": "#0f1117",
+        "color": "#e8eaf0",
+        "vars": {
+          "--color-bg": "#0f1117",
+          "--color-bg-subtle": "#151a27",
+          "--color-surface": "#151a27",
+          "--color-surface-strong": "#1c2333",
+          "--color-surface-2": "#1c2333",
+          "--color-text": "#e8eaf0",
+          "--color-text-muted": "#c4c8d6",
+          "--color-primary": "#5f7bff",
+          "--color-secondary": "#ff6ac1",
+          "--color-accent": "#5f7bff",
+          "--color-accent-2": "#ff6ac1",
+          "--color-muted": "#c4c8d6",
+          "--color-muted-more": "#c4c8d6",
+          "--font-eyebrow": "var(--font-preview-humanist), sans-serif",
+          "--font-headline": "var(--font-preview-sans), sans-serif",
+          "--font-subhead": "var(--font-preview-humanist), sans-serif"
+        }
+      },
+      "layers": [
+        {
+          "id": "content",
+          "components": [
+            {
+              "id": "cta-slide-0",
+              "type": "CtaSlide",
+              "props": {
+                "sceneStartSec": 19.85
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "intro-cta-cue",
+          "label": "intro-cta-cue",
+          "startSec": 21.05,
+          "endSec": 30.6,
+          "text": "Dive into the demo videos and code to learn more, and join the waitlist to keep up with Babulus as we launch it. We'll send you videos.",
+          "segments": [
+            {
+              "type": "tts",
+              "startSec": 21.05,
+              "endSec": 30.6,
+              "text": "Dive into the demo videos and code to learn more, and join the waitlist to keep up with Babulus as we launch it. We'll send you videos."
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    }
+  ],
+  "timeline": [
+    {
+      "kind": "scene",
+      "sceneId": "intro-hero",
+      "startSec": 0,
+      "endSec": 6.65
+    },
+    {
+      "kind": "transition",
+      "id": "intro-push-1",
+      "startSec": 6.65,
+      "endSec": 7.050000000000001,
+      "effect": "push",
+      "ease": "power2.inOut",
+      "props": {
+        "direction": "left"
+      },
+      "mode": "insert",
+      "fromSceneId": "intro-hero",
+      "toSceneId": "intro-flow"
+    },
+    {
+      "kind": "scene",
+      "sceneId": "intro-flow",
+      "startSec": 7.050000000000001,
+      "endSec": 14.950000000000001
+    },
+    {
+      "kind": "transition",
+      "id": "intro-push-2",
+      "startSec": 14.950000000000001,
+      "endSec": 15.350000000000001,
+      "effect": "push",
+      "ease": "power2.inOut",
+      "props": {
+        "direction": "left"
+      },
+      "mode": "insert",
+      "fromSceneId": "intro-flow",
+      "toSceneId": "intro-loop"
+    },
+    {
+      "kind": "scene",
+      "sceneId": "intro-loop",
+      "startSec": 15.350000000000001,
+      "endSec": 20.650000000000002
+    },
+    {
+      "kind": "transition",
+      "id": "intro-push-3",
+      "startSec": 20.650000000000002,
+      "endSec": 21.05,
+      "effect": "push",
+      "ease": "power2.inOut",
+      "props": {
+        "direction": "left"
+      },
+      "mode": "insert",
+      "fromSceneId": "intro-loop",
+      "toSceneId": "intro-cta"
+    },
+    {
+      "kind": "scene",
+      "sceneId": "intro-cta",
+      "startSec": 21.05,
+      "endSec": 30.6
+    }
+  ],
+  "fps": 30,
+  "meta": {
+    "fps": 30,
+    "width": 1920,
+    "height": 1080
+  }
+}

@@ -1,0 +1,122 @@
+{
+  "items": [
+    {
+      "type": "tts",
+      "sceneId": "intro-hero",
+      "cueId": "intro-hero-cue",
+      "startSec": 0,
+      "endSec": 6.65,
+      "segments": [
+        {
+          "type": "tts",
+          "startSec": 0,
+          "endSec": 6.65,
+          "text": "Babulus is an AI native marketing automation system with built in CRM intelligence.",
+          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/home-intro-preview/env/development/segments/intro-hero--intro-hero-cue--tts--e69c0280a419--1.wav",
+          "durationSec": 6.65,
+          "rawDurationSec": 6.65,
+          "trimEndSec": 0
+        }
+      ]
+    },
+    {
+      "type": "tts",
+      "sceneId": "intro-flow",
+      "cueId": "intro-flow-cue",
+      "startSec": 7.050000000000001,
+      "endSec": 14.950000000000001,
+      "segments": [
+        {
+          "type": "tts",
+          "startSec": 7.050000000000001,
+          "endSec": 14.950000000000001,
+          "text": "Connect lead capture, segmentation, and lifecycle messaging with automated video production.",
+          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/home-intro-preview/env/development/segments/intro-flow--intro-flow-cue--tts--3467524ef6f8--1.wav",
+          "durationSec": 7.9,
+          "rawDurationSec": 7.9,
+          "trimEndSec": 0
+        }
+      ]
+    },
+    {
+      "type": "tts",
+      "sceneId": "intro-loop",
+      "cueId": "intro-loop-cue",
+      "startSec": 15.350000000000001,
+      "endSec": 20.650000000000002,
+      "segments": [
+        {
+          "type": "tts",
+          "startSec": 15.350000000000001,
+          "endSec": 20.650000000000002,
+          "text": "Measure performance, feed learnings back into your CRM, and scale what works.",
+          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/home-intro-preview/env/development/segments/intro-loop--intro-loop-cue--tts--143f6f67267e--1.wav",
+          "durationSec": 5.3,
+          "rawDurationSec": 5.3,
+          "trimEndSec": 0
+        }
+      ]
+    },
+    {
+      "type": "tts",
+      "sceneId": "intro-cta",
+      "cueId": "intro-cta-cue",
+      "startSec": 21.05,
+      "endSec": 30.6,
+      "segments": [
+        {
+          "type": "tts",
+          "startSec": 21.05,
+          "endSec": 30.6,
+          "text": "Dive into the demo videos and code to learn more, and join the waitlist to keep up with Babulus as we launch it. We'll send you videos.",
+          "segmentPath": "/Users/ryan.porter/Projects/Babulus/.babulus/out/home-intro-preview/env/development/segments/intro-cta--intro-cta-cue--tts--64e14b116d26--1.wav",
+          "durationSec": 9.55,
+          "rawDurationSec": 9.55,
+          "trimEndSec": 0
+        }
+      ]
+    }
+  ],
+  "audio": {
+    "tracks": [
+      {
+        "id": "narration",
+        "kind": "narration",
+        "clips": [
+          {
+            "id": "intro-hero--intro-hero-cue--tts--e69c0280a419--1",
+            "kind": "file",
+            "startSec": 0,
+            "durationSec": 6.65,
+            "src": "/preview/home-intro-preview/env/development/segments/intro-hero--intro-hero-cue--tts--e69c0280a419--1.wav",
+            "volume": 1
+          },
+          {
+            "id": "intro-flow--intro-flow-cue--tts--3467524ef6f8--1",
+            "kind": "file",
+            "startSec": 7.050000000000001,
+            "durationSec": 7.9,
+            "src": "/preview/home-intro-preview/env/development/segments/intro-flow--intro-flow-cue--tts--3467524ef6f8--1.wav",
+            "volume": 1
+          },
+          {
+            "id": "intro-loop--intro-loop-cue--tts--143f6f67267e--1",
+            "kind": "file",
+            "startSec": 15.350000000000001,
+            "durationSec": 5.3,
+            "src": "/preview/home-intro-preview/env/development/segments/intro-loop--intro-loop-cue--tts--143f6f67267e--1.wav",
+            "volume": 1
+          },
+          {
+            "id": "intro-cta--intro-cta-cue--tts--64e14b116d26--1",
+            "kind": "file",
+            "startSec": 21.05,
+            "durationSec": 9.55,
+            "src": "/preview/home-intro-preview/env/development/segments/intro-cta--intro-cta-cue--tts--64e14b116d26--1.wav",
+            "volume": 1
+          }
+        ]
+      }
+    ]
+  }
+}

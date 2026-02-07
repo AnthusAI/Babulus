@@ -414,9 +414,9 @@ export function VideomlDomPlayer({
 
     const parser = new DOMParser();
     const doc = parser.parseFromString(xml, "text/html");
-    const root = doc.body.querySelector("videoml");
-    if (!root || root.tagName.toLowerCase() !== "videoml") {
-      setError("XML root must be <videoml>.");
+    const root = doc.body.querySelector("vml, videoml, video-ml");
+    if (!root) {
+      setError("XML root must be <vml>, <videoml>, or <video-ml>.");
       return;
     }
 

@@ -155,9 +155,9 @@ const buildXmlDocument = (scenes: SceneEntry[], sessionTitle: string, recordedAt
   const safeTitle = escapeXmlAttribute(sessionTitle || DEFAULT_SESSION_TITLE);
   const safeRecordedAt = escapeXmlAttribute(recordedAtIso);
   return [
-    `<videoml id="live-vom" title="${safeTitle}" recordedAt="${safeRecordedAt}" fps="${VIDEO_FPS}" width="${VIDEO_WIDTH}" height="${VIDEO_HEIGHT}">`,
+    `<vml id="live-vom" title="${safeTitle}" recordedAt="${safeRecordedAt}" fps="${VIDEO_FPS}" width="${VIDEO_WIDTH}" height="${VIDEO_HEIGHT}">`,
     body,
-    "</videoml>",
+    "</vml>",
   ]
     .filter(Boolean)
     .join("\n");

@@ -1,4 +1,4 @@
-<videoml id="title-slide-demo" title="Title Slide Demo" fps="30" width="1920" height="1080">
+<vml id="title-slide-demo" title="Title Slide Demo" fps="30" width="1920" height="1080">
   <voiceover provider="dry-run" />
   <scene id="title-slide" title="title-slide">
     <layer id="background" z="0">
@@ -12,4 +12,4 @@
       <pause seconds="18s" />
     </cue>
   </scene>
-</videoml>
+</vml>

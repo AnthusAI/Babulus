@@ -4,7 +4,7 @@
       "id": "intro",
       "title": "intro",
       "startSec": 0,
-      "endSec": 10.7,
+      "endSec": 2.6,
       "layers": [
         {
           "id": "content",
@@ -14,8 +14,8 @@
               "type": "TitleSlide",
               "props": {
                 "eyebrow": "Code to Video",
-                "title": "Write Video. Ship Video.",
-                "subtitle": "From XML to cinematic motion in minutes.",
+                "title": "This video was made from code.",
+                "subtitle": "VideoML → motion, timing, and audio.",
                 "verticalAlign": "center",
                 "horizontalAlign": "center",
                 "entranceStartFrame": -999,
@@ -30,14 +30,14 @@
           "id": "intro-vo",
           "label": "intro-vo",
           "startSec": 0,
-          "endSec": 10.7,
-          "text": "Watch this. I write a few lines of VideoML, and Babulus turns them into a fully timed video—voiceover, motion, and layout all synchronized.",
+          "endSec": 2.6,
+          "text": "This video was made from code.",
           "segments": [
             {
               "type": "tts",
               "startSec": 0,
-              "endSec": 10.7,
-              "text": "Watch this. I write a few lines of VideoML, and Babulus turns them into a fully timed video—voiceover, motion, and layout all synchronized."
+              "endSec": 2.6,
+              "text": "This video was made from code."
             }
           ],
           "bullets": []
@@ -45,19 +45,25 @@
       ]
     },
     {
-      "id": "layouts",
-      "title": "layouts",
-      "startSec": 10.7,
-      "endSec": 17.25,
+      "id": "transition",
+      "title": "transition",
+      "startSec": 2,
+      "endSec": 5.300000000000001,
       "layers": [
         {
           "id": "content",
           "components": [
             {
-              "id": "two-column-layout-demo-0",
-              "type": "TwoColumnLayoutDemo",
+              "id": "title-slide-0",
+              "type": "TitleSlide",
               "props": {
-                "sceneStartSec": 10.7
+                "eyebrow": "Transition",
+                "title": "This transition was made from code.",
+                "subtitle": "Scene-to-scene motion is data-driven.",
+                "verticalAlign": "center",
+                "horizontalAlign": "center",
+                "entranceStartFrame": -999,
+                "sceneStartSec": 2.6
               }
             }
           ]
@@ -65,17 +71,17 @@
       ],
       "cues": [
         {
-          "id": "layouts-vo",
-          "label": "layouts-vo",
-          "startSec": 10.7,
-          "endSec": 17.25,
-          "text": "Babulus ships a library of off-the-shelf layouts you can drop in instantly—then move on.",
+          "id": "transition-vo",
+          "label": "transition-vo",
+          "startSec": 2.6,
+          "endSec": 5.300000000000001,
+          "text": "This transition was made from code.",
           "segments": [
             {
               "type": "tts",
-              "startSec": 10.7,
-              "endSec": 17.25,
-              "text": "Babulus ships a library of off-the-shelf layouts you can drop in instantly—then move on."
+              "startSec": 2.6,
+              "endSec": 5.300000000000001,
+              "text": "This transition was made from code."
             }
           ],
           "bullets": []
@@ -83,40 +89,19 @@
       ]
     },
     {
-      "id": "code",
-      "title": "code",
-      "startSec": 17.25,
-      "endSec": 40.4,
+      "id": "animation",
+      "title": "animation",
+      "startSec": 4.700000000000001,
+      "endSec": 8.3,
       "layers": [
         {
           "id": "content",
           "components": [
             {
-              "id": "bullet-list-screen-0",
-              "type": "BulletListScreen",
+              "id": "anime-harness-demo-0",
+              "type": "AnimeHarnessDemo",
               "props": {
-                "eyebrow": "Pipeline",
-                "title": "Your code becomes a production",
-                "subtitle": "Structure + cues = timing + motion",
-                "bullets": {
-                  "items": [
-                    "Describe scenes, cues, and layout",
-                    "AI narrates and times each beat",
-                    "Reusable React components + motion UI",
-                    "Render to MP4 or embed live"
-                  ],
-                  "bulletStyle": "icon",
-                  "bulletIcon": {
-                    "kind": "lucide",
-                    "name": "check",
-                    "size": 44,
-                    "strokeWidth": 3.2
-                  },
-                  "fontSize": 48,
-                  "lineHeight": 1.2,
-                  "spacing": 24
-                },
-                "sceneStartSec": 17.25
+                "sceneStartSec": 5.300000000000001
               }
             }
           ]
@@ -124,28 +109,210 @@
       ],
       "cues": [
         {
-          "id": "code-vo",
-          "label": "code-vo",
-          "startSec": 17.25,
-          "endSec": 40.4,
-          "text": "Voiceover comes straight from this file. Babulus generates audio using pluggable providers like ElevenLabs, OpenAI, and AWS Polly, then computes cue timing from the real clip durations. Add a few words and it regenerates the voice and retimes every scene so everything stays perfectly in sync.",
+          "id": "animation-vo",
+          "label": "animation-vo",
+          "startSec": 5.300000000000001,
+          "endSec": 8.3,
+          "text": "This animation was made from code.",
           "segments": [
             {
               "type": "tts",
-              "startSec": 17.25,
-              "endSec": 38.4,
-              "text": "Voiceover comes straight from this file. Babulus generates audio using pluggable providers like ElevenLabs, OpenAI, and AWS Polly, then computes cue timing from the real clip durations. Add a few words and it regenerates the voice and retimes every scene so everything stays perfectly in sync."
-            },
-            {
-              "type": "pause",
-              "startSec": 38.4,
-              "endSec": 40.4,
-              "durationSec": 2
+              "startSec": 5.300000000000001,
+              "endSec": 8.3,
+              "text": "This animation was made from code."
             }
           ],
           "bullets": []
         }
       ]
+    },
+    {
+      "id": "sfx",
+      "title": "sound effects",
+      "startSec": 7.700000000000001,
+      "endSec": 11.100000000000001,
+      "layers": [
+        {
+          "id": "content",
+          "components": [
+            {
+              "id": "title-slide-0",
+              "type": "TitleSlide",
+              "props": {
+                "eyebrow": "Sound Effects",
+                "title": "This sound effect was made from code.",
+                "subtitle": "SFX cues can be attached to transitions.",
+                "verticalAlign": "center",
+                "horizontalAlign": "center",
+                "entranceStartFrame": -999,
+                "sceneStartSec": 8.3
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "sfx-vo",
+          "label": "sfx-vo",
+          "startSec": 8.3,
+          "endSec": 11.100000000000001,
+          "text": "This sound effect was made from code.",
+          "segments": [
+            {
+              "type": "tts",
+              "startSec": 8.3,
+              "endSec": 11.100000000000001,
+              "text": "This sound effect was made from code."
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "close",
+      "title": "close",
+      "startSec": 10.500000000000002,
+      "endSec": 13.700000000000001,
+      "layers": [
+        {
+          "id": "content",
+          "components": [
+            {
+              "id": "title-slide-0",
+              "type": "TitleSlide",
+              "props": {
+                "eyebrow": "VideoML",
+                "title": "Make videos with code.",
+                "subtitle": "Render as MP4 or live HTML.",
+                "verticalAlign": "center",
+                "horizontalAlign": "center",
+                "entranceStartFrame": -999,
+                "sceneStartSec": 11.100000000000001
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "close-vo",
+          "label": "close-vo",
+          "startSec": 11.100000000000001,
+          "endSec": 13.700000000000001,
+          "text": "Make videos with code.",
+          "segments": [
+            {
+              "type": "tts",
+              "startSec": 11.100000000000001,
+              "endSec": 13.700000000000001,
+              "text": "Make videos with code."
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    }
+  ],
+  "timeline": [
+    {
+      "kind": "scene",
+      "sceneId": "intro",
+      "startSec": 0,
+      "endSec": 2.6
+    },
+    {
+      "kind": "transition",
+      "id": "code-push-1",
+      "startSec": 2,
+      "endSec": 2.6,
+      "effect": "push",
+      "ease": "power2.inOut",
+      "props": {
+        "direction": "left"
+      },
+      "mode": "overlap",
+      "fromSceneId": "intro",
+      "toSceneId": "transition"
+    },
+    {
+      "kind": "scene",
+      "sceneId": "transition",
+      "startSec": 2,
+      "endSec": 5.300000000000001
+    },
+    {
+      "kind": "transition",
+      "id": "code-push-2",
+      "startSec": 4.700000000000001,
+      "endSec": 5.300000000000001,
+      "effect": "push",
+      "ease": "power2.inOut",
+      "props": {
+        "direction": "left"
+      },
+      "mode": "overlap",
+      "fromSceneId": "transition",
+      "toSceneId": "animation"
+    },
+    {
+      "kind": "scene",
+      "sceneId": "animation",
+      "startSec": 4.700000000000001,
+      "endSec": 8.3
+    },
+    {
+      "kind": "transition",
+      "id": "code-push-3",
+      "startSec": 7.700000000000001,
+      "endSec": 8.3,
+      "effect": "push",
+      "ease": "power2.inOut",
+      "props": {
+        "direction": "left"
+      },
+      "mode": "overlap",
+      "fromSceneId": "animation",
+      "toSceneId": "sfx"
+    },
+    {
+      "kind": "transition",
+      "id": "sfx-hit",
+      "startSec": 7.700000000000001,
+      "endSec": 8.3,
+      "effect": "fade",
+      "ease": "power2.out",
+      "mode": "overlap",
+      "overflowAudio": "clip",
+      "fromSceneId": "animation",
+      "toSceneId": "sfx"
+    },
+    {
+      "kind": "scene",
+      "sceneId": "sfx",
+      "startSec": 7.700000000000001,
+      "endSec": 11.100000000000001
+    },
+    {
+      "kind": "transition",
+      "id": "code-push-4",
+      "startSec": 10.500000000000002,
+      "endSec": 11.100000000000001,
+      "effect": "push",
+      "ease": "power2.inOut",
+      "props": {
+        "direction": "left"
+      },
+      "mode": "overlap",
+      "fromSceneId": "sfx",
+      "toSceneId": "close"
+    },
+    {
+      "kind": "scene",
+      "sceneId": "close",
+      "startSec": 10.500000000000002,
+      "endSec": 13.700000000000001
     }
   ],
   "fps": 30,

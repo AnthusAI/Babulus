@@ -92,7 +92,7 @@ function splitHtmlSegments(html: string): HtmlSegment[] {
 
   let match: RegExpExecArray | null;
 
-  // Find code blocks (pre and code tags)
+  // Find code blocks (pre tags)
   while ((match = codeRegex.exec(html)) !== null) {
     allMatches.push({ index: match.index, length: match[0].length, isCode: true });
   }
@@ -100,6 +100,19 @@ function splitHtmlSegments(html: string): HtmlSegment[] {
   codeRegex.lastIndex = 0;
   while ((match = preRegex.exec(html)) !== null) {
     allMatches.push({ index: match.index, length: match[0].length, isCode: true });
+  }
+
+  // Remove <code> matches that are inside <pre> blocks to avoid overlaps
+  const preBlocks = allMatches.filter((m) => m.isCode && html.slice(m.index, m.index + m.length).startsWith("<pre"));
+  const isInsidePre = (idx: number) =>
+    preBlocks.some((block) => idx >= block.index && idx < block.index + block.length);
+  for (let i = allMatches.length - 1; i >= 0; i -= 1) {
+    const matchItem = allMatches[i];
+    if (!matchItem.isCode) continue;
+    const snippet = html.slice(matchItem.index, matchItem.index + matchItem.length);
+    if (snippet.startsWith("<code") && isInsidePre(matchItem.index)) {
+      allMatches.splice(i, 1);
+    }
   }
 
   // Find regular tags

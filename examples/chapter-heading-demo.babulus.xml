@@ -1,4 +1,4 @@
-<videoml id="chapter-heading-demo" title="Chapter Heading Demo" fps="30" width="1920" height="1080">
+<vml id="chapter-heading-demo" title="Chapter Heading Demo" fps="30" width="1920" height="1080">
   <voiceover provider="dry-run" />
   <scene id="chapter" title="chapter">
     <layer id="background" z="0">
@@ -17,4 +17,4 @@
       <pause seconds="9s" />
     </cue>
   </scene>
-</videoml>
+</vml>
