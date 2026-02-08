@@ -30,11 +30,11 @@ applications:
       phases:
         preBuild:
           commands:
-            - cd ../..
+            - cd $CODEBUILD_SRC_DIR
             - npm ci --cache .npm --prefer-offline
         build:
           commands:
-            - cd ../..
+            - cd $CODEBUILD_SRC_DIR
             - npm run build --workspace=videoml-org
       artifacts:
         baseDirectory: public
