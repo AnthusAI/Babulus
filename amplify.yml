@@ -4,8 +4,17 @@ applications:
       phases:
         build:
           commands:
+            - cd ../..
             - npm ci --cache .npm --prefer-offline
+            - cd apps/studio-web
             - cd amplify/functions/render-trigger && npm ci && cd -
+            - cd ../..
+            - |
+              ROOT_GRAPHQL="$(pwd)/node_modules/graphql"
+              find node_modules -path '*/node_modules/graphql' -type d ! -path 'node_modules/graphql' 2>/dev/null | while read d; do
+                rm -rf "$d" && ln -s "$ROOT_GRAPHQL" "$d"
+              done
+            - cd apps/studio-web
             - npx ampx pipeline-deploy --branch $AWS_BRANCH --app-id $AWS_APP_ID
     frontend:
       phases:
