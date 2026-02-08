@@ -22,6 +22,56 @@ const DEFAULT_PROGRAM_KEY = "waitlist";
 const DEFAULT_PROGRAM_NAME = "Waitlist Onboarding";
 const DEFAULT_EVENT_TYPE = "waitlist_signup";
 
+const CREATE_MARKETING_LEAD = /* GraphQL */ `
+  mutation CreateMarketingLead($input: CreateMarketingLeadInput!) {
+    createMarketingLead(input: $input) {
+      id
+    }
+  }
+`;
+const CREATE_MARKETING_PROGRAM = /* GraphQL */ `
+  mutation CreateMarketingProgram($input: CreateMarketingProgramInput!) {
+    createMarketingProgram(input: $input) {
+      id
+    }
+  }
+`;
+const CREATE_MARKETING_PROGRAM_STEP = /* GraphQL */ `
+  mutation CreateMarketingProgramStep($input: CreateMarketingProgramStepInput!) {
+    createMarketingProgramStep(input: $input) {
+      id
+    }
+  }
+`;
+const CREATE_MARKETING_PROGRAM_RULE = /* GraphQL */ `
+  mutation CreateMarketingProgramRule($input: CreateMarketingProgramRuleInput!) {
+    createMarketingProgramRule(input: $input) {
+      id
+    }
+  }
+`;
+const CREATE_MARKETING_PROGRAM_TRIGGER = /* GraphQL */ `
+  mutation CreateMarketingProgramTrigger($input: CreateMarketingProgramTriggerInput!) {
+    createMarketingProgramTrigger(input: $input) {
+      id
+    }
+  }
+`;
+const CREATE_MARKETING_ENROLLMENT = /* GraphQL */ `
+  mutation CreateMarketingEnrollment($input: CreateMarketingEnrollmentInput!) {
+    createMarketingEnrollment(input: $input) {
+      id
+    }
+  }
+`;
+const CREATE_MARKETING_ENROLLMENT_EVENT = /* GraphQL */ `
+  mutation CreateMarketingEnrollmentEvent($input: CreateMarketingEnrollmentEventInput!) {
+    createMarketingEnrollmentEvent(input: $input) {
+      id
+    }
+  }
+`;
+
 type ProgramTrigger = {
   id: string;
   type: "event" | "time" | "attribute";
@@ -120,12 +170,34 @@ const isConflictError = (message: string) =>
   message.toLowerCase().includes("already exists") ||
   message.toLowerCase().includes("duplicate");
 
-const safeCreate = async (result: Promise<{ errors?: Array<{ message?: string }> }>) => {
-  const response = await result;
-  if (!response?.errors?.length) return;
-  const message = response.errors.map((e) => e.message ?? "").join(" ");
-  if (isConflictError(message)) return;
+const safeCreate = async (operation: () => Promise<any>) => {
+  const response = await operation();
+  const errors = (response as { errors?: Array<{ message?: string; errorType?: string }> } | undefined)?.errors;
+  if (!errors?.length) return;
+  const message = errors.map((e) => e.message ?? "").join(" ");
+  const errorTypes = errors.map((e) => e.errorType ?? "").join(" ");
+  if (isConflictError(message) || isConflictError(errorTypes)) return;
   throw new Error(message);
+};
+
+const createWithFallback = async (
+  client: any,
+  modelName: string,
+  mutation: string,
+  input: Record<string, unknown>,
+) => {
+  const modelClient = client?.models?.[modelName];
+  if (modelClient?.create) {
+    return modelClient.create(input);
+  }
+  if (client?.graphql) {
+    return client.graphql({
+      query: mutation,
+      variables: { input },
+      authMode: "apiKey",
+    });
+  }
+  throw new Error(`Missing model client for ${modelName}.`);
 };
 
 const evaluateAttributeTrigger = (
@@ -208,8 +280,8 @@ export async function POST(request: Request) {
       );
     }
 
-    await safeCreate(
-      client.models.MarketingLead.create({
+    await safeCreate(() =>
+      createWithFallback(client, "MarketingLead", CREATE_MARKETING_LEAD, {
         id: leadId,
         email: normalizedEmail,
         name,
@@ -221,8 +293,8 @@ export async function POST(request: Request) {
       }),
     );
 
-    await safeCreate(
-      client.models.MarketingProgram.create({
+    await safeCreate(() =>
+      createWithFallback(client, "MarketingProgram", CREATE_MARKETING_PROGRAM, {
         id: programId,
         key: DEFAULT_PROGRAM_KEY,
         name: DEFAULT_PROGRAM_NAME,
@@ -232,8 +304,8 @@ export async function POST(request: Request) {
     );
 
     for (const step of defaultProgramSteps) {
-      await safeCreate(
-        client.models.MarketingProgramStep.create({
+      await safeCreate(() =>
+        createWithFallback(client, "MarketingProgramStep", CREATE_MARKETING_PROGRAM_STEP, {
           id: `step_${programId}_${step.key}`,
           programId,
           key: step.key,
@@ -245,8 +317,8 @@ export async function POST(request: Request) {
 
     for (const rule of defaultProgramRules) {
       const ruleId = `rule_${programId}_${rule.id}`;
-      await safeCreate(
-        client.models.MarketingProgramRule.create({
+      await safeCreate(() =>
+        createWithFallback(client, "MarketingProgramRule", CREATE_MARKETING_PROGRAM_RULE, {
           id: ruleId,
           programId,
           fromStepKey: rule.fromStepKey,
@@ -258,8 +330,8 @@ export async function POST(request: Request) {
       );
 
       for (const trigger of rule.triggers) {
-        await safeCreate(
-          client.models.MarketingProgramTrigger.create({
+        await safeCreate(() =>
+          createWithFallback(client, "MarketingProgramTrigger", CREATE_MARKETING_PROGRAM_TRIGGER, {
             id: `trigger_${ruleId}_${trigger.id}`,
             ruleId,
             type: trigger.type,
@@ -282,8 +354,8 @@ export async function POST(request: Request) {
       defaultProgramRules.find((rule) => ruleMatchesEvent(rule, DEFAULT_EVENT_TYPE, leadForRule)) ??
       defaultProgramRules[0];
 
-    await safeCreate(
-      client.models.MarketingEnrollment.create({
+    await safeCreate(() =>
+      createWithFallback(client, "MarketingEnrollment", CREATE_MARKETING_ENROLLMENT, {
         id: enrollmentId,
         leadId,
         programId,
@@ -298,35 +370,46 @@ export async function POST(request: Request) {
     const enrolledEventId = `event_${enrollmentId}_enrolled_${matchedRule?.toStepKey ?? "none"}`;
     const enteredEventId = `event_${enrollmentId}_entered_${matchedRule?.toStepKey ?? "none"}`;
 
-    await safeCreate(
-      client.models.MarketingEnrollmentEvent.create({
+    await safeCreate(() =>
+      createWithFallback(client, "MarketingEnrollmentEvent", CREATE_MARKETING_ENROLLMENT_EVENT, {
         id: enrolledEventId,
         enrollmentId,
         eventType: "enrolled",
         toStepKey: matchedRule?.toStepKey,
         occurredAt: new Date().toISOString(),
-        metadata: {
+        metadata: JSON.stringify({
           eventType: DEFAULT_EVENT_TYPE,
-        },
+        }),
       }),
     );
 
-    await safeCreate(
-      client.models.MarketingEnrollmentEvent.create({
+    await safeCreate(() =>
+      createWithFallback(client, "MarketingEnrollmentEvent", CREATE_MARKETING_ENROLLMENT_EVENT, {
         id: enteredEventId,
         enrollmentId,
         eventType: "entered_step",
         toStepKey: matchedRule?.toStepKey,
         occurredAt: new Date().toISOString(),
-        metadata: {
+        metadata: JSON.stringify({
           eventType: DEFAULT_EVENT_TYPE,
-        },
+        }),
       }),
     );
 
     return Response.json({ ok: true }, { status: 200 });
   } catch (error) {
-    const message = error instanceof Error ? error.message : String(error);
+    const message =
+      error instanceof Error
+        ? error.message
+        : typeof error === "string"
+          ? error
+          : (() => {
+              try {
+                return JSON.stringify(error);
+              } catch {
+                return String(error);
+              }
+            })();
     return Response.json({ error: message || "Failed to join waitlist." }, { status: 500 });
   }
 }

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import datetime
 import hashlib
+import json
 from typing import Any
 
 from ..graphql_client import GraphQLClient
@@ -80,7 +81,7 @@ def handler(event: dict[str, Any], _context: Any) -> dict[str, Any]:
                 "body": None,
                 "messageId": message_id,
                 "occurredAt": datetime.datetime.utcnow().isoformat() + "Z",
-                "metadata": {"from": from_address},
+                "metadata": json.dumps({"from": from_address}),
             }
         },
     )
