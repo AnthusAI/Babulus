@@ -15,7 +15,7 @@
     "list-waitlist": "tsx scripts/list-waitlist.ts"
   },
   "overrides": {
-    "graphql": "^16.12.0"
+    "graphql": "15.8.0"
   },
   "dependencies": {
     "@aws-amplify/adapter-nextjs": "^1.7.1",
