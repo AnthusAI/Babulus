@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { ScriptData } from "@babulus/shared";
 import { PreviewPlayer } from "@/components/preview-player";
-import { COLOR_SCHEMES } from "@/lib/theme/color-schemes";
+import { COLOR_SCHEMES } from "@videoml/stdlib/tokens";
 import { TYPOGRAPHY_SCHEMES } from "@/lib/theme/typography-schemes";
 
 type PreviewEmbedProps = {
@@ -23,7 +23,7 @@ export function PreviewEmbed({
   height = 1080,
   showControls = true,
   showThemeControls = false,
-  audio = true,
+  audio: audioEnabled = true,
   defaultColorScheme = "cool-dark",
   defaultTypographyScheme = "classic-news",
 }: PreviewEmbedProps) {
@@ -79,7 +79,7 @@ export function PreviewEmbed({
   }, [id]);
 
   useEffect(() => {
-    if (!audio) {
+    if (!audioEnabled) {
       setTimelineClips([]);
       currentClipRef.current = null;
       return;
@@ -127,10 +127,10 @@ export function PreviewEmbed({
       isActive = false;
       controller.abort();
     };
-  }, [audio, id]);
+  }, [audioEnabled, id]);
 
   useEffect(() => {
-    if (!audio) {
+    if (!audioEnabled) {
       setAudioSrc(null);
       return;
     }
@@ -167,10 +167,10 @@ export function PreviewEmbed({
       isActive = false;
       controller.abort();
     };
-  }, [audio, id]);
+  }, [audioEnabled, id]);
 
   useEffect(() => {
-    if (!audio) return;
+    if (!audioEnabled) return;
     const cache = preloadCacheRef.current;
     for (const clip of timelineClips) {
       if (cache.has(clip.src)) continue;
@@ -180,41 +180,41 @@ export function PreviewEmbed({
       preloader.load();
       cache.set(clip.src, preloader);
     }
-  }, [audio, timelineClips]);
+  }, [audioEnabled, timelineClips]);
 
   useEffect(() => {
-    if (!audio) return;
-    const audio = audioRef.current;
-    if (!audio || !audioSrc) return;
-    audio.muted = false;
-    audio.volume = 1;
-    audio.load();
+    if (!audioEnabled) return;
+    const audioEl = audioRef.current;
+    if (!audioEl || !audioSrc) return;
+    audioEl.muted = false;
+    audioEl.volume = 1;
+    audioEl.load();
     console.info("[preview-audio] load", audioSrc);
-  }, [audio, audioSrc]);
+  }, [audioEnabled, audioSrc]);
 
   useEffect(() => {
-    if (!audio) return;
-    const audio = audioRef.current;
-    if (!audio) return;
+    if (!audioEnabled) return;
+    const audioEl = audioRef.current;
+    if (!audioEl) return;
     const handleLoaded = () => {
-      if (pendingClipRef.current && audio.src === pendingClipRef.current.src) {
-        audio.currentTime = pendingClipRef.current.desiredTime;
+      if (pendingClipRef.current && audioEl.src === pendingClipRef.current.src) {
+        audioEl.currentTime = pendingClipRef.current.desiredTime;
         pendingClipRef.current = null;
       } else if (pendingSeekRef.current != null) {
-        audio.currentTime = pendingSeekRef.current;
+        audioEl.currentTime = pendingSeekRef.current;
         pendingSeekRef.current = null;
       }
       if (isPlayingRef.current) {
-        void audio.play().catch(() => null);
+        void audioEl.play().catch(() => null);
       }
     };
-    audio.addEventListener("loadedmetadata", handleLoaded);
-    audio.addEventListener("canplay", handleLoaded);
+    audioEl.addEventListener("loadedmetadata", handleLoaded);
+    audioEl.addEventListener("canplay", handleLoaded);
     return () => {
-      audio.removeEventListener("loadedmetadata", handleLoaded);
-      audio.removeEventListener("canplay", handleLoaded);
+      audioEl.removeEventListener("loadedmetadata", handleLoaded);
+      audioEl.removeEventListener("canplay", handleLoaded);
     };
-  }, [audio]);
+  }, [audioEnabled]);
 
   const colorScheme =
     COLOR_SCHEMES.find((scheme) => scheme.id === colorSchemeId) ?? COLOR_SCHEMES[0];
@@ -266,9 +266,9 @@ export function PreviewEmbed({
 
   const handlePlayStateChange = (playing: boolean) => {
     isPlayingRef.current = playing;
-    if (!audio) return;
-    const audio = audioRef.current;
-    if (!audio || (!audioSrc && timelineClips.length === 0)) {
+    if (!audioEnabled) return;
+    const audioEl = audioRef.current;
+    if (!audioEl || (!audioSrc && timelineClips.length === 0)) {
       if (playing) {
         console.info("[preview-audio] no audio source available.");
       }
@@ -278,22 +278,22 @@ export function PreviewEmbed({
       if (timelineClips.length > 0) {
         handleTimeUpdate(lastTimeRef.current);
       } else {
-        audio.currentTime = audio.currentTime || 0;
-        void audio.play().catch((err) => {
+        audioEl.currentTime = audioEl.currentTime || 0;
+        void audioEl.play().catch((err) => {
           console.warn("[preview-audio] play failed", err);
         });
         console.info("[preview-audio] play", audioSrc);
       }
     } else {
-      audio.pause();
+      audioEl.pause();
       console.info("[preview-audio] pause");
     }
   };
 
   const syncAudioToTime = (timeSec: number) => {
-    const audio = audioRef.current;
-    if (!audio || timelineClips.length === 0) return;
-    if (pendingClipRef.current && audio.readyState < 2) {
+    const audioEl = audioRef.current;
+    if (!audioEl || timelineClips.length === 0) return;
+    if (pendingClipRef.current && audioEl.readyState < 2) {
       return;
     }
     let active: typeof timelineClips[number] | null = null;
@@ -310,17 +310,17 @@ export function PreviewEmbed({
     }
     if (!active) {
       currentClipRef.current = null;
-      if (!audio.paused) audio.pause();
+      if (!audioEl.paused) audioEl.pause();
       return;
     }
-    if (isPlayingRef.current && audio.readyState < 2) {
+    if (isPlayingRef.current && audioEl.readyState < 2) {
       const warnKey = `${active.id}:${active.src}`;
       if (!warnedClipsRef.current.has(warnKey)) {
         console.warn("[preview-audio] clip not ready", {
           id: active.id,
           src: active.src,
-          readyState: audio.readyState,
-          networkState: audio.networkState,
+          readyState: audioEl.readyState,
+          networkState: audioEl.networkState,
         });
         warnedClipsRef.current.add(warnKey);
       }
@@ -328,30 +328,34 @@ export function PreviewEmbed({
     const desiredTime = Math.max(0, timeSec - active.startSec);
     if (!current || current.id !== active.id) {
       currentClipRef.current = active;
-      if (audio.src !== active.src) {
-        audio.src = active.src;
+      if (audioEl.src !== active.src) {
+        audioEl.src = active.src;
         pendingSeekRef.current = desiredTime;
-        audio.load();
-        if (audio.readyState < 2) {
+        audioEl.load();
+        if (audioEl.readyState < 2) {
           pendingClipRef.current = { id: active.id, src: active.src, desiredTime };
         } else if (isPlayingRef.current) {
-          void audio.play().catch(() => null);
+          void audioEl.play().catch(() => null);
         }
         return;
       }
-      audio.currentTime = desiredTime;
+      audioEl.currentTime = desiredTime;
       if (isPlayingRef.current) {
-        void audio.play().catch(() => null);
+        void audioEl.play().catch(() => null);
       }
       return;
     }
     const now = performance.now();
-    if (audio.readyState >= 2 && Math.abs(audio.currentTime - desiredTime) > 0.4 && now - lastResyncRef.current > 600) {
-      audio.currentTime = desiredTime;
+    if (
+      audioEl.readyState >= 2 &&
+      Math.abs(audioEl.currentTime - desiredTime) > 0.4 &&
+      now - lastResyncRef.current > 600
+    ) {
+      audioEl.currentTime = desiredTime;
       lastResyncRef.current = now;
     }
-    if (isPlayingRef.current && audio.paused) {
-      void audio.play().catch(() => null);
+    if (isPlayingRef.current && audioEl.paused) {
+      void audioEl.play().catch(() => null);
     }
     const nextIndex = timelineClips.findIndex((clip) => clip.id === active.id) + 1;
     const next = timelineClips[nextIndex];
@@ -368,26 +372,26 @@ export function PreviewEmbed({
   };
 
   const handleTimeUpdate = (timeSec: number) => {
-    if (!audio) return;
-    const audio = audioRef.current;
+    if (!audioEnabled) return;
+    const audioEl = audioRef.current;
     if (timelineClips.length > 0) {
       syncAudioToTime(timeSec);
       return;
     }
-    if (!audio || !audioSrc || !Number.isFinite(audio.currentTime)) {
+    if (!audioEl || !audioSrc || !Number.isFinite(audioEl.currentTime)) {
       return;
     }
-    if (isPlayingRef.current && audio.paused) {
-      void audio.play().catch((err) => {
+    if (isPlayingRef.current && audioEl.paused) {
+      void audioEl.play().catch((err) => {
         console.warn("[preview-audio] resume failed", err);
       });
     }
     const last = lastTimeRef.current;
     lastTimeRef.current = timeSec;
-    const delta = Math.abs(audio.currentTime - timeSec);
+    const delta = Math.abs(audioEl.currentTime - timeSec);
     const looped = timeSec + 0.05 < last;
     if (looped || delta > 0.5) {
-      audio.currentTime = timeSec;
+      audioEl.currentTime = timeSec;
       const now = performance.now();
       if (now - lastSyncLogRef.current > 1000) {
         console.info("[preview-audio] sync", { timeSec, delta });
@@ -438,7 +442,7 @@ export function PreviewEmbed({
         onPlayStateChange={handlePlayStateChange}
         onTimeUpdate={handleTimeUpdate}
       />
-      {audio ? (
+      {audioEnabled ? (
         <audio
           ref={audioRef}
           src={audioSrc ?? undefined}

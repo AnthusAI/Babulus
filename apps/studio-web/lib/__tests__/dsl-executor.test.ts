@@ -2,7 +2,7 @@
  * Tests for browser-based DSL executor
  */
 
-import { executeDslFile } from '../dsl-executor';
+import { executeDslFile, executeVomXml, applyVomPatchesInBrowser } from '../dsl-executor';
 
 describe('executeDslFile', () => {
   it('executes simple defineVideo with title and config', async () => {
@@ -140,5 +140,58 @@ describe('executeDslFile', () => {
 
     const result = await executeDslFile(code);
     expect(result.compositions[0].title).toBe('Test');
+  });
+});
+
+describe('executeVomXml', () => {
+  it('parses a minimal VML document', () => {
+    const xml = `
+      <vml id="demo" title="Demo" fps="30" width="1280" height="720">
+        <scene id="scene-1">
+          <cue id="cue-1"><voice>Hello</voice></cue>
+        </scene>
+      </vml>
+    `;
+    const result = executeVomXml(xml);
+    expect(result).toBeDefined();
+    expect(result.compositions?.length).toBe(1);
+    expect(result.compositions[0].id).toBe('demo');
+    expect(result.compositions[0].meta?.fps).toBe(30);
+  });
+
+  it('rejects invalid roots', () => {
+    const xml = `<not-vml></not-vml>`;
+    expect(() => executeVomXml(xml)).toThrow(/XML root must be/);
+  });
+});
+
+describe('applyVomPatchesInBrowser', () => {
+  const baseXml = `
+    <vml id="demo" title="Demo" fps="30" width="1280" height="720">
+      <scene id="scene-1">
+        <cue id="cue-1"><voice>Hello</voice></cue>
+      </scene>
+    </vml>
+  `;
+
+  it('appends and removes nodes', () => {
+    const appended = applyVomPatchesInBrowser(baseXml, [
+      { op: "appendNode", parentId: "scene-1", nodeXml: `<cue id="cue-2"><voice>World</voice></cue>` },
+    ]);
+    expect(appended).toContain('cue-2');
+
+    const removed = applyVomPatchesInBrowser(appended, [
+      { op: "removeNode", nodeId: "cue-1" },
+    ]);
+    expect(removed).not.toContain('cue-1');
+  });
+
+  it('sets attributes and text', () => {
+    const patched = applyVomPatchesInBrowser(baseXml, [
+      { op: "setAttr", nodeId: "scene-1", name: "title", value: "Intro" },
+      { op: "setText", nodeId: "cue-1", textContent: "Updated" },
+    ]);
+    expect(patched).toContain('title="Intro"');
+    expect(patched).toContain('Updated');
   });
 });

@@ -7,6 +7,9 @@ export const componentsDoc: DocsEntry = {
   category: "Designers",
   html: `
 <h1>Components</h1>
+<div class="callout callout-info">
+  Canonical docs now live at <a href="https://videoml.org/docs/stdlib">videoml.org/docs/stdlib</a>.
+</div>
 <p>These are the off-the-shelf components you can drop into a scene. They are deterministic, frame-driven, and designed to stack cleanly with layouts.</p>
 
 <h2>Overview</h2>

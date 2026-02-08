@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { COLOR_SCHEMES } from "@/lib/theme/color-schemes";
+import { COLOR_SCHEMES } from "@videoml/stdlib/tokens";
 import { cn } from "@/lib/utils";
 
 type PreviewPayload = {

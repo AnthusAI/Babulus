@@ -1,5 +1,5 @@
 import type { DocsEntry } from "@/lib/docs-registry";
-import { COLOR_SCHEMES } from "@/lib/theme/color-schemes";
+import { COLOR_SCHEMES } from "@videoml/stdlib/tokens";
 
 const renderPaletteSwatches = (scheme: (typeof COLOR_SCHEMES)[number]) => `
   <div class="mt-4 grid gap-4 sm:grid-cols-3 lg:grid-cols-4">
@@ -46,6 +46,9 @@ export const componentsColorsDoc: DocsEntry = {
   category: "Designers",
   html: `
 <h1>Color Schemes</h1>
+<div class="callout callout-info">
+  Canonical docs now live at <a href="https://videoml.org/docs/stdlib">videoml.org/docs/stdlib</a>.
+</div>
 <p>Each scheme is a Radix-inspired palette with gentle contrast. Avoid pure black/white; backgrounds stay inward of the scale and text avoids full-white.</p>
 
 <h2>Scheme Catalog</h2>

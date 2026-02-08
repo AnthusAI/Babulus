@@ -588,6 +588,9 @@ export const componentsTypographyDoc: DocsEntry = {
   category: "Designers",
   html: `
 <h1>Typefaces</h1>
+<div class="callout callout-info">
+  Canonical docs now live at <a href="https://videoml.org/docs/stdlib">videoml.org/docs/stdlib</a>.
+</div>
 <p>Typeface schemes are packaged as CSS variables (<code>--font-eyebrow</code>, <code>--font-headline</code>, <code>--font-subhead</code>) so layouts stay typography-agnostic.</p>
 
 <h2>Scheme Catalog</h2>

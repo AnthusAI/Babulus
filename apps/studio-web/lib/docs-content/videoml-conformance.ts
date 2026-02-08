@@ -7,6 +7,9 @@ export const videomlConformanceDoc: DocsEntry = {
   category: "Standards",
   html: `
 <h1 id="videoml-conformance">VideoML Conformance</h1>
+<div class="callout callout-info">
+  Canonical docs now live at <a href="https://videoml.org/docs/standard">videoml.org/docs/standard</a>.
+</div>
 <p><strong>Status:</strong> Draft. This defines how to claim conformance with the VideoML standard.</p>
 
 <hr />

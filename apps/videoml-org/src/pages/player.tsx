@@ -1,6 +1,7 @@
 import * as React from "react";
 import type { HeadFC, PageProps } from "gatsby";
 import { Layout, Hero, Section, Callout } from "../components";
+import { githubBlobUrl } from "../lib/github";
 
 const PlayerPage: React.FC<PageProps> = () => {
   return (
@@ -9,6 +10,10 @@ const PlayerPage: React.FC<PageProps> = () => {
         eyebrow="Reference Player"
         title="A canonical implementation of the VideoML runtime"
         subtitle="The reference player validates the spec by providing a portable runtime model for playback, inspection, and tooling."
+        links={[
+          { label: "View page source", href: githubBlobUrl("apps/videoml-org/src/pages/player.tsx") },
+          { label: "View @videoml/player", href: githubBlobUrl("packages/videoml-player/src/index.ts") },
+        ]}
       />
 
       <Section>
@@ -22,14 +27,14 @@ const PlayerPage: React.FC<PageProps> = () => {
       </Section>
 
       <Section tone="alt">
-        <h2>NPM Module (planned)</h2>
+        <h2>NPM Module</h2>
         <p>
-          The player will be factored out of Babulus as a standalone package.
-          This site will link to the module and its API docs when available.
+          The player is published as <code>@videoml/player</code>, including a
+          web component and runtime helpers for integrating VideoML on any page.
         </p>
-        <Callout tone="warn">
-          Placeholder: module name, release cadence, and API surface are
-          currently in planning.
+        <Callout tone="info">
+          See <a href="/docs/packages">packages</a> and{" "}
+          <a href="/docs/standard">standard</a> for usage details.
         </Callout>
       </Section>
     </Layout>

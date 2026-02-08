@@ -7,6 +7,9 @@ export const componentsLayoutsDoc: DocsEntry = {
   category: "Designers",
   html: `
 <h1>Standard Layouts</h1>
+<div class="callout callout-info">
+  Canonical docs now live at <a href="https://videoml.org/docs/stdlib">videoml.org/docs/stdlib</a>.
+</div>
 <p>All layouts are full-frame flex containers. Enable <code>debugLayout</code> (or the scene <code>frame</code> flag) to reveal dashed borders and labels for every region.</p>
 
 <h2>Layouts</h2>

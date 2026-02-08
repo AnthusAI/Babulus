@@ -4,7 +4,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import type { ScriptData } from '@babulus/shared';
 import { PreviewPlayer } from '@/components/preview-player';
-import { COLOR_SCHEMES } from '@/lib/theme/color-schemes';
+import { COLOR_SCHEMES } from '@videoml/stdlib/tokens';
 import { TYPOGRAPHY_SCHEMES } from '@/lib/theme/typography-schemes';
 
 type DocsPreviewPlayerProps = {

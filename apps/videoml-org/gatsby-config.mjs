@@ -5,7 +5,7 @@ const config = {
     siteUrl: "https://videoml.org",
   },
   graphqlTypegen: false,
-  plugins: [],
+  plugins: ["gatsby-plugin-postcss"],
 };
 
 export default config;

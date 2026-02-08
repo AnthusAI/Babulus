@@ -7,12 +7,14 @@ const nextConfig = {
   experimental: {
     externalDir: true,
   },
-  transpilePackages: ["@babulus/renderer", "@babulus/shared"],
+  transpilePackages: ["@babulus/renderer", "@babulus/shared", "@videoml/player", "@videoml/stdlib"],
   output: "standalone",
   webpack: (config) => {
     const rootNodeModules = path.resolve(__dirname, "..", "..", "node_modules");
     const rendererRoot = path.resolve(__dirname, "..", "..", "packages", "renderer");
     const sharedRoot = path.resolve(__dirname, "..", "..", "packages", "shared");
+    const videomlPlayerRoot = path.resolve(__dirname, "..", "..", "packages", "videoml-player");
+    const videomlStdlibRoot = path.resolve(__dirname, "..", "..", "packages", "videoml-stdlib");
     // Allow importing .ts files as .js (for ESM module resolution)
     config.resolve.extensionAlias = {
       ".js": [".js", ".ts", ".tsx"],
@@ -25,6 +27,8 @@ const nextConfig = {
       ...(config.resolve.alias ?? {}),
       "@babulus/renderer": rendererRoot,
       "@babulus/shared": sharedRoot,
+      "@videoml/player": videomlPlayerRoot,
+      "@videoml/stdlib": videomlStdlibRoot,
       graphql: path.resolve(rootNodeModules, "graphql"),
     };
     return config;

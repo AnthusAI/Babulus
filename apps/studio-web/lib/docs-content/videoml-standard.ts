@@ -11,6 +11,9 @@ export const videomlStandardDoc: DocsEntry = {
   lastReviewed: "2026-02-05",
   html: `
 <h1 id="videoml-standard">VideoML Standard</h1>
+<div class="callout callout-info">
+  Canonical docs now live at <a href="https://videoml.org/docs/standard">videoml.org/docs/standard</a>.
+</div>
 <p><strong>Status:</strong> Draft (v0.1)</p>
 <p>VideoML is an XML-based standard for creating videos using declarative markup. It treats time as a layout axis and uses the browser DOM as the canonical runtime. VideoML feels like web programming with a timeline.</p>
 

@@ -8,6 +8,9 @@ export const videomlTransitionsDoc: DocsEntry = {
   lastReviewed: "2026-02-06",
   html: `
 <h1>Transitions</h1>
+<div class="callout callout-info">
+  Canonical docs now live at <a href="https://videoml.org/docs/standard">videoml.org/docs/standard</a>.
+</div>
 <p>Transitions are first-class timeline items that sit between scenes. They can overlap scenes (crossfade, wipe, slide) or insert time between them. Transitions are containers, so they can include visuals, layers, and audio cues.</p>
 
 <div class="callout callout-info">

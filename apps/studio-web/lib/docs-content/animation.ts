@@ -9,6 +9,9 @@ export const animationDoc: DocsEntry = {
 <div class="docs-preview" data-docs-preview="animation-reel" data-w="1920" data-h="1080" data-autoplay="true"></div>
 
 <h1>Animation</h1>
+<div class="callout callout-info">
+  Canonical docs now live at <a href="https://videoml.org/docs/stdlib">videoml.org/docs/stdlib</a>.
+</div>
 <p>Babulus treats animation as a deterministic function of frame. Every component renders from a single input:</p>
 <div class="sourceCode"><pre class="sourceCode ts"><code class="sourceCode ts"><span class="fu">render</span>(frame: <span class="dt">number</span>) <span class="op">-&gt;</span> visual output</code></pre></div>
 <p>No global timers. No CSS keyframes. No independent loops. This keeps previews and renders perfectly synchronized across all animation engines.</p>
