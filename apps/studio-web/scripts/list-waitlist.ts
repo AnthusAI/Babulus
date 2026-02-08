@@ -12,7 +12,6 @@
 
 import { Amplify } from "aws-amplify";
 import { generateClient } from "aws-amplify/data";
-// @ts-expect-error path to generated config
 import outputs from "../amplify_outputs.json";
 
 Amplify.configure(outputs, { ssr: false });
