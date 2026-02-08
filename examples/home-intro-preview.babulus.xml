@@ -6,10 +6,10 @@
       <p5-neon-field props='{"intensity":1.5,"speed":0.08,"scale":1.0}' />
     </layer>
     <layer id="content" z="10">
-      <title-slide props='{"eyebrow":"Babulus","title":"AI-native marketing automation","subtitle":"Built-in CRM intelligence","verticalAlign":"center","horizontalAlign":"center","entranceStartFrame":-999,"background":"transparent"}' />
+      <title-slide props='{"eyebrow":"Babulus","title":"Agent-driven video broadcasting","subtitle":"Always-on, on-brand scenes with voice + motion","verticalAlign":"center","horizontalAlign":"center","entranceStartFrame":-999,"background":"transparent"}' />
     </layer>
     <cue id="intro-hero-cue">
-      <voice>Babulus is an AI native marketing automation system with built in CRM intelligence.</voice>
+      <voice>Babulus is an agent-driven video broadcaster. It writes scene-by-scene scripts, generates voiceover with ElevenLabs or OpenAI, and renders on-brand motion graphics.</voice>
     </cue>
   </scene>
 
@@ -17,10 +17,10 @@
 
   <scene id="intro-flow" title="intro-flow" styles='{"background":"#0f1117","color":"#e8eaf0","vars":{"--color-bg":"#0f1117","--color-bg-subtle":"#151a27","--color-surface":"#151a27","--color-surface-strong":"#1c2333","--color-surface-2":"#1c2333","--color-text":"#e8eaf0","--color-text-muted":"#c4c8d6","--color-primary":"#5f7bff","--color-secondary":"#ff6ac1","--color-accent":"#5f7bff","--color-accent-2":"#ff6ac1","--color-muted":"#c4c8d6","--color-muted-more":"#c4c8d6","--font-eyebrow":"var(--font-preview-humanist), sans-serif","--font-headline":"var(--font-preview-sans), sans-serif","--font-subhead":"var(--font-preview-humanist), sans-serif"}}'>
     <layer id="content">
-      <title-slide props='{"eyebrow":"Automation","title":"From leads to lifecycle","subtitle":"Capture, segment, and publish without manual bottlenecks","verticalAlign":"center","horizontalAlign":"center","entranceStartFrame":-999}' />
+      <title-slide props='{"eyebrow":"Personalization","title":"One message per contact","subtitle":"Custom videos driven by your data (without templates)","verticalAlign":"center","horizontalAlign":"center","entranceStartFrame":-999}' />
     </layer>
     <cue id="intro-flow-cue">
-      <voice>Connect lead capture, segmentation, and lifecycle messaging with automated video production.</voice>
+      <voice>It can personalize videos per contact and context, so your message fits the person, the moment, and your brand.</voice>
     </cue>
   </scene>
 
@@ -28,10 +28,10 @@
 
   <scene id="intro-loop" title="intro-loop" styles='{"background":"#0f1117","color":"#e8eaf0","vars":{"--color-bg":"#0f1117","--color-bg-subtle":"#151a27","--color-surface":"#151a27","--color-surface-strong":"#1c2333","--color-surface-2":"#1c2333","--color-text":"#e8eaf0","--color-text-muted":"#c4c8d6","--color-primary":"#5f7bff","--color-secondary":"#ff6ac1","--color-accent":"#5f7bff","--color-accent-2":"#ff6ac1","--color-muted":"#c4c8d6","--color-muted-more":"#c4c8d6","--font-eyebrow":"var(--font-preview-humanist), sans-serif","--font-headline":"var(--font-preview-sans), sans-serif","--font-subhead":"var(--font-preview-humanist), sans-serif"}}'>
     <layer id="content">
-      <title-slide props='{"eyebrow":"CRM intelligence","title":"Close the loop","subtitle":"Measure performance and feed learnings back into your CRM","verticalAlign":"center","horizontalAlign":"center","entranceStartFrame":-999}' />
+      <title-slide props='{"eyebrow":"Open standard","title":"Portable VideoML (VML)","subtitle":"Export projects. Run anywhere. No vendor lock-in.","verticalAlign":"center","horizontalAlign":"center","entranceStartFrame":-999}' />
     </layer>
     <cue id="intro-loop-cue">
-      <voice>Measure performance, feed learnings back into your CRM, and scale what works.</voice>
+      <voice>And it's not a locked platform. You export portable VideoML projects you can run anywhere with the reference renderer.</voice>
     </cue>
   </scene>
 
@@ -42,7 +42,7 @@
       <cta-slide />
     </layer>
     <cue id="intro-cta-cue">
-      <voice>Dive into the demo videos and code to learn more, and join the waitlist to keep up with Babulus as we launch it. We'll send you videos.</voice>
+      <voice>Explore the demos and the VideoML docs, and join the waitlist for early access. We'll send progress updates and new videos as we build.</voice>
     </cue>
   </scene>
 </vml>

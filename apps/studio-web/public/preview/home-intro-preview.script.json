@@ -4,7 +4,7 @@
       "id": "intro-hero",
       "title": "intro-hero",
       "startSec": 0,
-      "endSec": 6.65,
+      "endSec": 13.7,
       "styles": {
         "background": "#0f1117",
         "color": "#e8eaf0",
@@ -53,8 +53,8 @@
               "type": "TitleSlide",
               "props": {
                 "eyebrow": "Babulus",
-                "title": "AI-native marketing automation",
-                "subtitle": "Built-in CRM intelligence",
+                "title": "Agent-driven video broadcasting",
+                "subtitle": "Always-on, on-brand scenes with voice + motion",
                 "verticalAlign": "center",
                 "horizontalAlign": "center",
                 "entranceStartFrame": -999,
@@ -70,14 +70,14 @@
           "id": "intro-hero-cue",
           "label": "intro-hero-cue",
           "startSec": 0,
-          "endSec": 6.65,
-          "text": "Babulus is an AI native marketing automation system with built in CRM intelligence.",
+          "endSec": 13.7,
+          "text": "Babulus is an agent-driven video broadcaster. It writes scene-by-scene scripts, generates voiceover with ElevenLabs or OpenAI, and renders on-brand motion graphics.",
           "segments": [
             {
               "type": "tts",
               "startSec": 0,
-              "endSec": 6.65,
-              "text": "Babulus is an AI native marketing automation system with built in CRM intelligence."
+              "endSec": 13.7,
+              "text": "Babulus is an agent-driven video broadcaster. It writes scene-by-scene scripts, generates voiceover with ElevenLabs or OpenAI, and renders on-brand motion graphics."
             }
           ],
           "bullets": []
@@ -87,8 +87,8 @@
     {
       "id": "intro-flow",
       "title": "intro-flow",
-      "startSec": 7.050000000000001,
-      "endSec": 14.950000000000001,
+      "startSec": 14.1,
+      "endSec": 21.6,
       "styles": {
         "background": "#0f1117",
         "color": "#e8eaf0",
@@ -119,13 +119,13 @@
               "id": "title-slide-0",
               "type": "TitleSlide",
               "props": {
-                "eyebrow": "Automation",
-                "title": "From leads to lifecycle",
-                "subtitle": "Capture, segment, and publish without manual bottlenecks",
+                "eyebrow": "Personalization",
+                "title": "One message per contact",
+                "subtitle": "Custom videos driven by your data (without templates)",
                 "verticalAlign": "center",
                 "horizontalAlign": "center",
                 "entranceStartFrame": -999,
-                "sceneStartSec": 6.65
+                "sceneStartSec": 13.7
               }
             }
           ]
@@ -135,15 +135,15 @@
         {
           "id": "intro-flow-cue",
           "label": "intro-flow-cue",
-          "startSec": 7.050000000000001,
-          "endSec": 14.950000000000001,
-          "text": "Connect lead capture, segmentation, and lifecycle messaging with automated video production.",
+          "startSec": 14.1,
+          "endSec": 21.6,
+          "text": "It can personalize videos per contact and context, so your message fits the person, the moment, and your brand.",
           "segments": [
             {
               "type": "tts",
-              "startSec": 7.050000000000001,
-              "endSec": 14.950000000000001,
-              "text": "Connect lead capture, segmentation, and lifecycle messaging with automated video production."
+              "startSec": 14.1,
+              "endSec": 21.6,
+              "text": "It can personalize videos per contact and context, so your message fits the person, the moment, and your brand."
             }
           ],
           "bullets": []
@@ -153,8 +153,8 @@
     {
       "id": "intro-loop",
       "title": "intro-loop",
-      "startSec": 15.350000000000001,
-      "endSec": 20.650000000000002,
+      "startSec": 22,
+      "endSec": 29.4,
       "styles": {
         "background": "#0f1117",
         "color": "#e8eaf0",
@@ -185,13 +185,13 @@
               "id": "title-slide-0",
               "type": "TitleSlide",
               "props": {
-                "eyebrow": "CRM intelligence",
-                "title": "Close the loop",
-                "subtitle": "Measure performance and feed learnings back into your CRM",
+                "eyebrow": "Open standard",
+                "title": "Portable VideoML (VML)",
+                "subtitle": "Export projects. Run anywhere. No vendor lock-in.",
                 "verticalAlign": "center",
                 "horizontalAlign": "center",
                 "entranceStartFrame": -999,
-                "sceneStartSec": 14.55
+                "sceneStartSec": 21.2
               }
             }
           ]
@@ -201,15 +201,15 @@
         {
           "id": "intro-loop-cue",
           "label": "intro-loop-cue",
-          "startSec": 15.350000000000001,
-          "endSec": 20.650000000000002,
-          "text": "Measure performance, feed learnings back into your CRM, and scale what works.",
+          "startSec": 22,
+          "endSec": 29.4,
+          "text": "And it's not a locked platform. You export portable VideoML projects you can run anywhere with the reference renderer.",
           "segments": [
             {
               "type": "tts",
-              "startSec": 15.350000000000001,
-              "endSec": 20.650000000000002,
-              "text": "Measure performance, feed learnings back into your CRM, and scale what works."
+              "startSec": 22,
+              "endSec": 29.4,
+              "text": "And it's not a locked platform. You export portable VideoML projects you can run anywhere with the reference renderer."
             }
           ],
           "bullets": []
@@ -219,8 +219,8 @@
     {
       "id": "intro-cta",
       "title": "intro-cta",
-      "startSec": 21.05,
-      "endSec": 30.6,
+      "startSec": 29.799999999999997,
+      "endSec": 39.15,
       "styles": {
         "background": "#0f1117",
         "color": "#e8eaf0",
@@ -251,7 +251,7 @@
               "id": "cta-slide-0",
               "type": "CtaSlide",
               "props": {
-                "sceneStartSec": 19.85
+                "sceneStartSec": 28.6
               }
             }
           ]
@@ -261,15 +261,15 @@
         {
           "id": "intro-cta-cue",
           "label": "intro-cta-cue",
-          "startSec": 21.05,
-          "endSec": 30.6,
-          "text": "Dive into the demo videos and code to learn more, and join the waitlist to keep up with Babulus as we launch it. We'll send you videos.",
+          "startSec": 29.799999999999997,
+          "endSec": 39.15,
+          "text": "Explore the demos and the VideoML docs, and join the waitlist for early access. We'll send progress updates and new videos as we build.",
           "segments": [
             {
               "type": "tts",
-              "startSec": 21.05,
-              "endSec": 30.6,
-              "text": "Dive into the demo videos and code to learn more, and join the waitlist to keep up with Babulus as we launch it. We'll send you videos."
+              "startSec": 29.799999999999997,
+              "endSec": 39.15,
+              "text": "Explore the demos and the VideoML docs, and join the waitlist for early access. We'll send progress updates and new videos as we build."
             }
           ],
           "bullets": []
@@ -282,13 +282,13 @@
       "kind": "scene",
       "sceneId": "intro-hero",
       "startSec": 0,
-      "endSec": 6.65
+      "endSec": 13.7
     },
     {
       "kind": "transition",
       "id": "intro-push-1",
-      "startSec": 6.65,
-      "endSec": 7.050000000000001,
+      "startSec": 13.7,
+      "endSec": 14.1,
       "effect": "push",
       "ease": "power2.inOut",
       "props": {
@@ -301,14 +301,14 @@
     {
       "kind": "scene",
       "sceneId": "intro-flow",
-      "startSec": 7.050000000000001,
-      "endSec": 14.950000000000001
+      "startSec": 14.1,
+      "endSec": 21.6
     },
     {
       "kind": "transition",
       "id": "intro-push-2",
-      "startSec": 14.950000000000001,
-      "endSec": 15.350000000000001,
+      "startSec": 21.6,
+      "endSec": 22,
       "effect": "push",
       "ease": "power2.inOut",
       "props": {
@@ -321,14 +321,14 @@
     {
       "kind": "scene",
       "sceneId": "intro-loop",
-      "startSec": 15.350000000000001,
-      "endSec": 20.650000000000002
+      "startSec": 22,
+      "endSec": 29.4
     },
     {
       "kind": "transition",
       "id": "intro-push-3",
-      "startSec": 20.650000000000002,
-      "endSec": 21.05,
+      "startSec": 29.4,
+      "endSec": 29.799999999999997,
       "effect": "push",
       "ease": "power2.inOut",
       "props": {
@@ -341,8 +341,8 @@
     {
       "kind": "scene",
       "sceneId": "intro-cta",
-      "startSec": 21.05,
-      "endSec": 30.6
+      "startSec": 29.799999999999997,
+      "endSec": 39.15
     }
   ],
   "fps": 30,

@@ -12,6 +12,7 @@ type PreviewEmbedProps = {
   height?: number;
   showControls?: boolean;
   showThemeControls?: boolean;
+  audio?: boolean;
   defaultColorScheme?: string;
   defaultTypographyScheme?: string;
 };
@@ -22,6 +23,7 @@ export function PreviewEmbed({
   height = 1080,
   showControls = true,
   showThemeControls = false,
+  audio = true,
   defaultColorScheme = "cool-dark",
   defaultTypographyScheme = "classic-news",
 }: PreviewEmbedProps) {
@@ -77,6 +79,11 @@ export function PreviewEmbed({
   }, [id]);
 
   useEffect(() => {
+    if (!audio) {
+      setTimelineClips([]);
+      currentClipRef.current = null;
+      return;
+    }
     let isActive = true;
     const controller = new AbortController();
 
@@ -120,9 +127,13 @@ export function PreviewEmbed({
       isActive = false;
       controller.abort();
     };
-  }, [id]);
+  }, [audio, id]);
 
   useEffect(() => {
+    if (!audio) {
+      setAudioSrc(null);
+      return;
+    }
     let isActive = true;
     const controller = new AbortController();
 
@@ -156,9 +167,10 @@ export function PreviewEmbed({
       isActive = false;
       controller.abort();
     };
-  }, [id]);
+  }, [audio, id]);
 
   useEffect(() => {
+    if (!audio) return;
     const cache = preloadCacheRef.current;
     for (const clip of timelineClips) {
       if (cache.has(clip.src)) continue;
@@ -168,18 +180,20 @@ export function PreviewEmbed({
       preloader.load();
       cache.set(clip.src, preloader);
     }
-  }, [timelineClips]);
+  }, [audio, timelineClips]);
 
   useEffect(() => {
+    if (!audio) return;
     const audio = audioRef.current;
     if (!audio || !audioSrc) return;
     audio.muted = false;
     audio.volume = 1;
     audio.load();
     console.info("[preview-audio] load", audioSrc);
-  }, [audioSrc]);
+  }, [audio, audioSrc]);
 
   useEffect(() => {
+    if (!audio) return;
     const audio = audioRef.current;
     if (!audio) return;
     const handleLoaded = () => {
@@ -200,7 +214,7 @@ export function PreviewEmbed({
       audio.removeEventListener("loadedmetadata", handleLoaded);
       audio.removeEventListener("canplay", handleLoaded);
     };
-  }, []);
+  }, [audio]);
 
   const colorScheme =
     COLOR_SCHEMES.find((scheme) => scheme.id === colorSchemeId) ?? COLOR_SCHEMES[0];
@@ -252,6 +266,7 @@ export function PreviewEmbed({
 
   const handlePlayStateChange = (playing: boolean) => {
     isPlayingRef.current = playing;
+    if (!audio) return;
     const audio = audioRef.current;
     if (!audio || (!audioSrc && timelineClips.length === 0)) {
       if (playing) {
@@ -353,6 +368,7 @@ export function PreviewEmbed({
   };
 
   const handleTimeUpdate = (timeSec: number) => {
+    if (!audio) return;
     const audio = audioRef.current;
     if (timelineClips.length > 0) {
       syncAudioToTime(timeSec);
@@ -422,22 +438,24 @@ export function PreviewEmbed({
         onPlayStateChange={handlePlayStateChange}
         onTimeUpdate={handleTimeUpdate}
       />
-      <audio
-        ref={audioRef}
-        src={audioSrc ?? undefined}
-        preload="auto"
-        onCanPlay={() => {
-          if (audioSrc) {
-            console.info("[preview-audio] canplay", audioSrc);
-          }
-        }}
-        onEnded={() => {
-          console.info("[preview-audio] ended");
-        }}
-        onError={(event) => {
-          console.warn("[preview-audio] error", audioSrc, event);
-        }}
-      />
+      {audio ? (
+        <audio
+          ref={audioRef}
+          src={audioSrc ?? undefined}
+          preload="auto"
+          onCanPlay={() => {
+            if (audioSrc) {
+              console.info("[preview-audio] canplay", audioSrc);
+            }
+          }}
+          onEnded={() => {
+            console.info("[preview-audio] ended");
+          }}
+          onError={(event) => {
+            console.warn("[preview-audio] error", audioSrc, event);
+          }}
+        />
+      ) : null}
     </div>
   );
 }

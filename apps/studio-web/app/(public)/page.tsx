@@ -19,18 +19,21 @@ import { WaitlistExpectations } from "@/components/marketing/waitlist-expectatio
 
 export const metadata: Metadata = {
   title: {
-    absolute: "Babulus: AI Video CMS",
+    absolute: "Babulus: Agent-driven Video Broadcasting",
   },
-  description: "Your AI Video CMS for automated research, scripting, rendering, and publishing.",
+  description:
+    "AI agents that write and render on-brand videos. Portable VideoML (VML) projects you can run anywhere—no vendor lock-in.",
   openGraph: {
-    title: "Babulus: AI Video CMS",
-    description: "Your AI Video CMS for automated research, scripting, rendering, and publishing.",
+    title: "Babulus: Agent-driven Video Broadcasting",
+    description:
+      "AI agents that write and render on-brand videos. Portable VideoML (VML) projects you can run anywhere—no vendor lock-in.",
     type: "website",
   },
   twitter: {
     card: "summary",
-    title: "Babulus: AI Video CMS",
-    description: "Your AI Video CMS for automated research, scripting, rendering, and publishing.",
+    title: "Babulus: Agent-driven Video Broadcasting",
+    description:
+      "AI agents that write and render on-brand videos. Portable VideoML (VML) projects you can run anywhere—no vendor lock-in.",
   },
 };
 
