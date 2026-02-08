@@ -1,12 +1,12 @@
 {
-  "updatedAt": "2026-02-07T20:14:38.399Z",
+  "updatedAt": "2026-02-08T08:18:03.442Z",
   "compositions": [
     {
-      "id": "home-elevator-preview",
-      "title": "Home Elevator Preview",
-      "script": "home-elevator-preview.script.json",
-      "timeline": "home-elevator-preview.timeline.json",
-      "audio": "home-elevator-preview.wav"
+      "id": "home-intro-preview",
+      "title": "Home Intro Preview",
+      "script": "home-intro-preview.script.json",
+      "timeline": "home-intro-preview.timeline.json",
+      "audio": null
     }
   ]
 }

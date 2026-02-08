@@ -801,6 +801,7 @@ export const registerVideoMLComponents = () => {
   defineAlias("lottie-badge", DemoPlaceholderElement);
   defineAlias("mix-and-match-demo", DemoPlaceholderElement);
   defineAlias("p5-particles", DemoPlaceholderElement);
+  defineAlias("p5-neon-field", DemoPlaceholderElement);
   defineAlias("text-effects-demo", DemoPlaceholderElement);
   defineAlias("three-orbit", DemoPlaceholderElement);
   defineAlias("content-layout-demo", DemoPlaceholderElement);

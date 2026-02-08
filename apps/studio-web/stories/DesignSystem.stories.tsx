@@ -1,6 +1,7 @@
 import React from 'react';
 import { ThemeConfigProvider, useThemeConfig } from '../lib/theme-config';
 import { ThemeProvider } from '../components/theme-provider';
+import { PreviewEmbed } from '../components/marketing/preview-embed';
 
 export default {
   title: 'Design System/Overview',
@@ -149,4 +150,16 @@ export const Elements = () => (
       </div>
     </div>
   </div>
+);
+
+export const VideoPreview = () => (
+  <ThemeWrapper>
+    <div className="p-8 space-y-4 bg-background text-foreground min-h-screen">
+      <h2 className="text-2xl font-bold">Video Preview</h2>
+      <p className="text-muted-foreground">Home intro preview with the P5NeonField background.</p>
+      <div className="max-w-4xl">
+        <PreviewEmbed id="home-intro-preview" showControls />
+      </div>
+    </div>
+  </ThemeWrapper>
 );

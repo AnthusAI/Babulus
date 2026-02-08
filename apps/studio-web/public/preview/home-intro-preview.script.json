@@ -29,7 +29,24 @@
       },
       "layers": [
         {
+          "id": "background",
+          "zIndex": 0,
+          "components": [
+            {
+              "id": "p5-neon-field-0",
+              "type": "P5NeonField",
+              "props": {
+                "intensity": 1.5,
+                "speed": 0.08,
+                "scale": 1,
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        },
+        {
           "id": "content",
+          "zIndex": 10,
           "components": [
             {
               "id": "title-slide-0",
@@ -41,6 +58,7 @@
                 "verticalAlign": "center",
                 "horizontalAlign": "center",
                 "entranceStartFrame": -999,
+                "background": "transparent",
                 "sceneStartSec": 0
               }
             }

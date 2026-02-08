@@ -2,8 +2,11 @@
   <voiceover />
 
   <scene id="intro-hero" title="intro-hero" styles='{"background":"#0f1117","color":"#e8eaf0","vars":{"--color-bg":"#0f1117","--color-bg-subtle":"#151a27","--color-surface":"#151a27","--color-surface-strong":"#1c2333","--color-surface-2":"#1c2333","--color-text":"#e8eaf0","--color-text-muted":"#c4c8d6","--color-primary":"#5f7bff","--color-secondary":"#ff6ac1","--color-accent":"#5f7bff","--color-accent-2":"#ff6ac1","--color-muted":"#c4c8d6","--color-muted-more":"#c4c8d6","--font-eyebrow":"var(--font-preview-humanist), sans-serif","--font-headline":"var(--font-preview-sans), sans-serif","--font-subhead":"var(--font-preview-humanist), sans-serif"}}'>
-    <layer id="content">
-      <title-slide props='{"eyebrow":"Babulus","title":"AI-native marketing automation","subtitle":"Built-in CRM intelligence","verticalAlign":"center","horizontalAlign":"center","entranceStartFrame":-999}' />
+    <layer id="background" z="0">
+      <p5-neon-field props='{"intensity":1.5,"speed":0.08,"scale":1.0}' />
+    </layer>
+    <layer id="content" z="10">
+      <title-slide props='{"eyebrow":"Babulus","title":"AI-native marketing automation","subtitle":"Built-in CRM intelligence","verticalAlign":"center","horizontalAlign":"center","entranceStartFrame":-999,"background":"transparent"}' />
     </layer>
     <cue id="intro-hero-cue">
       <voice>Babulus is an AI native marketing automation system with built in CRM intelligence.</voice>

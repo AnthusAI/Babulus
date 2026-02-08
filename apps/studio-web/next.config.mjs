@@ -25,6 +25,7 @@ const nextConfig = {
       ...(config.resolve.alias ?? {}),
       "@babulus/renderer": rendererRoot,
       "@babulus/shared": sharedRoot,
+      graphql: path.resolve(rootNodeModules, "graphql"),
     };
     return config;
   },
