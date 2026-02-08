@@ -39,6 +39,27 @@ Branded documentation lives in the Studio Web app:
 - Technical overview: `/docs/technical` (source: `apps/studio-web/lib/docs-content/technical.ts`)
 - Roadmap: `/docs/roadmap` (source: `apps/studio-web/lib/docs-content/roadmap.ts`)
 
+## VideoML Website (apps/videoml-org)
+
+This repo includes a Gatsby site for the VideoML spec.
+
+Local dev (from repo root):
+
+```bash
+npm run videoml:develop
+```
+
+Build:
+
+```bash
+npm run videoml:build
+```
+
+Amplify deployment (multi-app):
+- App root: `apps/videoml-org`
+- Build spec: root `amplify.yml` (includes a `videoml-org` entry)
+- Node version: use `.nvmrc` (22.12.0)
+
 ## The DSL (XML)
 
 A `.babulus.xml` file declares a composition (or multiple). It is a declarative tree of scenes, cues, and components.

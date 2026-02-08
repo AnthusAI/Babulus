@@ -1,0 +1,85 @@
+:root {
+  --color-not-black: #111315;
+  --color-not-white: #f6f5f2;
+  --color-muted-1: #e7e3dc;
+  --color-muted-2: #d7d1c7;
+  --color-muted-3: #bfb8aa;
+  --color-accent: #3a6ea5;
+  --color-accent-2: #b07a1d;
+  --color-success: #2f7b5b;
+  --color-warn: #b06a2a;
+  --color-error: #a43d3d;
+
+  --text-primary: var(--color-not-black);
+  --text-secondary: #4d4f52;
+  --bg-page: var(--color-not-white);
+  --bg-surface: #f0ede7;
+  --bg-surface-2: #e9e4dc;
+
+  --radius-md: 12px;
+  --radius-lg: 18px;
+
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-2xl: 48px;
+  --space-3xl: 64px;
+  --space-4xl: 96px;
+  --space-5xl: 128px;
+
+  --max-width: 1100px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-not-black: #0f1113;
+    --color-not-white: #efeee9;
+    --color-muted-1: #2a2d31;
+    --color-muted-2: #34383d;
+    --color-muted-3: #3f444a;
+    --color-accent: #7aa2d6;
+    --color-accent-2: #d4a65c;
+
+    --text-primary: #e8e6e2;
+    --text-secondary: #b6b4b0;
+    --bg-page: #15171a;
+    --bg-surface: #1c1f23;
+    --bg-surface-2: #23272c;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  background: var(--bg-page);
+  color: var(--text-primary);
+  font-family: "SF Pro Text", "SF Pro Display", "Helvetica Neue", Helvetica, Arial,
+    sans-serif;
+  line-height: 1.5;
+}
+
+a {
+  color: var(--color-accent);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+code,
+pre {
+  font-family: "SF Mono", "Cascadia Mono", "JetBrains Mono", Menlo, Monaco,
+    Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+main {
+  min-height: 70vh;
+}

@@ -29,6 +29,21 @@ npm run clean
 
 Visit `http://localhost:8000` after running `npm run dev`.
 
+### Monorepo (from repo root)
+
+```bash
+# Start dev server
+npm run videoml:develop
+
+# Build for production
+npm run videoml:build
+
+# Serve the production build
+npm run videoml:serve
+```
+
+The repo root includes an `.nvmrc` to align Node versions in local and CI.
+
 ## Site Structure
 
 ```

@@ -26,3 +26,23 @@ applications:
           - .npm/**/*
     appRoot: apps/studio-web
     platform: WEB_COMPUTE
+  - frontend:
+      phases:
+        preBuild:
+          commands:
+            - cd ../..
+            - npm ci --cache .npm --prefer-offline
+        build:
+          commands:
+            - cd ../..
+            - npm run build --workspace=videoml-org
+      artifacts:
+        baseDirectory: public
+        files:
+          - '**/*'
+      cache:
+        paths:
+          - node_modules/**/*
+          - .cache/**/*
+    appRoot: apps/videoml-org
+    platform: WEB

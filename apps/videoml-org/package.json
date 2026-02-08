@@ -4,6 +4,7 @@
   "description": "VideoML Draft Specification and Documentation",
   "private": true,
   "scripts": {
+    "develop": "gatsby develop",
     "dev": "gatsby develop",
     "build": "gatsby build",
     "serve": "gatsby serve",
