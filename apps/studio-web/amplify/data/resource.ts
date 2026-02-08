@@ -189,7 +189,7 @@ const studioSchema = schema.schema({
     })
     .secondaryIndexes((index) => [index("email")])
     .authorization((allow) => [
-      allow.publicApiKey().to(["create"]),
+      allow.publicApiKey().to(["create", "read"]),
       allow.authenticated(),
     ]),
   MarketingProgram: schema
@@ -311,7 +311,7 @@ const studioSchema = schema.schema({
       createdAt: schema.string(),
     })
     .authorization((allow) => [
-      allow.publicApiKey().to(["create"]),
+      allow.publicApiKey().to(["create", "read"]),
       allow.authenticated(),
     ]),
 });

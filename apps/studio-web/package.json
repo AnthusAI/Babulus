@@ -11,7 +11,8 @@
     "test": "jest",
     "test:integration": "jest tests/control-plane-graphql.test.ts",
     "amplify:sandbox": "npx ampx sandbox",
-    "amplify:deploy": "npx ampx deploy"
+    "amplify:deploy": "npx ampx deploy",
+    "list-waitlist": "tsx scripts/list-waitlist.ts"
   },
   "dependencies": {
     "@aws-amplify/adapter-nextjs": "^1.7.1",

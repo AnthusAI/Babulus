@@ -165,19 +165,44 @@ const isValidEmail = (email: string) => {
   return true;
 };
 
-const isConflictError = (message: string) =>
-  message.includes("ConditionalCheckFailedException") ||
-  message.toLowerCase().includes("already exists") ||
-  message.toLowerCase().includes("duplicate");
+const isConflictError = (message: string) => {
+  const normalized = message.toLowerCase();
+  return (
+    message.includes("ConditionalCheckFailedException") ||
+    normalized.includes("conditional request failed") ||
+    normalized.includes("already exists") ||
+    normalized.includes("duplicate")
+  );
+};
 
-const safeCreate = async (operation: () => Promise<any>) => {
-  const response = await operation();
-  const errors = (response as { errors?: Array<{ message?: string; errorType?: string }> } | undefined)?.errors;
-  if (!errors?.length) return;
-  const message = errors.map((e) => e.message ?? "").join(" ");
-  const errorTypes = errors.map((e) => e.errorType ?? "").join(" ");
-  if (isConflictError(message) || isConflictError(errorTypes)) return;
-  throw new Error(message);
+const safeCreate = async (label: string, operation: () => Promise<any>) => {
+  try {
+    const response = await operation();
+    const errors = (response as { errors?: Array<{ message?: string; errorType?: string }> } | undefined)?.errors;
+    if (!errors?.length) return;
+    const message = errors.map((e) => e.message ?? "").join(" ");
+    const errorTypes = errors.map((e) => e.errorType ?? "").join(" ");
+    if (isConflictError(message) || isConflictError(errorTypes)) return;
+    throw new Error(`[${label}] ${message}`);
+  } catch (error) {
+    const errorMessage =
+      error instanceof Error
+        ? error.message
+        : typeof error === "string"
+          ? error
+          : (() => {
+              try {
+                return JSON.stringify(error);
+              } catch {
+                return String(error);
+              }
+            })();
+    const errorTypes = Array.isArray((error as any)?.errors)
+      ? (error as any).errors.map((err: any) => err?.errorType ?? "").join(" ")
+      : "";
+    if (isConflictError(errorMessage) || isConflictError(errorTypes)) return;
+    throw new Error(`[${label}] ${errorMessage}`);
+  }
 };
 
 const createWithFallback = async (
@@ -261,26 +286,22 @@ export async function POST(request: Request) {
   const enrollmentId = `enrollment_${programId}_${leadId}`;
 
   try {
+    console.info("[waitlist] start", { leadId, programId, enrollmentId, source, persona });
     Amplify.configure(amplifyConfig, { ssr: true });
     const client = generateClient<any>({ authMode: "apiKey" });
 
-    const result = await client.models.WaitlistSignup.create({
-      email: normalizedEmail,
-      name,
-      persona,
-      wantsUpdates: Boolean(wantsUpdates),
-      source,
-      createdAt: new Date().toISOString(),
-    });
+    await safeCreate("WaitlistSignup", () =>
+      client.models.WaitlistSignup.create({
+        email: normalizedEmail,
+        name,
+        persona,
+        wantsUpdates: Boolean(wantsUpdates),
+        source,
+        createdAt: new Date().toISOString(),
+      }),
+    );
 
-    if (result?.errors?.length) {
-      return Response.json(
-        { error: result.errors.map((e: any) => e.message ?? String(e)).join("\n") },
-        { status: 500 },
-      );
-    }
-
-    await safeCreate(() =>
+    await safeCreate("MarketingLead", () =>
       createWithFallback(client, "MarketingLead", CREATE_MARKETING_LEAD, {
         id: leadId,
         email: normalizedEmail,
@@ -293,7 +314,7 @@ export async function POST(request: Request) {
       }),
     );
 
-    await safeCreate(() =>
+    await safeCreate("MarketingProgram", () =>
       createWithFallback(client, "MarketingProgram", CREATE_MARKETING_PROGRAM, {
         id: programId,
         key: DEFAULT_PROGRAM_KEY,
@@ -304,7 +325,7 @@ export async function POST(request: Request) {
     );
 
     for (const step of defaultProgramSteps) {
-      await safeCreate(() =>
+      await safeCreate(`MarketingProgramStep:${step.key}`, () =>
         createWithFallback(client, "MarketingProgramStep", CREATE_MARKETING_PROGRAM_STEP, {
           id: `step_${programId}_${step.key}`,
           programId,
@@ -317,7 +338,7 @@ export async function POST(request: Request) {
 
     for (const rule of defaultProgramRules) {
       const ruleId = `rule_${programId}_${rule.id}`;
-      await safeCreate(() =>
+      await safeCreate(`MarketingProgramRule:${rule.id}`, () =>
         createWithFallback(client, "MarketingProgramRule", CREATE_MARKETING_PROGRAM_RULE, {
           id: ruleId,
           programId,
@@ -330,7 +351,7 @@ export async function POST(request: Request) {
       );
 
       for (const trigger of rule.triggers) {
-        await safeCreate(() =>
+        await safeCreate(`MarketingProgramTrigger:${rule.id}:${trigger.id}`, () =>
           createWithFallback(client, "MarketingProgramTrigger", CREATE_MARKETING_PROGRAM_TRIGGER, {
             id: `trigger_${ruleId}_${trigger.id}`,
             ruleId,
@@ -353,8 +374,14 @@ export async function POST(request: Request) {
     const matchedRule =
       defaultProgramRules.find((rule) => ruleMatchesEvent(rule, DEFAULT_EVENT_TYPE, leadForRule)) ??
       defaultProgramRules[0];
+    console.info("[waitlist] matched rule", {
+      leadId,
+      programId,
+      ruleId: matchedRule?.id,
+      stepKey: matchedRule?.toStepKey,
+    });
 
-    await safeCreate(() =>
+    await safeCreate("MarketingEnrollment", () =>
       createWithFallback(client, "MarketingEnrollment", CREATE_MARKETING_ENROLLMENT, {
         id: enrollmentId,
         leadId,
@@ -370,7 +397,7 @@ export async function POST(request: Request) {
     const enrolledEventId = `event_${enrollmentId}_enrolled_${matchedRule?.toStepKey ?? "none"}`;
     const enteredEventId = `event_${enrollmentId}_entered_${matchedRule?.toStepKey ?? "none"}`;
 
-    await safeCreate(() =>
+    await safeCreate("MarketingEnrollmentEvent:enrolled", () =>
       createWithFallback(client, "MarketingEnrollmentEvent", CREATE_MARKETING_ENROLLMENT_EVENT, {
         id: enrolledEventId,
         enrollmentId,
@@ -383,7 +410,7 @@ export async function POST(request: Request) {
       }),
     );
 
-    await safeCreate(() =>
+    await safeCreate("MarketingEnrollmentEvent:entered_step", () =>
       createWithFallback(client, "MarketingEnrollmentEvent", CREATE_MARKETING_ENROLLMENT_EVENT, {
         id: enteredEventId,
         enrollmentId,
@@ -396,6 +423,7 @@ export async function POST(request: Request) {
       }),
     );
 
+    console.info("[waitlist] done", { leadId, programId, enrollmentId });
     return Response.json({ ok: true }, { status: 200 });
   } catch (error) {
     const message =
@@ -410,6 +438,7 @@ export async function POST(request: Request) {
                 return String(error);
               }
             })();
+    console.error("[waitlist] failed", { leadId, programId, enrollmentId, message });
     return Response.json({ error: message || "Failed to join waitlist." }, { status: 500 });
   }
 }

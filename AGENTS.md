@@ -293,3 +293,23 @@ portion that has been failing in CI.
 - **Auth:** Cognito with `lib/use-auth.ts` hook
 
 See [apps/studio-web/README.md](apps/studio-web/README.md) for detailed documentation.
+
+## Waitlist signups (monitoring)
+
+Signups from the public waitlist form are stored in **Amplify/AppSync (DynamoDB)**:
+
+- **WaitlistSignup** – one record per submission (email, name, persona, wantsUpdates, source, createdAt)
+- **MarketingLead** – same identity, used for marketing automation
+- **MarketingEnrollment** / **MarketingEnrollmentEvent** – enrollment in the default program and events
+
+Until the Babulus web app has an admin UI, use the CLI to list recent signups:
+
+```bash
+cd apps/studio-web
+# Requires amplify_outputs.json (see "Getting amplify_outputs.json" above)
+npm run list-waitlist
+npm run list-waitlist -- --limit 50
+npm run list-waitlist -- --csv > signups.csv
+```
+
+Script: `apps/studio-web/scripts/list-waitlist.ts`. It uses API key auth (no login required).
