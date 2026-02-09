@@ -96,6 +96,33 @@ BABULUS_ENV=production npm run babulus -- generate content/<video>.babulus.xml
 - `src/sfx-workflow.ts` - SFX variant selection/archiving
 - `.babulus/config.yml` - API keys (ElevenLabs, OpenAI, AWS, Azure)
 
+## VideoML Project Split (Important For Refactors)
+
+Babulus is in the process of factoring VideoML (VML) out into a separate set of public projects.
+
+### Source of truth for VideoML code
+
+If you need to change the VML language, player, standard library, or toolchain/CLI, those live in the **VideoML**
+projects (typically checked out next to Babulus at `~/Projects/VideoML/*`), not in this repo.
+
+Expected repos/folders:
+- `~/Projects/VideoML/player` - `@videoml/player` (web preview/player runtime + XML parser)
+- `~/Projects/VideoML/stdlib` - `@videoml/stdlib` (design system: DOM components + tokens)
+- `~/Projects/VideoML/toolchain` - `@videoml/toolchain` (core compilation/generation/render primitives)
+- `~/Projects/VideoML/cli` - `@videoml/cli` (`vml` CLI wrapper around toolchain)
+- `~/Projects/VideoML/videoml-org` - docs site
+- `~/Projects/VideoML/specification` - RFCs/spec texts
+
+### How Studio Web consumes VideoML during local development
+
+`apps/studio-web` currently depends on local checkouts via `file:` deps and TS/webpack aliasing:
+- `apps/studio-web/package.json` uses `file:../../../VideoML/player` and `file:../../../VideoML/stdlib`
+- `apps/studio-web/next.config.mjs` aliases `@videoml/*` to `../../../VideoML/*`
+- `apps/studio-web/tsconfig.json` + `apps/studio-web/jest.config.js` map `@videoml/*` to the local `~/Projects/VideoML/*/src` entrypoints
+
+So: if something about web previewing "doesn't play", the bug may be in `~/Projects/VideoML/player` or
+`~/Projects/VideoML/stdlib`, even if the symptom appears in Babulus Studio Web.
+
 ## Official documentation (HTML source of truth)
 
 The documentation source of truth lives in the Studio Web app (branded HTML, served at `/docs`).

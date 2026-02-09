@@ -16,8 +16,19 @@ Next.js application for the Babulus Studio - a frame-driven video preview and ge
 
 - **Framework:** Next.js with App Router
 - **UI:** React with Amplify UI components
-- **Rendering:** Browser-based video preview with @babulus/renderer
+- **Rendering:**
+  - Browser-based video preview uses the VideoML ecosystem:
+    - `@videoml/player` (DOM runtime + XML parsing)
+    - `@videoml/stdlib` (standard library: tokens + DOM components)
+  - Babulus-specific rendering code still lives in `packages/renderer` (`@babulus/renderer`).
 - **State:** Server Actions for data fetching, React hooks for UI state
+
+## VideoML Project Split (Where To Make Changes)
+
+If you need to modify the VML language, the web player, or the standard library, those live in the
+VideoML projects (usually checked out next to this repo at `~/Projects/VideoML/*`), not under `apps/studio-web`.
+
+See `apps/studio-web/AGENTS.md` for details on local linking/aliasing and where to look first.
 
 ### 📚 Detailed Architecture Documentation
 
