@@ -6,11 +6,6 @@ export default {
   moduleNameMapper: {
     "^(\\.{1,2}/.*)\\.js$": "$1",
     "^@/(.*)$": "<rootDir>/$1", // Support Next.js @ imports
-    "^@videoml/player$": "<rootDir>/../../../VideoML/player/src/index.ts",
-    "^@videoml/player/react$": "<rootDir>/../../../VideoML/player/src/react.tsx",
-    "^@videoml/stdlib$": "<rootDir>/../../../VideoML/stdlib/src/index.ts",
-    "^@videoml/stdlib/dom$": "<rootDir>/../../../VideoML/stdlib/src/dom/index.ts",
-    "^@videoml/stdlib/tokens$": "<rootDir>/../../../VideoML/stdlib/src/tokens/index.ts",
   },
   transform: {
     "^.+\\.tsx?$": [

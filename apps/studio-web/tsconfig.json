@@ -22,12 +22,7 @@
       "@/*": ["./*"],
       "babulus/dsl": ["../../src/dsl/index.ts"],
       "@babulus/shared": ["../../packages/shared/src/index.ts"],
-      "@babulus/renderer": ["../../packages/renderer/src/index.ts"],
-      "@videoml/player": ["../../../VideoML/player/src/index.ts"],
-      "@videoml/player/react": ["../../../VideoML/player/src/react.tsx"],
-      "@videoml/stdlib": ["../../../VideoML/stdlib/src/index.ts"],
-      "@videoml/stdlib/dom": ["../../../VideoML/stdlib/src/dom/index.ts"],
-      "@videoml/stdlib/tokens": ["../../../VideoML/stdlib/src/tokens/index.ts"]
+      "@babulus/renderer": ["../../packages/renderer/src/index.ts"]
     }
   },
   "include": [

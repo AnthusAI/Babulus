@@ -13,8 +13,6 @@ const nextConfig = {
     const rootNodeModules = path.resolve(__dirname, "..", "..", "node_modules");
     const rendererRoot = path.resolve(__dirname, "..", "..", "packages", "renderer");
     const sharedRoot = path.resolve(__dirname, "..", "..", "packages", "shared");
-    const videomlPlayerRoot = path.resolve(__dirname, "..", "..", "..", "VideoML", "player");
-    const videomlStdlibRoot = path.resolve(__dirname, "..", "..", "..", "VideoML", "stdlib");
     // Allow importing .ts files as .js (for ESM module resolution)
     config.resolve.extensionAlias = {
       ".js": [".js", ".ts", ".tsx"],
@@ -27,8 +25,6 @@ const nextConfig = {
       ...(config.resolve.alias ?? {}),
       "@babulus/renderer": rendererRoot,
       "@babulus/shared": sharedRoot,
-      "@videoml/player": videomlPlayerRoot,
-      "@videoml/stdlib": videomlStdlibRoot,
       graphql: path.resolve(rootNodeModules, "graphql"),
     };
     return config;
