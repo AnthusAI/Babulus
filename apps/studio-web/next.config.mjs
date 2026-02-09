@@ -13,8 +13,8 @@ const nextConfig = {
     const rootNodeModules = path.resolve(__dirname, "..", "..", "node_modules");
     const rendererRoot = path.resolve(__dirname, "..", "..", "packages", "renderer");
     const sharedRoot = path.resolve(__dirname, "..", "..", "packages", "shared");
-    const videomlPlayerRoot = path.resolve(__dirname, "..", "..", "packages", "videoml-player");
-    const videomlStdlibRoot = path.resolve(__dirname, "..", "..", "packages", "videoml-stdlib");
+    const videomlPlayerRoot = path.resolve(__dirname, "..", "..", "..", "VideoML", "player");
+    const videomlStdlibRoot = path.resolve(__dirname, "..", "..", "..", "VideoML", "stdlib");
     // Allow importing .ts files as .js (for ESM module resolution)
     config.resolve.extensionAlias = {
       ".js": [".js", ".ts", ".tsx"],

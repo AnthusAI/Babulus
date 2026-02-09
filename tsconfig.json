@@ -11,12 +11,11 @@
       "@/*": ["apps/studio-web/*"],
       "@babulus/shared": ["packages/shared/src/index.ts"],
       "@babulus/renderer": ["packages/renderer/src/index.ts"],
-      "@videoml/player": ["packages/videoml-player/src/index.ts"],
-      "@videoml/player/react": ["packages/videoml-player/src/react.tsx"],
-      "@videoml/stdlib": ["packages/videoml-stdlib/src/index.ts"],
-      "@videoml/stdlib/dom": ["packages/videoml-stdlib/src/dom/index.ts"],
-      "@videoml/stdlib/react": ["packages/videoml-stdlib/src/react/index.ts"],
-      "@videoml/stdlib/tokens": ["packages/videoml-stdlib/src/tokens/index.ts"]
+      "@videoml/player": ["../VideoML/player/src/index.ts"],
+      "@videoml/player/react": ["../VideoML/player/src/react.tsx"],
+      "@videoml/stdlib": ["../VideoML/stdlib/src/index.ts"],
+      "@videoml/stdlib/dom": ["../VideoML/stdlib/src/dom/index.ts"],
+      "@videoml/stdlib/tokens": ["../VideoML/stdlib/src/tokens/index.ts"]
     },
     "strict": true,
     "esModuleInterop": true,
@@ -26,6 +25,17 @@
     "jsx": "react-jsx",
     "noEmit": true
   },
-  "include": ["src/**/*.ts", "packages/**/*.ts", "packages/**/*.tsx", "scripts/**/*.ts"],
+  "include": [
+    "src/**/*.ts",
+    "packages/dsl/**/*.ts",
+    "packages/renderer/**/*.ts",
+    "packages/renderer/**/*.tsx",
+    "packages/shared/**/*.ts",
+    "packages/shared/**/*.tsx",
+    "packages/telemetry/**/*.ts",
+    "packages/ui/**/*.ts",
+    "packages/ui/**/*.tsx",
+    "scripts/**/*.ts"
+  ],
   "exclude": ["node_modules"]
 }

@@ -8,8 +8,14 @@
     "babulus": "src/cli.ts"
   },
   "workspaces": [
-    "apps/*",
-    "packages/*"
+    "apps/studio-desktop",
+    "apps/studio-web",
+    "apps/videoml-org",
+    "packages/dsl",
+    "packages/renderer",
+    "packages/shared",
+    "packages/telemetry",
+    "packages/ui"
   ],
   "overrides": {
     "graphql-compose": "^9.0.10",
