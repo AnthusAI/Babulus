@@ -978,6 +978,8 @@ export const loadVideoFileFromXml = (xml: string): VideoFileSpec => {
     posterTime: poster ?? undefined,
     voiceover,
     timeline,
+    // Backward compat: some callers/tests still expect `composition.scenes`.
+    scenes,
   };
 
   const videoFile: VideoFileSpec = {

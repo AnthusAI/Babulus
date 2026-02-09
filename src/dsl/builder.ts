@@ -185,7 +185,7 @@ class CompositionBuilder {
   }
 
   toSpec(): CompositionSpec {
-    return {
+    const spec = {
       id: this.id,
       title: this.title ?? undefined,
       meta: this._meta,
@@ -194,7 +194,10 @@ class CompositionBuilder {
       audioProviders: this._audioProviders,
       timeline: this.timeline,
       audioPlan: this.audioPlan,
-    };
+      // Backward compat: some callers/tests still expect `composition.scenes`.
+      scenes: this.timeline,
+    } as CompositionSpec & { scenes: SceneSpec[] };
+    return spec;
   }
 }
 

@@ -112,10 +112,13 @@ export async function generateComposition(options: GenerateOptions): Promise<Gen
 
   const currentEnv = getEnvironment();
   const envCacheDir = resolveEnvCacheDir(outDir, currentEnv);
+  // We always write (at least) the manifest into the env cache dir, even in dry-run mode
+  // and even when usage tracking is disabled. Ensure it exists up front.
+  ensureDir(envCacheDir);
   const segmentsDir = join(envCacheDir, "segments");
-  if (!dryRunMode) {
-    ensureDir(segmentsDir);
-  }
+  // Even in dry-run mode we may emit silence segments (e.g. TTS dry-run provider),
+  // and we also use `segmentsDir` for pause/lead-in silence generation.
+  ensureDir(segmentsDir);
   const usagePath = options.usagePath === undefined ? join(envCacheDir, "usage.jsonl") : options.usagePath;
   const usageLedger = usagePath ? createUsageLedger(usagePath) : null;
   const rateCard = getRateCard(config);
@@ -252,14 +255,19 @@ export async function generateComposition(options: GenerateOptions): Promise<Gen
         `Scene "${scene.id}" has an open-ended duration. Live mode only: export requires an explicit end or duration.`,
       );
     }
-    const sceneStart = scene.time
-      ? scene.time.startIsRelative
-        ? now + (scene.time.start ?? 0)
-        : scene.time.start
-      : now;
-    if (scene.time?.start != null && !scene.time.startIsRelative && sceneStart > now) {
-      now = sceneStart;
-    }
+	    const sceneStart = scene.time
+	      ? scene.time.startIsRelative
+	        ? now + (scene.time.start ?? 0)
+	        : scene.time.start
+	      : now;
+	    if (scene.time?.start != null && !scene.time.startIsRelative && sceneStart < now) {
+	      throw new CompileError(
+	        `Scene "${scene.id}" starts before previous scene ends (start=${sceneStart}, previous_end=${now}).`,
+	      );
+	    }
+	    if (scene.time?.start != null && !scene.time.startIsRelative && sceneStart > now) {
+	      now = sceneStart;
+	    }
     const cuesOut: Script["scenes"][number]["cues"] = [];
 
     for (let idx = 0; idx < scene.items.length; idx += 1) {
@@ -343,8 +351,46 @@ export async function generateComposition(options: GenerateOptions): Promise<Gen
         let segPath: string | null = null;
 
         if (dryRunMode) {
-          const wpm = (provider as { wpm?: number }).wpm ?? 165;
-          duration = estimateDurationSec(segSpec.text, wpm);
+          // Dry-run provider emits deterministic silence audio. Treat it like real synthesis so:
+          // - CLI can still write an output wav
+          // - manifest + usage outputs exist
+          segmentKeyCounts[segKey] = (segmentKeyCounts[segKey] ?? 0) + 1;
+          const occurrence = segmentKeyCounts[segKey];
+          segPath = join(segmentsDir, `${scene.id}--${cue.id}--tts--${safePrefix(segKey)}--${occurrence}.wav`);
+
+          if (fresh || !existsSync(segPath)) {
+            const seg = await provider.synthesize(
+              {
+                text: segSpec.text,
+                voice: voiceover.voice ?? null,
+                model: voiceover.model ?? null,
+                format: voiceover.format ?? "wav",
+                sampleRateHz,
+                extra: effectivePronunciationLocators ? { pronunciation_dictionary_locators: effectivePronunciationLocators } : {},
+              },
+              segPath,
+            );
+            duration = seg.durationSec;
+            didSynthesize = true;
+          } else {
+            const wpm = (provider as { wpm?: number }).wpm ?? 165;
+            duration = getManifestDuration(manifest, "segments", segPath, segKey) ?? estimateDurationSec(segSpec.text, wpm);
+          }
+
+          // Record usage in dry-run even when using cache so summaries still get written.
+          recordUsageEvent({
+            kind: "tts",
+            unitType: "chars",
+            quantity: segSpec.text.length,
+            provider: providerName,
+            compositionId: composition.id,
+            sceneId: scene.id,
+            cueId: cue.id,
+            segmentIndex: segIndex,
+            model: resolvedModel,
+            voice: resolvedVoice,
+            env: currentEnv,
+          });
         } else {
           segmentKeyCounts[segKey] = (segmentKeyCounts[segKey] ?? 0) + 1;
           const occurrence = segmentKeyCounts[segKey];
@@ -1535,8 +1581,10 @@ export async function generateComposition(options: GenerateOptions): Promise<Gen
     _log(`write: timeline=${timelineOut} items=${timelineItems.length} tracks=${audioTracksOut.length}`);
   }
 
+  ensureDir(dirname(manifestPath));
   writeFileSync(manifestPath, JSON.stringify(manifest, null, 2) + "\n");
   if (usageLedger && usageLedger.entries.length) {
+    ensureDir(dirname(usageLedger.path));
     const summary = summarizeUsageFile(usageLedger.path);
     const summaryPath = join(dirname(usageLedger.path), "usage-summary.json");
     writeFileSync(summaryPath, JSON.stringify(summary, null, 2) + "\n");
