@@ -638,6 +638,7 @@ async function runGenerateForDsl(dslPath: string, projectDirArg?: string): Promi
   const projectDir = projectDirArg ? resolve(cwd, projectDirArg) : undefined;
   const spec = await loadVideoFile(dslPath);
   const config = loadConfig(projectDir, dslPath);
+  const isTestLikeRun = process.env.BABULUS_ENV === "test" || process.env.NODE_ENV === "test" || process.env.CI === "true";
   for (const comp of spec.compositions) {
     const { scriptOut, timelineOut, audioOut, outDir } = defaultsForComposition(comp.id, dslPath, projectDir, {});
     await generateComposition({
@@ -648,6 +649,9 @@ async function runGenerateForDsl(dslPath: string, projectDirArg?: string): Promi
       audioOut,
       outDir,
       config,
+      providerOverride: isTestLikeRun ? "dry-run" : null,
+      sfxProviderOverride: isTestLikeRun ? "dry-run" : null,
+      musicProviderOverride: isTestLikeRun ? "dry-run" : null,
       fresh: false,
       verboseLogs: true,
     });
