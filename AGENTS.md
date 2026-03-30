@@ -1,5 +1,15 @@
 # Babulus - XML DSL for Remotion Audio + Timing
 
+
+## Project management with Kanbus
+
+Use Kanbus for task management.
+Why: Kanbus task management is MANDATORY here; every task must live in Kanbus.
+When: Create/update the Kanbus task before coding; close it only after the change lands.
+How: See CONTRIBUTING_AGENT.md for the Kanbus workflow, hierarchy, status rules, priorities, command examples, and the sins to avoid. Never inspect project/ or issue JSON directly (including with cat or jq); use Kanbus commands only.
+Performance: Prefer kanbusr (Rust) when available; kanbus (Python) is equivalent but slower.
+Warning: Editing project/ directly is a sin against The Way. Do not read or write anything in project/; work only through Kanbus.
+
 ## CRITICAL PROTOCOL: GIT COMMITS
 **NEVER** commit changes without explicit user approval.
 - Always show the user what you have done and ask for confirmation before running `git commit`.
@@ -56,6 +66,19 @@
 ```bash
 npm run studio:preview -- examples/animation-demos.video.tsx examples/components-cookbook.video.tsx
 ```
+
+## Task tracking (Beads) – mandatory
+
+**Use of Beads for task and issue tracking is mandatory in this project.** All follow-up work, bugs, and features must be tracked as Beads issues. Use the `bd` CLI to create, update, and close issues; issues sync to `.beads/issues.jsonl` and are part of the repo.
+
+- **List issues:** `bd list`
+- **Create issue:** `bd create "Title" -t task -p 2` (see `bd create --help` for types and priority)
+- **Update/close:** `bd update <id> --status in_progress`, `bd close <id> --reason "Done"`
+- **Sync with git:** `bd sync` (export to JSONL, commit, pull, push)
+
+**Detailed instructions** (workflow, landing the plane, git hooks, session workflow): **[AGENT_INSTRUCTIONS.md](AGENT_INSTRUCTIONS.md)**. Read that file for full Beads usage, commit conventions, and session completion steps.
+
+If `bd` is not found in your environment, ensure `~/.local/bin` (or your Beads install path) is in PATH, or run commands in **zsh** with that path exported.
 
 ## Agent autonomy (behavior)
 - Proceed independently without stopping to ask permission after each change.
@@ -340,3 +363,31 @@ npm run list-waitlist -- --csv > signups.csv
 ```
 
 Script: `apps/studio-web/scripts/list-waitlist.ts`. It uses API key auth (no login required).
+
+Documentation on the marketing automation backend (data model, waitlist flow, Python runtime): [docs/marketing-automation.md](docs/marketing-automation.md).
+
+## Landing the Plane (Session Completion)
+
+**When ending a work session**, you MUST complete ALL steps below. Work is NOT complete until `git push` succeeds.
+
+**MANDATORY WORKFLOW:**
+
+1. **File issues for remaining work** - Create issues for anything that needs follow-up
+2. **Run quality gates** (if code changed) - Tests, linters, builds
+3. **Update issue status** - Close finished work, update in-progress items
+4. **PUSH TO REMOTE** - This is MANDATORY:
+   ```bash
+   git pull --rebase
+   bd sync
+   git push
+   git status  # MUST show "up to date with origin"
+   ```
+5. **Clean up** - Clear stashes, prune remote branches
+6. **Verify** - All changes committed AND pushed
+7. **Hand off** - Provide context for next session
+
+**CRITICAL RULES:**
+- Work is NOT complete until `git push` succeeds
+- NEVER stop before pushing - that leaves work stranded locally
+- NEVER say "ready to push when you are" - YOU must push
+- If push fails, resolve and retry until it succeeds
