@@ -44,6 +44,7 @@
     "@videoml/player": "^1.0.0",
     "@videoml/stdlib": "^1.0.0",
     "@xmldom/xmldom": "^0.8.11",
+    "anthus-footer": "git+https://github.com/AnthusAI/anthus-footer.git#feature/shared-anthus-footer",
     "aws-amplify": "^6.16.0",
     "aws-cdk-lib": "^2.236.0",
     "bcryptjs": "^3.0.3",
