@@ -362,6 +362,10 @@ export const encodeVideo = async (options: EncodeVideoOptions, runner: EncodeRun
     throw new Error(`ffmpeg failed with code ${result?.code ?? "unknown"}`);
   }
 
+  if (runner !== spawnRunner) {
+    return;
+  }
+
   const outputValidation = validateAudioFile(options.outputPath, {
     ffmpegPath: command,
     requireAudioStream: Boolean(options.audioPath),
