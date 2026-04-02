@@ -42,6 +42,38 @@ export default function LandingPage() {
     <div className="flex flex-col min-h-screen">
       <Hero />
 
+      <section className="container py-12 md:py-16">
+        <div className="mx-auto grid max-w-[64rem] gap-4 md:grid-cols-[1.4fr_1fr]">
+          <div className="rounded-2xl bg-card p-2">
+            <div className="rounded-xl bg-background p-6 md:p-8">
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-foreground/60">
+                Anthus Platform
+              </p>
+              <h2 className="mt-3 font-heading text-2xl md:text-4xl leading-tight">
+                Where Babulus fits
+              </h2>
+              <p className="mt-4 text-muted-foreground leading-7">
+                Babulus is the programmable media layer in the Anthus Platform. It works especially well with
+                <a href="https://anth.us/platform/biblicus" className="font-semibold text-foreground hover:text-primary"> Biblicus</a>
+                {" "}for source material, <a href="https://anth.us/platform/videoml" className="font-semibold text-foreground hover:text-primary">VideoML</a>
+                {" "}for rendering, and <a href="https://korpor.us" className="font-semibold text-foreground hover:text-primary">Korporus</a>
+                {" "}when the whole workflow needs to run as a hosted application.
+              </p>
+            </div>
+          </div>
+          <div className="rounded-2xl bg-card p-2">
+            <div className="rounded-xl bg-background p-6 md:p-8">
+              <h3 className="font-semibold">Common combination</h3>
+              <p className="mt-3 text-sm leading-7 text-muted-foreground">
+                Use Biblicus to manage a living research corpus, let Babulus turn it into scripts and storyboards,
+                render through VideoML, and package the workflow in Korporus when teams need approvals and publishing in
+                one place.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Workflow overview */}
       <section id="workflow" className="bg-recess py-12 md:py-16 lg:py-24">
         <div className="container space-y-6">

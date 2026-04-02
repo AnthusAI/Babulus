@@ -67,6 +67,15 @@ export default function DocsLandingPage() {
               Start with the introduction, skim the roadmap, or dive into technical details and
               configuration guides.
             </p>
+            <p className="mt-4 max-w-[58ch] text-muted-foreground leading-7">
+              In the Anthus Platform, Babulus is the media-output layer. It pairs with
+              <a href="https://anth.us/platform/biblicus" className="font-semibold text-foreground hover:text-primary"> Biblicus</a>
+              {" "}for corpus inputs, with
+              <a href="https://anth.us/platform/videoml" className="font-semibold text-foreground hover:text-primary"> VideoML</a>
+              {" "}for rendering, and with
+              <a href="https://korpor.us" className="font-semibold text-foreground hover:text-primary"> Korporus</a>
+              {" "}when the workflow needs a stable hosted shell.
+            </p>
           </div>
         </div>
 

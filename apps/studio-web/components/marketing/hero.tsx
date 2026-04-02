@@ -17,6 +17,10 @@ export function Hero() {
           including per-contact personalization when you want it. Not black-box “generated video” like Sora or Veo.
           Everything exports as portable VideoML (VML) projects you can run anywhere with the reference renderer—no vendor lock-in.
         </p>
+        <p className="max-w-[42rem] leading-normal text-muted-foreground">
+          In the Anthus Platform, Babulus is the content-output layer: it pairs with Biblicus for source material,
+          builds on VideoML for rendering, and can run inside Korporus when you want the workflow packaged as a service.
+        </p>
         <div className="space-x-4">
           <Link href="/waitlist">
             <Button size="lg">Join waitlist</Button>
