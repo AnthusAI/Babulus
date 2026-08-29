@@ -1,6 +1,6 @@
-# Babulus (XML DSL for Remotion Audio + Timing)
+# Babulus
 
-Babulus turns a `.babulus.xml` file into timing JSON + generated audio for Remotion. It is a thin, narration-first layer that also handles TTS/SFX/music generation with environment-aware caching.
+Babulus is marketing automation. The video DSL is one kind of artifact it can emit.
 
 ## Quick Start
 
@@ -28,39 +28,9 @@ Generate:
 babulus generate content/intro.babulus.xml
 ```
 
-## Documentation
+### The DSL (XML)
 
-Branded documentation lives in the Studio Web app:
-
-- Web docs (local dev): `apps/studio-web` at `/docs`
-- Source of truth (HTML): `apps/studio-web/lib/docs-content`
-- Docs landing page route: `apps/studio-web/app/(public)/docs/page.tsx`
-- “What is Babulus?”: `/docs/introduction` (source: `apps/studio-web/lib/docs-content/introduction.ts`)
-- Technical overview: `/docs/technical` (source: `apps/studio-web/lib/docs-content/technical.ts`)
-- Roadmap: `/docs/roadmap` (source: `apps/studio-web/lib/docs-content/roadmap.ts`)
-
-## VideoML Website (apps/videoml-org)
-
-This repo includes a Gatsby site for the VideoML spec.
-
-Local dev (from repo root):
-
-```bash
-npm run videoml:develop
-```
-
-Build:
-
-```bash
-npm run videoml:build
-```
-
-Amplify deployment (multi-app):
-- App root: `apps/videoml-org`
-- Build spec: root `amplify.yml` (includes a `videoml-org` entry)
-- Node version: use `.nvmrc` (22.12.0)
-
-## The DSL (XML)
+Babulus turns a `.babulus.xml` file into timing JSON + generated audio for Remotion. It is a thin, narration-first layer that also handles TTS/SFX/music generation with environment-aware caching.
 
 A `.babulus.xml` file declares a composition (or multiple). It is a declarative tree of scenes, cues, and components.
 
@@ -93,6 +63,38 @@ Use `<pause>` inside a `<cue>` to insert silence between narration segments:
 - `<pause seconds="600ms" />`
 
 Pause timing is resolved at generate time alongside other cue timing.
+
+## Documentation
+
+Branded documentation lives in the Studio Web app:
+
+- Web docs (local dev): `apps/studio-web` at `/docs`
+- Source of truth (HTML): `apps/studio-web/lib/docs-content`
+- Docs landing page route: `apps/studio-web/app/(public)/docs/page.tsx`
+- “What is Babulus?”: `/docs/introduction` (source: `apps/studio-web/lib/docs-content/introduction.ts`)
+- Technical overview: `/docs/technical` (source: `apps/studio-web/lib/docs-content/technical.ts`)
+- Roadmap: `/docs/roadmap` (source: `apps/studio-web/lib/docs-content/roadmap.ts`)
+
+## VideoML Website (apps/videoml-org)
+
+This repo includes a Gatsby site for the VideoML spec.
+
+Local dev (from repo root):
+
+```bash
+npm run videoml:develop
+```
+
+Build:
+
+```bash
+npm run videoml:build
+```
+
+Amplify deployment (multi-app):
+- App root: `apps/videoml-org`
+- Build spec: root `amplify.yml` (includes a `videoml-org` entry)
+- Node version: use `.nvmrc` (22.12.0)
 
 ## CLI
 
@@ -188,3 +190,11 @@ providers:
 ## Distribution
 
 This repo builds a Node-based CLI package. The generated JSON/audio are the build artifacts you commit or ship with your Remotion project.
+
+---
+
+Built by [Anthus AI Solutions](https://anth.us). We run this class of system in production.
+
+Babulus is marketing automation. The video DSL is one kind of artifact it can emit.
+
+If you need this operated, not just cloned, [talk to us](https://anth.us).
