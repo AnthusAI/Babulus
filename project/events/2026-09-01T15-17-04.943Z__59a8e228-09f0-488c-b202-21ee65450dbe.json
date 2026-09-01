@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "event_id": "59a8e228-09f0-488c-b202-21ee65450dbe",
+  "issue_id": "babs-1849df7d-0fcf-4984-b197-81536ddedf8c",
+  "event_type": "field_updated",
+  "occurred_at": "2026-09-01T15:17:04.943Z",
+  "actor_id": "ubuntu",
+  "payload": {
+    "changes": {
+      "title": {
+        "from": "Type VideoJob — production job; VideoML renders; Babulus owns the job",
+        "to": "NOTE not a type — Video render status lives on Deliverable (was VideoJob)"
+      },
+      "description": {
+        "from": "Parked type spec — do not implement. Not in progress. File stays on Babulus (not a VideoML code change).\n\n## Type: VideoJob\n\nProduction of an Asset (Video deliverable) or Slot creative. Chattic bots claim by state. **VideoML renders; Babulus owns the job.** VideoML is the renderer, not the publicity calendar.\n\n## States\n\n`brief` → `script` → `render` → `preview` → `approved` → `published` | `killed`\n\nRyan approval applies before anything is queued or posted from the resulting asset.\n\n```mermaid\nstateDiagram-v2\n  [*] --> brief\n  brief --> script\n  script --> render\n  render --> preview\n  preview --> approved\n  approved --> published\n  approved --> killed\n  preview --> killed\n  published --> [*]\n  killed --> [*]\n```\n\n## Out of scope\n\n- No VideoML calendar\n- No auto-publish to social\n- No implementation from this issue",
+        "to": "**Not an issue type.** Closed as a note. Publicist accepted 2026-09-01 campaign-ops list.\n\nVideoJob is dropped. Render status lives on **Deliverable `kind=Video`**. VideoML is still the renderer. **Publicist should not see jobs.**\n\nDo not re-open as a Kanbus type. Do not put a job queue on the Publicist board."
+      },
+      "labels": {
+        "from": [
+          "parked",
+          "design",
+          "publicist",
+          "video-job"
+        ],
+        "to": [
+          "parked",
+          "design",
+          "publicist",
+          "not-a-type",
+          "closed-as-note"
+        ]
+      }
+    }
+  }
+}

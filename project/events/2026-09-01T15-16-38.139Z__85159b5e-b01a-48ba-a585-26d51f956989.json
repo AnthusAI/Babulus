@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "event_id": "85159b5e-b01a-48ba-a585-26d51f956989",
+  "issue_id": "babs-94799552-24af-4569-b9f8-874c94634626",
+  "event_type": "field_updated",
+  "occurred_at": "2026-09-01T15:16:38.139Z",
+  "actor_id": "ubuntu",
+  "payload": {
+    "changes": {
+      "title": {
+        "from": "Type Creative — blurb, script, or thumbnail attached to a Deliverable",
+        "to": "Type Creative — signed-off file/version that can be trafficked"
+      },
+      "description": {
+        "from": "Parked type spec — do not implement. Not in progress.\n\n## Type: Creative\n\nBlurb, script, or thumbnail. Attached to a Deliverable (or Slot). **Can fail independently of the Slot** (bad take, wrong crop, rejected angle) without skipping the placement clock until Publicist replaces it.\n\nUseful as the copy/art attached to LandingPage, Video, ImageSet, SocialCopy, or PpcCopy.\n\n## Out of scope\n\n- Not the Slot\n- Not the SharePayload (that is the packed, channel-ready bundle)\n- No implementation from this issue",
+        "to": "Parked type spec — do not implement. Not in progress. Publicist accepted.\n\n## Type: Creative\n\nA **signed-off file/version** that can be trafficked (image, video master, thumbnail crop). Attached to a Deliverable.\n\n**Copy is not a Creative.** Social/PPC words live on Post, AdDraft, or Deliverable `kind=SocialCopy|PpcCopy`. A Creative can fail independently of the Slot (bad crop, rejected master) without moving the placement clock until Publicist replaces it.\n\n## Out of scope\n\n- Not the Slot\n- Not the Post (packed channel bundle)\n- Not body copy, headlines, or descriptions\n- No implementation from this issue"
+      },
+      "labels": {
+        "from": [
+          "parked",
+          "design",
+          "publicist",
+          "creative"
+        ],
+        "to": [
+          "parked",
+          "design",
+          "publicist",
+          "creative",
+          "type"
+        ]
+      }
+    }
+  }
+}

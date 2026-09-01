@@ -1,7 +1,7 @@
 {
   "id": "babs-0dc0e65c-d1ce-4506-8683-22ada906a9c0",
   "title": "Boundary: Papyrus newsroom stays editorial (no promote stage)",
-  "description": "Parked boundary \u2014 do not implement. Not in progress.\n\n## Boundary\n\nPapyrus / ANTH newsroom stays **editorial** and **stops at published**. Do not add a promote stage on Papyrus/ANTH.\n\nA published piece may become an Asset or seed a Campaign. Publicist cuts Slots and SharePayloads in Babulus. Newsroom does not grow a \u201cpromote\u201d column.\n\nNo journalist media lists, pitches, or clip books in this epic.",
+  "description": "Parked boundary \u2014 do not implement. Not a type. Not in progress.\n\nPapyrus / ANTH newsroom stays editorial and **stops at published**. Do not add a promote stage.\n\nA published piece may seed a Campaign / Brief / Idea. Publicist cuts Deliverables, Posts, Slots, AdDrafts in Babulus.\n\nNo journalist media lists, pitches, or clip books.",
   "type": "task",
   "status": "open",
   "priority": 2,
@@ -12,12 +12,13 @@
     "parked",
     "design",
     "publicist",
-    "papyrus"
+    "papyrus",
+    "boundary"
   ],
   "dependencies": [],
   "comments": [],
   "created_at": "2026-09-01T15:07:17.911317Z",
-  "updated_at": "2026-09-01T15:07:17.911317Z",
+  "updated_at": "2026-09-01T15:17:07.526654Z",
   "closed_at": null,
   "custom": {},
   "agent": null

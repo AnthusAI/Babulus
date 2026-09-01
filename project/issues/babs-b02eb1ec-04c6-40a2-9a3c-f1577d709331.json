@@ -1,0 +1,25 @@
+{
+  "id": "babs-b02eb1ec-04c6-40a2-9a3c-f1577d709331",
+  "title": "Type Idea \u2014 optional Buffer Idea (channel-less backlog; promote \u2192 Post per channel)",
+  "description": "Parked type spec \u2014 do not implement. Not in progress. Publicist accepted.\n\n## Type: Idea\n\nOptional and cheap. Buffer Idea: **channel-less backlog** item. Promote \u2192 **one Post per channel** (`linkedin`, `x`). Not a Slot. Not a Campaign.\n\nSkip freely. Do not invent Discord Ideas.\n\n## Out of scope\n\n- No implementation required for v1 factory to work\n- Do not auto-promote or auto-post",
+  "type": "task",
+  "status": "open",
+  "priority": 2,
+  "assignee": null,
+  "creator": null,
+  "parent": "babs-75cb4db7-df43-43b6-bf6e-e708397e81db",
+  "labels": [
+    "parked",
+    "design",
+    "publicist",
+    "idea",
+    "type"
+  ],
+  "dependencies": [],
+  "comments": [],
+  "created_at": "2026-09-01T15:17:02.346559Z",
+  "updated_at": "2026-09-01T15:17:02.346559Z",
+  "closed_at": null,
+  "custom": {},
+  "agent": null
+}

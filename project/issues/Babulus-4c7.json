@@ -1,7 +1,7 @@
 {
   "id": "Babulus-4c7",
   "title": "Type Slot \u2014 one packed placement (absorbs PromoSlot / Babulus-4c7)",
-  "description": "Parked type spec \u2014 do not implement. Not in progress.\n\n**This issue is the Slot spec.** It absorbs the parked PromoSlot epic (same id Babulus-4c7). Do not file a second Slot type.\n\n## Type: Slot\n\nOne placement: when a packed item should go. Channel `linkedin` | `x` (not Discord). Timezone America/New_York. Links an Asset/Deliverable, optional Campaign, Creative, angle.\n\n## Fields (design, not schema)\n\n- **channel**: `linkedin` | `x` (not Discord)\n- **when**: America/New_York\n- **asset** / deliverable\n- **campaign** (optional)\n- **creative** / angle\n- **share_payload** (the packed Buffer-style payload)\n\n## States\n\n`draft` \u2192 `ready` \u2192 `approved` \u2192 `queued` \u2192 `posted` | `skipped`\n\n**Ryan must approve before queued.**\n\n`queued` means **packed and waiting for the human click**, not that a bot posted. That click (SharePayload `handed_off`) is the only write to the network. Until a review UI exists, approved/queued is the finish line and a human pastes. Do not auto-post. LinkedIn / X / Google Ads / Meta connectors may stay out of scope.\n\n```mermaid\nstateDiagram-v2\n  [*] --> draft\n  draft --> ready\n  ready --> approved\n  approved --> queued\n  queued --> posted\n  queued --> skipped\n  posted --> [*]\n  skipped --> [*]\n```\n\n## What changed from the original PromoSlot write-up\n\n- Discord dropped as a promo channel\n- Track is `hire` | `human` (not anthus/b0rd as the primary axis)\n- Blurb/link live on Creative + SharePayload; Slot is the when/where\n- Queued \u2260 bot posted; queued = packed, awaiting human click (Buffer analog)\n- Do not smash into MarketingInteraction\n- Do not add a Papyrus newsroom promote stage\n- Do not stand up a spreadsheet as source of truth\n\n## Out of scope\n\n- No model, UI, SES, LinkedIn, X, Google Ads, or Meta implementation from this issue\n- Nothing posts live unless Ryan says so",
+  "description": "Parked type spec \u2014 do not implement. Not in progress. Publicist accepted.\n\n**This issue is the Slot spec.** Absorbs PromoSlot (same id). No duplicate Slot type.\n\n## Type: Slot\n\nWhen a packed Post (or AdDraft) should go. Channel `linkedin` | `x` (not Discord). Timezone America/New_York.\n\n## Fields (design, not schema)\n\n- **channel**: `linkedin` | `x`\n- **dueAt**: America/New_York \u2014 lives here, not on LinkedIn Posts API create\n- **post** or **ad_draft**\n- **campaign** (optional)\n- **schedulingType** (v1): always `human` / notification\n\n## States\n\n`draft` \u2192 `ready` \u2192 `approved` \u2192 `queued` \u2192 `posted` | `skipped`\n\n**Ryan must approve before queued.**\n\n**`queued` = packed awaiting Ryan click, not bot-posted.** That click is the only write to the network. Do not auto-post. LinkedIn create is PUBLISHED-only; we do not pass a schedule field.\n\n```mermaid\nstateDiagram-v2\n  [*] --> draft\n  draft --> ready\n  ready --> approved\n  approved --> queued\n  queued --> posted\n  queued --> skipped\n```\n\n## Out of scope\n\n- No model, UI, or connector implementation\n- Nothing posts live unless Ryan says so\n- Discord is not a channel",
   "type": "task",
   "status": "open",
   "priority": 2,
@@ -13,7 +13,8 @@
     "design",
     "publicist",
     "promoslot",
-    "slot"
+    "slot",
+    "type"
   ],
   "dependencies": [],
   "comments": [
@@ -28,7 +29,7 @@
     }
   ],
   "created_at": "2026-08-29T11:08:40Z",
-  "updated_at": "2026-09-01T15:07:13.814842Z",
+  "updated_at": "2026-09-01T15:16:39.439443Z",
   "closed_at": null,
   "custom": {
     "beads_owner": "cursoragent@cursor.com",

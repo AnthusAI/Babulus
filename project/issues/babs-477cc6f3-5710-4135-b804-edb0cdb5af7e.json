@@ -1,7 +1,7 @@
 {
   "id": "babs-477cc6f3-5710-4135-b804-edb0cdb5af7e",
-  "title": "Type Campaign \u2014 unit of work (hire conversation, deliverable checklist)",
-  "description": "Parked type spec \u2014 do not implement. Not in progress.\n\n## Type: Campaign\n\nThe **unit of work**. A bet over a window. Goal is a **hire conversation**, not reach.\n\nBabulus is a campaign factory: AI agents (Chattic.us) and a human steer production of the whole campaign until the checklist is complete and on time.\n\n## Fields (design, not schema)\n\n- **goal**: hire conversation (not impressions / reach)\n- **dates**: window start / end\n- **track**: `hire` | `human`\n- **checklist**: required deliverables (LandingPage, Video if any, ImageSet, SocialCopy, PpcCopy)\n- Publicist governs; Ryan approves before anything is queued or handed off\n\n## States\n\n`planned` \u2192 `briefing` \u2192 `in_production` \u2192 `ready` \u2192 `live` \u2192 `closed`\n\nAgents claim child work by type and state until the checklist is complete and on time.\n\n```mermaid\nstateDiagram-v2\n  [*] --> planned\n  planned --> briefing\n  briefing --> in_production\n  in_production --> ready\n  ready --> live\n  live --> closed\n  closed --> [*]\n```\n\n## Out of scope\n\n- Do not ship a Campaign type this week\n- Do not post live\n- Do not replace inbound MarketingProgram / MarketingLead",
+  "title": "Type Campaign \u2014 outbound owned-media (not Marketo Program / Smart Campaign)",
+  "description": "Parked type spec \u2014 do not implement. Not in progress. Publicist accepted.\n\n## Type: Campaign\n\nThe unit of work for **outbound owned-media**. A bet over a window. Goal is a hire conversation, not reach.\n\n**Namespace:** Babulus Campaign. **Do NOT collide** with inbound Marketo Program / Smart Campaign. Those objects stay inbound and keep their names.\n\n## Fields (design, not schema)\n\n- **goal**: hire conversation\n- **dates**: window start / end\n- **track**: `hire` | `human`\n- **brief**: attached Brief (intake)\n- **checklist**: Deliverables spawned from the Brief (`kind` enum, not five types)\n- UTM, brand kit, LP SLA, legal are **fields/states**, not types\n\n## States\n\n`planned` \u2192 `briefing` \u2192 `in_production` \u2192 `ready` \u2192 `live` \u2192 `closed`\n\nAgents claim child work until the checklist is complete and on time.\n\n```mermaid\nstateDiagram-v2\n  [*] --> planned\n  planned --> briefing\n  briefing --> in_production\n  in_production --> ready\n  ready --> live\n  live --> closed\n```\n\n## Out of scope\n\n- Do not implement\n- Do not post live\n- Do not rename or replace Marketo Program / Smart Campaign",
   "type": "task",
   "status": "open",
   "priority": 2,
@@ -12,12 +12,13 @@
     "parked",
     "design",
     "publicist",
-    "campaign"
+    "campaign",
+    "type"
   ],
   "dependencies": [],
   "comments": [],
   "created_at": "2026-09-01T15:07:11.073279Z",
-  "updated_at": "2026-09-01T15:07:11.073279Z",
+  "updated_at": "2026-09-01T15:16:36.764654Z",
   "closed_at": null,
   "custom": {},
   "agent": null

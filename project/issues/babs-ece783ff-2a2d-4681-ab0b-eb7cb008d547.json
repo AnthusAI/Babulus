@@ -1,7 +1,7 @@
 {
   "id": "babs-ece783ff-2a2d-4681-ab0b-eb7cb008d547",
   "title": "Result later \u2014 optional posted Slot to existing MarketingLead (park only)",
-  "description": "Park only \u2014 do not design a new CRM. Do not implement.\n\n## Result later\n\nOptional link from a posted Slot (or handed_off SharePayload) to an existing **MarketingLead**.\n\nInbound already exists: WaitlistSignup, MarketingLead, MarketingProgram/Step/Rule/Trigger, MarketingEnrollment, MarketingInteraction. Keep it. Do not replace it. Do not invent a parallel lead object.\n\nWhen a hire conversation actually happens, a human may attach the Slot/Campaign to the lead. That is enough for v1 thinking. No schema, no UI, no auto-attribution.",
+  "description": "Park only \u2014 do not design a new CRM. Not a type. Do not implement.\n\nOptional link from a posted Slot / handed_off Post to an existing **MarketingLead**.\n\nInbound Marketo objects stay (WaitlistSignup, MarketingLead, MarketingProgram / Smart Campaign, Enrollment, Interaction). Do not collide with Babulus Campaign. No auto-attribution.",
   "type": "task",
   "status": "open",
   "priority": 2,
@@ -12,12 +12,13 @@
     "parked",
     "design",
     "publicist",
-    "inbound"
+    "inbound",
+    "note"
   ],
   "dependencies": [],
   "comments": [],
   "created_at": "2026-09-01T15:07:17.206278Z",
-  "updated_at": "2026-09-01T15:07:17.206278Z",
+  "updated_at": "2026-09-01T15:17:08.189799Z",
   "closed_at": null,
   "custom": {},
   "agent": null

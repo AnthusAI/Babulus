@@ -1,9 +1,9 @@
 {
   "id": "babs-1849df7d-0fcf-4984-b197-81536ddedf8c",
-  "title": "Type VideoJob \u2014 production job; VideoML renders; Babulus owns the job",
-  "description": "Parked type spec \u2014 do not implement. Not in progress. File stays on Babulus (not a VideoML code change).\n\n## Type: VideoJob\n\nProduction of an Asset (Video deliverable) or Slot creative. Chattic bots claim by state. **VideoML renders; Babulus owns the job.** VideoML is the renderer, not the publicity calendar.\n\n## States\n\n`brief` \u2192 `script` \u2192 `render` \u2192 `preview` \u2192 `approved` \u2192 `published` | `killed`\n\nRyan approval applies before anything is queued or posted from the resulting asset.\n\n```mermaid\nstateDiagram-v2\n  [*] --> brief\n  brief --> script\n  script --> render\n  render --> preview\n  preview --> approved\n  approved --> published\n  approved --> killed\n  preview --> killed\n  published --> [*]\n  killed --> [*]\n```\n\n## Out of scope\n\n- No VideoML calendar\n- No auto-publish to social\n- No implementation from this issue",
+  "title": "NOTE not a type \u2014 Video render status lives on Deliverable (was VideoJob)",
+  "description": "**Not an issue type.** Closed as a note. Publicist accepted 2026-09-01 campaign-ops list.\n\nVideoJob is dropped. Render status lives on **Deliverable `kind=Video`**. VideoML is still the renderer. **Publicist should not see jobs.**\n\nDo not re-open as a Kanbus type. Do not put a job queue on the Publicist board.",
   "type": "task",
-  "status": "open",
+  "status": "closed",
   "priority": 2,
   "assignee": null,
   "creator": null,
@@ -12,13 +12,24 @@
     "parked",
     "design",
     "publicist",
-    "video-job"
+    "not-a-type",
+    "closed-as-note"
   ],
   "dependencies": [],
-  "comments": [],
+  "comments": [
+    {
+      "id": "79ff538b-9c47-41c0-bab4-f6d5aec45cec",
+      "author": "ubuntu",
+      "text": "Dropped as a type per 2026-09-01 campaign-ops research. Render status on Deliverable kind=Video. Publicist should not see jobs. Closing so it is not left as a type.",
+      "created_at": "2026-09-01T15:17:05.577799Z",
+      "comment_type": "default",
+      "data": {},
+      "agent": null
+    }
+  ],
   "created_at": "2026-09-01T15:07:15.118997Z",
-  "updated_at": "2026-09-01T15:07:15.118997Z",
-  "closed_at": null,
+  "updated_at": "2026-09-01T15:17:06.219745Z",
+  "closed_at": "2026-09-01T15:17:06.219745Z",
   "custom": {},
   "agent": null
 }

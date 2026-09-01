@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "event_id": "26d4526a-b306-4be3-a13f-53dc9ce9a833",
+  "issue_id": "babs-0b62483c-27b4-43ba-a4ee-a54617ced583",
+  "event_type": "field_updated",
+  "occurred_at": "2026-09-01T15:17:06.876Z",
+  "actor_id": "ubuntu",
+  "payload": {
+    "changes": {
+      "title": {
+        "from": "Boundary: VideoML is renderer for VideoJob, not the publicity calendar",
+        "to": "Boundary: VideoML is renderer; no VideoJob type; Publicist does not see jobs"
+      },
+      "description": {
+        "from": "Parked boundary — do not implement. Not in progress.\n\n## Boundary\n\nVideoML is the **renderer** for VideoJob, not the publicity calendar. File this as a child on **Babulus** (not a VideoML code change).\n\nChattic bots claim VideoJob by state. Babulus owns the job record, Campaign, Slot, and SharePayload. VideoML does not grow Campaign/Slot types.\n\nNo VideoML implementation from this issue.",
+        "to": "Parked boundary — do not implement. Not a type. Not in progress.\n\nVideoML is the renderer for Deliverable `kind=Video`. There is **no VideoJob type**. Render status is a field/state on the Deliverable. Publicist should not see jobs.\n\nFile stays on Babulus (not a VideoML code change). VideoML does not grow Campaign / Slot / Post types.\n\nNo implementation from this issue."
+      },
+      "labels": {
+        "from": [
+          "parked",
+          "design",
+          "publicist",
+          "videoml"
+        ],
+        "to": [
+          "parked",
+          "design",
+          "publicist",
+          "videoml",
+          "boundary"
+        ]
+      }
+    }
+  }
+}

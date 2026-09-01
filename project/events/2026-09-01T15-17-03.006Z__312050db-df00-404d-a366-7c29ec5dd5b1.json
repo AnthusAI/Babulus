@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "event_id": "312050db-df00-404d-a366-7c29ec5dd5b1",
+  "issue_id": "babs-2813e803-4258-4762-8984-ad002c96fbe6",
+  "event_type": "field_updated",
+  "occurred_at": "2026-09-01T15:17:03.006Z",
+  "actor_id": "ubuntu",
+  "payload": {
+    "changes": {
+      "title": {
+        "from": "CadencePolicy — channel caps (~3 LinkedIn/week, two hire one human)",
+        "to": "NOTE not a type — postingSchedule is channel config (was CadencePolicy)"
+      },
+      "description": {
+        "from": "Parked config/rule spec — do not implement. Not in progress.\n\n## CadencePolicy\n\nChannel caps. **Not a type that ships every week** — a config/rule issue.\n\n## Default\n\n- About **3 LinkedIn slots/week**\n- Mix: **two hire, one human**\n- X (Twitter) cadence unspecified; do not invent a Discord cadence\n- Timezone: America/New_York\n\nPublicist governs what gets queued against the cap. Ryan approves before queued.\n\n## Out of scope\n\n- Not a weekly-shipping Kanbus type\n- No auto-enqueue to fill the cap\n- No Discord channel",
+        "to": "**Not an issue type.** Closed as a note. Publicist accepted 2026-09-01 campaign-ops list.\n\nCadencePolicy is dropped. Defaults (~3 LinkedIn slots/week, two hire one human, America/New_York) become **`postingSchedule` config on the channel**, not a work item agents claim.\n\nDo not re-open as a Kanbus type. Do not ship a weekly CadencePolicy object."
+      },
+      "labels": {
+        "from": [
+          "parked",
+          "design",
+          "publicist",
+          "cadence"
+        ],
+        "to": [
+          "parked",
+          "design",
+          "publicist",
+          "not-a-type",
+          "closed-as-note"
+        ]
+      }
+    }
+  }
+}

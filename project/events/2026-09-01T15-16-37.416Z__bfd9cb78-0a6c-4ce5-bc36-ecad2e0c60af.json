@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "event_id": "bfd9cb78-0a6c-4ce5-bc36-ecad2e0c60af",
+  "issue_id": "babs-15b82cd9-19c8-42e9-8386-f95693868ebb",
+  "event_type": "field_updated",
+  "occurred_at": "2026-09-01T15:16:37.416Z",
+  "actor_id": "ubuntu",
+  "payload": {
+    "changes": {
+      "title": {
+        "from": "Type Asset — Campaign deliverable kinds (LandingPage, Video, ImageSet, SocialCopy, PpcCopy)",
+        "to": "Type Deliverable — kind enum only (LandingPage|Video|ImageSet|SocialCopy|PpcCopy)"
+      },
+      "description": {
+        "from": "Parked type spec — do not implement. Not in progress.\n\n## Type: Asset (and/or child deliverable types)\n\nCanonical produced thing under a Campaign. **Not a Slot.** Deliverable kinds may be Asset subtypes or child types.\n\n## Kinds\n\n- **LandingPage** — campaign destination\n- **Video** — optional; produced via VideoJob; VideoML renders\n- **ImageSet** — stills / thumbnails / crops\n- **SocialCopy** — channel `linkedin` | `x` (not Discord)\n- **PpcCopy** — headlines and descriptions only; **not** live ad-account writes\n\nOlder “thing being promoted” shapes (essay, post, repo, case) can still be an Asset `kind` when the campaign is amplifying existing work. Status for evergreen pieces: `live` / `evergreen` / `retired`.\n\n## Fields (design, not schema)\n\n- **url** (when it exists)\n- **kind** (one of the above)\n- **track**: `hire` | `human`\n- **campaign** (parent)\n- **status**: live / evergreen / retired (for lasting assets)\n\n## Out of scope\n\n- No schema code\n- No Discord social copy\n- No journalist media lists\n- PpcCopy does not write to Google Ads / Meta ad accounts",
+        "to": "Parked type spec — do not implement. Not in progress. Publicist accepted.\n\n**Revised from Asset.** This issue is the Deliverable type. Kind is an **enum on one type**, not five Kanbus types. One production workflow.\n\n## Type: Deliverable\n\nProduced thing under a Campaign, spawned from a Brief. **Not a Slot. Not five types.**\n\n## kind enum\n\n`LandingPage` | `Video` | `ImageSet` | `SocialCopy` | `PpcCopy`\n\n- **SocialCopy** channel is `linkedin` | `x` (not Discord)\n- **PpcCopy** is copy limits / draft text only; live spend is **AdDraft**, not a Post\n- **Video**: render status lives **on this Deliverable**. There is no VideoJob type. Publicist should not see jobs. VideoML is the renderer.\n\n## One production workflow\n\nSame states for every kind (fields/states vary: LP SLA, legal, brand kit, UTM — not types).\n\n## Out of scope\n\n- No schema\n- No Discord\n- No journalist lists\n- Do not split kind into five issue types\n- Do not expose VideoJob to Publicist"
+      },
+      "labels": {
+        "from": [
+          "parked",
+          "design",
+          "publicist",
+          "asset"
+        ],
+        "to": [
+          "parked",
+          "design",
+          "publicist",
+          "deliverable",
+          "type"
+        ]
+      }
+    }
+  }
+}

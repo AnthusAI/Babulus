@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "event_id": "1f96ee1b-0619-4da1-9f3c-41306b031255",
+  "issue_id": "babs-5b13e159-74dc-4ea1-9ab8-c3ac6b76c41b",
+  "event_type": "issue_created",
+  "occurred_at": "2026-09-01T15:17:01.710Z",
+  "actor_id": "ubuntu",
+  "payload": {
+    "title": "Type AdDraft — PPC pack (Google/Meta PAUSED); not a Post",
+    "description": "Parked type spec — do not implement. Not in progress. Publicist accepted.\n\n## Type: AdDraft\n\n**PPC is not a Post.** Pack a Google Ads / Meta campaign **PAUSED**. A human click is what enables spend. That click is the only write that turns money on. Do not auto-post. Do not enable spend from a bot.\n\n## Pack limits (design, not schema)\n\n**Google RSA**\n\n- Headlines: 30 chars × 3–15\n- Descriptions: 90 chars × 2–4\n- Paths: 15 chars × 2\n- Sitelink: 25 + 35 + 35\n\n**Meta** (recommended)\n\n- Primary text 125 / headline 40 / description 25\n\n## vs Post\n\n| | Post | AdDraft |\n| --- | --- | --- |\n| What | Organic Buffer Post | Paid campaign draft |\n| Pack | copy+media+channel+time | RSA/Meta fields, PAUSED |\n| Clock | Slot `dueAt` | Slot `dueAt` optional |\n| Write | Human click publishes or opens composer | Human click enables spend |\n\n## Out of scope\n\n- No live ad-account writes from this epic\n- No auto-enable\n- Not a Post / not SharePayload\n- Discord is not a channel",
+    "issue_type": "task",
+    "status": "open",
+    "priority": 2,
+    "assignee": null,
+    "parent": "babs-75cb4db7-df43-43b6-bf6e-e708397e81db",
+    "labels": [
+      "parked",
+      "design",
+      "publicist",
+      "addraft",
+      "type"
+    ]
+  }
+}

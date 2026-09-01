@@ -1,7 +1,7 @@
 {
   "id": "babs-15b82cd9-19c8-42e9-8386-f95693868ebb",
-  "title": "Type Asset \u2014 Campaign deliverable kinds (LandingPage, Video, ImageSet, SocialCopy, PpcCopy)",
-  "description": "Parked type spec \u2014 do not implement. Not in progress.\n\n## Type: Asset (and/or child deliverable types)\n\nCanonical produced thing under a Campaign. **Not a Slot.** Deliverable kinds may be Asset subtypes or child types.\n\n## Kinds\n\n- **LandingPage** \u2014 campaign destination\n- **Video** \u2014 optional; produced via VideoJob; VideoML renders\n- **ImageSet** \u2014 stills / thumbnails / crops\n- **SocialCopy** \u2014 channel `linkedin` | `x` (not Discord)\n- **PpcCopy** \u2014 headlines and descriptions only; **not** live ad-account writes\n\nOlder \u201cthing being promoted\u201d shapes (essay, post, repo, case) can still be an Asset `kind` when the campaign is amplifying existing work. Status for evergreen pieces: `live` / `evergreen` / `retired`.\n\n## Fields (design, not schema)\n\n- **url** (when it exists)\n- **kind** (one of the above)\n- **track**: `hire` | `human`\n- **campaign** (parent)\n- **status**: live / evergreen / retired (for lasting assets)\n\n## Out of scope\n\n- No schema code\n- No Discord social copy\n- No journalist media lists\n- PpcCopy does not write to Google Ads / Meta ad accounts",
+  "title": "Type Deliverable \u2014 kind enum only (LandingPage|Video|ImageSet|SocialCopy|PpcCopy)",
+  "description": "Parked type spec \u2014 do not implement. Not in progress. Publicist accepted.\n\n**Revised from Asset.** This issue is the Deliverable type. Kind is an **enum on one type**, not five Kanbus types. One production workflow.\n\n## Type: Deliverable\n\nProduced thing under a Campaign, spawned from a Brief. **Not a Slot. Not five types.**\n\n## kind enum\n\n`LandingPage` | `Video` | `ImageSet` | `SocialCopy` | `PpcCopy`\n\n- **SocialCopy** channel is `linkedin` | `x` (not Discord)\n- **PpcCopy** is copy limits / draft text only; live spend is **AdDraft**, not a Post\n- **Video**: render status lives **on this Deliverable**. There is no VideoJob type. Publicist should not see jobs. VideoML is the renderer.\n\n## One production workflow\n\nSame states for every kind (fields/states vary: LP SLA, legal, brand kit, UTM \u2014 not types).\n\n## Out of scope\n\n- No schema\n- No Discord\n- No journalist lists\n- Do not split kind into five issue types\n- Do not expose VideoJob to Publicist",
   "type": "task",
   "status": "open",
   "priority": 2,
@@ -12,12 +12,13 @@
     "parked",
     "design",
     "publicist",
-    "asset"
+    "deliverable",
+    "type"
   ],
   "dependencies": [],
   "comments": [],
   "created_at": "2026-09-01T15:07:11.743572Z",
-  "updated_at": "2026-09-01T15:07:11.743572Z",
+  "updated_at": "2026-09-01T15:16:37.415465Z",
   "closed_at": null,
   "custom": {},
   "agent": null

@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "event_id": "077c0e91-51bf-4520-b93d-11149b957432",
+  "issue_id": "babs-ece783ff-2a2d-4681-ab0b-eb7cb008d547",
+  "event_type": "field_updated",
+  "occurred_at": "2026-09-01T15:17:08.190Z",
+  "actor_id": "ubuntu",
+  "payload": {
+    "changes": {
+      "description": {
+        "from": "Park only — do not design a new CRM. Do not implement.\n\n## Result later\n\nOptional link from a posted Slot (or handed_off SharePayload) to an existing **MarketingLead**.\n\nInbound already exists: WaitlistSignup, MarketingLead, MarketingProgram/Step/Rule/Trigger, MarketingEnrollment, MarketingInteraction. Keep it. Do not replace it. Do not invent a parallel lead object.\n\nWhen a hire conversation actually happens, a human may attach the Slot/Campaign to the lead. That is enough for v1 thinking. No schema, no UI, no auto-attribution.",
+        "to": "Park only — do not design a new CRM. Not a type. Do not implement.\n\nOptional link from a posted Slot / handed_off Post to an existing **MarketingLead**.\n\nInbound Marketo objects stay (WaitlistSignup, MarketingLead, MarketingProgram / Smart Campaign, Enrollment, Interaction). Do not collide with Babulus Campaign. No auto-attribution."
+      },
+      "labels": {
+        "from": [
+          "parked",
+          "design",
+          "publicist",
+          "inbound"
+        ],
+        "to": [
+          "parked",
+          "design",
+          "publicist",
+          "inbound",
+          "note"
+        ]
+      }
+    }
+  }
+}

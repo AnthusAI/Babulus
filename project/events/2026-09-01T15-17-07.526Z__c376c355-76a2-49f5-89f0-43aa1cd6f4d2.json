@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "event_id": "c376c355-76a2-49f5-89f0-43aa1cd6f4d2",
+  "issue_id": "babs-0dc0e65c-d1ce-4506-8683-22ada906a9c0",
+  "event_type": "field_updated",
+  "occurred_at": "2026-09-01T15:17:07.526Z",
+  "actor_id": "ubuntu",
+  "payload": {
+    "changes": {
+      "description": {
+        "from": "Parked boundary — do not implement. Not in progress.\n\n## Boundary\n\nPapyrus / ANTH newsroom stays **editorial** and **stops at published**. Do not add a promote stage on Papyrus/ANTH.\n\nA published piece may become an Asset or seed a Campaign. Publicist cuts Slots and SharePayloads in Babulus. Newsroom does not grow a “promote” column.\n\nNo journalist media lists, pitches, or clip books in this epic.",
+        "to": "Parked boundary — do not implement. Not a type. Not in progress.\n\nPapyrus / ANTH newsroom stays editorial and **stops at published**. Do not add a promote stage.\n\nA published piece may seed a Campaign / Brief / Idea. Publicist cuts Deliverables, Posts, Slots, AdDrafts in Babulus.\n\nNo journalist media lists, pitches, or clip books."
+      },
+      "labels": {
+        "from": [
+          "parked",
+          "design",
+          "publicist",
+          "papyrus"
+        ],
+        "to": [
+          "parked",
+          "design",
+          "publicist",
+          "papyrus",
+          "boundary"
+        ]
+      }
+    }
+  }
+}

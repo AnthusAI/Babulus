@@ -1,0 +1,25 @@
+{
+  "id": "babs-5b13e159-74dc-4ea1-9ab8-c3ac6b76c41b",
+  "title": "Type AdDraft \u2014 PPC pack (Google/Meta PAUSED); not a Post",
+  "description": "Parked type spec \u2014 do not implement. Not in progress. Publicist accepted.\n\n## Type: AdDraft\n\n**PPC is not a Post.** Pack a Google Ads / Meta campaign **PAUSED**. A human click is what enables spend. That click is the only write that turns money on. Do not auto-post. Do not enable spend from a bot.\n\n## Pack limits (design, not schema)\n\n**Google RSA**\n\n- Headlines: 30 chars \u00d7 3\u201315\n- Descriptions: 90 chars \u00d7 2\u20134\n- Paths: 15 chars \u00d7 2\n- Sitelink: 25 + 35 + 35\n\n**Meta** (recommended)\n\n- Primary text 125 / headline 40 / description 25\n\n## vs Post\n\n| | Post | AdDraft |\n| --- | --- | --- |\n| What | Organic Buffer Post | Paid campaign draft |\n| Pack | copy+media+channel+time | RSA/Meta fields, PAUSED |\n| Clock | Slot `dueAt` | Slot `dueAt` optional |\n| Write | Human click publishes or opens composer | Human click enables spend |\n\n## Out of scope\n\n- No live ad-account writes from this epic\n- No auto-enable\n- Not a Post / not SharePayload\n- Discord is not a channel",
+  "type": "task",
+  "status": "open",
+  "priority": 2,
+  "assignee": null,
+  "creator": null,
+  "parent": "babs-75cb4db7-df43-43b6-bf6e-e708397e81db",
+  "labels": [
+    "parked",
+    "design",
+    "publicist",
+    "addraft",
+    "type"
+  ],
+  "dependencies": [],
+  "comments": [],
+  "created_at": "2026-09-01T15:17:01.710267Z",
+  "updated_at": "2026-09-01T15:17:01.710267Z",
+  "closed_at": null,
+  "custom": {},
+  "agent": null
+}

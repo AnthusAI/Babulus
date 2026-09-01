@@ -1,0 +1,25 @@
+{
+  "id": "babs-edbdc66a-a4b2-42fe-9957-420b3150b235",
+  "title": "Type Brief \u2014 Campaign intake; spawns Deliverables (Asana/Workfront)",
+  "description": "Parked type spec \u2014 do not implement. Not in progress. Publicist accepted.\n\n## Type: Brief\n\nAttached to a Campaign. Asana/Workfront-style **intake**. The Brief is what agents and humans steer from; it **spawns Deliverables** (`kind` enum, one production workflow).\n\n## Fields (design, not schema)\n\n- **campaign** (required)\n- **goal / audience / offer** (hire conversation)\n- **track**: `hire` | `human`\n- **deliverable checklist** to spawn: LandingPage, Video (optional), ImageSet, SocialCopy, PpcCopy\n- brand kit, legal, LP SLA, UTM = fields on Brief/Deliverable, not types\n\n## Out of scope\n\n- Not a Marketo Program\n- Not a Deliverable\n- No implementation from this issue",
+  "type": "task",
+  "status": "open",
+  "priority": 2,
+  "assignee": null,
+  "creator": null,
+  "parent": "babs-75cb4db7-df43-43b6-bf6e-e708397e81db",
+  "labels": [
+    "parked",
+    "design",
+    "publicist",
+    "brief",
+    "type"
+  ],
+  "dependencies": [],
+  "comments": [],
+  "created_at": "2026-09-01T15:17:01.075237Z",
+  "updated_at": "2026-09-01T15:17:01.075237Z",
+  "closed_at": null,
+  "custom": {},
+  "agent": null
+}

@@ -1,7 +1,7 @@
 {
   "id": "babs-94799552-24af-4569-b9f8-874c94634626",
-  "title": "Type Creative \u2014 blurb, script, or thumbnail attached to a Deliverable",
-  "description": "Parked type spec \u2014 do not implement. Not in progress.\n\n## Type: Creative\n\nBlurb, script, or thumbnail. Attached to a Deliverable (or Slot). **Can fail independently of the Slot** (bad take, wrong crop, rejected angle) without skipping the placement clock until Publicist replaces it.\n\nUseful as the copy/art attached to LandingPage, Video, ImageSet, SocialCopy, or PpcCopy.\n\n## Out of scope\n\n- Not the Slot\n- Not the SharePayload (that is the packed, channel-ready bundle)\n- No implementation from this issue",
+  "title": "Type Creative \u2014 signed-off file/version that can be trafficked",
+  "description": "Parked type spec \u2014 do not implement. Not in progress. Publicist accepted.\n\n## Type: Creative\n\nA **signed-off file/version** that can be trafficked (image, video master, thumbnail crop). Attached to a Deliverable.\n\n**Copy is not a Creative.** Social/PPC words live on Post, AdDraft, or Deliverable `kind=SocialCopy|PpcCopy`. A Creative can fail independently of the Slot (bad crop, rejected master) without moving the placement clock until Publicist replaces it.\n\n## Out of scope\n\n- Not the Slot\n- Not the Post (packed channel bundle)\n- Not body copy, headlines, or descriptions\n- No implementation from this issue",
   "type": "task",
   "status": "open",
   "priority": 2,
@@ -12,12 +12,13 @@
     "parked",
     "design",
     "publicist",
-    "creative"
+    "creative",
+    "type"
   ],
   "dependencies": [],
   "comments": [],
   "created_at": "2026-09-01T15:07:16.505568Z",
-  "updated_at": "2026-09-01T15:07:16.505568Z",
+  "updated_at": "2026-09-01T15:16:38.139269Z",
   "closed_at": null,
   "custom": {},
   "agent": null
