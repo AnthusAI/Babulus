@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "event_id": "b68c4c50-c0ee-4d2b-b455-8d37626f9451",
+  "issue_id": "babs-15b82cd9-19c8-42e9-8386-f95693868ebb",
+  "event_type": "issue_created",
+  "occurred_at": "2026-09-01T15:07:11.743Z",
+  "actor_id": "ubuntu",
+  "payload": {
+    "title": "Type Asset — Campaign deliverable kinds (LandingPage, Video, ImageSet, SocialCopy, PpcCopy)",
+    "description": "Parked type spec — do not implement. Not in progress.\n\n## Type: Asset (and/or child deliverable types)\n\nCanonical produced thing under a Campaign. **Not a Slot.** Deliverable kinds may be Asset subtypes or child types.\n\n## Kinds\n\n- **LandingPage** — campaign destination\n- **Video** — optional; produced via VideoJob; VideoML renders\n- **ImageSet** — stills / thumbnails / crops\n- **SocialCopy** — channel `linkedin` | `x` (not Discord)\n- **PpcCopy** — headlines and descriptions only; **not** live ad-account writes\n\nOlder “thing being promoted” shapes (essay, post, repo, case) can still be an Asset `kind` when the campaign is amplifying existing work. Status for evergreen pieces: `live` / `evergreen` / `retired`.\n\n## Fields (design, not schema)\n\n- **url** (when it exists)\n- **kind** (one of the above)\n- **track**: `hire` | `human`\n- **campaign** (parent)\n- **status**: live / evergreen / retired (for lasting assets)\n\n## Out of scope\n\n- No schema code\n- No Discord social copy\n- No journalist media lists\n- PpcCopy does not write to Google Ads / Meta ad accounts",
+    "issue_type": "task",
+    "status": "open",
+    "priority": 2,
+    "assignee": null,
+    "parent": "babs-75cb4db7-df43-43b6-bf6e-e708397e81db",
+    "labels": [
+      "parked",
+      "design",
+      "publicist",
+      "asset"
+    ]
+  }
+}

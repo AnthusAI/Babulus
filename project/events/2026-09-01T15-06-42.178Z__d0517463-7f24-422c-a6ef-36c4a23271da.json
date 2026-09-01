@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "event_id": "d0517463-7f24-422c-a6ef-36c4a23271da",
+  "issue_id": "babs-75cb4db7-df43-43b6-bf6e-e708397e81db",
+  "event_type": "issue_created",
+  "occurred_at": "2026-09-01T15:06:42.178Z",
+  "actor_id": "ubuntu",
+  "payload": {
+    "title": "Publicity machine — custom Kanbus types for owned-channel marketing",
+    "description": "Parked design spec only — do not implement from this epic. Do not post live. Ryan approval is required before any Slot is queued or any SharePayload is handed off.\n\n## What Babulus is\n\nBabulus is a **campaign factory**. AI agents and a human steer production of an entire campaign: landing page, video if any, image assets, social copy, PPC headlines/descriptions. Chattic.us is the bot farm that executes issues by type and state. Kanbus (Papyrus-style custom types, workflows, state names) is the tracker. VideoML is the renderer, not the calendar. Publicist governs what gets queued. Ryan approves.\n\n## Inbound stays\n\nInbound marketing already exists (WaitlistSignup, MarketingLead, MarketingProgram/Step/Rule/Trigger, MarketingEnrollment, MarketingInteraction). Do not replace that. This epic is outbound owned media — a campaign factory, not a CRM rewrite.\n\n## Buffer-style handoff (not auto-post)\n\nPosting to LinkedIn / X / Google Ads / Meta is **optional** and may stay out of scope because those APIs are hard. **Do not auto-post.** Mimic Buffer: the system packs a complete payload (copy, media, link, channel, time). A human clicks once in a review UI; that click is what hits the target system (or opens the native composer already filled). **That click is the only write to the network.**\n\n`queued` on a Slot means packed and waiting for the human click, not that a bot posted.\n\n## Skip\n\n- Media lists, journalist pitches, clip books\n- Discord as a promo channel (Ryan already announces there; server is small)\n- Papyrus/ANTH newsroom promote stage (editorial stops at published)\n- Live ad-account writes\n- Schema code, UI, auto-post, or any runtime from this epic\n\n## Custom types (children of this epic)\n\n| Type | Role |\n| --- | --- |\n| Campaign | Unit of work. Goal is a hire conversation. Checklist of deliverables. |\n| Asset / deliverable kinds | LandingPage, Video, ImageSet, SocialCopy (linkedin\\|x), PpcCopy |\n| Creative | Blurb, script, or thumbnail attached to a Deliverable |\n| Slot | When a packed item should go. Absorbs PromoSlot / Babulus-4c7. |\n| SharePayload | Buffer analog: packed post or ad draft |\n| VideoJob | Production of an Asset/Slot; VideoML renders; Babulus owns the job |\n| CadencePolicy | Channel caps (config/rule, not a weekly-shipping type) |\n\n## Campaign states\n\n`planned` → `briefing` → `in_production` → `ready` → `live` → `closed`\n\nAgents claim child work until the checklist is complete and on time.\n\n## Slot states\n\n`draft` → `ready` → `approved` → `queued` → `posted` \\| `skipped`\n\nRyan must approve before queued.\n\n## SharePayload states\n\n`drafted` → `packed` → `awaiting_human` → `handed_off` \\| `skipped`\n\n`handed_off` = human clicked. No bot OAuth post required for v1.\n\n```mermaid\nflowchart TD\n  Campaign --> Deliverable\n  Deliverable --> LandingPage\n  Deliverable --> Video\n  Deliverable --> ImageSet\n  Deliverable --> SocialCopy\n  Deliverable --> PpcCopy\n  Deliverable --> Creative\n  Video --> VideoJob\n  VideoJob --> VideoML[VideoML renderer]\n  Campaign --> Slot\n  Slot --> SharePayload\n  SharePayload --> HumanClick[Human click only write]\n  Slot -.-> Lead[optional MarketingLead later]\n```",
+    "issue_type": "epic",
+    "status": "open",
+    "priority": 2,
+    "assignee": null,
+    "parent": null,
+    "labels": [
+      "parked",
+      "design",
+      "publicist",
+      "campaign-factory"
+    ]
+  }
+}

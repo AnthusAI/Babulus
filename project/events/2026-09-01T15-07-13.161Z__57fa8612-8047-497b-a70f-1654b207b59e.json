@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "event_id": "57fa8612-8047-497b-a70f-1654b207b59e",
+  "issue_id": "Babulus-4c7",
+  "event_type": "field_updated",
+  "occurred_at": "2026-09-01T15:07:13.161Z",
+  "actor_id": "ubuntu",
+  "payload": {
+    "changes": {
+      "title": {
+        "from": "PromoSlot: outbound content calendar",
+        "to": "Type Slot — one packed placement (absorbs PromoSlot / Babulus-4c7)"
+      },
+      "description": {
+        "from": "Parked design spec only — do not implement from this issue until explicitly prioritized.\n\n## Why\n\nBabulus is marketing automation. Inbound already exists (WaitlistSignup, MarketingLead, MarketingProgram, enrollments, MarketingInteraction for email/SMS). There is no outbound calendar. Publicist needs one.\n\nConstraints:\n- Do not smash this into MarketingInteraction (that is a touch to a lead).\n- Do not add a Papyrus newsroom promote stage.\n- Do not stand up a spreadsheet as source of truth.\n\n## Object: PromoSlot\n\nOne row = one thing we might say, on one channel, on one day. A published article can spawn several slots over two weeks.\n\nFields:\n- **when**: date and time, America/New_York\n- **track**: `anthus` | `b0rd`\n- **channel**: `linkedin` | `discord` | `x` | `etsy` (do not add Facebook in v1)\n- **status**: `draft` → `ready` → `approved` → `queued` → `posted` | `skipped`\n- **blurb**: the actual words\n- **link**: canonical URL\n- **source**: optional article slug or newsroom id\n- **asset**: optional image or Babulus video id\n- **live_url**: filled only after it went out\n- **approved_by** / **approved_at**: Ryan, required before queued\n\n## Status rules\n\nPublicist drafts. Ryan must approve before queued. Babulus only moves approved → queued once a connector exists. Until then, approved is the finish line and a human pastes. Nothing posts live unless Ryan says so.\n\n## How a published piece enters\n\nNewsroom story still ends at published. Publicist then cuts three slots, not a new essay:\n\n1. **LinkedIn**, day-of or next weekday morning — excerpt + link\n2. **Discord**, same day — shorter pointer\n3. **LinkedIn**, 4–7 days later — second angle or an older related piece\n\nB0rd is the same object, different track. Quiet until there is a shop link or a Workbench post worth showing.\n\n## Out of scope for this issue\n\n- Do not implement the model yet.\n- Do not wire SES, LinkedIn, Discord, or X.\n- Do not build an admin UI.\n\nThis issue is the parked spec only.\n",
+        "to": "Parked type spec — do not implement. Not in progress.\n\n**This issue is the Slot spec.** It absorbs the parked PromoSlot epic (same id Babulus-4c7). Do not file a second Slot type.\n\n## Type: Slot\n\nOne placement: when a packed item should go. Channel `linkedin` | `x` (not Discord). Timezone America/New_York. Links an Asset/Deliverable, optional Campaign, Creative, angle.\n\n## Fields (design, not schema)\n\n- **channel**: `linkedin` | `x` (not Discord)\n- **when**: America/New_York\n- **asset** / deliverable\n- **campaign** (optional)\n- **creative** / angle\n- **share_payload** (the packed Buffer-style payload)\n\n## States\n\n`draft` → `ready` → `approved` → `queued` → `posted` | `skipped`\n\n**Ryan must approve before queued.**\n\n`queued` means **packed and waiting for the human click**, not that a bot posted. That click (SharePayload `handed_off`) is the only write to the network. Until a review UI exists, approved/queued is the finish line and a human pastes. Do not auto-post. LinkedIn / X / Google Ads / Meta connectors may stay out of scope.\n\n```mermaid\nstateDiagram-v2\n  [*] --> draft\n  draft --> ready\n  ready --> approved\n  approved --> queued\n  queued --> posted\n  queued --> skipped\n  posted --> [*]\n  skipped --> [*]\n```\n\n## What changed from the original PromoSlot write-up\n\n- Discord dropped as a promo channel\n- Track is `hire` | `human` (not anthus/b0rd as the primary axis)\n- Blurb/link live on Creative + SharePayload; Slot is the when/where\n- Queued ≠ bot posted; queued = packed, awaiting human click (Buffer analog)\n- Do not smash into MarketingInteraction\n- Do not add a Papyrus newsroom promote stage\n- Do not stand up a spreadsheet as source of truth\n\n## Out of scope\n\n- No model, UI, SES, LinkedIn, X, Google Ads, or Meta implementation from this issue\n- Nothing posts live unless Ryan says so"
+      },
+      "labels": {
+        "from": [
+          "design",
+          "parked",
+          "promoslot",
+          "publicist"
+        ],
+        "to": [
+          "parked",
+          "design",
+          "publicist",
+          "promoslot",
+          "slot"
+        ]
+      },
+      "parent": {
+        "from": null,
+        "to": "babs-75cb4db7-df43-43b6-bf6e-e708397e81db"
+      }
+    }
+  }
+}

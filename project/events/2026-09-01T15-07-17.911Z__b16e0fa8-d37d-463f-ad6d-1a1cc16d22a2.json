@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "event_id": "b16e0fa8-d37d-463f-ad6d-1a1cc16d22a2",
+  "issue_id": "babs-0dc0e65c-d1ce-4506-8683-22ada906a9c0",
+  "event_type": "issue_created",
+  "occurred_at": "2026-09-01T15:07:17.911Z",
+  "actor_id": "ubuntu",
+  "payload": {
+    "title": "Boundary: Papyrus newsroom stays editorial (no promote stage)",
+    "description": "Parked boundary — do not implement. Not in progress.\n\n## Boundary\n\nPapyrus / ANTH newsroom stays **editorial** and **stops at published**. Do not add a promote stage on Papyrus/ANTH.\n\nA published piece may become an Asset or seed a Campaign. Publicist cuts Slots and SharePayloads in Babulus. Newsroom does not grow a “promote” column.\n\nNo journalist media lists, pitches, or clip books in this epic.",
+    "issue_type": "task",
+    "status": "open",
+    "priority": 2,
+    "assignee": null,
+    "parent": "babs-75cb4db7-df43-43b6-bf6e-e708397e81db",
+    "labels": [
+      "parked",
+      "design",
+      "publicist",
+      "papyrus"
+    ]
+  }
+}

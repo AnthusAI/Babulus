@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "event_id": "3491eec4-c889-4354-9c3c-2e5785937df9",
+  "issue_id": "babs-477cc6f3-5710-4135-b804-edb0cdb5af7e",
+  "event_type": "issue_created",
+  "occurred_at": "2026-09-01T15:07:11.073Z",
+  "actor_id": "ubuntu",
+  "payload": {
+    "title": "Type Campaign — unit of work (hire conversation, deliverable checklist)",
+    "description": "Parked type spec — do not implement. Not in progress.\n\n## Type: Campaign\n\nThe **unit of work**. A bet over a window. Goal is a **hire conversation**, not reach.\n\nBabulus is a campaign factory: AI agents (Chattic.us) and a human steer production of the whole campaign until the checklist is complete and on time.\n\n## Fields (design, not schema)\n\n- **goal**: hire conversation (not impressions / reach)\n- **dates**: window start / end\n- **track**: `hire` | `human`\n- **checklist**: required deliverables (LandingPage, Video if any, ImageSet, SocialCopy, PpcCopy)\n- Publicist governs; Ryan approves before anything is queued or handed off\n\n## States\n\n`planned` → `briefing` → `in_production` → `ready` → `live` → `closed`\n\nAgents claim child work by type and state until the checklist is complete and on time.\n\n```mermaid\nstateDiagram-v2\n  [*] --> planned\n  planned --> briefing\n  briefing --> in_production\n  in_production --> ready\n  ready --> live\n  live --> closed\n  closed --> [*]\n```\n\n## Out of scope\n\n- Do not ship a Campaign type this week\n- Do not post live\n- Do not replace inbound MarketingProgram / MarketingLead",
+    "issue_type": "task",
+    "status": "open",
+    "priority": 2,
+    "assignee": null,
+    "parent": "babs-75cb4db7-df43-43b6-bf6e-e708397e81db",
+    "labels": [
+      "parked",
+      "design",
+      "publicist",
+      "campaign"
+    ]
+  }
+}

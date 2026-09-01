@@ -1,0 +1,24 @@
+{
+  "id": "babs-2813e803-4258-4762-8984-ad002c96fbe6",
+  "title": "CadencePolicy \u2014 channel caps (~3 LinkedIn/week, two hire one human)",
+  "description": "Parked config/rule spec \u2014 do not implement. Not in progress.\n\n## CadencePolicy\n\nChannel caps. **Not a type that ships every week** \u2014 a config/rule issue.\n\n## Default\n\n- About **3 LinkedIn slots/week**\n- Mix: **two hire, one human**\n- X (Twitter) cadence unspecified; do not invent a Discord cadence\n- Timezone: America/New_York\n\nPublicist governs what gets queued against the cap. Ryan approves before queued.\n\n## Out of scope\n\n- Not a weekly-shipping Kanbus type\n- No auto-enqueue to fill the cap\n- No Discord channel",
+  "type": "task",
+  "status": "open",
+  "priority": 2,
+  "assignee": null,
+  "creator": null,
+  "parent": "babs-75cb4db7-df43-43b6-bf6e-e708397e81db",
+  "labels": [
+    "parked",
+    "design",
+    "publicist",
+    "cadence"
+  ],
+  "dependencies": [],
+  "comments": [],
+  "created_at": "2026-09-01T15:07:15.787173Z",
+  "updated_at": "2026-09-01T15:07:15.787173Z",
+  "closed_at": null,
+  "custom": {},
+  "agent": null
+}

@@ -1,0 +1,24 @@
+{
+  "id": "babs-0b62483c-27b4-43ba-a4ee-a54617ced583",
+  "title": "Boundary: VideoML is renderer for VideoJob, not the publicity calendar",
+  "description": "Parked boundary \u2014 do not implement. Not in progress.\n\n## Boundary\n\nVideoML is the **renderer** for VideoJob, not the publicity calendar. File this as a child on **Babulus** (not a VideoML code change).\n\nChattic bots claim VideoJob by state. Babulus owns the job record, Campaign, Slot, and SharePayload. VideoML does not grow Campaign/Slot types.\n\nNo VideoML implementation from this issue.",
+  "type": "task",
+  "status": "open",
+  "priority": 2,
+  "assignee": null,
+  "creator": null,
+  "parent": "babs-75cb4db7-df43-43b6-bf6e-e708397e81db",
+  "labels": [
+    "parked",
+    "design",
+    "publicist",
+    "videoml"
+  ],
+  "dependencies": [],
+  "comments": [],
+  "created_at": "2026-09-01T15:07:18.623598Z",
+  "updated_at": "2026-09-01T15:07:18.623598Z",
+  "closed_at": null,
+  "custom": {},
+  "agent": null
+}

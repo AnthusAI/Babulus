@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "event_id": "908c9808-83d8-4a0d-bb91-e3084159837d",
+  "issue_id": "babs-94799552-24af-4569-b9f8-874c94634626",
+  "event_type": "issue_created",
+  "occurred_at": "2026-09-01T15:07:16.505Z",
+  "actor_id": "ubuntu",
+  "payload": {
+    "title": "Type Creative — blurb, script, or thumbnail attached to a Deliverable",
+    "description": "Parked type spec — do not implement. Not in progress.\n\n## Type: Creative\n\nBlurb, script, or thumbnail. Attached to a Deliverable (or Slot). **Can fail independently of the Slot** (bad take, wrong crop, rejected angle) without skipping the placement clock until Publicist replaces it.\n\nUseful as the copy/art attached to LandingPage, Video, ImageSet, SocialCopy, or PpcCopy.\n\n## Out of scope\n\n- Not the Slot\n- Not the SharePayload (that is the packed, channel-ready bundle)\n- No implementation from this issue",
+    "issue_type": "task",
+    "status": "open",
+    "priority": 2,
+    "assignee": null,
+    "parent": "babs-75cb4db7-df43-43b6-bf6e-e708397e81db",
+    "labels": [
+      "parked",
+      "design",
+      "publicist",
+      "creative"
+    ]
+  }
+}

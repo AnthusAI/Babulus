@@ -1,0 +1,24 @@
+{
+  "id": "babs-ab2033ff-3937-41c9-ad42-25963e2d9927",
+  "title": "Type SharePayload \u2014 Buffer analog (packed post or ad draft; human click only)",
+  "description": "Parked type spec \u2014 do not implement. Not in progress.\n\n## Type: SharePayload\n\nBuffer analog. A packed post or ad draft: channel, copy, media, destination URL, intended time.\n\nThe system **packs**. A human clicks once in a review UI. That click hits the target system or opens the native composer already filled. **That click is the only write to the network.**\n\n## Fields (design, not schema)\n\n- **channel**: `linkedin` | `x` (social); PPC drafts are copy-only (no live ad-account write)\n- **copy**\n- **media**\n- **destination_url**\n- **intended_time** (America/New_York)\n- **slot** (optional link)\n- **campaign** / deliverable\n\n## States\n\n`drafted` \u2192 `packed` \u2192 `awaiting_human` \u2192 `handed_off` | `skipped`\n\n`handed_off` = human clicked. No bot OAuth post required for v1. Posting to LinkedIn / X / Google Ads / Meta may stay out of scope because APIs are hard. Do not auto-post.\n\n```mermaid\nstateDiagram-v2\n  [*] --> drafted\n  drafted --> packed\n  packed --> awaiting_human\n  awaiting_human --> handed_off\n  awaiting_human --> skipped\n  handed_off --> [*]\n  skipped --> [*]\n```\n\n## Out of scope\n\n- No OAuth posting bots\n- No Discord channel\n- No live ad-account writes",
+  "type": "task",
+  "status": "open",
+  "priority": 2,
+  "assignee": null,
+  "creator": null,
+  "parent": "babs-75cb4db7-df43-43b6-bf6e-e708397e81db",
+  "labels": [
+    "parked",
+    "design",
+    "publicist",
+    "share-payload"
+  ],
+  "dependencies": [],
+  "comments": [],
+  "created_at": "2026-09-01T15:07:14.454294Z",
+  "updated_at": "2026-09-01T15:07:14.454294Z",
+  "closed_at": null,
+  "custom": {},
+  "agent": null
+}

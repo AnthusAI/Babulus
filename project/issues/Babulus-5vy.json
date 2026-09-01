@@ -1,0 +1,21 @@
+{
+  "id": "Babulus-5vy",
+  "title": "Admin UI for marketing automation (list/filter/export signups, enrollment and interaction detail, auth)",
+  "description": "In-app admin UI for marketing: list/filter/export signups (WaitlistSignup/MarketingLead), view enrollment and step context, view MarketingInteraction history. Auth: only authenticated users with permission. See features/marketing_admin_ui.feature and docs/marketing-automation.md.",
+  "type": "task",
+  "status": "open",
+  "priority": 2,
+  "assignee": null,
+  "creator": "Ryan Alyn Porter",
+  "parent": null,
+  "labels": [],
+  "dependencies": [],
+  "comments": [],
+  "created_at": "2026-02-10T05:13:01Z",
+  "updated_at": "2026-02-10T05:13:27Z",
+  "closed_at": null,
+  "custom": {
+    "beads_owner": "rap@endymion.com"
+  },
+  "agent": null
+}

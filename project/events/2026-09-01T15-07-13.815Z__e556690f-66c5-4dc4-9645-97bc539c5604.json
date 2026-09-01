@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "event_id": "e556690f-66c5-4dc4-9645-97bc539c5604",
+  "issue_id": "Babulus-4c7",
+  "event_type": "comment_added",
+  "occurred_at": "2026-09-01T15:07:13.815Z",
+  "actor_id": "ubuntu",
+  "payload": {
+    "comment_id": "36b4217c-f1d6-466a-8684-dcc5656c39ca",
+    "comment_author": "ubuntu"
+  }
+}

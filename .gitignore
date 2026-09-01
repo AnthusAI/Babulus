@@ -20,12 +20,10 @@ coverage.xml
 *.log
 .pytest_cache/
 .ruff_cache/
-
 # Distribution / packaging
 dist/
 build/
 *.egg-info/
-
 # Node
 node_modules/
 coverage/
@@ -33,11 +31,9 @@ npm-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 .npm/
-
 # Next.js
 .next/
 *.tsbuildinfo
-
 # Babulus specific
 .babulus/
 public/babulus/*.wav
@@ -47,25 +43,23 @@ public/babulus-standard.js
 public/babulus-standard.js.map
 public/browser-components.js
 test-projects/**/generated/
-
 # Amplify
 amplify_outputs.json
 apps/studio-web/.amplify/
 apps/studio-web/.npm/
 apps/studio-web/amplify/functions/**/package-lock.json
 src/videos/**
-
 # IDE
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
-
 # OS
 .DS_Store
 Thumbs.db
-
 # Temporary files
 tmp/
 *.bak
+project/.overlay/
+project/.cache/

@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "event_id": "823d82b3-3006-436d-a698-9bc68369983a",
+  "issue_id": "babs-2813e803-4258-4762-8984-ad002c96fbe6",
+  "event_type": "issue_created",
+  "occurred_at": "2026-09-01T15:07:15.787Z",
+  "actor_id": "ubuntu",
+  "payload": {
+    "title": "CadencePolicy — channel caps (~3 LinkedIn/week, two hire one human)",
+    "description": "Parked config/rule spec — do not implement. Not in progress.\n\n## CadencePolicy\n\nChannel caps. **Not a type that ships every week** — a config/rule issue.\n\n## Default\n\n- About **3 LinkedIn slots/week**\n- Mix: **two hire, one human**\n- X (Twitter) cadence unspecified; do not invent a Discord cadence\n- Timezone: America/New_York\n\nPublicist governs what gets queued against the cap. Ryan approves before queued.\n\n## Out of scope\n\n- Not a weekly-shipping Kanbus type\n- No auto-enqueue to fill the cap\n- No Discord channel",
+    "issue_type": "task",
+    "status": "open",
+    "priority": 2,
+    "assignee": null,
+    "parent": "babs-75cb4db7-df43-43b6-bf6e-e708397e81db",
+    "labels": [
+      "parked",
+      "design",
+      "publicist",
+      "cadence"
+    ]
+  }
+}

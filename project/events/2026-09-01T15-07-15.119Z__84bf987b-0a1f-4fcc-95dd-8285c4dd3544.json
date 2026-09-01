@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "event_id": "84bf987b-0a1f-4fcc-95dd-8285c4dd3544",
+  "issue_id": "babs-1849df7d-0fcf-4984-b197-81536ddedf8c",
+  "event_type": "issue_created",
+  "occurred_at": "2026-09-01T15:07:15.119Z",
+  "actor_id": "ubuntu",
+  "payload": {
+    "title": "Type VideoJob — production job; VideoML renders; Babulus owns the job",
+    "description": "Parked type spec — do not implement. Not in progress. File stays on Babulus (not a VideoML code change).\n\n## Type: VideoJob\n\nProduction of an Asset (Video deliverable) or Slot creative. Chattic bots claim by state. **VideoML renders; Babulus owns the job.** VideoML is the renderer, not the publicity calendar.\n\n## States\n\n`brief` → `script` → `render` → `preview` → `approved` → `published` | `killed`\n\nRyan approval applies before anything is queued or posted from the resulting asset.\n\n```mermaid\nstateDiagram-v2\n  [*] --> brief\n  brief --> script\n  script --> render\n  render --> preview\n  preview --> approved\n  approved --> published\n  approved --> killed\n  preview --> killed\n  published --> [*]\n  killed --> [*]\n```\n\n## Out of scope\n\n- No VideoML calendar\n- No auto-publish to social\n- No implementation from this issue",
+    "issue_type": "task",
+    "status": "open",
+    "priority": 2,
+    "assignee": null,
+    "parent": "babs-75cb4db7-df43-43b6-bf6e-e708397e81db",
+    "labels": [
+      "parked",
+      "design",
+      "publicist",
+      "video-job"
+    ]
+  }
+}

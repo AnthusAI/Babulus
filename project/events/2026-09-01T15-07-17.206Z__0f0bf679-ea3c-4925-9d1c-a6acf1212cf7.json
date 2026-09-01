@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "event_id": "0f0bf679-ea3c-4925-9d1c-a6acf1212cf7",
+  "issue_id": "babs-ece783ff-2a2d-4681-ab0b-eb7cb008d547",
+  "event_type": "issue_created",
+  "occurred_at": "2026-09-01T15:07:17.206Z",
+  "actor_id": "ubuntu",
+  "payload": {
+    "title": "Result later — optional posted Slot to existing MarketingLead (park only)",
+    "description": "Park only — do not design a new CRM. Do not implement.\n\n## Result later\n\nOptional link from a posted Slot (or handed_off SharePayload) to an existing **MarketingLead**.\n\nInbound already exists: WaitlistSignup, MarketingLead, MarketingProgram/Step/Rule/Trigger, MarketingEnrollment, MarketingInteraction. Keep it. Do not replace it. Do not invent a parallel lead object.\n\nWhen a hire conversation actually happens, a human may attach the Slot/Campaign to the lead. That is enough for v1 thinking. No schema, no UI, no auto-attribution.",
+    "issue_type": "task",
+    "status": "open",
+    "priority": 2,
+    "assignee": null,
+    "parent": "babs-75cb4db7-df43-43b6-bf6e-e708397e81db",
+    "labels": [
+      "parked",
+      "design",
+      "publicist",
+      "inbound"
+    ]
+  }
+}

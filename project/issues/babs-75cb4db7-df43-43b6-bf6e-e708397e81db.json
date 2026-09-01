@@ -1,0 +1,34 @@
+{
+  "id": "babs-75cb4db7-df43-43b6-bf6e-e708397e81db",
+  "title": "Publicity machine \u2014 custom Kanbus types for owned-channel marketing",
+  "description": "Parked design spec only \u2014 do not implement from this epic. Do not post live. Ryan approval is required before any Slot is queued or any SharePayload is handed off.\n\n## What Babulus is\n\nBabulus is a **campaign factory**. AI agents and a human steer production of an entire campaign: landing page, video if any, image assets, social copy, PPC headlines/descriptions. Chattic.us is the bot farm that executes issues by type and state. Kanbus (Papyrus-style custom types, workflows, state names) is the tracker. VideoML is the renderer, not the calendar. Publicist governs what gets queued. Ryan approves.\n\n## Inbound stays\n\nInbound marketing already exists (WaitlistSignup, MarketingLead, MarketingProgram/Step/Rule/Trigger, MarketingEnrollment, MarketingInteraction). Do not replace that. This epic is outbound owned media \u2014 a campaign factory, not a CRM rewrite.\n\n## Buffer-style handoff (not auto-post)\n\nPosting to LinkedIn / X / Google Ads / Meta is **optional** and may stay out of scope because those APIs are hard. **Do not auto-post.** Mimic Buffer: the system packs a complete payload (copy, media, link, channel, time). A human clicks once in a review UI; that click is what hits the target system (or opens the native composer already filled). **That click is the only write to the network.**\n\n`queued` on a Slot means packed and waiting for the human click, not that a bot posted.\n\n## Skip\n\n- Media lists, journalist pitches, clip books\n- Discord as a promo channel (Ryan already announces there; server is small)\n- Papyrus/ANTH newsroom promote stage (editorial stops at published)\n- Live ad-account writes\n- Schema code, UI, auto-post, or any runtime from this epic\n\n## Custom types (children of this epic)\n\n| Type | Role |\n| --- | --- |\n| Campaign | Unit of work. Goal is a hire conversation. Checklist of deliverables. |\n| Asset / deliverable kinds | LandingPage, Video, ImageSet, SocialCopy (linkedin\\|x), PpcCopy |\n| Creative | Blurb, script, or thumbnail attached to a Deliverable |\n| Slot | When a packed item should go. Absorbs PromoSlot / Babulus-4c7. |\n| SharePayload | Buffer analog: packed post or ad draft |\n| VideoJob | Production of an Asset/Slot; VideoML renders; Babulus owns the job |\n| CadencePolicy | Channel caps (config/rule, not a weekly-shipping type) |\n\n## Campaign states\n\n`planned` \u2192 `briefing` \u2192 `in_production` \u2192 `ready` \u2192 `live` \u2192 `closed`\n\nAgents claim child work until the checklist is complete and on time.\n\n## Slot states\n\n`draft` \u2192 `ready` \u2192 `approved` \u2192 `queued` \u2192 `posted` \\| `skipped`\n\nRyan must approve before queued.\n\n## SharePayload states\n\n`drafted` \u2192 `packed` \u2192 `awaiting_human` \u2192 `handed_off` \\| `skipped`\n\n`handed_off` = human clicked. No bot OAuth post required for v1.\n\n```mermaid\nflowchart TD\n  Campaign --> Deliverable\n  Deliverable --> LandingPage\n  Deliverable --> Video\n  Deliverable --> ImageSet\n  Deliverable --> SocialCopy\n  Deliverable --> PpcCopy\n  Deliverable --> Creative\n  Video --> VideoJob\n  VideoJob --> VideoML[VideoML renderer]\n  Campaign --> Slot\n  Slot --> SharePayload\n  SharePayload --> HumanClick[Human click only write]\n  Slot -.-> Lead[optional MarketingLead later]\n```",
+  "type": "epic",
+  "status": "open",
+  "priority": 2,
+  "assignee": null,
+  "creator": null,
+  "parent": null,
+  "labels": [
+    "parked",
+    "design",
+    "publicist",
+    "campaign-factory"
+  ],
+  "dependencies": [],
+  "comments": [
+    {
+      "id": "292a8ccb-c9ea-45da-9787-00a462e0308d",
+      "author": "ubuntu",
+      "text": "Parked campaign-factory filing (file only). Children, all status open, not in progress:\n\n- babs-477cc6 \u2014 Type Campaign\n- babs-15b82c \u2014 Type Asset / deliverable kinds\n- Babulus-4c7 \u2014 Type Slot (folded PromoSlot; no duplicate Slot spec)\n- babs-ab2033 \u2014 Type SharePayload\n- babs-1849df \u2014 Type VideoJob\n- babs-2813e8 \u2014 CadencePolicy\n- babs-947995 \u2014 Type Creative\n- babs-ece783 \u2014 Result later (MarketingLead, park only)\n- babs-0dc0e6 \u2014 Boundary: Papyrus\n- babs-0b6248 \u2014 Boundary: VideoML\n\nDo not implement. Do not auto-post. Ryan approves before queued / handed_off.",
+      "created_at": "2026-09-01T15:07:33.906491Z",
+      "comment_type": "default",
+      "data": {},
+      "agent": null
+    }
+  ],
+  "created_at": "2026-09-01T15:06:42.178612Z",
+  "updated_at": "2026-09-01T15:07:33.906491Z",
+  "closed_at": null,
+  "custom": {},
+  "agent": null
+}
