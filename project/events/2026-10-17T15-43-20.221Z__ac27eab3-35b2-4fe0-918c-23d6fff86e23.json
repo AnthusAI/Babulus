@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "event_id": "ac27eab3-35b2-4fe0-918c-23d6fff86e23",
+  "issue_id": "babs-a37b72e7-e15e-484e-91f6-35879760bf50",
+  "event_type": "issue_created",
+  "occurred_at": "2026-10-17T15:43:20.221Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "Restore Babulus main automatic deployment",
+    "description": "Ryan authorized enabling existing Amplify main auto-build and deploying latest main. Scope: Babulus app d3epcqvzbxdaq in account 335163751677 us-east-1; public https://babul.us and https://babulus.anth.us. Definition of done: auto-build enabled, existing pipeline terminal success, actual public page and referenced assets verified, receipts recorded. No IAM, DNS, credentials or unrelated projects.",
+    "issue_type": "epic",
+    "status": "open",
+    "priority": 2,
+    "assignee": null,
+    "parent": null,
+    "labels": []
+  }
+}

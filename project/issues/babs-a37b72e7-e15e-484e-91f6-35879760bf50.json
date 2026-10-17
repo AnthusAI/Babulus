@@ -1,0 +1,22 @@
+{
+  "id": "babs-a37b72e7-e15e-484e-91f6-35879760bf50",
+  "title": "Restore Babulus main automatic deployment",
+  "description": "Ryan authorized enabling existing Amplify main auto-build and deploying latest main. Scope: Babulus app d3epcqvzbxdaq in account 335163751677 us-east-1; public https://babul.us and https://babulus.anth.us. Definition of done: auto-build enabled, existing pipeline terminal success, actual public page and referenced assets verified, receipts recorded. No IAM, DNS, credentials or unrelated projects.",
+  "type": "epic",
+  "status": "in_progress",
+  "priority": 2,
+  "assignee": null,
+  "creator": null,
+  "parent": null,
+  "labels": [],
+  "dependencies": [],
+  "comments": [],
+  "created_at": "2026-10-17T15:43:20.221534Z",
+  "updated_at": "2026-10-17T15:44:55.321244Z",
+  "closed_at": null,
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {},
+  "agent": null,
+  "agent_assignment": null
+}

@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "event_id": "a0af6f4f-216a-4942-8f20-a315185f7441",
+  "issue_id": "babs-6376aaf7-837d-451f-a16d-c9441d4d4b40",
+  "event_type": "issue_created",
+  "occurred_at": "2026-10-17T15:44:06.978Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "Enable main auto-build and verify latest release",
+    "description": "Plan: verify legacy AWS identity and Amplify domains; inspect source configuration; enable existing main auto-build; release main 7d6631192a7b5e3b25d06087c3ffe00303ea5553; follow job to terminal status; verify served footer and referenced assets on both production domains; record receipts. Baseline: main enableAutoBuild=false; latest success job 163 fd56118cc618 on March 30. Both public domains return 200 but stale page.",
+    "issue_type": "task",
+    "status": "open",
+    "priority": 2,
+    "assignee": null,
+    "parent": "babs-a37b72e7-e15e-484e-91f6-35879760bf50",
+    "labels": []
+  }
+}

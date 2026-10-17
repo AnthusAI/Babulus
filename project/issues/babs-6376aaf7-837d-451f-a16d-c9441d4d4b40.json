@@ -1,0 +1,32 @@
+{
+  "id": "babs-6376aaf7-837d-451f-a16d-c9441d4d4b40",
+  "title": "Enable main auto-build and verify latest release",
+  "description": "Plan: verify legacy AWS identity and Amplify domains; inspect source configuration; enable existing main auto-build; release main 7d6631192a7b5e3b25d06087c3ffe00303ea5553; follow job to terminal status; verify served footer and referenced assets on both production domains; record receipts. Baseline: main enableAutoBuild=false; latest success job 163 fd56118cc618 on March 30. Both public domains return 200 but stale page.",
+  "type": "task",
+  "status": "in_progress",
+  "priority": 2,
+  "assignee": null,
+  "creator": null,
+  "parent": "babs-a37b72e7-e15e-484e-91f6-35879760bf50",
+  "labels": [],
+  "dependencies": [],
+  "comments": [
+    {
+      "id": "1c72744e-48d8-4a33-b130-c7f22313c80b",
+      "author": "home",
+      "text": "15:44 UTC: Verified legacy account 335163751677 and production domains babul.us and babulus.anth.us. Main enableAutoBuild changed false -> true using update-branch. Existing RELEASE pipeline job 164 running against current main 7d6631192a7b5e3b25d06087c3ffe00303ea5553. No tracked auto-build controller exists; no source change required. Kanbus records maintained on develop because main has no project directory.",
+      "created_at": "2026-10-17T15:44:57.470196Z",
+      "comment_type": "default",
+      "data": {},
+      "agent": null
+    }
+  ],
+  "created_at": "2026-10-17T15:44:06.978489Z",
+  "updated_at": "2026-10-17T15:44:57.470261Z",
+  "closed_at": null,
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {},
+  "agent": null,
+  "agent_assignment": null
+}
