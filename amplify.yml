@@ -21,6 +21,7 @@ applications:
         preBuild:
           commands:
             - npm install --no-audit --no-fund --cache .npm --prefer-offline
+            - npm install anthus-footer@github:AnthusAI/anthus-footer#main --no-audit --no-fund
             - npx @aws-amplify/backend-cli@latest generate outputs --branch $AWS_BRANCH --app-id $AWS_APP_ID
         build:
           commands:
