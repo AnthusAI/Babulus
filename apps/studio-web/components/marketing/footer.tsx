@@ -4,7 +4,6 @@ export function Footer() {
   return (
     <AnthusFooter
       siteId="babulus"
-      subtitle="Part of the Anthus Platform"
       description="Babulus is an AI-agent-driven marketing automation system for turning VideoML workflows into repeatable video production pipelines."
       additionalColumns={[
         {
