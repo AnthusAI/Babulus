@@ -10,9 +10,19 @@
   "parent": null,
   "labels": [],
   "dependencies": [],
-  "comments": [],
+  "comments": [
+    {
+      "id": "c2cc35ce-5233-4249-85ba-b4749e3ee6c6",
+      "author": "home",
+      "text": "Auto-build restoration completed: d3epcqvzbxdaq/main enableAutoBuild false -> true via AWS CLI profile legacy, verified account 335163751677. Latest-main release 164 failed before frontend deployment due to missing backend stack / retained babulus-render-worker ECR name conflict; details in babs-6376aa (blocked). Public verification at 15:51 UTC: https://babul.us and https://babulus.anth.us both HTTP 200, identical 73,326-byte HTML SHA256 1b5c510966a65978eae8db2cc1dadbf065a6e432be8e0d5ac0b6dce693b6f499; all 35 referenced Next static assets per domain HTTP 200. New footer Contact us https://anth.us/engage and Articles https://anth.us/articles/ absent; old https://anth.us/blog present, so served content is still old. Requested main commit 7d6631192a7b5e3b25d06087c3ffe00303ea5553 is not live. Remaining blocker: authorize/design recovery of previously removed backend and retained resources before retrying; no security expansion needed or attempted. Epic remains in_progress because deployment acceptance is unmet.",
+      "created_at": "2026-10-17T15:50:02.689577Z",
+      "comment_type": "default",
+      "data": {},
+      "agent": null
+    }
+  ],
   "created_at": "2026-10-17T15:43:20.221534Z",
-  "updated_at": "2026-10-17T15:44:55.321244Z",
+  "updated_at": "2026-10-17T15:50:02.689659Z",
   "closed_at": null,
   "right_now_summary": null,
   "right_now_updated_at": null,

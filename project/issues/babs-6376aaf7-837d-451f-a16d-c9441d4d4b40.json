@@ -3,7 +3,7 @@
   "title": "Enable main auto-build and verify latest release",
   "description": "Plan: verify legacy AWS identity and Amplify domains; inspect source configuration; enable existing main auto-build; release main 7d6631192a7b5e3b25d06087c3ffe00303ea5553; follow job to terminal status; verify served footer and referenced assets on both production domains; record receipts. Baseline: main enableAutoBuild=false; latest success job 163 fd56118cc618 on March 30. Both public domains return 200 but stale page.",
   "type": "task",
-  "status": "in_progress",
+  "status": "blocked",
   "priority": 2,
   "assignee": null,
   "creator": null,
@@ -19,10 +19,28 @@
       "comment_type": "default",
       "data": {},
       "agent": null
+    },
+    {
+      "id": "8fe310fa-d464-4a72-b1e5-91ac204472dc",
+      "author": "home",
+      "text": "15:47 UTC: job 164 installed dependencies successfully and synthesized existing Amplify Gen2 backend in 8.54s; still RUNNING. Build log confirms checkout of 7d6631192a7b footer commit. Read-back of branch configuration confirms enableAutoBuild=true. Baseline job 163 exact revision fd56118cc618390af5ce54e60ebeaeab31d3850f ended SUCCEED at 2026-03-30T22:13:01.877Z. Initial plan and evidence landed on develop in 4b21999b009a47a57fc057bfb89906789330788c.",
+      "created_at": "2026-10-17T15:47:29.259175Z",
+      "comment_type": "default",
+      "data": {},
+      "agent": null
+    },
+    {
+      "id": "5912d0d3-e17c-4f96-aae4-f7846afd2324",
+      "author": "home",
+      "text": "15:50 UTC terminal receipt: Amplify job 164 FAILED at 2026-10-17T15:47:47.180Z; BUILD failed, DEPLOY and VERIFY cancelled. CloudFormation stack amplify-d3epcqvzbxdaq-main-branch-d63e8b2ffa newly created at 15:47:20.649Z then ROLLBACK_COMPLETE. describe-events NAME_CONFLICT_VALIDATION on RenderWorkerRepository90133673: AWS::ECR::Repository babulus-render-worker already exists. ECR tags confirm amplify app d3epcqvzbxdaq/main; repository created 2026-01-26. list-stack-resources returns empty. March job 163 updated the same stack name successfully, but no prior backend stack currently exists and branch backend association is empty. Recovery requires a scoped backend restoration/import decision; deleting retained ECR or bypassing backend deployment would not preserve the existing backend. No IAM, credential, DNS, resource deletion, or unrelated migration performed. Auto-build remains enabled (read-back true). Public latest-main success is NOT claimed.",
+      "created_at": "2026-10-17T15:49:53.466236Z",
+      "comment_type": "default",
+      "data": {},
+      "agent": null
     }
   ],
   "created_at": "2026-10-17T15:44:06.978489Z",
-  "updated_at": "2026-10-17T15:44:57.470261Z",
+  "updated_at": "2026-10-17T15:49:53.466304Z",
   "closed_at": null,
   "right_now_summary": null,
   "right_now_updated_at": null,
