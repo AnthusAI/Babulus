@@ -3,22 +3,35 @@
   "title": "Sync infra/github-rulesets/main-branch-protection.json with GitHub (0 approvals, no Node checks)",
   "description": "ORG HYGIENE follow-up (thread \"Org hygiene\", 2026-10-17). All 20 hygiene PRs are merged.\nTODO (1) as it concerns Babulus: infra/github-rulesets/main-branch-protection.json in Babulus still requires 1 approval and \"Node checks\"; Ryan lowered approvals to 0 and removed Node checks in GitHub. The next PR touching that file will sync the old values back to GitHub, so update the checked-in JSON to match first.\n\nVerified 2026-10-19 on main (a64e139) and develop (identical content), infra/github-rulesets/main-branch-protection.json currently contains:\n- rules[type=pull_request].parameters.required_approving_review_count: 1 (target: 0)\n- rules[type=pull_request].parameters.require_code_owner_review: true\n- rules[type=pull_request].parameters.require_last_push_approval: true\n- rules[type=pull_request].parameters.dismiss_stale_reviews_on_push: true\n- rules[type=required_status_checks].parameters.required_status_checks: [{ \"context\": \"Node checks\" }] (target: removed)\n- rules[type=required_status_checks].parameters.strict_required_status_checks_policy: true\n- bypass_actors: [], enforcement: active, target ref refs/heads/main, plus deletion and non_fast_forward rules.\n\nBefore editing, read the actual ruleset in GitHub (repo settings -> Rules -> Rulesets) and make the JSON match it (the other fields above may also have been changed there). This issue only tracks the sync; the JSON was NOT changed in the PR that created this issue.\n\nRelated: checking OTHER repos' checked-in rulesets and the AnthusAI org-level ruleset (org settings -> Repository -> Rulesets) is a separate follow-up, not tracked here; repo archiving was proposed but NOT approved, do not archive anything.\n\nSource: Claude Code Projects handoff, 2026-10-19.",
   "type": "task",
-  "status": "open",
+  "status": "in_progress",
   "priority": 2,
   "assignee": null,
   "creator": null,
   "parent": null,
   "labels": [],
   "dependencies": [],
-  "comments": [],
+  "comments": [
+    {
+      "id": "0948a579-1ff5-4c08-833c-0d5dff8a4e5b",
+      "author": "home",
+      "text": "Synced infra/github-rulesets/main-branch-protection.json to live ruleset 18226926: approvals 1->0, require_code_owner_review and require_last_push_approval true->false, required_status_checks emptied (rule kept, live still has it with []), added live-only dismissal_restriction and require_extra_approval_for_unattributed_changes, merge method order merge/rebase/squash. Verified JSON equals live minus server-only fields. Branch chore/sync-ruleset-json, uncommitted.",
+      "created_at": "2026-10-19T18:00:29.872118Z",
+      "comment_type": "default",
+      "data": {},
+      "agent": null
+    }
+  ],
   "created_at": "2026-10-19T16:40:56.901737Z",
-  "updated_at": "2026-10-19T16:41:10.903215Z",
+  "updated_at": "2026-10-19T18:00:29.872227Z",
   "closed_at": null,
+  "right_now_summary": "Update the checked-in ruleset JSON to match GitHub\u2019s current main branch protection settings.",
+  "right_now_updated_at": "2026-10-19T16:41:12.123389Z",
+  "custom": {},
   "agent": {
     "platform": "claude_code",
-    "model": "claude-sonnet-5-5"
+    "model": "claude-sonnet-5-5",
+    "name": null,
+    "settings": {}
   },
-  "right_now_summary": "Update the checked-in ruleset JSON to match GitHub’s current main branch protection settings.",
-  "right_now_updated_at": "2026-10-19T16:41:12.123389Z",
-  "custom": {}
+  "agent_assignment": null
 }
