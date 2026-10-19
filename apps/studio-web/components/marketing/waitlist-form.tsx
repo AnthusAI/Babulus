@@ -5,6 +5,7 @@ import { useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { sanitizeCampaign, sanitizePagePath, sanitizeSource } from "@/lib/waitlist-intake";
 
 type Persona = "business" | "agency" | "marketer" | "creator" | "developer" | "other";
 
@@ -25,39 +26,11 @@ const PERSONAS: Array<{ value: Persona; label: string }> = [
 
 const FORM_ID = "babulus-waitlist-v1";
 const NOTICE_VERSION = "babulus-waitlist-v1";
-const SOURCE_PATTERN = /^[a-z0-9][a-z0-9-]{0,39}$/;
 
 // Read at build time (inlined by Next.js). Unset means the waitlist is not live yet.
 const INTAKE_BASE_URL = (process.env.NEXT_PUBLIC_PROSPECTUS_INTAKE_BASE_URL ?? "")
   .trim()
   .replace(/\/+$/, "");
-
-function newSubmissionId(): string {
-  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
-    return crypto.randomUUID();
-  }
-  // Fallback for non-secure contexts: RFC 4122 v4.
-  const bytes = new Uint8Array(16);
-  if (typeof crypto !== "undefined" && typeof crypto.getRandomValues === "function") {
-    crypto.getRandomValues(bytes);
-  } else {
-    for (let i = 0; i < 16; i++) bytes[i] = Math.floor(Math.random() * 256);
-  }
-  bytes[6] = (bytes[6] & 0x0f) | 0x40;
-  bytes[8] = (bytes[8] & 0x3f) | 0x80;
-  const hex = Array.from(bytes, (b) => b.toString(16).padStart(2, "0")).join("");
-  return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
-}
-
-function readCampaign(): Record<string, string> | undefined {
-  const params = new URLSearchParams(window.location.search);
-  const campaign: Record<string, string> = {};
-  for (const key of ["utm_source", "utm_medium", "utm_campaign"]) {
-    const value = params.get(key);
-    if (value) campaign[key] = value;
-  }
-  return Object.keys(campaign).length > 0 ? campaign : undefined;
-}
 
 export function WaitlistForm({ source }: { source?: string }) {
   const [state, setState] = useState<WaitlistState>({ status: "idle" });
@@ -67,9 +40,7 @@ export function WaitlistForm({ source }: { source?: string }) {
   const [wantsUpdates, setWantsUpdates] = useState(true);
   const [website, setWebsite] = useState(""); // honeypot
 
-  // One id per form attempt; reused on retry (network error or 503) so Prospectus can
-  // deduplicate. Cleared when the content changes, since an id used with different
-  // content is rejected with a 409.
+  // Reused on retry; cleared when the content changes (a reused id with new content is a 409).
   const submissionIdRef = useRef<string | null>(null);
 
   const live = INTAKE_BASE_URL.length > 0;
@@ -89,27 +60,23 @@ export function WaitlistForm({ source }: { source?: string }) {
     if (!live) return;
     setState({ status: "submitting" });
 
-    if (!submissionIdRef.current) submissionIdRef.current = newSubmissionId();
+    if (!submissionIdRef.current) submissionIdRef.current = crypto.randomUUID();
 
-    const rawSource = source ?? "marketing-site";
     const payload: Record<string, unknown> = {
       submission_id: submissionIdRef.current,
       email: email.trim(),
       notice_version: NOTICE_VERSION,
       marketing_opt_in: wantsUpdates,
-      page_path: window.location.pathname,
       website,
-      attributes: {
-        persona,
-        source: SOURCE_PATTERN.test(rawSource) ? rawSource : "marketing-site",
-      },
+      attributes: { persona, source: sanitizeSource(source ?? "marketing-site", "marketing-site") },
     };
     if (name.trim()) payload.name = name.trim();
-    const campaign = readCampaign();
+    const pagePath = sanitizePagePath(window.location.pathname);
+    if (pagePath) payload.page_path = pagePath;
+    const campaign = sanitizeCampaign(new URLSearchParams(window.location.search));
     if (campaign) payload.campaign = campaign;
 
     try {
-      // Direct browser request: Prospectus binds the form by the request Origin.
       const response = await fetch(`${INTAKE_BASE_URL}/intake/waitlist/${FORM_ID}`, {
         method: "POST",
         headers: { "content-type": "application/json" },
@@ -143,7 +110,6 @@ export function WaitlistForm({ source }: { source?: string }) {
           message: "We’re getting a lot of requests. Please try again in a moment.",
         });
       } else if (response.status === 503) {
-        // Keep the same submission_id so the retry is safe.
         setState({
           status: "error",
           message: "We couldn’t confirm your signup. Please try again; it won’t be counted twice.",
@@ -152,7 +118,6 @@ export function WaitlistForm({ source }: { source?: string }) {
         setState({ status: "error", message: "Something went wrong. Please try again shortly." });
       }
     } catch {
-      // Network error: keep submission_id for the retry.
       setState({
         status: "error",
         message: "We couldn’t reach the waitlist. Please check your connection and try again.",
