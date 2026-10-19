@@ -23,7 +23,7 @@ import { DynamoEventSource } from 'aws-cdk-lib/aws-lambda-event-sources';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
 import { readFileSync, existsSync } from 'fs';
-import { Duration, RemovalPolicy } from 'aws-cdk-lib';
+import { Duration } from 'aws-cdk-lib';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -228,12 +228,12 @@ console.log('- Alarms: error rate, long execution, no completions');
 // Render Worker ECS Fargate Configuration
 // ==========================================
 
-// Create ECR repository for render worker Docker image
-const renderWorkerEcr = new ecr.Repository(backend.stack, 'RenderWorkerRepository', {
-  repositoryName: 'babulus-render-worker',
-  removalPolicy: RemovalPolicy.RETAIN, // Keep images on stack deletion
-  imageScanOnPush: true,
-});
+// Reference the render worker ECR repository that already exists in the account
+const renderWorkerEcr = ecr.Repository.fromRepositoryName(
+  backend.stack,
+  'RenderWorkerRepository',
+  'babulus-render-worker'
+);
 
 // Create VPC for ECS tasks (or use default VPC)
 const vpc = new ec2.Vpc(backend.stack, 'RenderWorkerVPC', {
