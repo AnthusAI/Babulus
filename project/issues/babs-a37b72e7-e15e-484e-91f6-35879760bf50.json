@@ -19,10 +19,19 @@
       "comment_type": "default",
       "data": {},
       "agent": null
+    },
+    {
+      "id": "f626dc49-e3a2-402f-be12-b7d2c5bc8d5c",
+      "author": "unknown",
+      "text": "2026-10-19 16:50 UTC: epic still in_progress, acceptance unmet (latest main not live on babul.us / babulus.anth.us). Auto-build is enabled on legacy app d3epcqvzbxdaq/main. Blocker moved from the ECR name conflict (fixed by PR #5) to legacy-account VPC/IGW limits; the active plan is the account move tracked as babulus-84493f28 on main. Not started and not approved: any backend restoration in the legacy account. Handoff report: /mnt/project-files/handoff/babulus-handoff-2026-10-19.md (project files).\n",
+      "created_at": "2026-10-19T16:45:59.392254Z",
+      "comment_type": "default",
+      "data": {},
+      "agent": null
     }
   ],
   "created_at": "2026-10-17T15:43:20.221534Z",
-  "updated_at": "2026-10-17T15:50:02.689659Z",
+  "updated_at": "2026-10-19T16:45:59.392408Z",
   "closed_at": null,
   "right_now_summary": null,
   "right_now_updated_at": null,

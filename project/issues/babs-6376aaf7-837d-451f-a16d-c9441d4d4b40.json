@@ -37,10 +37,19 @@
       "comment_type": "default",
       "data": {},
       "agent": null
+    },
+    {
+      "id": "cc64b826-3788-4913-b6ed-9f13d66b33d3",
+      "author": "unknown",
+      "text": "2026-10-19 16:50 UTC status update (record only, no AWS access or changes made by this session). SUPERSEDED/UPDATED since the 2026-10-17 receipts: Babulus PR #5 (merged to main a64e139) makes backend.ts reference the existing ECR repo babulus-render-worker, so the NAME_CONFLICT is fixed. Per the account-move issue on main (babulus-84493f28), job 167 then got past ECR but FAILED creating RenderWorkerVPC because legacy account 335163751677 us-east-1 is at the VPC (5/5) and internet-gateway limits. Stack amplify-d3epcqvzbxdaq-main-branch-d63e8b2ffa is an empty ROLLBACK_COMPLETE shell; Ryan approved deleting it on 2026-10-19 12:03, only if building in legacy again. Do NOT delete ECR babulus-render-worker or its images. The live fix path is the move to account 869507387405 tracked as babulus-84493f28 on main (step list is in that issue); that work is blocked on write permissions in that account (iam create-role/attach-role-policy, ecr create-repository were denied by the permission check) and on Ryan connecting the GitHub branch in the Amplify console. Latest main (a64e139+) is still not live on babul.us / babulus.anth.us as of last verification (2026-10-17 15:51 UTC, old footer). The board of record is now main's project/ (key babulus, PR #6); this develop board (key babs) is stale.\n",
+      "created_at": "2026-10-19T16:45:58.638304Z",
+      "comment_type": "default",
+      "data": {},
+      "agent": null
     }
   ],
   "created_at": "2026-10-17T15:44:06.978489Z",
-  "updated_at": "2026-10-17T15:49:53.466304Z",
+  "updated_at": "2026-10-19T16:45:58.638474Z",
   "closed_at": null,
   "right_now_summary": null,
   "right_now_updated_at": null,
