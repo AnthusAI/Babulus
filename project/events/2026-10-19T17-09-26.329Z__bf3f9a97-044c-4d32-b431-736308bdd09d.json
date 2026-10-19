@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "event_id": "bf3f9a97-044c-4d32-b431-736308bdd09d",
+  "issue_id": "babulus-979afe65-48c5-40ed-b44a-776b74bb54bc",
+  "event_type": "issue_created",
+  "occurred_at": "2026-10-19T17:09:26.329Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "NOTE not a type — postingSchedule is channel config (was CadencePolicy)",
+    "description": "**Not an issue type.** Closed as a note. Publicist accepted 2026-09-01 campaign-ops list.\n\nCadencePolicy is dropped. Defaults (~3 LinkedIn slots/week, two hire one human, America/New_York) become **`postingSchedule` config on the channel**, not a work item agents claim.\n\nDo not re-open as a Kanbus type. Do not ship a weekly CadencePolicy object.\n\nPorted from develop board, old ID babs-2813e803-4258-4762-8984-ad002c96fbe6",
+    "issue_type": "task",
+    "status": "open",
+    "priority": 2,
+    "assignee": null,
+    "parent": "babulus-b2f481b5-5aba-4977-8e6e-82fa58a5c240",
+    "labels": [
+      "parked",
+      "design",
+      "publicist",
+      "not-a-type",
+      "closed-as-note"
+    ]
+  }
+}

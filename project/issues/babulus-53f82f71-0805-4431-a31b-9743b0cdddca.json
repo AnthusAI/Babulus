@@ -1,0 +1,26 @@
+{
+  "id": "babulus-53f82f71-0805-4431-a31b-9743b0cdddca",
+  "title": "Type Idea — optional Buffer Idea (channel-less backlog; promote → Post per channel)",
+  "description": "Parked type spec — do not implement. Not in progress. Publicist accepted.\n\n## Type: Idea\n\nOptional and cheap. Buffer Idea: **channel-less backlog** item. Promote → **one Post per channel** (`linkedin`, `x`). Not a Slot. Not a Campaign.\n\nSkip freely. Do not invent Discord Ideas.\n\n## Out of scope\n\n- No implementation required for v1 factory to work\n- Do not auto-promote or auto-post\n\nPorted from develop board, old ID babs-b02eb1ec-04c6-40a2-9a3c-f1577d709331",
+  "type": "task",
+  "status": "open",
+  "priority": 2,
+  "assignee": null,
+  "creator": null,
+  "parent": "babulus-b2f481b5-5aba-4977-8e6e-82fa58a5c240",
+  "labels": [
+    "parked",
+    "design",
+    "publicist",
+    "idea",
+    "type"
+  ],
+  "dependencies": [],
+  "comments": [],
+  "created_at": "2026-09-01T15:17:02.346559Z",
+  "updated_at": "2026-09-01T15:17:02.346559Z",
+  "closed_at": null,
+  "right_now_summary": "This optional type spec is parked as a channel-less backlog idea and needs no implementation.",
+  "right_now_updated_at": "2026-10-19T17:10:01.150109Z",
+  "custom": {}
+}

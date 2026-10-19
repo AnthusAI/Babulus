@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "event_id": "646c17c9-80ed-4b5d-99c8-e25f49ad070f",
+  "issue_id": "babulus-2f904344-9a3c-4e95-8da1-32a5bc511ad2",
+  "event_type": "issue_created",
+  "occurred_at": "2026-10-19T17:09:11.967Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "Type Slot — one packed placement (absorbs PromoSlot / Babulus-4c7)",
+    "description": "Parked type spec — do not implement. Not in progress. Publicist accepted.\n\n**This issue is the Slot spec.** Absorbs PromoSlot (same id). No duplicate Slot type.\n\n## Type: Slot\n\nWhen a packed Post (or AdDraft) should go. Channel `linkedin` | `x` (not Discord). Timezone America/New_York.\n\n## Fields (design, not schema)\n\n- **channel**: `linkedin` | `x`\n- **dueAt**: America/New_York — lives here, not on LinkedIn Posts API create\n- **post** or **ad_draft**\n- **campaign** (optional)\n- **schedulingType** (v1): always `human` / notification\n\n## States\n\n`draft` → `ready` → `approved` → `queued` → `posted` | `skipped`\n\n**Ryan must approve before queued.**\n\n**`queued` = packed awaiting Ryan click, not bot-posted.** That click is the only write to the network. Do not auto-post. LinkedIn create is PUBLISHED-only; we do not pass a schedule field.\n\n```mermaid\nstateDiagram-v2\n  [*] --> draft\n  draft --> ready\n  ready --> approved\n  approved --> queued\n  queued --> posted\n  queued --> skipped\n```\n\n## Out of scope\n\n- No model, UI, or connector implementation\n- Nothing posts live unless Ryan says so\n- Discord is not a channel\n\nPorted from develop board, old ID Babulus-4c7",
+    "issue_type": "task",
+    "status": "open",
+    "priority": 2,
+    "assignee": null,
+    "parent": "babulus-b2f481b5-5aba-4977-8e6e-82fa58a5c240",
+    "labels": [
+      "parked",
+      "design",
+      "publicist",
+      "promoslot",
+      "slot",
+      "type"
+    ]
+  }
+}

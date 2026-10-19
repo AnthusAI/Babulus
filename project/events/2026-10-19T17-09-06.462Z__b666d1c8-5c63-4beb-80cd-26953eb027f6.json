@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "event_id": "b666d1c8-5c63-4beb-80cd-26953eb027f6",
+  "issue_id": "babulus-96272c1f-350f-4a15-bc84-75c35e190542",
+  "event_type": "issue_created",
+  "occurred_at": "2026-10-19T17:09:06.462Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "Admin UI for marketing automation (list/filter/export signups, enrollment and interaction detail, auth)",
+    "description": "In-app admin UI for marketing: list/filter/export signups (WaitlistSignup/MarketingLead), view enrollment and step context, view MarketingInteraction history. Auth: only authenticated users with permission. See features/marketing_admin_ui.feature and docs/marketing-automation.md.\n\nPorted from develop board, old ID Babulus-5vy",
+    "issue_type": "task",
+    "status": "open",
+    "priority": 2,
+    "assignee": null,
+    "parent": null,
+    "labels": []
+  }
+}

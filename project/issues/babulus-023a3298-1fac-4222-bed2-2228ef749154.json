@@ -1,0 +1,42 @@
+{
+  "id": "babulus-023a3298-1fac-4222-bed2-2228ef749154",
+  "title": "Enable main auto-build and verify latest release",
+  "description": "Plan: verify legacy AWS identity and Amplify domains; inspect source configuration; enable existing main auto-build; release main 7d6631192a7b5e3b25d06087c3ffe00303ea5553; follow job to terminal status; verify served footer and referenced assets on both production domains; record receipts. Baseline: main enableAutoBuild=false; latest success job 163 fd56118cc618 on March 30. Both public domains return 200 but stale page.\n\nPorted from develop board, old ID babs-6376aaf7-837d-451f-a16d-c9441d4d4b40",
+  "type": "task",
+  "status": "blocked",
+  "priority": 2,
+  "assignee": null,
+  "creator": null,
+  "parent": "babulus-6abb0aed-618f-4df7-9740-ac70fa7e3be0",
+  "labels": [],
+  "dependencies": [],
+  "comments": [
+    {
+      "id": "37375a6a-9a88-4854-b424-d77c6fc2831a",
+      "author": "home",
+      "text": "15:44 UTC: Verified legacy account 335163751677 and production domains babul.us and babulus.anth.us. Main enableAutoBuild changed false -> true using update-branch. Existing RELEASE pipeline job 164 running against current main 7d6631192a7b5e3b25d06087c3ffe00303ea5553. No tracked auto-build controller exists; no source change required. Kanbus records maintained on develop because main has no project directory.",
+      "created_at": "2026-10-17T15:44:57.470196Z",
+      "comment_type": "default"
+    },
+    {
+      "id": "d44db2c6-978c-4837-adfc-b5f9bec36d0a",
+      "author": "home",
+      "text": "15:47 UTC: job 164 installed dependencies successfully and synthesized existing Amplify Gen2 backend in 8.54s; still RUNNING. Build log confirms checkout of 7d6631192a7b footer commit. Read-back of branch configuration confirms enableAutoBuild=true. Baseline job 163 exact revision fd56118cc618390af5ce54e60ebeaeab31d3850f ended SUCCEED at 2026-03-30T22:13:01.877Z. Initial plan and evidence landed on develop in 4b21999b009a47a57fc057bfb89906789330788c.",
+      "created_at": "2026-10-17T15:47:29.259175Z",
+      "comment_type": "default"
+    },
+    {
+      "id": "9e0e98d0-b13f-4560-9d78-a3f8e7242b5f",
+      "author": "home",
+      "text": "15:50 UTC terminal receipt: Amplify job 164 FAILED at 2026-10-17T15:47:47.180Z; BUILD failed, DEPLOY and VERIFY cancelled. CloudFormation stack amplify-d3epcqvzbxdaq-main-branch-d63e8b2ffa newly created at 15:47:20.649Z then ROLLBACK_COMPLETE. describe-events NAME_CONFLICT_VALIDATION on RenderWorkerRepository90133673: AWS::ECR::Repository babulus-render-worker already exists. ECR tags confirm amplify app d3epcqvzbxdaq/main; repository created 2026-01-26. list-stack-resources returns empty. March job 163 updated the same stack name successfully, but no prior backend stack currently exists and branch backend association is empty. Recovery requires a scoped backend restoration/import decision; deleting retained ECR or bypassing backend deployment would not preserve the existing backend. No IAM, credential, DNS, resource deletion, or unrelated migration performed. Auto-build remains enabled (read-back true). Public latest-main success is NOT claimed.",
+      "created_at": "2026-10-17T15:49:53.466236Z",
+      "comment_type": "default"
+    }
+  ],
+  "created_at": "2026-10-17T15:44:06.978489Z",
+  "updated_at": "2026-10-17T15:49:53.466304Z",
+  "closed_at": null,
+  "right_now_summary": "The build failed because an existing ECR repository conflicts with backend creation; auto-build remains enabled.",
+  "right_now_updated_at": "2026-10-19T17:11:00.607596Z",
+  "custom": {}
+}

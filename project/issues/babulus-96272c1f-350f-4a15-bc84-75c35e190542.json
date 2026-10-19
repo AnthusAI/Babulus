@@ -1,0 +1,20 @@
+{
+  "id": "babulus-96272c1f-350f-4a15-bc84-75c35e190542",
+  "title": "Admin UI for marketing automation (list/filter/export signups, enrollment and interaction detail, auth)",
+  "description": "In-app admin UI for marketing: list/filter/export signups (WaitlistSignup/MarketingLead), view enrollment and step context, view MarketingInteraction history. Auth: only authenticated users with permission. See features/marketing_admin_ui.feature and docs/marketing-automation.md.\n\nPorted from develop board, old ID Babulus-5vy",
+  "type": "task",
+  "status": "open",
+  "priority": 2,
+  "assignee": null,
+  "creator": "Ryan Alyn Porter",
+  "parent": null,
+  "labels": [],
+  "dependencies": [],
+  "comments": [],
+  "created_at": "2026-02-10T05:13:01Z",
+  "updated_at": "2026-02-10T05:13:27Z",
+  "closed_at": null,
+  "right_now_summary": "The team is building an authenticated admin UI to manage marketing signups, enrollments, and interactions.",
+  "right_now_updated_at": "2026-10-19T17:09:07.890102Z",
+  "custom": {}
+}

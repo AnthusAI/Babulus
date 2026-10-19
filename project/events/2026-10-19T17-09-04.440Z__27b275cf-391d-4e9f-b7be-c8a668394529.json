@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "event_id": "27b275cf-391d-4e9f-b7be-c8a668394529",
+  "issue_id": "babulus-4de6ce70-f86b-440b-8828-ea558ac6b8ce",
+  "event_type": "issue_created",
+  "occurred_at": "2026-10-19T17:09:04.440Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "Wire Python marketing runtime to new signups (event-driven: DynamoDB stream → Lambda → evaluate_rules/outbound_email)",
+    "description": "Wire the Python marketing runtime (services/marketing-runtime) to new signups so that actions (e.g. welcome email, rule evaluation) run automatically. Prefer event-driven: DynamoDB stream on WaitlistSignup and/or MarketingEnrollment → Lambda → Python (evaluate_rules, outbound_email). See features/marketing_automation.feature and docs/marketing-automation.md.\n\nPorted from develop board, old ID Babulus-xeh",
+    "issue_type": "task",
+    "status": "open",
+    "priority": 2,
+    "assignee": null,
+    "parent": null,
+    "labels": []
+  }
+}
