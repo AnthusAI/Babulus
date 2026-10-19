@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "event_id": "b339c924-aca4-4e7e-acad-283f393673c6",
+  "issue_id": "babs-1c88a317-da09-4672-9441-63d814492859",
+  "event_type": "issue_created",
+  "occurred_at": "2026-10-19T16:46:26.909Z",
+  "actor_id": "unknown",
+  "payload": {
+    "title": "Publish @videoml/player and swap Babulus preview controls to TransportControls",
+    "description": "Cross-repo, tracks AnthusAI/videoml-player vmlp-hgy (done) and vmlp-04b (blocked). STATE 2026-10-19: TransportControls built in videoml-player PR #2 (draft, stacked on PR #1 Kanbus migration, both unmerged; main only has the license PR #3). Babulus studio-web still pins npm @videoml/player 1.0.0 (Feb 2026, no transport). BLOCKERS only Ryan can clear: (1) merge PR #1 then #2 into main; (2) set npm Trusted Publisher for @videoml/player (owner AnthusAI, repo videoml-player, workflow release.yml) or add NPM_TOKEN secret; (3) run the manual Release workflow. THEN: replace four hand-built control bars (PreviewPlayer, PreviewEmbed, DocsPreviewPlayer, video-editor) with TransportControls; Babulus previews render ScriptData, so reuse TransportControls, not VideomlPlayer. Ryan chose 'Fix npm publishing' on 2026-10-17; no further progress since. Not approved: vendoring the player into Babulus.",
+    "issue_type": "task",
+    "status": "open",
+    "priority": 2,
+    "assignee": null,
+    "parent": null,
+    "labels": []
+  }
+}

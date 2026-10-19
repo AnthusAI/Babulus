@@ -1,0 +1,22 @@
+{
+  "id": "babs-3abcd23b-b36a-44f4-b629-f8357fadcbc7",
+  "title": "Reconcile stale develop Kanbus board (key babs) with main board (key babulus)",
+  "description": "Main gained a Kanbus board on 2026-10-19 (PR #6, key babulus, 2 issues). The develop board (key babs, 20 issues: Publicity machine epic babs-75cb4db and its 14 open type/boundary issues, marketing admin UI Babulus-5vy, signup wiring Babulus-xeh, Amplify epic babs-a37b72 and blocked task babs-6376aa) is not merged to main and uses a different key. Decision needed from Ryan: migrate/rekey the develop issues into main's board, or keep develop as archive. Also decide whether Publicity machine / marketing automation is still the direction (memory: undecided; no new MVP work approved). Also open: legacy Beads (2 items) and draft PR #1 (README closer).",
+  "type": "task",
+  "status": "open",
+  "priority": 2,
+  "assignee": null,
+  "creator": null,
+  "parent": null,
+  "labels": [],
+  "dependencies": [],
+  "comments": [],
+  "created_at": "2026-10-19T16:46:28.484040Z",
+  "updated_at": "2026-10-19T16:46:28.484358Z",
+  "closed_at": null,
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {},
+  "agent": null,
+  "agent_assignment": null
+}
