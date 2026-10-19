@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "event_id": "ef8cd2a9-78f9-4c79-8d19-e519e590a760",
+  "issue_id": "babulus-84493f28-3832-4da8-a78d-26eb964c34f1",
+  "event_type": "issue_created",
+  "occurred_at": "2026-10-19T16:40:55.515Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "Move Babulus to dedicated account 869507387405 and cut over babul.us / babulus.anth.us",
+    "description": "# Babulus: move to dedicated account 869507387405 (handoff, 2026-10-19)\n\nGOAL: move Babulus Amplify app + backend from the legacy account (335163751677, profile legacy) to the dedicated account 869507387405 (profile chatticus-staging; Ryan is renaming it babulus-production), keeping the private-VPC design, then cut babul.us and babulus.anth.us over and verify the shared footer.\n\nDONE / FINDINGS (2026-10-19)\n- Legacy Amplify app d3epcqvzbxdaq (repo AnthusAI/Babulus, WEB_COMPUTE, main). Job 167 got past the ECR conflict (PR #5 references existing ECR repo babulus-render-worker) but FAILED creating RenderWorkerVPC: legacy us-east-1 is at the 5/5 VPC limit and the internet-gateway limit.\n- Stack amplify-d3epcqvzbxdaq-main-branch-d63e8b2ffa is ROLLBACK_COMPLETE (empty shell, only a skipped log group). Ryan approved deleting it (2026-10-19 12:03); delete it only if building in legacy again. Do NOT delete the ECR repo babulus-render-worker or its images, and delete nothing else in legacy.\n- Account 869507387405 is not empty: Route 53 zones staging.chattic.us and auth-staging.chattic.us, ECR repo chatticuscomputers-computerimage*, CDK bootstrap (CDKToolkit, cdk-hnb659fds-container-assets-*), one VPC. Build alongside; leave them. List them for Ryan later.\n- Legacy app config to copy: env AMPLIFY_MONOREPO_APP_ROOT=apps/studio-web, AMPLIFY_DIFF_DEPLOY=false; custom rule /<*> -> /index.html 404-200; build spec: `AWS_PROFILE=legacy aws amplify get-app --app-id d3epcqvzbxdaq --query app.buildSpec --output text` (backend: npm ci; npx ampx pipeline-deploy --branch $AWS_BRANCH --app-id $AWS_APP_ID; frontend appRoot apps/studio-web, artifacts .next).\n\nBLOCKED: the auto-mode permission check denied every write in 869507387405 (iam create-role/attach-role-policy, ecr create-repository). Allow Bash rules for those or approve the prompts. Ryan will connect the GitHub branch in the console himself.\n\nREMAINING STEPS (AWS_PROFILE=chatticus-staging AWS_REGION=us-east-1)\n1. aws iam create-role --role-name BabulusAmplifyServiceRole (trust: amplify.amazonaws.com); attach arn:aws:iam::aws:policy/service-role/AmplifyBackendDeployFullAccess.\n2. aws ecr create-repository --repository-name babulus-render-worker (backend.ts references it by name).\n3. aws amplify create-app --name Babulus --platform WEB_COMPUTE --iam-service-role-arn <role> --environment-variables AMPLIFY_MONOREPO_APP_ROOT=apps/studio-web,AMPLIFY_DIFF_DEPLOY=false --build-spec file://spec --custom-rules ... (no repository). Give Ryan the console link for the single step of connecting the GitHub branch AnthusAI/Babulus main.\n4. start-job RELEASE; confirm backend deploys (new account has 1 VPC, room for RenderWorkerVPC).\n5. Add the Amplify domain association for babul.us (apex) and babulus.anth.us in the new app.\n6. DNS: babul.us zone Z0165124KWWAYOTIZTST in legacy (records: A alias, _060baecdddaae8b156475ba6c53ad277 CNAME) - update A alias and verification CNAME to the new app's values. anth.us zone Z04979341DPRV5BDQNZMG in papyrus-production (profile papyrus-production): update the babulus record. anth.us is the one live site: be careful.\n7. Verify https://babul.us and https://babulus.anth.us show the shared footer; then report what is left in legacy for Ryan to decide on.\n\nAlso:\n- babul.us footer: the shared footer on babul.us goes live only after the Babulus build succeeds (see the Babulus move task).\n\nSource: Claude Code Projects handoff, 2026-10-19.",
+    "issue_type": "task",
+    "status": "open",
+    "priority": 2,
+    "assignee": null,
+    "parent": null,
+    "labels": [],
+    "agent": {
+      "platform": "claude_code",
+      "model": "claude-sonnet-5-5"
+    }
+  }
+}
