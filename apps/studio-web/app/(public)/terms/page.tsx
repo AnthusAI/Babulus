@@ -23,6 +23,7 @@ export default function TermsPage() {
         <p className="text-muted-foreground">
           This site is a preview of Babulus. Features described may change. By joining the waitlist, you agree
           that we may contact you about early access and product updates (if you opted in).
+          Waitlist signups are processed by Anthus’s Prospectus CRM.
         </p>
       </div>
     </div>

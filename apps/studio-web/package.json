@@ -11,8 +11,7 @@
     "test": "jest",
     "test:integration": "jest tests/control-plane-graphql.test.ts",
     "amplify:sandbox": "npx ampx sandbox",
-    "amplify:deploy": "npx ampx deploy",
-    "list-waitlist": "tsx scripts/list-waitlist.ts"
+    "amplify:deploy": "npx ampx deploy"
   },
   "overrides": {
     "graphql": "15.8.0"
