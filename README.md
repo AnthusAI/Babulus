@@ -1,6 +1,6 @@
 # Babulus
 
-Babulus is marketing automation. The video DSL is one kind of artifact it can emit.
+Babulus turns a `.babulus.xml` file into timing JSON + generated audio for Remotion. It is a thin, narration-first layer that also handles TTS/SFX/music generation with environment-aware caching.
 
 ## Quick Start
 
@@ -28,9 +28,7 @@ Generate:
 babulus generate content/intro.babulus.xml
 ```
 
-### The DSL (XML)
-
-Babulus turns a `.babulus.xml` file into timing JSON + generated audio for Remotion. It is a thin, narration-first layer that also handles TTS/SFX/music generation with environment-aware caching.
+## The DSL (XML)
 
 A `.babulus.xml` file declares a composition (or multiple). It is a declarative tree of scenes, cues, and components.
 
@@ -195,6 +193,6 @@ This repo builds a Node-based CLI package. The generated JSON/audio are the buil
 
 Built by [Anthus AI Solutions](https://anth.us). We run this class of system in production.
 
-Babulus is marketing automation. The video DSL is one kind of artifact it can emit.
+Babulus is video as code, used in Anthus media automation.
 
 If you need this operated, not just cloned, [talk to us](https://anth.us).
