@@ -1,0 +1,26 @@
+{
+  "id": "babulus-c33362db-921b-4598-b9ef-bca7beb9e7f6",
+  "title": "Type Creative — signed-off file/version that can be trafficked",
+  "description": "Parked type spec — do not implement. Not in progress. Publicist accepted.\n\n## Type: Creative\n\nA **signed-off file/version** that can be trafficked (image, video master, thumbnail crop). Attached to a Deliverable.\n\n**Copy is not a Creative.** Social/PPC words live on Post, AdDraft, or Deliverable `kind=SocialCopy|PpcCopy`. A Creative can fail independently of the Slot (bad crop, rejected master) without moving the placement clock until Publicist replaces it.\n\n## Out of scope\n\n- Not the Slot\n- Not the Post (packed channel bundle)\n- Not body copy, headlines, or descriptions\n- No implementation from this issue\n\nPorted from develop board, old ID babs-94799552-24af-4569-b9f8-874c94634626",
+  "type": "task",
+  "status": "open",
+  "priority": 2,
+  "assignee": null,
+  "creator": null,
+  "parent": "babulus-b2f481b5-5aba-4977-8e6e-82fa58a5c240",
+  "labels": [
+    "parked",
+    "design",
+    "publicist",
+    "creative",
+    "type"
+  ],
+  "dependencies": [],
+  "comments": [],
+  "created_at": "2026-09-01T15:07:16.505568Z",
+  "updated_at": "2026-09-01T15:16:38.139269Z",
+  "closed_at": null,
+  "right_now_summary": "The signed-off Creative type is documented and parked, with no implementation planned.",
+  "right_now_updated_at": "2026-10-19T17:09:34.602597Z",
+  "custom": {}
+}

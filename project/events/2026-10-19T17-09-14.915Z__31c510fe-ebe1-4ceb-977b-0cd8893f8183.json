@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "event_id": "31c510fe-ebe1-4ceb-977b-0cd8893f8183",
+  "issue_id": "babulus-e387c685-8c19-4f26-860c-f2165478deb3",
+  "event_type": "issue_created",
+  "occurred_at": "2026-10-19T17:09:14.915Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "Type Campaign — outbound owned-media (not Marketo Program / Smart Campaign)",
+    "description": "Parked type spec — do not implement. Not in progress. Publicist accepted.\n\n## Type: Campaign\n\nThe unit of work for **outbound owned-media**. A bet over a window. Goal is a hire conversation, not reach.\n\n**Namespace:** Babulus Campaign. **Do NOT collide** with inbound Marketo Program / Smart Campaign. Those objects stay inbound and keep their names.\n\n## Fields (design, not schema)\n\n- **goal**: hire conversation\n- **dates**: window start / end\n- **track**: `hire` | `human`\n- **brief**: attached Brief (intake)\n- **checklist**: Deliverables spawned from the Brief (`kind` enum, not five types)\n- UTM, brand kit, LP SLA, legal are **fields/states**, not types\n\n## States\n\n`planned` → `briefing` → `in_production` → `ready` → `live` → `closed`\n\nAgents claim child work until the checklist is complete and on time.\n\n```mermaid\nstateDiagram-v2\n  [*] --> planned\n  planned --> briefing\n  briefing --> in_production\n  in_production --> ready\n  ready --> live\n  live --> closed\n```\n\n## Out of scope\n\n- Do not implement\n- Do not post live\n- Do not rename or replace Marketo Program / Smart Campaign\n\nPorted from develop board, old ID babs-477cc6f3-5710-4135-b804-edb0cdb5af7e",
+    "issue_type": "task",
+    "status": "open",
+    "priority": 2,
+    "assignee": null,
+    "parent": "babulus-b2f481b5-5aba-4977-8e6e-82fa58a5c240",
+    "labels": [
+      "parked",
+      "design",
+      "publicist",
+      "campaign",
+      "type"
+    ]
+  }
+}

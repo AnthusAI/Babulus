@@ -1,0 +1,26 @@
+{
+  "id": "babulus-ce43dc8d-9b71-4c84-a38d-b4d0a87317b7",
+  "title": "Result later — optional posted Slot to existing MarketingLead (park only)",
+  "description": "Park only — do not design a new CRM. Not a type. Do not implement.\n\nOptional link from a posted Slot / handed_off Post to an existing **MarketingLead**.\n\nInbound Marketo objects stay (WaitlistSignup, MarketingLead, MarketingProgram / Smart Campaign, Enrollment, Interaction). Do not collide with Babulus Campaign. No auto-attribution.\n\nPorted from develop board, old ID babs-ece783ff-2a2d-4681-ab0b-eb7cb008d547",
+  "type": "task",
+  "status": "open",
+  "priority": 2,
+  "assignee": null,
+  "creator": null,
+  "parent": "babulus-b2f481b5-5aba-4977-8e6e-82fa58a5c240",
+  "labels": [
+    "parked",
+    "design",
+    "publicist",
+    "inbound",
+    "note"
+  ],
+  "dependencies": [],
+  "comments": [],
+  "created_at": "2026-09-01T15:07:17.206278Z",
+  "updated_at": "2026-09-01T15:17:08.189799Z",
+  "closed_at": null,
+  "right_now_summary": "This issue is parked for later and will not be designed or implemented now.",
+  "right_now_updated_at": "2026-10-19T17:09:43.961372Z",
+  "custom": {}
+}

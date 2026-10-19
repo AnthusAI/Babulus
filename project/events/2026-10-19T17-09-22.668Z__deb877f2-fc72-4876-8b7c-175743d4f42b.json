@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "event_id": "deb877f2-fc72-4876-8b7c-175743d4f42b",
+  "issue_id": "babulus-2f100e82-1c6f-4cdf-9704-d1661b1f0c6b",
+  "event_type": "issue_created",
+  "occurred_at": "2026-10-19T17:09:22.668Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "NOTE not a type — Video render status lives on Deliverable (was VideoJob)",
+    "description": "**Not an issue type.** Closed as a note. Publicist accepted 2026-09-01 campaign-ops list.\n\nVideoJob is dropped. Render status lives on **Deliverable `kind=Video`**. VideoML is still the renderer. **Publicist should not see jobs.**\n\nDo not re-open as a Kanbus type. Do not put a job queue on the Publicist board.\n\nPorted from develop board, old ID babs-1849df7d-0fcf-4984-b197-81536ddedf8c",
+    "issue_type": "task",
+    "status": "open",
+    "priority": 2,
+    "assignee": null,
+    "parent": "babulus-b2f481b5-5aba-4977-8e6e-82fa58a5c240",
+    "labels": [
+      "parked",
+      "design",
+      "publicist",
+      "not-a-type",
+      "closed-as-note"
+    ]
+  }
+}
