@@ -1,9 +1,9 @@
 {
   "id": "babulus-53f82f71-0805-4431-a31b-9743b0cdddca",
-  "title": "Type Idea — optional Buffer Idea (channel-less backlog; promote → Post per channel)",
-  "description": "Parked type spec — do not implement. Not in progress. Publicist accepted.\n\n## Type: Idea\n\nOptional and cheap. Buffer Idea: **channel-less backlog** item. Promote → **one Post per channel** (`linkedin`, `x`). Not a Slot. Not a Campaign.\n\nSkip freely. Do not invent Discord Ideas.\n\n## Out of scope\n\n- No implementation required for v1 factory to work\n- Do not auto-promote or auto-post\n\nPorted from develop board, old ID babs-b02eb1ec-04c6-40a2-9a3c-f1577d709331",
+  "title": "Type Idea \u2014 optional Buffer Idea (channel-less backlog; promote \u2192 Post per channel)",
+  "description": "Parked type spec \u2014 do not implement. Not in progress. Publicist accepted.\n\n## Type: Idea\n\nOptional and cheap. Buffer Idea: **channel-less backlog** item. Promote \u2192 **one Post per channel** (`linkedin`, `x`). Not a Slot. Not a Campaign.\n\nSkip freely. Do not invent Discord Ideas.\n\n## Out of scope\n\n- No implementation required for v1 factory to work\n- Do not auto-promote or auto-post\n\nPorted from develop board, old ID babs-b02eb1ec-04c6-40a2-9a3c-f1577d709331",
   "type": "task",
-  "status": "open",
+  "status": "closed",
   "priority": 2,
   "assignee": null,
   "creator": null,
@@ -16,10 +16,18 @@
     "type"
   ],
   "dependencies": [],
-  "comments": [],
+  "comments": [
+    {
+      "id": "7b146784-734a-4eab-a94f-d01f2d4f2f28",
+      "author": "home",
+      "text": "Moved out of Babulus: waitlist, CRM and marketing automation now live in Prospectus (prospectus.anth.us); Babulus will submit signups to Prospectus intake. See b9440c.",
+      "created_at": "2026-10-19T21:33:53.731342Z",
+      "comment_type": "default"
+    }
+  ],
   "created_at": "2026-09-01T15:17:02.346559Z",
-  "updated_at": "2026-09-01T15:17:02.346559Z",
-  "closed_at": null,
+  "updated_at": "2026-10-19T21:33:53.950305Z",
+  "closed_at": "2026-10-19T21:33:53.928679Z",
   "right_now_summary": "This optional type spec is parked as a channel-less backlog idea and needs no implementation.",
   "right_now_updated_at": "2026-10-19T17:10:01.150109Z",
   "custom": {}

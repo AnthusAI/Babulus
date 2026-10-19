@@ -1,9 +1,9 @@
 {
   "id": "babulus-ce43dc8d-9b71-4c84-a38d-b4d0a87317b7",
-  "title": "Result later — optional posted Slot to existing MarketingLead (park only)",
-  "description": "Park only — do not design a new CRM. Not a type. Do not implement.\n\nOptional link from a posted Slot / handed_off Post to an existing **MarketingLead**.\n\nInbound Marketo objects stay (WaitlistSignup, MarketingLead, MarketingProgram / Smart Campaign, Enrollment, Interaction). Do not collide with Babulus Campaign. No auto-attribution.\n\nPorted from develop board, old ID babs-ece783ff-2a2d-4681-ab0b-eb7cb008d547",
+  "title": "Result later \u2014 optional posted Slot to existing MarketingLead (park only)",
+  "description": "Park only \u2014 do not design a new CRM. Not a type. Do not implement.\n\nOptional link from a posted Slot / handed_off Post to an existing **MarketingLead**.\n\nInbound Marketo objects stay (WaitlistSignup, MarketingLead, MarketingProgram / Smart Campaign, Enrollment, Interaction). Do not collide with Babulus Campaign. No auto-attribution.\n\nPorted from develop board, old ID babs-ece783ff-2a2d-4681-ab0b-eb7cb008d547",
   "type": "task",
-  "status": "open",
+  "status": "closed",
   "priority": 2,
   "assignee": null,
   "creator": null,
@@ -16,10 +16,18 @@
     "note"
   ],
   "dependencies": [],
-  "comments": [],
+  "comments": [
+    {
+      "id": "02d10374-b24c-429d-9202-c82729daf123",
+      "author": "home",
+      "text": "Moved out of Babulus: waitlist, CRM and marketing automation now live in Prospectus (prospectus.anth.us); Babulus will submit signups to Prospectus intake. See b9440c.",
+      "created_at": "2026-10-19T21:33:58.620223Z",
+      "comment_type": "default"
+    }
+  ],
   "created_at": "2026-09-01T15:07:17.206278Z",
-  "updated_at": "2026-09-01T15:17:08.189799Z",
-  "closed_at": null,
+  "updated_at": "2026-10-19T21:33:58.881278Z",
+  "closed_at": "2026-10-19T21:33:58.855650Z",
   "right_now_summary": "This issue is parked for later and will not be designed or implemented now.",
   "right_now_updated_at": "2026-10-19T17:09:43.961372Z",
   "custom": {}

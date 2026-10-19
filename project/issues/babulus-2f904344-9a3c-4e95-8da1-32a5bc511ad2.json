@@ -1,9 +1,9 @@
 {
   "id": "babulus-2f904344-9a3c-4e95-8da1-32a5bc511ad2",
-  "title": "Type Slot — one packed placement (absorbs PromoSlot / Babulus-4c7)",
-  "description": "Parked type spec — do not implement. Not in progress. Publicist accepted.\n\n**This issue is the Slot spec.** Absorbs PromoSlot (same id). No duplicate Slot type.\n\n## Type: Slot\n\nWhen a packed Post (or AdDraft) should go. Channel `linkedin` | `x` (not Discord). Timezone America/New_York.\n\n## Fields (design, not schema)\n\n- **channel**: `linkedin` | `x`\n- **dueAt**: America/New_York — lives here, not on LinkedIn Posts API create\n- **post** or **ad_draft**\n- **campaign** (optional)\n- **schedulingType** (v1): always `human` / notification\n\n## States\n\n`draft` → `ready` → `approved` → `queued` → `posted` | `skipped`\n\n**Ryan must approve before queued.**\n\n**`queued` = packed awaiting Ryan click, not bot-posted.** That click is the only write to the network. Do not auto-post. LinkedIn create is PUBLISHED-only; we do not pass a schedule field.\n\n```mermaid\nstateDiagram-v2\n  [*] --> draft\n  draft --> ready\n  ready --> approved\n  approved --> queued\n  queued --> posted\n  queued --> skipped\n```\n\n## Out of scope\n\n- No model, UI, or connector implementation\n- Nothing posts live unless Ryan says so\n- Discord is not a channel\n\nPorted from develop board, old ID Babulus-4c7",
+  "title": "Type Slot \u2014 one packed placement (absorbs PromoSlot / Babulus-4c7)",
+  "description": "Parked type spec \u2014 do not implement. Not in progress. Publicist accepted.\n\n**This issue is the Slot spec.** Absorbs PromoSlot (same id). No duplicate Slot type.\n\n## Type: Slot\n\nWhen a packed Post (or AdDraft) should go. Channel `linkedin` | `x` (not Discord). Timezone America/New_York.\n\n## Fields (design, not schema)\n\n- **channel**: `linkedin` | `x`\n- **dueAt**: America/New_York \u2014 lives here, not on LinkedIn Posts API create\n- **post** or **ad_draft**\n- **campaign** (optional)\n- **schedulingType** (v1): always `human` / notification\n\n## States\n\n`draft` \u2192 `ready` \u2192 `approved` \u2192 `queued` \u2192 `posted` | `skipped`\n\n**Ryan must approve before queued.**\n\n**`queued` = packed awaiting Ryan click, not bot-posted.** That click is the only write to the network. Do not auto-post. LinkedIn create is PUBLISHED-only; we do not pass a schedule field.\n\n```mermaid\nstateDiagram-v2\n  [*] --> draft\n  draft --> ready\n  ready --> approved\n  approved --> queued\n  queued --> posted\n  queued --> skipped\n```\n\n## Out of scope\n\n- No model, UI, or connector implementation\n- Nothing posts live unless Ryan says so\n- Discord is not a channel\n\nPorted from develop board, old ID Babulus-4c7",
   "type": "task",
-  "status": "open",
+  "status": "closed",
   "priority": 2,
   "assignee": null,
   "creator": "Ryan Alyn Porter",
@@ -21,14 +21,21 @@
     {
       "id": "9359d6fc-6c48-4347-8f8d-7c8b8813371f",
       "author": "ubuntu",
-      "text": "Folded into Publicity machine (babs-75cb4d) as the Slot child. PromoSlot calendar write-up superseded: Campaign is now the unit of work; Slot is one placement; queued means packed awaiting human click (Buffer-style), not a bot post. Discord dropped. Same issue id — no duplicate Slot spec.",
+      "text": "Folded into Publicity machine (babs-75cb4d) as the Slot child. PromoSlot calendar write-up superseded: Campaign is now the unit of work; Slot is one placement; queued means packed awaiting human click (Buffer-style), not a bot post. Discord dropped. Same issue id \u2014 no duplicate Slot spec.",
       "created_at": "2026-09-01T15:07:13.814842Z",
+      "comment_type": "default"
+    },
+    {
+      "id": "cf84339c-b846-4722-8fbf-f369b6d5bf90",
+      "author": "home",
+      "text": "Moved out of Babulus: waitlist, CRM and marketing automation now live in Prospectus (prospectus.anth.us); Babulus will submit signups to Prospectus intake. See b9440c.",
+      "created_at": "2026-10-19T21:33:50.599109Z",
       "comment_type": "default"
     }
   ],
   "created_at": "2026-08-29T11:08:40Z",
-  "updated_at": "2026-09-01T15:16:39.439443Z",
-  "closed_at": null,
+  "updated_at": "2026-10-19T21:33:50.794756Z",
+  "closed_at": "2026-10-19T21:33:50.776499Z",
   "right_now_summary": "The Slot spec is parked and folded into the Publicity machine; no implementation or auto-posting is planned.",
   "right_now_updated_at": "2026-10-19T17:10:17.644623Z",
   "custom": {}

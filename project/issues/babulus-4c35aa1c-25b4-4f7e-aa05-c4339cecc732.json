@@ -1,9 +1,9 @@
 {
   "id": "babulus-4c35aa1c-25b4-4f7e-aa05-c4339cecc732",
-  "title": "Type AdDraft — PPC pack (Google/Meta PAUSED); not a Post",
-  "description": "Parked type spec — do not implement. Not in progress. Publicist accepted.\n\n## Type: AdDraft\n\n**PPC is not a Post.** Pack a Google Ads / Meta campaign **PAUSED**. A human click is what enables spend. That click is the only write that turns money on. Do not auto-post. Do not enable spend from a bot.\n\n## Pack limits (design, not schema)\n\n**Google RSA**\n\n- Headlines: 30 chars × 3–15\n- Descriptions: 90 chars × 2–4\n- Paths: 15 chars × 2\n- Sitelink: 25 + 35 + 35\n\n**Meta** (recommended)\n\n- Primary text 125 / headline 40 / description 25\n\n## vs Post\n\n| | Post | AdDraft |\n| --- | --- | --- |\n| What | Organic Buffer Post | Paid campaign draft |\n| Pack | copy+media+channel+time | RSA/Meta fields, PAUSED |\n| Clock | Slot `dueAt` | Slot `dueAt` optional |\n| Write | Human click publishes or opens composer | Human click enables spend |\n\n## Out of scope\n\n- No live ad-account writes from this epic\n- No auto-enable\n- Not a Post / not SharePayload\n- Discord is not a channel\n\nPorted from develop board, old ID babs-5b13e159-74dc-4ea1-9ab8-c3ac6b76c41b",
+  "title": "Type AdDraft \u2014 PPC pack (Google/Meta PAUSED); not a Post",
+  "description": "Parked type spec \u2014 do not implement. Not in progress. Publicist accepted.\n\n## Type: AdDraft\n\n**PPC is not a Post.** Pack a Google Ads / Meta campaign **PAUSED**. A human click is what enables spend. That click is the only write that turns money on. Do not auto-post. Do not enable spend from a bot.\n\n## Pack limits (design, not schema)\n\n**Google RSA**\n\n- Headlines: 30 chars \u00d7 3\u201315\n- Descriptions: 90 chars \u00d7 2\u20134\n- Paths: 15 chars \u00d7 2\n- Sitelink: 25 + 35 + 35\n\n**Meta** (recommended)\n\n- Primary text 125 / headline 40 / description 25\n\n## vs Post\n\n| | Post | AdDraft |\n| --- | --- | --- |\n| What | Organic Buffer Post | Paid campaign draft |\n| Pack | copy+media+channel+time | RSA/Meta fields, PAUSED |\n| Clock | Slot `dueAt` | Slot `dueAt` optional |\n| Write | Human click publishes or opens composer | Human click enables spend |\n\n## Out of scope\n\n- No live ad-account writes from this epic\n- No auto-enable\n- Not a Post / not SharePayload\n- Discord is not a channel\n\nPorted from develop board, old ID babs-5b13e159-74dc-4ea1-9ab8-c3ac6b76c41b",
   "type": "task",
-  "status": "open",
+  "status": "closed",
   "priority": 2,
   "assignee": null,
   "creator": null,
@@ -16,10 +16,18 @@
     "type"
   ],
   "dependencies": [],
-  "comments": [],
+  "comments": [
+    {
+      "id": "1e158d70-0385-4729-9e57-6451b295b456",
+      "author": "home",
+      "text": "Moved out of Babulus: waitlist, CRM and marketing automation now live in Prospectus (prospectus.anth.us); Babulus will submit signups to Prospectus intake. See b9440c.",
+      "created_at": "2026-10-19T21:33:52.640637Z",
+      "comment_type": "default"
+    }
+  ],
   "created_at": "2026-09-01T15:17:01.710267Z",
-  "updated_at": "2026-09-01T15:17:01.710267Z",
-  "closed_at": null,
+  "updated_at": "2026-10-19T21:33:52.847006Z",
+  "closed_at": "2026-10-19T21:33:52.827124Z",
   "right_now_summary": "The AdDraft type spec is parked, with no implementation planned.",
   "right_now_updated_at": "2026-10-19T17:09:56.514215Z",
   "custom": {}

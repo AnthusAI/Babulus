@@ -1,9 +1,9 @@
 {
   "id": "babulus-0e7a09e1-05a2-4f60-81bc-7936cd46533f",
-  "title": "Type Deliverable — kind enum only (LandingPage|Video|ImageSet|SocialCopy|PpcCopy)",
-  "description": "Parked type spec — do not implement. Not in progress. Publicist accepted.\n\n**Revised from Asset.** This issue is the Deliverable type. Kind is an **enum on one type**, not five Kanbus types. One production workflow.\n\n## Type: Deliverable\n\nProduced thing under a Campaign, spawned from a Brief. **Not a Slot. Not five types.**\n\n## kind enum\n\n`LandingPage` | `Video` | `ImageSet` | `SocialCopy` | `PpcCopy`\n\n- **SocialCopy** channel is `linkedin` | `x` (not Discord)\n- **PpcCopy** is copy limits / draft text only; live spend is **AdDraft**, not a Post\n- **Video**: render status lives **on this Deliverable**. There is no VideoJob type. Publicist should not see jobs. VideoML is the renderer.\n\n## One production workflow\n\nSame states for every kind (fields/states vary: LP SLA, legal, brand kit, UTM — not types).\n\n## Out of scope\n\n- No schema\n- No Discord\n- No journalist lists\n- Do not split kind into five issue types\n- Do not expose VideoJob to Publicist\n\nPorted from develop board, old ID babs-15b82cd9-19c8-42e9-8386-f95693868ebb",
+  "title": "Type Deliverable \u2014 kind enum only (LandingPage|Video|ImageSet|SocialCopy|PpcCopy)",
+  "description": "Parked type spec \u2014 do not implement. Not in progress. Publicist accepted.\n\n**Revised from Asset.** This issue is the Deliverable type. Kind is an **enum on one type**, not five Kanbus types. One production workflow.\n\n## Type: Deliverable\n\nProduced thing under a Campaign, spawned from a Brief. **Not a Slot. Not five types.**\n\n## kind enum\n\n`LandingPage` | `Video` | `ImageSet` | `SocialCopy` | `PpcCopy`\n\n- **SocialCopy** channel is `linkedin` | `x` (not Discord)\n- **PpcCopy** is copy limits / draft text only; live spend is **AdDraft**, not a Post\n- **Video**: render status lives **on this Deliverable**. There is no VideoJob type. Publicist should not see jobs. VideoML is the renderer.\n\n## One production workflow\n\nSame states for every kind (fields/states vary: LP SLA, legal, brand kit, UTM \u2014 not types).\n\n## Out of scope\n\n- No schema\n- No Discord\n- No journalist lists\n- Do not split kind into five issue types\n- Do not expose VideoJob to Publicist\n\nPorted from develop board, old ID babs-15b82cd9-19c8-42e9-8386-f95693868ebb",
   "type": "task",
-  "status": "open",
+  "status": "closed",
   "priority": 2,
   "assignee": null,
   "creator": null,
@@ -16,10 +16,18 @@
     "type"
   ],
   "dependencies": [],
-  "comments": [],
+  "comments": [
+    {
+      "id": "cdb234c9-c636-40cc-8212-399fbf5143ef",
+      "author": "home",
+      "text": "Moved out of Babulus: waitlist, CRM and marketing automation now live in Prospectus (prospectus.anth.us); Babulus will submit signups to Prospectus intake. See b9440c.",
+      "created_at": "2026-10-19T21:33:45.270925Z",
+      "comment_type": "default"
+    }
+  ],
   "created_at": "2026-09-01T15:07:11.743572Z",
-  "updated_at": "2026-09-01T15:16:37.415465Z",
-  "closed_at": null,
+  "updated_at": "2026-10-19T21:33:45.705452Z",
+  "closed_at": "2026-10-19T21:33:45.656909Z",
   "right_now_summary": "The team is defining one Deliverable type with a kind enum and no implementation planned.",
   "right_now_updated_at": "2026-10-19T17:09:18.855745Z",
   "custom": {}

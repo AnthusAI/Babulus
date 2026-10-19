@@ -1,9 +1,9 @@
 {
   "id": "babulus-5f254541-9114-44d1-ab39-a7af24381431",
   "title": "Boundary: VideoML is renderer; no VideoJob type; Publicist does not see jobs",
-  "description": "Parked boundary — do not implement. Not a type. Not in progress.\n\nVideoML is the renderer for Deliverable `kind=Video`. There is **no VideoJob type**. Render status is a field/state on the Deliverable. Publicist should not see jobs.\n\nFile stays on Babulus (not a VideoML code change). VideoML does not grow Campaign / Slot / Post types.\n\nNo implementation from this issue.\n\nPorted from develop board, old ID babs-0b62483c-27b4-43ba-a4ee-a54617ced583",
+  "description": "Parked boundary \u2014 do not implement. Not a type. Not in progress.\n\nVideoML is the renderer for Deliverable `kind=Video`. There is **no VideoJob type**. Render status is a field/state on the Deliverable. Publicist should not see jobs.\n\nFile stays on Babulus (not a VideoML code change). VideoML does not grow Campaign / Slot / Post types.\n\nNo implementation from this issue.\n\nPorted from develop board, old ID babs-0b62483c-27b4-43ba-a4ee-a54617ced583",
   "type": "task",
-  "status": "open",
+  "status": "closed",
   "priority": 2,
   "assignee": null,
   "creator": null,
@@ -16,10 +16,18 @@
     "boundary"
   ],
   "dependencies": [],
-  "comments": [],
+  "comments": [
+    {
+      "id": "10e35e64-bcd1-4252-80ff-03742194699b",
+      "author": "home",
+      "text": "Moved out of Babulus: waitlist, CRM and marketing automation now live in Prospectus (prospectus.anth.us); Babulus will submit signups to Prospectus intake. See b9440c.",
+      "created_at": "2026-10-19T21:33:54.650899Z",
+      "comment_type": "default"
+    }
+  ],
   "created_at": "2026-09-01T15:07:18.623598Z",
-  "updated_at": "2026-09-01T15:17:06.875491Z",
-  "closed_at": null,
+  "updated_at": "2026-10-19T21:33:54.867138Z",
+  "closed_at": "2026-10-19T21:33:54.840570Z",
   "right_now_summary": "VideoML renders Deliverables, with render state on each one; Publicist does not see jobs.",
   "right_now_updated_at": "2026-10-19T17:09:51.688056Z",
   "custom": {}
