@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "event_id": "ebf74f06-986a-4e59-bce6-4ac44c886047",
+  "issue_id": "babulus-b361ce37-f665-4ceb-b3a7-cdfd4e25890b",
+  "event_type": "issue_created",
+  "occurred_at": "2026-10-19T16:40:56.901Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "Sync infra/github-rulesets/main-branch-protection.json with GitHub (0 approvals, no Node checks)",
+    "description": "ORG HYGIENE follow-up (thread \"Org hygiene\", 2026-10-17). All 20 hygiene PRs are merged.\nTODO (1) as it concerns Babulus: infra/github-rulesets/main-branch-protection.json in Babulus still requires 1 approval and \"Node checks\"; Ryan lowered approvals to 0 and removed Node checks in GitHub. The next PR touching that file will sync the old values back to GitHub, so update the checked-in JSON to match first.\n\nVerified 2026-10-19 on main (a64e139) and develop (identical content), infra/github-rulesets/main-branch-protection.json currently contains:\n- rules[type=pull_request].parameters.required_approving_review_count: 1 (target: 0)\n- rules[type=pull_request].parameters.require_code_owner_review: true\n- rules[type=pull_request].parameters.require_last_push_approval: true\n- rules[type=pull_request].parameters.dismiss_stale_reviews_on_push: true\n- rules[type=required_status_checks].parameters.required_status_checks: [{ \"context\": \"Node checks\" }] (target: removed)\n- rules[type=required_status_checks].parameters.strict_required_status_checks_policy: true\n- bypass_actors: [], enforcement: active, target ref refs/heads/main, plus deletion and non_fast_forward rules.\n\nBefore editing, read the actual ruleset in GitHub (repo settings -> Rules -> Rulesets) and make the JSON match it (the other fields above may also have been changed there). This issue only tracks the sync; the JSON was NOT changed in the PR that created this issue.\n\nRelated: checking OTHER repos' checked-in rulesets and the AnthusAI org-level ruleset is tracked on the projects-meta board (held; see the report).\n\nSource: Claude Code Projects handoff, 2026-10-19.",
+    "issue_type": "task",
+    "status": "open",
+    "priority": 2,
+    "assignee": null,
+    "parent": null,
+    "labels": [],
+    "agent": {
+      "platform": "claude_code",
+      "model": "claude-sonnet-5-5"
+    }
+  }
+}

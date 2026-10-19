@@ -56,7 +56,8 @@ apps/studio-web/amplify/functions/**/package-lock.json
 src/videos/**
 
 # IDE
-.vscode/
+.vscode/*
+!.vscode/settings.json
 .idea/
 *.swp
 *.swo
@@ -71,7 +72,9 @@ tmp/
 *.bak
 
 # Claude / agent tooling
-.claude/
+.claude/*
+!.claude/settings.json
 
-# Kanbus project data
-project/
+# Kanbus project caches (board data under project/ is tracked)
+project/.overlay/
+project/.cache/

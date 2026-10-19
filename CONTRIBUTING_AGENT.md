@@ -42,7 +42,7 @@ Editing project/ directly is hacking the data and is a sin against The Way. Do n
 
 All work is structured.
 
-Project key prefix: babs.
+Project key prefix: babulus.
 
 Hierarchy: initiative -> epic -> task -> sub-task.
 
