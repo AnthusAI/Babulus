@@ -1,0 +1,20 @@
+{
+  "id": "babulus-a7da61ef-6487-439d-97ae-beb04fc6e0f4",
+  "title": "Render worker: replace the hard-coded password with IAM auth",
+  "description": "apps/studio-web/amplify/backend.ts passes WORKER_PASSWORD='BabulusRenderWorker2026!' to the render-worker container, which signs in to Cognito as render-worker@babulus.internal. The repo is public and the password is in git history, so treat it as burned. Before rendering is used in the new account: give the worker AppSync access through its ECS task role (IAM auth on the Job/related models), drop WORKER_EMAIL/WORKER_PASSWORD, and never create a Cognito user with that password.",
+  "type": "task",
+  "status": "open",
+  "priority": 2,
+  "assignee": null,
+  "creator": null,
+  "parent": null,
+  "labels": [],
+  "dependencies": [],
+  "comments": [],
+  "created_at": "2026-10-20T11:07:33.094860Z",
+  "updated_at": "2026-10-20T11:07:33.095412Z",
+  "closed_at": null,
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {}
+}
