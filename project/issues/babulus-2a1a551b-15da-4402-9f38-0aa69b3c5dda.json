@@ -1,0 +1,20 @@
+{
+  "id": "babulus-2a1a551b-15da-4402-9f38-0aa69b3c5dda",
+  "title": "Prospectus: register Babulus as a product",
+  "description": "Cross-repo dependency (AnthusAI/Prospectus). Product registration is hard-coded today (infra/lib/accounts-plane.ts for Cyclotron, accounts/papyrus-sites.json for Papyrus sites); there is no generic registry yet (Prospectus kanbus-bf45cb). Needed: a reviewed `babulus` registration with its IAM runtime role in account 869507387405, Cognito issuer/client, capabilities and route allow-list, and whether it may create accounts. Each piece needs Ryan's action-time approval per Prospectus docs/OPERATIONS.md. File the matching issue on the Prospectus board and coordinate with the Prospectus session. Depends on the integration-choices task.",
+  "type": "task",
+  "status": "open",
+  "priority": 2,
+  "assignee": null,
+  "creator": null,
+  "parent": "babulus-be70f999-3808-4fb1-987b-f7cd306e16e1",
+  "labels": [],
+  "dependencies": [],
+  "comments": [],
+  "created_at": "2026-10-20T23:18:36.882987Z",
+  "updated_at": "2026-10-20T23:18:36.883296Z",
+  "closed_at": null,
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {}
+}

@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "event_id": "8e75ffab-88e6-4b8f-ba4e-ca21b0ca4c50",
+  "issue_id": "babulus-be70f999-3808-4fb1-987b-f7cd306e16e1",
+  "event_type": "issue_created",
+  "occurred_at": "2026-10-20T23:18:29.026Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "Babulus as a Prospectus-powered SaaS product",
+    "description": "Make Babulus one of the SaaS products whose accounts, organizations, memberships and entitlements are managed by Prospectus (central accounts service) and the Anthus One portal (one.anth.us), replacing Babulus's own Cognito email login and Org/OrgMember/UserProfile models. Reference integration: Cyclotron Lab. Also closes today's authorization gap (all models and org/* storage open to any signed-in user).",
+    "issue_type": "epic",
+    "status": "open",
+    "priority": 2,
+    "assignee": null,
+    "parent": null,
+    "labels": []
+  }
+}

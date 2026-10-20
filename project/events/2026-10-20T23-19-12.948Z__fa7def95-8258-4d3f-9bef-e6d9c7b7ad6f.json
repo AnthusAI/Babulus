@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "event_id": "fa7def95-8258-4d3f-9bef-e6d9c7b7ad6f",
+  "issue_id": "babulus-69107aea-cc28-484f-987e-fd003c76bc84",
+  "event_type": "issue_created",
+  "occurred_at": "2026-10-20T23:19:12.948Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "Babulus panel plugin for Chatticus",
+    "description": "Ship a UI component package for campaigns and results that renders in a Chatticus workspace panel, following the @kanbus/ui pattern. Depends on the Chatticus panel plugin host (Chatticus task 854642, which does not yet list Babulus as a consumer) and on the service API task.",
+    "issue_type": "task",
+    "status": "open",
+    "priority": 2,
+    "assignee": null,
+    "parent": "babulus-f996d1ed-98af-4c51-9400-70255ee27b3b",
+    "labels": []
+  }
+}

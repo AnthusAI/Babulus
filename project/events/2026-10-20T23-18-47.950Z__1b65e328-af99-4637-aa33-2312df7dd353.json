@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "event_id": "1b65e328-af99-4637-aa33-2312df7dd353",
+  "issue_id": "babulus-fa696abf-d69e-4a72-9ed2-3e7fd487a595",
+  "event_type": "issue_created",
+  "occurred_at": "2026-10-20T23:18:47.950Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "Kanbus API: support parent links in writes",
+    "description": "Cross-repo dependency (AnthusAI/Kanbus, services/kanbus-api). The writable API rejects creating or changing parent links and deleting hierarchical issues (unsupported_relation_mutation). Babulus's campaign tree needs either this or a flat design with custom.* references. Decide with the Kanbus session; if building it, file it on the Kanbus board.",
+    "issue_type": "task",
+    "status": "open",
+    "priority": 2,
+    "assignee": null,
+    "parent": "babulus-269fa15c-a961-4920-be0e-39e90ffee149",
+    "labels": []
+  }
+}

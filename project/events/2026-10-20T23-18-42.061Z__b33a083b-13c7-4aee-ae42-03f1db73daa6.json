@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "event_id": "b33a083b-13c7-4aee-ae42-03f1db73daa6",
+  "issue_id": "babulus-27ee124a-9012-4a3e-8a6b-0f63d414c62b",
+  "event_type": "issue_created",
+  "occurred_at": "2026-10-20T23:18:42.061Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "Close Babulus storage and CDN authorization gaps",
+    "description": "apps/studio-web/amplify/storage/resource.ts gives every signed-in user read/write/delete on org/*. The CloudFront auth edge function (amplify/edge-functions/auth) decodes JWTs without verifying them and has no org check (the distribution is currently commented out). Serve org media through server-authorized presigned URLs checked against Prospectus, keep published/* public, and delete or rebuild the edge function. Coordinate with babulus-a7da61 (render worker IAM auth). Depends on the data-scoping task.",
+    "issue_type": "task",
+    "status": "open",
+    "priority": 2,
+    "assignee": null,
+    "parent": "babulus-be70f999-3808-4fb1-987b-f7cd306e16e1",
+    "labels": []
+  }
+}

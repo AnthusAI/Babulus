@@ -1,0 +1,20 @@
+{
+  "id": "babulus-27a426e7-0dd0-4271-86a0-a0d0f00ce3fa",
+  "title": "Stand up babul.us as a Papyrus site in papyrus-production",
+  "description": "Port the home, waitlist, code-to-video, privacy and terms pages and the waitlist form (lib/waitlist-intake.ts; Prospectus form babulus-waitlist-v1 is bound to https://babul.us, www.babul.us and babulus.anth.us) to the private site. Host it like Anth.us-web: S3 projection behind the site's own CloudFront and ACM edge stack in papyrus-production (712236451410), merge-is-deploy, noindex on staging. Using our own CloudFront avoids Amplify's cross-account domain approval that currently blocks babul.us. New IAM or DNS needs Ryan's approval. Never use the Amplify console 'Connect repository' on an app with a backend.",
+  "type": "task",
+  "status": "open",
+  "priority": 2,
+  "assignee": null,
+  "creator": null,
+  "parent": "babulus-4f8c948f-3988-412c-bc60-1c059f71bc9b",
+  "labels": [],
+  "dependencies": [],
+  "comments": [],
+  "created_at": "2026-10-20T23:19:01.981291Z",
+  "updated_at": "2026-10-20T23:19:01.981583Z",
+  "closed_at": null,
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {}
+}

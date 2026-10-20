@@ -1,0 +1,20 @@
+{
+  "id": "babulus-fd970354-c184-4a06-b9b0-f35eac11dd4a",
+  "title": "Scrub operational details from the public repo",
+  "description": "Do first, independent of the rest. Replace AWS account IDs with placeholders in AGENTS.md (AWS Account Info), apps/studio-web/lib/docs-content/rendering-mode-3-cloud.ts (public docs page) and docs/ecs-rendering-plan.md. Generalize or move the stale Amplify deploy and console notes in AGENTS.md (the app moved to account 869507387405). Review the tracked project/ board for anything that should not be public. Git history keeps old values; that is accepted.",
+  "type": "task",
+  "status": "open",
+  "priority": 2,
+  "assignee": null,
+  "creator": null,
+  "parent": "babulus-4f8c948f-3988-412c-bc60-1c059f71bc9b",
+  "labels": [],
+  "dependencies": [],
+  "comments": [],
+  "created_at": "2026-10-20T23:18:57.839483Z",
+  "updated_at": "2026-10-20T23:18:57.839817Z",
+  "closed_at": null,
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {}
+}

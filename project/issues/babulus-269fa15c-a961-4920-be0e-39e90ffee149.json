@@ -1,0 +1,20 @@
+{
+  "id": "babulus-269fa15c-a961-4920-be0e-39e90ffee149",
+  "title": "Kanbus as Babulus's core storage",
+  "description": "Adopt Kanbus as Babulus's system of record, following the Prospectus pattern (canonical Kanbus files in S3, the shared kanbus-api Lambda, a rebuildable DynamoDB catalog). Babulus focuses on marketing automation: campaigns, briefs, deliverables, posts and slots become Kanbus records instead of bespoke Amplify DynamoDB models. Prospectus is the related CRM (conversions land there) and Papyrus the related publishing system (e.g. campaign landing pages). The closed Publicity machine epic (b2f481) and its type designs are input. Render jobs, telemetry and media stay where they are.",
+  "type": "epic",
+  "status": "open",
+  "priority": 2,
+  "assignee": null,
+  "creator": null,
+  "parent": null,
+  "labels": [],
+  "dependencies": [],
+  "comments": [],
+  "created_at": "2026-10-20T23:18:27.632710Z",
+  "updated_at": "2026-10-20T23:18:27.633240Z",
+  "closed_at": null,
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {}
+}

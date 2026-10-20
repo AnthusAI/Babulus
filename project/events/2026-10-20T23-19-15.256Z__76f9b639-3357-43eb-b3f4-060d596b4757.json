@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "event_id": "76f9b639-3357-43eb-b3f4-060d596b4757",
+  "issue_id": "babulus-760ee381-c54a-4f8f-a494-3340a0ea5cfd",
+  "event_type": "issue_created",
+  "occurred_at": "2026-10-20T23:19:15.256Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "Chatticus: Babulus tools and approval mapping",
+    "description": "Cross-repo dependency (AnthusAI/Chatticus). Chatticus has no product plug-in contract yet; MCP and connectors are documented, not built. When ready, add Babulus tools to bots, map publish/send-style actions to Chatticus's approval gate (pi/gate.ts), and decide whether factories act through Prospectus accounts. File on the Chatticus board when the service API exists.",
+    "issue_type": "task",
+    "status": "open",
+    "priority": 2,
+    "assignee": null,
+    "parent": "babulus-f996d1ed-98af-4c51-9400-70255ee27b3b",
+    "labels": []
+  }
+}
