@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "event_id": "6e94551f-1070-4cf6-90e9-14c703de4f6c",
+  "issue_id": "babulus-b9440c4e-3e98-43ba-8221-c2380e4325a8",
+  "event_type": "issue_created",
+  "occurred_at": "2026-10-19T21:33:37.539Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "Use Prospectus for waitlist signups; remove Babulus's local waitlist backend",
+    "description": "Waitlist, CRM and marketing automation now live in Prospectus (prospectus.anth.us, the central Anthus CRM), with Anthus One (1.anth.us) as the customer portal. Babulus becomes a client of Prospectus and submits signups to its intake.\n\n## Plan\n- Point `apps/studio-web/components/marketing/waitlist-form.tsx` at Prospectus's waitlist intake endpoint (site `babulus`, form `babulus-waitlist-v1`). Direct browser call vs thin proxy route will be decided once the Prospectus contract lands (the Prospectus PR is being opened now in AnthusAI/Prospectus).\n- Delete the 9 marketing/waitlist models in `apps/studio-web/amplify/data/resource.ts`: MarketingLead, MarketingProgram, MarketingProgramStep, MarketingEnrollment, MarketingEnrollmentEvent, MarketingProgramRule, MarketingProgramTrigger, MarketingInteraction, WaitlistSignup.\n- Delete (or slim to a proxy) `apps/studio-web/app/api/waitlist/route.ts`.\n- Delete `services/marketing-runtime/`, `apps/studio-web/scripts/list-waitlist.ts` and its npm script, `features/marketing_automation.feature`, `features/marketing_admin_ui.feature`, `features/steps/marketing.steps.ts`.\n- Rewrite `docs/marketing-automation.md` and the \"Waitlist signups (monitoring)\" section of `AGENTS.md`. Update privacy/terms wording about where signup data is stored.\n\n## Notes\n- Old signups are treated as lost: the legacy backend stack and its tables no longer exist, so there is no import.\n- Cannot go live until the babul.us deploy is unblocked: see 84493f (move Babulus to dedicated account and cut over babul.us).\n- Supersedes the closed marketing issues b2f481 (Publicity machine epic and its children), 96272c and 4de6ce.",
+    "issue_type": "task",
+    "status": "open",
+    "priority": 2,
+    "assignee": null,
+    "parent": null,
+    "labels": []
+  }
+}

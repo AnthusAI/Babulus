@@ -1,9 +1,9 @@
 {
   "id": "babulus-33d3d860-cf3d-4cb4-b9a6-21fa0b801f2e",
-  "title": "Type Brief — Campaign intake; spawns Deliverables (Asana/Workfront)",
-  "description": "Parked type spec — do not implement. Not in progress. Publicist accepted.\n\n## Type: Brief\n\nAttached to a Campaign. Asana/Workfront-style **intake**. The Brief is what agents and humans steer from; it **spawns Deliverables** (`kind` enum, one production workflow).\n\n## Fields (design, not schema)\n\n- **campaign** (required)\n- **goal / audience / offer** (hire conversation)\n- **track**: `hire` | `human`\n- **deliverable checklist** to spawn: LandingPage, Video (optional), ImageSet, SocialCopy, PpcCopy\n- brand kit, legal, LP SLA, UTM = fields on Brief/Deliverable, not types\n\n## Out of scope\n\n- Not a Marketo Program\n- Not a Deliverable\n- No implementation from this issue\n\nPorted from develop board, old ID babs-edbdc66a-a4b2-42fe-9957-420b3150b235",
+  "title": "Type Brief \u2014 Campaign intake; spawns Deliverables (Asana/Workfront)",
+  "description": "Parked type spec \u2014 do not implement. Not in progress. Publicist accepted.\n\n## Type: Brief\n\nAttached to a Campaign. Asana/Workfront-style **intake**. The Brief is what agents and humans steer from; it **spawns Deliverables** (`kind` enum, one production workflow).\n\n## Fields (design, not schema)\n\n- **campaign** (required)\n- **goal / audience / offer** (hire conversation)\n- **track**: `hire` | `human`\n- **deliverable checklist** to spawn: LandingPage, Video (optional), ImageSet, SocialCopy, PpcCopy\n- brand kit, legal, LP SLA, UTM = fields on Brief/Deliverable, not types\n\n## Out of scope\n\n- Not a Marketo Program\n- Not a Deliverable\n- No implementation from this issue\n\nPorted from develop board, old ID babs-edbdc66a-a4b2-42fe-9957-420b3150b235",
   "type": "task",
-  "status": "open",
+  "status": "closed",
   "priority": 2,
   "assignee": null,
   "creator": null,
@@ -16,10 +16,18 @@
     "type"
   ],
   "dependencies": [],
-  "comments": [],
+  "comments": [
+    {
+      "id": "e981424b-4ae4-4457-a2f7-fb938ade864e",
+      "author": "home",
+      "text": "Moved out of Babulus: waitlist, CRM and marketing automation now live in Prospectus (prospectus.anth.us); Babulus will submit signups to Prospectus intake. See b9440c.",
+      "created_at": "2026-10-19T21:33:51.528173Z",
+      "comment_type": "default"
+    }
+  ],
   "created_at": "2026-09-01T15:17:01.075237Z",
-  "updated_at": "2026-09-01T15:17:01.075237Z",
-  "closed_at": null,
+  "updated_at": "2026-10-19T21:33:51.753683Z",
+  "closed_at": "2026-10-19T21:33:51.730946Z",
   "right_now_summary": "The Brief type spec is parked and accepted, with no implementation planned.",
   "right_now_updated_at": "2026-10-19T17:09:54.635123Z",
   "custom": {}

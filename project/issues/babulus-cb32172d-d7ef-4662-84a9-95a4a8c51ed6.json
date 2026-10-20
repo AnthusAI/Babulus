@@ -1,9 +1,9 @@
 {
   "id": "babulus-cb32172d-d7ef-4662-84a9-95a4a8c51ed6",
-  "title": "Type Post — Buffer Post (packed copy+media+channel+time; was SharePayload)",
-  "description": "Parked type spec — do not implement. Not in progress. Publicist accepted.\n\n**Renamed from SharePayload.** The SharePayload name is gone. This issue is the Post type. Do not file a second payload type.\n\n## Type: Post\n\nBuffer Post: packed **copy + media + channel + time**. Organic social only. **PPC is AdDraft, not a Post.**\n\n## Fields (design, not schema)\n\n- **channel**: `linkedin` | `x` (not Discord)\n- **copy**\n- **media** (Creative / Deliverable refs)\n- **destination_url** (UTM is a field, not a type)\n- **dueAt** lives on the **Slot**, not on LinkedIn’s create call\n- **schedulingType** (v1): always `human` / notification — never bot-publish\n\n## LinkedIn constraint\n\nLinkedIn Posts API create is **PUBLISHED only** (no schedule field). We do not send a schedule time to LinkedIn create. `dueAt` stays on our Slot. Native LinkedIn UI clock can Schedule if a human pastes there.\n\n## States\n\n`drafted` → `packed` → `awaiting_human` → `handed_off` | `skipped`\n\n`handed_off` = Ryan/human clicked. That click is the only write to the network. No bot OAuth post required for v1. Do not auto-post.\n\n```mermaid\nstateDiagram-v2\n  [*] --> drafted\n  drafted --> packed\n  packed --> awaiting_human\n  awaiting_human --> handed_off\n  awaiting_human --> skipped\n```\n\n## Out of scope\n\n- No OAuth posting bots\n- No Discord\n- No Google/Meta ad writes (see AdDraft)\n- SharePayload is not a type name\n\nPorted from develop board, old ID babs-ab2033ff-3937-41c9-ad42-25963e2d9927",
+  "title": "Type Post \u2014 Buffer Post (packed copy+media+channel+time; was SharePayload)",
+  "description": "Parked type spec \u2014 do not implement. Not in progress. Publicist accepted.\n\n**Renamed from SharePayload.** The SharePayload name is gone. This issue is the Post type. Do not file a second payload type.\n\n## Type: Post\n\nBuffer Post: packed **copy + media + channel + time**. Organic social only. **PPC is AdDraft, not a Post.**\n\n## Fields (design, not schema)\n\n- **channel**: `linkedin` | `x` (not Discord)\n- **copy**\n- **media** (Creative / Deliverable refs)\n- **destination_url** (UTM is a field, not a type)\n- **dueAt** lives on the **Slot**, not on LinkedIn\u2019s create call\n- **schedulingType** (v1): always `human` / notification \u2014 never bot-publish\n\n## LinkedIn constraint\n\nLinkedIn Posts API create is **PUBLISHED only** (no schedule field). We do not send a schedule time to LinkedIn create. `dueAt` stays on our Slot. Native LinkedIn UI clock can Schedule if a human pastes there.\n\n## States\n\n`drafted` \u2192 `packed` \u2192 `awaiting_human` \u2192 `handed_off` | `skipped`\n\n`handed_off` = Ryan/human clicked. That click is the only write to the network. No bot OAuth post required for v1. Do not auto-post.\n\n```mermaid\nstateDiagram-v2\n  [*] --> drafted\n  drafted --> packed\n  packed --> awaiting_human\n  awaiting_human --> handed_off\n  awaiting_human --> skipped\n```\n\n## Out of scope\n\n- No OAuth posting bots\n- No Discord\n- No Google/Meta ad writes (see AdDraft)\n- SharePayload is not a type name\n\nPorted from develop board, old ID babs-ab2033ff-3937-41c9-ad42-25963e2d9927",
   "type": "task",
-  "status": "open",
+  "status": "closed",
   "priority": 2,
   "assignee": null,
   "creator": null,
@@ -16,10 +16,18 @@
     "type"
   ],
   "dependencies": [],
-  "comments": [],
+  "comments": [
+    {
+      "id": "4d6e4a93-7b05-46ae-9b7d-090e882fd9c0",
+      "author": "home",
+      "text": "Moved out of Babulus: waitlist, CRM and marketing automation now live in Prospectus (prospectus.anth.us); Babulus will submit signups to Prospectus intake. See b9440c.",
+      "created_at": "2026-10-19T21:33:57.637038Z",
+      "comment_type": "default"
+    }
+  ],
   "created_at": "2026-09-01T15:07:14.454294Z",
-  "updated_at": "2026-09-01T15:16:38.789693Z",
-  "closed_at": null,
+  "updated_at": "2026-10-19T21:33:57.856015Z",
+  "closed_at": "2026-10-19T21:33:57.836769Z",
   "right_now_summary": "The Post type is defined and parked for now.",
   "right_now_updated_at": "2026-10-19T17:09:21.236266Z",
   "custom": {}

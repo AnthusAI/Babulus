@@ -1,9 +1,9 @@
 {
   "id": "babulus-c33362db-921b-4598-b9ef-bca7beb9e7f6",
-  "title": "Type Creative — signed-off file/version that can be trafficked",
-  "description": "Parked type spec — do not implement. Not in progress. Publicist accepted.\n\n## Type: Creative\n\nA **signed-off file/version** that can be trafficked (image, video master, thumbnail crop). Attached to a Deliverable.\n\n**Copy is not a Creative.** Social/PPC words live on Post, AdDraft, or Deliverable `kind=SocialCopy|PpcCopy`. A Creative can fail independently of the Slot (bad crop, rejected master) without moving the placement clock until Publicist replaces it.\n\n## Out of scope\n\n- Not the Slot\n- Not the Post (packed channel bundle)\n- Not body copy, headlines, or descriptions\n- No implementation from this issue\n\nPorted from develop board, old ID babs-94799552-24af-4569-b9f8-874c94634626",
+  "title": "Type Creative \u2014 signed-off file/version that can be trafficked",
+  "description": "Parked type spec \u2014 do not implement. Not in progress. Publicist accepted.\n\n## Type: Creative\n\nA **signed-off file/version** that can be trafficked (image, video master, thumbnail crop). Attached to a Deliverable.\n\n**Copy is not a Creative.** Social/PPC words live on Post, AdDraft, or Deliverable `kind=SocialCopy|PpcCopy`. A Creative can fail independently of the Slot (bad crop, rejected master) without moving the placement clock until Publicist replaces it.\n\n## Out of scope\n\n- Not the Slot\n- Not the Post (packed channel bundle)\n- Not body copy, headlines, or descriptions\n- No implementation from this issue\n\nPorted from develop board, old ID babs-94799552-24af-4569-b9f8-874c94634626",
   "type": "task",
-  "status": "open",
+  "status": "closed",
   "priority": 2,
   "assignee": null,
   "creator": null,
@@ -16,10 +16,18 @@
     "type"
   ],
   "dependencies": [],
-  "comments": [],
+  "comments": [
+    {
+      "id": "c7d9604d-efd3-46d6-b037-12e593116d62",
+      "author": "home",
+      "text": "Moved out of Babulus: waitlist, CRM and marketing automation now live in Prospectus (prospectus.anth.us); Babulus will submit signups to Prospectus intake. See b9440c.",
+      "created_at": "2026-10-19T21:33:56.736031Z",
+      "comment_type": "default"
+    }
+  ],
   "created_at": "2026-09-01T15:07:16.505568Z",
-  "updated_at": "2026-09-01T15:16:38.139269Z",
-  "closed_at": null,
+  "updated_at": "2026-10-19T21:33:56.950318Z",
+  "closed_at": "2026-10-19T21:33:56.930874Z",
   "right_now_summary": "The signed-off Creative type is documented and parked, with no implementation planned.",
   "right_now_updated_at": "2026-10-19T17:09:34.602597Z",
   "custom": {}
