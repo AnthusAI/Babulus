@@ -1,0 +1,20 @@
+{
+  "id": "babulus-1abe6178-32a8-45c4-99b7-f90f8cf178d7",
+  "title": "Cut babul.us over to the marketing site",
+  "description": "Point babul.us and www at the marketing site's CloudFront, with CloudFront Function redirects for old app and docs paths (decide whether docs live at babul.us/docs via a path behavior to the app, or on the app domain). Retire the temporary legacy-app redirect (Amplify app d3epcqvzbxdaq in 335163751677) and withdraw the AWS Support case if still open. Depends on the marketing-site and app.babul.us tasks.",
+  "type": "task",
+  "status": "open",
+  "priority": 2,
+  "assignee": null,
+  "creator": null,
+  "parent": "babulus-4f8c948f-3988-412c-bc60-1c059f71bc9b",
+  "labels": [],
+  "dependencies": [],
+  "comments": [],
+  "created_at": "2026-10-20T23:19:06.265139Z",
+  "updated_at": "2026-10-20T23:19:06.265471Z",
+  "closed_at": null,
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {}
+}

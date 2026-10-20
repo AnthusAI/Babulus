@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "event_id": "26ea00ff-cc06-4e0e-b0b9-d82d4fb0ef61",
+  "issue_id": "babulus-4c689749-ed1d-4dcf-aa5a-3597958e7b0e",
+  "event_type": "issue_created",
+  "occurred_at": "2026-10-20T23:19:19.983Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "Spike: claim and brand-safety check on generated creative",
+    "description": "Highest-fit candidate. A batch sweep (Papyrus relevance-sweep pattern: claim, restore store, apply human labels, decide pending, record status, snapshot) over generated narration and copy, flagging unsupported or price claims and tone issues for human review, never auto-approving. Hard must-block rules stay deterministic. Needs the creative approval flow from babulus-09376e.",
+    "issue_type": "task",
+    "status": "open",
+    "priority": 2,
+    "assignee": null,
+    "parent": "babulus-678ad378-5ed3-4fdd-bd4b-1beb1b013190",
+    "labels": []
+  }
+}

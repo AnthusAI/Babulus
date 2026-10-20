@@ -1,0 +1,20 @@
+{
+  "id": "babulus-56c24066-7018-46f3-b6a2-e0d67f9d14b2",
+  "title": "Kanbus client and board UI in Babulus studio",
+  "description": "Port KanbusClient (Prospectus src/client.ts: X-Operation-Id idempotency, If-Match revisions, 409 on stale) and render boards with the shared @kanbus/ui package. Server-side writes (e.g. from workers) use the Lambda invoke path like Prospectus intake (server/canonical-invoke.ts), not the browser. Depends on the store infrastructure task.",
+  "type": "task",
+  "status": "open",
+  "priority": 2,
+  "assignee": null,
+  "creator": null,
+  "parent": "babulus-269fa15c-a961-4920-be0e-39e90ffee149",
+  "labels": [],
+  "dependencies": [],
+  "comments": [],
+  "created_at": "2026-10-20T23:18:51.855433Z",
+  "updated_at": "2026-10-20T23:18:51.855764Z",
+  "closed_at": null,
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {}
+}

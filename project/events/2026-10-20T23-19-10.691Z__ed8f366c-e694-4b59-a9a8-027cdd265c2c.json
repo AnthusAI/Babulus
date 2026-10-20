@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "event_id": "ed8f366c-e694-4b59-a9a8-027cdd265c2c",
+  "issue_id": "babulus-65502ad2-4e1a-4d6b-b9d4-f23d0c02e597",
+  "event_type": "issue_created",
+  "occurred_at": "2026-10-20T23:19:10.691Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "Define the Babulus service API for automation clients",
+    "description": "A small, stable surface other products (Chatticus first) can call: create a campaign/brief, request a video deliverable (async job with an idempotency key and status), pack and queue posts (never auto-post; consequential actions need human approval), and report results and cost. Backed by the Kanbus objects (babulus-09376e). Auth: IAM service principal plus an acting-user/bot header, as Chatticus does for Kanbus, or Prospectus delegation; Ryan to decide.",
+    "issue_type": "task",
+    "status": "open",
+    "priority": 2,
+    "assignee": null,
+    "parent": "babulus-f996d1ed-98af-4c51-9400-70255ee27b3b",
+    "labels": []
+  }
+}

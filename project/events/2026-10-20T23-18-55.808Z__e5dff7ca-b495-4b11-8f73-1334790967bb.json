@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "event_id": "e5dff7ca-b495-4b11-8f73-1334790967bb",
+  "issue_id": "babulus-33a05359-86a1-41ea-bf2a-f163ef71c032",
+  "event_type": "issue_created",
+  "occurred_at": "2026-10-20T23:18:55.808Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "Decide which existing Babulus models move to Kanbus",
+    "description": "Candidates: Project, Video and Approval (human-facing, with status). Stay as-is: Job, JobEvent, GenerationRun, RenderRun, RenderAgent, UsageEvent, Asset, ProjectFile, PublishedVideo and binary media in S3. Org/OrgMember/UserProfile go to Prospectus instead (babulus-4bb82e). Decide after the campaign types are live.",
+    "issue_type": "task",
+    "status": "open",
+    "priority": 2,
+    "assignee": null,
+    "parent": "babulus-269fa15c-a961-4920-be0e-39e90ffee149",
+    "labels": []
+  }
+}

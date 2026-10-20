@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "event_id": "780a00a8-00bc-4a9c-acd4-826120cf8b42",
+  "issue_id": "babulus-b53adb7e-0db8-4be9-983f-42cf5accca37",
+  "event_type": "issue_created",
+  "occurred_at": "2026-10-20T23:19:08.445Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "Remove marketing surfaces from the open-core app",
+    "description": "After cutover: delete components/marketing/*, the public marketing pages, lib/waitlist-intake.ts and docs/waitlist.md from apps/studio-web; make the app's / go to the dashboard or sign-in; give the app a minimal footer. Update the README closer and footer description to the product's current positioning, as decided on the private site. Pin or vendor anthus-footer (installed unpinned from main in amplify.yml).",
+    "issue_type": "task",
+    "status": "open",
+    "priority": 2,
+    "assignee": null,
+    "parent": "babulus-4f8c948f-3988-412c-bc60-1c059f71bc9b",
+    "labels": []
+  }
+}

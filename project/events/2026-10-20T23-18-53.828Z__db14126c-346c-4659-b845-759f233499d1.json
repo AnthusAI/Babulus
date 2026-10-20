@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "event_id": "db14126c-346c-4659-b845-759f233499d1",
+  "issue_id": "babulus-4ed1945b-e15c-469c-9f81-6e6a0ecc4362",
+  "event_type": "issue_created",
+  "occurred_at": "2026-10-20T23:18:53.828Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "Link Video deliverables to the render pipeline",
+    "description": "A Deliverable with kind=Video stores its renderRunId in custom fields; the render worker writes status back through the server-side path. Render jobs, telemetry and media stay on the existing GraphQL/S3 path (Kanbus is not a queue). Depends on the board client task.",
+    "issue_type": "task",
+    "status": "open",
+    "priority": 2,
+    "assignee": null,
+    "parent": "babulus-269fa15c-a961-4920-be0e-39e90ffee149",
+    "labels": []
+  }
+}

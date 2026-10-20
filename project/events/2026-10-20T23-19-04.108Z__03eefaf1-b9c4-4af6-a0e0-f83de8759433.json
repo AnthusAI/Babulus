@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "event_id": "03eefaf1-b9c4-4af6-a0e0-f83de8759433",
+  "issue_id": "babulus-67c0b1f4-d91e-4d29-8003-75867ca7343e",
+  "event_type": "issue_created",
+  "occurred_at": "2026-10-20T23:19:04.108Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "Move the Babulus app to app.babul.us",
+    "description": "Attach app.babul.us to the Babulus Amplify app (d23jak4ewu2gf9, account 869507387405), update auth callback and logout URLs and any CORS origins, and keep /share/<slug> and /videos links working via redirects from babul.us. Do this before cutting babul.us over to the marketing site.",
+    "issue_type": "task",
+    "status": "open",
+    "priority": 2,
+    "assignee": null,
+    "parent": "babulus-4f8c948f-3988-412c-bc60-1c059f71bc9b",
+    "labels": []
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "event_id": "700b3b87-5eb9-4331-ae10-a0afceb999bf",
+  "issue_id": "babulus-ed3df7cd-4a7c-4a5e-86da-ce615c0d07ab",
+  "event_type": "issue_created",
+  "occurred_at": "2026-10-20T23:19:17.595Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "Record Cyclotron fit findings for marketing automation",
+    "description": "Findings from the Cyclotron session and code review (2026-10-20). Good fits: brand-safety/claim checks on generated creative (labels come from the existing approval step), routing inbound replies (needs reply ingestion), lead/intent scoring on Prospectus conversions (if sales outcomes come back as labels). Weak fits: persona tagging (only if someone labels personas), audience segmentation (classifies known labels, does not discover clusters), content-performance prediction (a delayed numeric metric, not a human judgement). Integration: Python SDK (decision_flywheel; Babulus would need a Python worker) or the hosted Lab with Prospectus credentials; reference is Papyrus's relevance sweep. Cost: no per-call fee, only decision-model usage; caching and max_requests cap spend.",
+    "issue_type": "task",
+    "status": "open",
+    "priority": 2,
+    "assignee": null,
+    "parent": "babulus-678ad378-5ed3-4fdd-bd4b-1beb1b013190",
+    "labels": []
+  }
+}

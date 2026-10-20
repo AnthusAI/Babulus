@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "event_id": "6ecfeace-07c1-4c69-8b13-f4dc241afa17",
+  "issue_id": "babulus-f996d1ed-98af-4c51-9400-70255ee27b3b",
+  "event_type": "issue_created",
+  "occurred_at": "2026-10-20T23:18:32.060Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "Integrate Babulus marketing automation into Chatticus",
+    "description": "Eventually let a Chatticus software factory use Babulus's marketing automation. Copy the Kanbus pattern: the product ships a UI panel package and owns a service API that Chatticus calls with IAM auth plus an acting-user/bot header. No Chatticus product plug-in contract exists yet. Long-horizon.",
+    "issue_type": "epic",
+    "status": "open",
+    "priority": 2,
+    "assignee": null,
+    "parent": null,
+    "labels": []
+  }
+}

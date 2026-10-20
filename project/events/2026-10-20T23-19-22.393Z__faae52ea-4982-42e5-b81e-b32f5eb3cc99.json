@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "event_id": "faae52ea-4982-42e5-b81e-b32f5eb3cc99",
+  "issue_id": "babulus-d6ff8cfe-ff96-4b9f-bf1c-7c205ce61a61",
+  "event_type": "issue_created",
+  "occurred_at": "2026-10-20T23:19:22.393Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "Candidate: route inbound replies with a cyclotron",
+    "description": "Classify replies (interested, not now, question, unsubscribe, out of office, needs human) with operator corrections as labels. Blocked on having a reply feed; Prospectus intake does not ingest email today.",
+    "issue_type": "task",
+    "status": "open",
+    "priority": 2,
+    "assignee": null,
+    "parent": "babulus-678ad378-5ed3-4fdd-bd4b-1beb1b013190",
+    "labels": []
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "id": "babulus-eddc4f65-1654-4201-b3d9-c2af4cad810d",
+  "title": "Babulus Kanbus store infrastructure",
+  "description": "Copy the Prospectus pattern (docs/ARCHITECTURE.md, infra/lib/prospectus-backend.ts, source-lock.json, infra/scripts/checkout-kanbus.mjs and build-backend.sh) into a Babulus construct called from apps/studio-web/amplify/backend.ts: a private versioned S3 bucket for canonical Kanbus files, a rebuildable DynamoDB catalog, the pinned kanbus-api Rust Lambda, and a Cognito JWT authorizer. Parameterize scope (account 869507387405, namespace) instead of hard-coding. Keep idle cost near zero (no NAT, no provisioned capacity). Depends on the Prospectus sign-in task for the authorizer.",
+  "type": "task",
+  "status": "open",
+  "priority": 2,
+  "assignee": null,
+  "creator": null,
+  "parent": "babulus-269fa15c-a961-4920-be0e-39e90ffee149",
+  "labels": [],
+  "dependencies": [],
+  "comments": [],
+  "created_at": "2026-10-20T23:18:49.869274Z",
+  "updated_at": "2026-10-20T23:18:49.869646Z",
+  "closed_at": null,
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {}
+}

@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "event_id": "dd11adb7-70b7-4f07-a4ed-99b8e284e9d5",
+  "issue_id": "babulus-95d9b770-fe83-49bc-9c63-66a2980347f7",
+  "event_type": "issue_created",
+  "occurred_at": "2026-10-20T23:18:38.566Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "Babulus sign-in through Prospectus accounts",
+    "description": "Replace the email-only Amplify Authenticator (apps/studio-web/amplify/auth/resource.ts, components/authenticator.tsx, lib/use-auth.ts) with Google sign-in per the chosen model. Add server routes for sign-in, callback and account selection, copied from Cyclotron Lab (src/decision_flywheel/account_routes.py, docs/central-accounts.md) or Papyrus (app/api/auth/prospectus/*, lib/prospectus-session.ts). Use @anthus/prospectus-accounts-client /server (SigV4 from the Babulus runtime role) and keep tokens server-side. Depends on the Prospectus registration task.",
+    "issue_type": "task",
+    "status": "open",
+    "priority": 2,
+    "assignee": null,
+    "parent": "babulus-be70f999-3808-4fb1-987b-f7cd306e16e1",
+    "labels": []
+  }
+}
