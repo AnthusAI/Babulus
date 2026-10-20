@@ -25,6 +25,10 @@ export default function PrivacyPage() {
           and whether you opted into updates) so we can contact you about early access and product progress.
         </p>
         <p className="text-muted-foreground">
+          Waitlist signups are processed by Anthus’s Prospectus CRM, which records your submission as a contact
+          along with the role you select and the page you signed up from.
+        </p>
+        <p className="text-muted-foreground">
           We don’t sell your information. You can unsubscribe from updates at any time.
         </p>
       </div>

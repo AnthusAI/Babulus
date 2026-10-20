@@ -331,27 +331,11 @@ portion that has been failing in CI.
 
 See [apps/studio-web/README.md](apps/studio-web/README.md) for detailed documentation.
 
-## Waitlist signups (monitoring)
+## Waitlist signups
 
-Signups from the public waitlist form are stored in **Amplify/AppSync (DynamoDB)**:
-
-- **WaitlistSignup** – one record per submission (email, name, persona, wantsUpdates, source, createdAt)
-- **MarketingLead** – same identity, used for marketing automation
-- **MarketingEnrollment** / **MarketingEnrollmentEvent** – enrollment in the default program and events
-
-Until the Babulus web app has an admin UI, use the CLI to list recent signups:
-
-```bash
-cd apps/studio-web
-# Requires amplify_outputs.json (see "Getting amplify_outputs.json" above)
-npm run list-waitlist
-npm run list-waitlist -- --limit 50
-npm run list-waitlist -- --csv > signups.csv
-```
-
-Script: `apps/studio-web/scripts/list-waitlist.ts`. It uses API key auth (no login required).
-
-Documentation on the marketing automation backend (data model, waitlist flow, Python runtime): [docs/marketing-automation.md](docs/marketing-automation.md).
+Signups from the public waitlist form go straight from the browser to **Prospectus** (form `babulus-waitlist-v1`);
+Babulus keeps no local waitlist backend. The form stays disabled until `NEXT_PUBLIC_PROSPECTUS_INTAKE_BASE_URL` is set.
+View signups in the Prospectus CRM (labels `waitlist` + `app-babulus`). See [docs/waitlist.md](docs/waitlist.md).
 
 ## Landing the Plane (Session Completion)
 

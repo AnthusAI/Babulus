@@ -1,9 +1,11 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import Link from "next/link";
+import { useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { sanitizeCampaign, sanitizePagePath, sanitizeSource } from "@/lib/waitlist-intake";
 
 type Persona = "business" | "agency" | "marketer" | "creator" | "developer" | "other";
 
@@ -22,6 +24,14 @@ const PERSONAS: Array<{ value: Persona; label: string }> = [
   { value: "other", label: "Other" },
 ];
 
+const FORM_ID = "babulus-waitlist-v1";
+const NOTICE_VERSION = "babulus-waitlist-v1";
+
+// Read at build time (inlined by Next.js). Unset means the waitlist is not live yet.
+const INTAKE_BASE_URL = (process.env.NEXT_PUBLIC_PROSPECTUS_INTAKE_BASE_URL ?? "")
+  .trim()
+  .replace(/\/+$/, "");
+
 export function WaitlistForm({ source }: { source?: string }) {
   const [state, setState] = useState<WaitlistState>({ status: "idle" });
   const [email, setEmail] = useState("");
@@ -30,38 +40,87 @@ export function WaitlistForm({ source }: { source?: string }) {
   const [wantsUpdates, setWantsUpdates] = useState(true);
   const [website, setWebsite] = useState(""); // honeypot
 
+  // Reused on retry; cleared when the content changes (a reused id with new content is a 409).
+  const submissionIdRef = useRef<string | null>(null);
+
+  const live = INTAKE_BASE_URL.length > 0;
+
   const canSubmit = useMemo(() => {
+    if (!live) return false;
     if (state.status === "submitting") return false;
     return email.trim().length > 0;
-  }, [email, state.status]);
+  }, [live, email, state.status]);
+
+  const resetAttempt = () => {
+    submissionIdRef.current = null;
+  };
 
   const submit = async (event: React.FormEvent) => {
     event.preventDefault();
+    if (!live) return;
     setState({ status: "submitting" });
 
+    if (!submissionIdRef.current) submissionIdRef.current = crypto.randomUUID();
+
+    const payload: Record<string, unknown> = {
+      submission_id: submissionIdRef.current,
+      email: email.trim(),
+      notice_version: NOTICE_VERSION,
+      marketing_opt_in: wantsUpdates,
+      website,
+      attributes: { persona, source: sanitizeSource(source ?? "marketing-site", "marketing-site") },
+    };
+    if (name.trim()) payload.name = name.trim();
+    const pagePath = sanitizePagePath(window.location.pathname);
+    if (pagePath) payload.page_path = pagePath;
+    const campaign = sanitizeCampaign(new URLSearchParams(window.location.search));
+    if (campaign) payload.campaign = campaign;
+
     try {
-      const response = await fetch("/api/waitlist", {
+      const response = await fetch(`${INTAKE_BASE_URL}/intake/waitlist/${FORM_ID}`, {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({
-          email,
-          name,
-          persona,
-          wantsUpdates,
-          source: source ?? "marketing-site",
-          website,
-        }),
+        body: JSON.stringify(payload),
       });
-      const data = (await response.json()) as { ok?: boolean; error?: string };
-      if (!response.ok) {
-        setState({ status: "error", message: data.error ?? "Failed to join waitlist." });
+
+      if (response.status === 202) {
+        setState({ status: "success" });
         return;
       }
-      setState({ status: "success" });
-    } catch (error) {
+
+      let message: string | undefined;
+      try {
+        const data = (await response.json()) as { message?: string };
+        message = typeof data.message === "string" ? data.message : undefined;
+      } catch {
+        message = undefined;
+      }
+
+      if (response.status === 400) {
+        setState({ status: "error", message: message ?? "Please check your details and try again." });
+      } else if (response.status === 409) {
+        resetAttempt();
+        setState({
+          status: "error",
+          message: message ?? "Something changed since your last attempt. Please submit again.",
+        });
+      } else if (response.status === 429) {
+        setState({
+          status: "error",
+          message: "We’re getting a lot of requests. Please try again in a moment.",
+        });
+      } else if (response.status === 503) {
+        setState({
+          status: "error",
+          message: "We couldn’t confirm your signup. Please try again; it won’t be counted twice.",
+        });
+      } else {
+        setState({ status: "error", message: "Something went wrong. Please try again shortly." });
+      }
+    } catch {
       setState({
         status: "error",
-        message: error instanceof Error ? error.message : "Failed to join waitlist.",
+        message: "We couldn’t reach the waitlist. Please check your connection and try again.",
       });
     }
   };
@@ -84,6 +143,15 @@ export function WaitlistForm({ source }: { source?: string }) {
   return (
     <form onSubmit={submit} className="rounded-2xl bg-card p-6 md:p-8">
       <div className="grid gap-5">
+        {!live ? (
+          <div role="status" className="rounded-lg bg-background/70 p-3 text-sm text-foreground">
+            <p className="font-semibold">The waitlist opens soon</p>
+            <p className="mt-1 text-muted-foreground">
+              We’re not taking signups just yet. Please check back shortly.
+            </p>
+          </div>
+        ) : null}
+
         <div className="grid gap-2">
           <Label htmlFor="email">Email</Label>
           <Input
@@ -92,8 +160,12 @@ export function WaitlistForm({ source }: { source?: string }) {
             type="email"
             autoComplete="email"
             required
+            disabled={!live}
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => {
+              setEmail(e.target.value);
+              resetAttempt();
+            }}
             placeholder="you@company.com"
             className="border-transparent bg-background/70 focus-visible:ring-1"
           />
@@ -107,8 +179,12 @@ export function WaitlistForm({ source }: { source?: string }) {
               name="name"
               type="text"
               autoComplete="name"
+              disabled={!live}
               value={name}
-              onChange={(e) => setName(e.target.value)}
+              onChange={(e) => {
+                setName(e.target.value);
+                resetAttempt();
+              }}
               placeholder="Alex"
               className="border-transparent bg-background/70 focus-visible:ring-1"
             />
@@ -119,7 +195,11 @@ export function WaitlistForm({ source }: { source?: string }) {
               id="persona"
               name="persona"
               value={persona}
-              onChange={(e) => setPersona(e.target.value as Persona)}
+              disabled={!live}
+              onChange={(e) => {
+                setPersona(e.target.value as Persona);
+                resetAttempt();
+              }}
               className="h-10 w-full rounded-md bg-background/70 px-3 text-sm text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
             >
               {PERSONAS.map((p) => (
@@ -136,7 +216,11 @@ export function WaitlistForm({ source }: { source?: string }) {
             id="updates"
             type="checkbox"
             checked={wantsUpdates}
-            onChange={(e) => setWantsUpdates(e.target.checked)}
+            disabled={!live}
+            onChange={(e) => {
+              setWantsUpdates(e.target.checked);
+              resetAttempt();
+            }}
             className="mt-1 h-4 w-4 rounded bg-background/70 accent-[hsl(var(--primary))]"
           />
           <div className="grid gap-1">
@@ -171,11 +255,17 @@ export function WaitlistForm({ source }: { source?: string }) {
             By joining, you agree to receive email related to early access and product updates (if opted in).
           </p>
           <Button type="submit" disabled={!canSubmit}>
-            {state.status === "submitting" ? "Joining…" : "Join Waitlist"}
+            {state.status === "submitting" ? "Joining…" : live ? "Join Waitlist" : "Opens soon"}
           </Button>
         </div>
+        <p className="text-xs text-muted-foreground">
+          Your details are processed by Anthus’s Prospectus CRM. See our{" "}
+          <Link href="/privacy" className="underline underline-offset-2">
+            privacy notice
+          </Link>
+          .
+        </p>
       </div>
     </form>
   );
 }
-
