@@ -67,19 +67,6 @@ Warning: Editing project/ directly is a sin against The Way. Do not read or writ
 npm run studio:preview -- examples/animation-demos.video.tsx examples/components-cookbook.video.tsx
 ```
 
-## Task tracking (Beads) – mandatory
-
-**Use of Beads for task and issue tracking is mandatory in this project.** All follow-up work, bugs, and features must be tracked as Beads issues. Use the `bd` CLI to create, update, and close issues; issues sync to `.beads/issues.jsonl` and are part of the repo.
-
-- **List issues:** `bd list`
-- **Create issue:** `bd create "Title" -t task -p 2` (see `bd create --help` for types and priority)
-- **Update/close:** `bd update <id> --status in_progress`, `bd close <id> --reason "Done"`
-- **Sync with git:** `bd sync` (export to JSONL, commit, pull, push)
-
-**Detailed instructions** (workflow, landing the plane, git hooks, session workflow): **[AGENT_INSTRUCTIONS.md](AGENT_INSTRUCTIONS.md)**. Read that file for full Beads usage, commit conventions, and session completion steps.
-
-If `bd` is not found in your environment, ensure `~/.local/bin` (or your Beads install path) is in PATH, or run commands in **zsh** with that path exported.
-
 ## Agent autonomy (behavior)
 - Proceed independently without stopping to ask permission after each change.
 - Keep moving through the plan and report only when there is meaningful progress or a true blocker.
@@ -368,26 +355,17 @@ Documentation on the marketing automation backend (data model, waitlist flow, Py
 
 ## Landing the Plane (Session Completion)
 
-**When ending a work session**, you MUST complete ALL steps below. Work is NOT complete until `git push` succeeds.
+When ending a work session, complete these steps. Task tracking is Kanbus only (see "Project management with Kanbus" at the top); commits follow the git-commit protocol above.
 
-**MANDATORY WORKFLOW:**
-
-1. **File issues for remaining work** - Create issues for anything that needs follow-up
-2. **Run quality gates** (if code changed) - Tests, linters, builds
-3. **Update issue status** - Close finished work, update in-progress items
-4. **PUSH TO REMOTE** - This is MANDATORY:
+1. **Track remaining work in Kanbus** - Create Kanbus tasks for anything that needs follow-up.
+2. **Run quality gates** (if code changed) - Tests, linters, builds.
+3. **Update Kanbus status** - Close finished work, update in-progress items (via `kanbus` commands only; see CONTRIBUTING_AGENT.md).
+4. **Commit and push only with user approval** - Show the user what changed and get explicit approval before `git commit`. Once approved (or when the user said "fix X and commit"):
    ```bash
    git pull --rebase
-   bd sync
    git push
-   git status  # MUST show "up to date with origin"
+   git status  # should show "up to date with origin"
    ```
-5. **Clean up** - Clear stashes, prune remote branches
-6. **Verify** - All changes committed AND pushed
-7. **Hand off** - Provide context for next session
-
-**CRITICAL RULES:**
-- Work is NOT complete until `git push` succeeds
-- NEVER stop before pushing - that leaves work stranded locally
-- NEVER say "ready to push when you are" - YOU must push
-- If push fails, resolve and retry until it succeeds
+   If push fails, resolve and retry. Without commit approval, leave the work in a "review pending" state and say so.
+5. **Clean up** - Drop only stash entries you created (find them by your own message tag; never `git stash clear` or a bare `git stash pop`), and remove worktrees/branches you created that are merged or abandoned.
+6. **Hand off** - Provide context for the next session.
