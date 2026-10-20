@@ -26,7 +26,11 @@ const client = generateClient<any>({
 
 async function login() {
   const email = process.env.WORKER_EMAIL || 'render-worker@babulus.internal';
-  const password = process.env.WORKER_PASSWORD || 'BabulusRenderWorker2026!';
+  const password = process.env.WORKER_PASSWORD;
+  if (!password) {
+    console.error('WORKER_PASSWORD environment variable is required (the render-worker password).');
+    process.exit(1);
+  }
 
   try {
     await signIn({ username: email, password });

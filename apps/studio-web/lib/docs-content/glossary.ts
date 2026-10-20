@@ -93,7 +93,7 @@ const generateGlossaryHtml = (): string => {
         html += `
   <div class="mt-3">
     <a href="/docs/${term.docSlug}" class="text-sm text-blue-600 dark:text-blue-400 hover:underline">
-      → Learn more in ${term.docSlug.split("-").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ")} →
+      → Learn more in ${term.docSlug.split(/[-/]/).map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ")} →
     </a>
   </div>
 `;

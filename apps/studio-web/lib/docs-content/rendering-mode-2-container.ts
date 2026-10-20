@@ -323,8 +323,8 @@ DOCKER_BUILDKIT=1 docker build ...
 ## Next Steps
 
 - [Mode 3: Cloud Rendering](/docs/rendering/cloud) - Deploy to AWS
-- [Docker Best Practices](/docs/rendering/docker) - Optimize your images
-- [Performance Comparison](/docs/rendering/performance) - Detailed benchmarks
+- Docker image tips: see "Understanding the Dockerfile" and "Slow Container Build" above
+- [Rendering Overview](/docs/rendering/overview) - Performance characteristics across all modes
 `;
 
 export const renderingMode2Doc: DocsEntry = {

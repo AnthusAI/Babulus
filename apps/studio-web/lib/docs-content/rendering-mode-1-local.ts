@@ -292,7 +292,7 @@ NODE_OPTIONS="--max-old-space-size=8192" npx tsx test-local-render.ts
 
 - [Mode 2: Container Rendering](/docs/rendering/container) - Test with Docker
 - [Mode 3: Cloud Rendering](/docs/rendering/cloud) - Deploy to AWS
-- [Performance Tuning](/docs/rendering/performance) - Optimize speed
+- [Rendering Overview](/docs/rendering/overview) - Performance characteristics across all modes
 `;
 
 export const renderingMode1Doc: DocsEntry = {

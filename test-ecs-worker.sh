@@ -4,7 +4,8 @@
 export AWS_REGION=us-east-1
 export NODE_ENV=production
 export WORKER_EMAIL=render-worker@babulus.internal
-export WORKER_PASSWORD=BabulusRenderWorker2026!
+: "${WORKER_PASSWORD:?WORKER_PASSWORD must be set in the environment (the render-worker password)}"
+export WORKER_PASSWORD
 export JOB_ID=$1
 
 if [ -z "$JOB_ID" ]; then

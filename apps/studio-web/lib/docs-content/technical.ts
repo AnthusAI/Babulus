@@ -85,7 +85,6 @@ export const technicalDoc = {
   <li><strong>Delivery layer</strong>: CloudFront for stable delivery without opening S3 publicly.</li>
   <li><strong>Edge enforcement</strong>: JWT validation and org membership checks for CDN requests.</li>
 </ul>
-<p>See <a href="/docs/security-verification">Security verification</a> for the current testing plan.</p>
 
 <hr />
 
@@ -93,7 +92,7 @@ export const technicalDoc = {
 <p>Work is dispatched as jobs that run generation/rendering and upload artifacts back to storage.</p>
 
 <h3 id="job-contract">Portable job contract</h3>
-<p>The job shape is designed to be queue-friendly and portable across machines/providers. See <a href="/docs/worker-job-spec">Worker job spec</a>.</p>
+<p>The job shape is designed to be queue-friendly and portable across machines/providers.</p>
 
 <h3 id="generation-vs-rendering">Generation vs rendering</h3>
 <ul>

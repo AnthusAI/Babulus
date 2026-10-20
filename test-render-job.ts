@@ -14,11 +14,20 @@ Amplify.configure(outputs);
 
 const client = generateClient<any>({ authMode: 'userPool' });
 
+function requireWorkerPassword(): string {
+  const password = process.env.WORKER_PASSWORD;
+  if (!password) {
+    console.error('WORKER_PASSWORD environment variable is required (the render-worker password).');
+    process.exit(1);
+  }
+  return password;
+}
+
 async function main() {
   // Login as worker
   const { isSignedIn } = await signIn({
     username: 'render-worker@babulus.internal',
-    password: 'BabulusRenderWorker2026!'
+    password: requireWorkerPassword()
   });
 
   if (!isSignedIn) {

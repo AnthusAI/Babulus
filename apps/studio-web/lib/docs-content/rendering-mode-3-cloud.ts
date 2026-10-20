@@ -465,10 +465,10 @@ vpc.addFlowLog('FlowLog', {
 
 ## Next Steps
 
-- [Monitoring & Alerts](/docs/rendering/monitoring) - Configure SNS alerts
-- [Cost Optimization](/docs/rendering/cost) - Reduce render costs
-- [Performance Tuning](/docs/rendering/performance) - Speed up renders
-- [Troubleshooting Guide](/docs/rendering/troubleshooting) - Common issues
+- Monitoring and alerts: see "Monitoring Render Jobs" above
+- Cost optimization: see "Cost Analysis" above
+- Performance tuning: see "Performance Characteristics" and "Scaling Configuration" above
+- Common issues: see "Troubleshooting" above
 `;
 
 export const renderingMode3Doc: DocsEntry = {
