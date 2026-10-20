@@ -3,7 +3,7 @@
   "title": "Enable main auto-build and verify latest release",
   "description": "Plan: verify legacy AWS identity and Amplify domains; inspect source configuration; enable existing main auto-build; release main 7d6631192a7b5e3b25d06087c3ffe00303ea5553; follow job to terminal status; verify served footer and referenced assets on both production domains; record receipts. Baseline: main enableAutoBuild=false; latest success job 163 fd56118cc618 on March 30. Both public domains return 200 but stale page.\n\nPorted from develop board, old ID babs-6376aaf7-837d-451f-a16d-c9441d4d4b40",
   "type": "task",
-  "status": "blocked",
+  "status": "closed",
   "priority": 2,
   "assignee": null,
   "creator": null,
@@ -31,11 +31,18 @@
       "text": "15:50 UTC terminal receipt: Amplify job 164 FAILED at 2026-10-17T15:47:47.180Z; BUILD failed, DEPLOY and VERIFY cancelled. CloudFormation stack amplify-d3epcqvzbxdaq-main-branch-d63e8b2ffa newly created at 15:47:20.649Z then ROLLBACK_COMPLETE. describe-events NAME_CONFLICT_VALIDATION on RenderWorkerRepository90133673: AWS::ECR::Repository babulus-render-worker already exists. ECR tags confirm amplify app d3epcqvzbxdaq/main; repository created 2026-01-26. list-stack-resources returns empty. March job 163 updated the same stack name successfully, but no prior backend stack currently exists and branch backend association is empty. Recovery requires a scoped backend restoration/import decision; deleting retained ECR or bypassing backend deployment would not preserve the existing backend. No IAM, credential, DNS, resource deletion, or unrelated migration performed. Auto-build remains enabled (read-back true). Public latest-main success is NOT claimed.",
       "created_at": "2026-10-17T15:49:53.466236Z",
       "comment_type": "default"
+    },
+    {
+      "id": "418ebd57-9637-4537-9a9f-d5d718c5e25c",
+      "author": "home",
+      "text": "Superseded by 84493f (2026-10-20): the legacy-account build is abandoned and legacy auto-build is off. Babulus now deploys from account 869507387405 (Amplify app d23jak4ewu2gf9, job 2 SUCCEED); the ECR/VPC blocker recorded here no longer applies.",
+      "created_at": "2026-10-20T13:17:55.340534Z",
+      "comment_type": "default"
     }
   ],
   "created_at": "2026-10-17T15:44:06.978489Z",
-  "updated_at": "2026-10-17T15:49:53.466304Z",
-  "closed_at": null,
+  "updated_at": "2026-10-20T13:17:55.353978Z",
+  "closed_at": "2026-10-20T13:17:55.353945Z",
   "right_now_summary": "The build failed because an existing ECR repository conflicts with backend creation; auto-build remains enabled.",
   "right_now_updated_at": "2026-10-19T17:11:00.607596Z",
   "custom": {}

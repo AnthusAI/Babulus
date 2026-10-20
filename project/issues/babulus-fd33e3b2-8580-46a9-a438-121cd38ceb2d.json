@@ -1,0 +1,20 @@
+{
+  "id": "babulus-fd33e3b2-8580-46a9-a438-121cd38ceb2d",
+  "title": "Restore reserved Lambda concurrency on the render trigger after quota increase",
+  "description": "PR #16 (1666cc6) removed reserved concurrency on the render trigger because the new account (869507387405) caps Lambda concurrency at 10. A quota increase to 1000 is requested (support case open, see 84493f). Once it lands, restore a reserved concurrency guard on the render trigger in amplify/backend.ts. Acceptance: reserved concurrency set, deploy succeeds, trigger still works.",
+  "type": "task",
+  "status": "open",
+  "priority": 3,
+  "assignee": null,
+  "creator": null,
+  "parent": null,
+  "labels": [],
+  "dependencies": [],
+  "comments": [],
+  "created_at": "2026-10-20T13:17:55.550656Z",
+  "updated_at": "2026-10-20T13:17:55.550687Z",
+  "closed_at": null,
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {}
+}
