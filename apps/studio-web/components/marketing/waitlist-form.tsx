@@ -37,7 +37,7 @@ export function WaitlistForm({ source }: { source?: string }) {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [persona, setPersona] = useState<Persona>("marketer");
-  const [wantsUpdates, setWantsUpdates] = useState(true);
+  const [wantsUpdates, setWantsUpdates] = useState(false);
   const [website, setWebsite] = useState(""); // honeypot
 
   // Reused on retry; cleared when the content changes (a reused id with new content is a 409).
