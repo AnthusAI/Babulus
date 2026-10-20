@@ -17,17 +17,24 @@
       "text": "Fixed all broken /docs links (rendering/*, rendering-overview, components-layouts, worker-job-spec, security-verification, glossary docSlug links, relative source-path links). Link-check script now reports zero broken.",
       "created_at": "2026-10-20T10:26:09.817186Z",
       "comment_type": "default"
+    },
+    {
+      "id": "6a734607-b5e2-48bf-aafc-fe5b5bae8203",
+      "author": "home",
+      "text": "Landed in PR #15 (958ea92), merged 2026-10-20.",
+      "created_at": "2026-10-20T13:17:55.429658Z",
+      "comment_type": "default"
     }
   ],
   "created_at": "2026-10-20T04:29:24.447391Z",
-  "updated_at": "2026-10-20T10:26:10.771479Z",
+  "updated_at": "2026-10-20T13:17:55.429677Z",
   "closed_at": "2026-10-20T10:26:10.732250Z",
-  "right_now_summary": null,
-  "right_now_updated_at": null,
-  "custom": {},
   "agent": {
     "platform": "claude_code",
     "model": "claude-opus-5-5",
     "name": "audit-filing"
-  }
+  },
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {}
 }

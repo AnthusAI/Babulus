@@ -3,7 +3,7 @@
   "title": "Restore Babulus main automatic deployment",
   "description": "Ryan authorized enabling existing Amplify main auto-build and deploying latest main. Scope: Babulus app d3epcqvzbxdaq in account 335163751677 us-east-1; public https://babul.us and https://babulus.anth.us. Definition of done: auto-build enabled, existing pipeline terminal success, actual public page and referenced assets verified, receipts recorded. No IAM, DNS, credentials or unrelated projects.\n\nPorted from develop board, old ID babs-a37b72e7-e15e-484e-91f6-35879760bf50",
   "type": "epic",
-  "status": "in_progress",
+  "status": "closed",
   "priority": 2,
   "assignee": null,
   "creator": null,
@@ -17,11 +17,18 @@
       "text": "Auto-build restoration completed: d3epcqvzbxdaq/main enableAutoBuild false -> true via AWS CLI profile legacy, verified account 335163751677. Latest-main release 164 failed before frontend deployment due to missing backend stack / retained babulus-render-worker ECR name conflict; details in babs-6376aa (blocked). Public verification at 15:51 UTC: https://babul.us and https://babulus.anth.us both HTTP 200, identical 73,326-byte HTML SHA256 1b5c510966a65978eae8db2cc1dadbf065a6e432be8e0d5ac0b6dce693b6f499; all 35 referenced Next static assets per domain HTTP 200. New footer Contact us https://anth.us/engage and Articles https://anth.us/articles/ absent; old https://anth.us/blog present, so served content is still old. Requested main commit 7d6631192a7b5e3b25d06087c3ffe00303ea5553 is not live. Remaining blocker: authorize/design recovery of previously removed backend and retained resources before retrying; no security expansion needed or attempted. Epic remains in_progress because deployment acceptance is unmet.",
       "created_at": "2026-10-17T15:50:02.689577Z",
       "comment_type": "default"
+    },
+    {
+      "id": "110ff9ef-2bce-4194-b86c-4d1a2c422ad4",
+      "author": "home",
+      "text": "Closing: all children are closed (023a32 superseded by 84493f). Automatic deployment of main is restored in the new account (app d23jak4ewu2gf9, job 2 SUCCEED), and babulus.anth.us serves the new footer. The legacy app d3epcqvzbxdaq named in this epic is no longer the deploy target. The remaining babul.us cutover is tracked in 84493f.",
+      "created_at": "2026-10-20T13:17:55.373728Z",
+      "comment_type": "default"
     }
   ],
   "created_at": "2026-10-17T15:43:20.221534Z",
-  "updated_at": "2026-10-17T15:50:02.689659Z",
-  "closed_at": null,
+  "updated_at": "2026-10-20T13:17:55.384524Z",
+  "closed_at": "2026-10-20T13:17:55.384498Z",
   "right_now_summary": "Auto-build is enabled, but the latest main deployment failed and the public site still serves old content.",
   "right_now_updated_at": "2026-10-19T17:11:02.248405Z",
   "custom": {}

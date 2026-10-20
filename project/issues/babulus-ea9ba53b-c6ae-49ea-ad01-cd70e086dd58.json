@@ -10,16 +10,24 @@
   "parent": null,
   "labels": [],
   "dependencies": [],
-  "comments": [],
+  "comments": [
+    {
+      "id": "4a68fee1-bd4c-43b0-93ec-57d9b3694c3c",
+      "author": "home",
+      "text": "2026-10-20: dependency text updated. Step 4 (deploy babul.us) is now blocked only on 84493f (AWS Support approval for the cross-account babul.us association); 6abb0a is closed and 023a32 is superseded. babulus.anth.us already deploys from the new account.",
+      "created_at": "2026-10-20T13:17:55.497592Z",
+      "comment_type": "default"
+    }
+  ],
   "created_at": "2026-10-20T01:50:58.814808Z",
-  "updated_at": "2026-10-20T01:51:06.402086Z",
+  "updated_at": "2026-10-20T13:17:55.497616Z",
   "closed_at": null,
-  "right_now_summary": null,
-  "right_now_updated_at": null,
-  "custom": {},
   "agent": {
     "platform": "claude_code",
     "model": "claude-opus-5-5",
     "name": "Babulus implementation"
-  }
+  },
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {}
 }
