@@ -338,8 +338,6 @@ const renderTriggerLambda = new NodejsFunction(backend.stack, 'RenderTriggerFunc
     sourceMap: false,
   },
   timeout: Duration.seconds(30),
-  // Hard cap on parallel launches: a runaway stream can never fan out into many tasks at once
-  reservedConcurrentExecutions: 2,
   environment: {
     CLUSTER_ARN: renderCluster.clusterArn,
     TASK_DEFINITION_ARN: renderTaskDefinition.taskDefinitionArn,
