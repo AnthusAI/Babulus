@@ -29,8 +29,8 @@ Move video rendering from Lambda (15-minute timeout, resource constraints) to EC
 
 ### Infrastructure Components
 
-- **VPC**: 2 AZs, 1 NAT gateway
-- **Security Group**: Allows outbound to S3, DynamoDB, AppSync
+- **VPC**: 2 AZs, public subnets only, no NAT gateway (tasks run with a public IP; security group has no inbound rules)
+- **Security Group**: Outbound only (S3, DynamoDB, AppSync, ECR, CloudWatch Logs); no inbound rules
 - **ECS Cluster**: `babulus-render-cluster`
 - **Task Definition**: 4 vCPU, 16GB RAM, runs `worker-ecs.js`
 - **ECR Repository**: `babulus-render-worker`

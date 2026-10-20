@@ -235,13 +235,19 @@ const renderWorkerEcr = ecr.Repository.fromRepositoryName(
   'babulus-render-worker'
 );
 
-// Create VPC for ECS tasks (or use default VPC)
+// Create VPC for ECS tasks.
+// Public subnets only, no NAT gateway: a NAT gateway bills ~$32/month even when idle.
+// Tasks get a public IP while they run (billed only then) and reach ECR, S3, DynamoDB,
+// AppSync and CloudWatch Logs directly through the (free) internet gateway.
 const vpc = new ec2.Vpc(backend.stack, 'RenderWorkerVPC', {
   maxAzs: 2, // Use 2 availability zones
-  natGateways: 1, // One NAT gateway for cost optimization
+  natGateways: 0,
+  subnetConfiguration: [
+    { name: 'Public', subnetType: ec2.SubnetType.PUBLIC, cidrMask: 24 },
+  ],
 });
 
-// Create security group for ECS tasks
+// Create security group for ECS tasks (outbound only: no inbound rules, so the public IP is not reachable)
 const ecsSecurityGroup = new ec2.SecurityGroup(backend.stack, 'EcsSecurityGroup', {
   vpc,
   description: 'Security group for Babulus render worker tasks',
@@ -332,11 +338,14 @@ const renderTriggerLambda = new NodejsFunction(backend.stack, 'RenderTriggerFunc
     sourceMap: false,
   },
   timeout: Duration.seconds(30),
+  // Hard cap on parallel launches: a runaway stream can never fan out into many tasks at once
+  reservedConcurrentExecutions: 2,
   environment: {
     CLUSTER_ARN: renderCluster.clusterArn,
     TASK_DEFINITION_ARN: renderTaskDefinition.taskDefinitionArn,
-    SUBNET_IDS: vpc.privateSubnets.map(subnet => subnet.subnetId).join(','),
+    SUBNET_IDS: vpc.publicSubnets.map(subnet => subnet.subnetId).join(','),
     SECURITY_GROUP_ID: ecsSecurityGroup.securityGroupId,
+    JOB_TABLE_NAME: backend.data.resources.tables['Job'].tableName,
     CONTAINER_NAME: 'render-worker',
     MAX_CONCURRENT_TASKS: '10',
     GRAPHQL_ENDPOINT: backend.data.resources.cfnResources.cfnGraphqlApi.attrGraphQlUrl,
@@ -385,13 +394,15 @@ if (amplifyJobTable) {
 const eventSource = new DynamoEventSource(jobTable, {
   startingPosition: lambda.StartingPosition.LATEST,
   batchSize: 10,
-  retryAttempts: 2,
+  retryAttempts: 2, // Bounded retries (default is unlimited until the record expires)
+  maxRecordAge: Duration.hours(1), // Drop stale records instead of retrying them forever
   bisectBatchOnError: true,
   enabled: true,
   filters: [
-    // Only process events where:
-    // 1. A new Job is created (INSERT) with status='queued' and kind='render'
-    // 2. An existing Job is updated (MODIFY) to status='queued' and kind='render'
+    // Only invoke when a render job ENTERS 'queued':
+    // 1. INSERT with status='queued' and kind='render'
+    // 2. MODIFY to status='queued' from a different status (retry/requeue). Writes to a job that is
+    //    already 'queued' (OldImage.status = 'queued') are filtered out so they cannot launch more tasks.
     lambda.FilterCriteria.filter({
       eventName: lambda.FilterRule.isEqual('INSERT'),
       dynamodb: {
@@ -408,10 +419,16 @@ const eventSource = new DynamoEventSource(jobTable, {
           status: { S: lambda.FilterRule.isEqual('queued') },
           kind: { S: lambda.FilterRule.isEqual('render') },
         },
+        OldImage: {
+          status: { S: lambda.FilterRule.notEquals('queued') },
+        },
       },
     }),
   ],
 });
+
+// Allow the trigger to claim jobs with a conditional update
+jobTable.grantWriteData(renderTriggerLambda);
 
 // Add the event source to the Lambda function
 renderTriggerLambda.addEventSource(eventSource);

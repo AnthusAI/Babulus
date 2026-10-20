@@ -37,7 +37,7 @@ ENV NODE_ENV=production
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
     CMD node -e "process.exit(0)"
 
-# Entry point: run render worker
-# Note: Actual implementation will poll for render jobs and process them
-CMD ["npx", "tsx", "--", "src/worker-cloud.ts", "--kind", "render"]
+# Entry point: one-shot ECS worker. Renders the job named by JOB_ID, then exits.
+# Matches the deployed image (built 2026-02-02). Never run the polling worker-cloud.ts here: it never exits.
+CMD ["npx", "tsx", "src/worker-ecs.ts"]
 
