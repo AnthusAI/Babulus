@@ -3,17 +3,25 @@
   "title": "Use Prospectus for waitlist signups; remove Babulus's local waitlist backend",
   "description": "Waitlist, CRM and marketing automation now live in Prospectus (prospectus.anth.us, the central Anthus CRM), with Anthus One (1.anth.us) as the customer portal. Babulus becomes a client of Prospectus and submits signups to its intake.\n\n## Plan\n- Point `apps/studio-web/components/marketing/waitlist-form.tsx` at Prospectus's waitlist intake endpoint (site `babulus`, form `babulus-waitlist-v1`). Direct browser call vs thin proxy route will be decided once the Prospectus contract lands (the Prospectus PR is being opened now in AnthusAI/Prospectus).\n- Delete the 9 marketing/waitlist models in `apps/studio-web/amplify/data/resource.ts`: MarketingLead, MarketingProgram, MarketingProgramStep, MarketingEnrollment, MarketingEnrollmentEvent, MarketingProgramRule, MarketingProgramTrigger, MarketingInteraction, WaitlistSignup.\n- Delete (or slim to a proxy) `apps/studio-web/app/api/waitlist/route.ts`.\n- Delete `services/marketing-runtime/`, `apps/studio-web/scripts/list-waitlist.ts` and its npm script, `features/marketing_automation.feature`, `features/marketing_admin_ui.feature`, `features/steps/marketing.steps.ts`.\n- Rewrite `docs/marketing-automation.md` and the \"Waitlist signups (monitoring)\" section of `AGENTS.md`. Update privacy/terms wording about where signup data is stored.\n\n## Notes\n- Old signups are treated as lost: the legacy backend stack and its tables no longer exist, so there is no import.\n- Cannot go live until the babul.us deploy is unblocked: see 84493f (move Babulus to dedicated account and cut over babul.us).\n- Supersedes the closed marketing issues b2f481 (Publicity machine epic and its children), 96272c and 4de6ce.",
   "type": "task",
-  "status": "open",
+  "status": "closed",
   "priority": 2,
   "assignee": null,
   "creator": null,
   "parent": null,
   "labels": [],
   "dependencies": [],
-  "comments": [],
+  "comments": [
+    {
+      "id": "99114946-ac22-4030-8f5b-8b9431423b3e",
+      "author": "home",
+      "text": "Landed: AnthusAI/Prospectus#48 (06189f8) added multi-app waitlist intake (Babulus form disabled); Babulus #11 (b30b706) points the form at it and removes the local marketing backend. Go-live is tracked separately.",
+      "created_at": "2026-10-20T01:50:57.736572Z",
+      "comment_type": "default"
+    }
+  ],
   "created_at": "2026-10-19T21:33:37.539177Z",
-  "updated_at": "2026-10-19T21:33:37.539912Z",
-  "closed_at": null,
+  "updated_at": "2026-10-20T01:50:57.987588Z",
+  "closed_at": "2026-10-20T01:50:57.969348Z",
   "right_now_summary": null,
   "right_now_updated_at": null,
   "custom": {}
