@@ -338,11 +338,14 @@ const renderTriggerLambda = new NodejsFunction(backend.stack, 'RenderTriggerFunc
     sourceMap: false,
   },
   timeout: Duration.seconds(30),
+  // Hard cap on parallel launches: a runaway stream can never fan out into many tasks at once
+  reservedConcurrentExecutions: 2,
   environment: {
     CLUSTER_ARN: renderCluster.clusterArn,
     TASK_DEFINITION_ARN: renderTaskDefinition.taskDefinitionArn,
     SUBNET_IDS: vpc.publicSubnets.map(subnet => subnet.subnetId).join(','),
     SECURITY_GROUP_ID: ecsSecurityGroup.securityGroupId,
+    JOB_TABLE_NAME: backend.data.resources.tables['Job'].tableName,
     CONTAINER_NAME: 'render-worker',
     MAX_CONCURRENT_TASKS: '10',
     GRAPHQL_ENDPOINT: backend.data.resources.cfnResources.cfnGraphqlApi.attrGraphQlUrl,
@@ -391,13 +394,15 @@ if (amplifyJobTable) {
 const eventSource = new DynamoEventSource(jobTable, {
   startingPosition: lambda.StartingPosition.LATEST,
   batchSize: 10,
-  retryAttempts: 2,
+  retryAttempts: 2, // Bounded retries (default is unlimited until the record expires)
+  maxRecordAge: Duration.hours(1), // Drop stale records instead of retrying them forever
   bisectBatchOnError: true,
   enabled: true,
   filters: [
-    // Only process events where:
-    // 1. A new Job is created (INSERT) with status='queued' and kind='render'
-    // 2. An existing Job is updated (MODIFY) to status='queued' and kind='render'
+    // Only invoke when a render job ENTERS 'queued':
+    // 1. INSERT with status='queued' and kind='render'
+    // 2. MODIFY to status='queued' from a different status (retry/requeue). Writes to a job that is
+    //    already 'queued' (OldImage.status = 'queued') are filtered out so they cannot launch more tasks.
     lambda.FilterCriteria.filter({
       eventName: lambda.FilterRule.isEqual('INSERT'),
       dynamodb: {
@@ -414,10 +419,16 @@ const eventSource = new DynamoEventSource(jobTable, {
           status: { S: lambda.FilterRule.isEqual('queued') },
           kind: { S: lambda.FilterRule.isEqual('render') },
         },
+        OldImage: {
+          status: { S: lambda.FilterRule.notEquals('queued') },
+        },
       },
     }),
   ],
 });
+
+// Allow the trigger to claim jobs with a conditional update
+jobTable.grantWriteData(renderTriggerLambda);
 
 // Add the event source to the Lambda function
 renderTriggerLambda.addEventSource(eventSource);

@@ -15,9 +15,12 @@
 
 import { DynamoDBStreamEvent, DynamoDBRecord } from 'aws-lambda';
 import { ECSClient, RunTaskCommand } from '@aws-sdk/client-ecs';
+import { DynamoDBClient, UpdateItemCommand } from '@aws-sdk/client-dynamodb';
 import { unmarshall } from '@aws-sdk/util-dynamodb';
+import { decideLaunch } from './decision.js';
 
 const ecs = new ECSClient({});
+const ddb = new DynamoDBClient({});
 
 // Environment variables set by CDK (backend.ts)
 const CLUSTER_ARN = process.env.CLUSTER_ARN!;
@@ -25,28 +28,76 @@ const TASK_DEFINITION_ARN = process.env.TASK_DEFINITION_ARN!;
 const SUBNET_IDS = process.env.SUBNET_IDS!.split(',');
 const SECURITY_GROUP_ID = process.env.SECURITY_GROUP_ID!;
 const CONTAINER_NAME = process.env.CONTAINER_NAME || 'render-worker';
+const JOB_TABLE_NAME = process.env.JOB_TABLE_NAME!;
 
 /**
  * Extract Job record from DynamoDB Stream event
  */
 function extractJobFromRecord(record: DynamoDBRecord): any | null {
-  if (!record.dynamodb?.NewImage) {
+  const decision = decideLaunch(record as any);
+  if (!decision.launch) {
+    console.log(`Skipping record: ${decision.reason}`);
     return null;
   }
 
   try {
-    const job = unmarshall(record.dynamodb.NewImage as any);
-
-    // Validate it's a render job
-    if (job.kind !== 'render' || job.status !== 'queued') {
-      console.log(`Skipping non-render or non-queued job: ${job.id} (kind=${job.kind}, status=${job.status})`);
-      return null;
-    }
-
-    return job;
+    return unmarshall(record.dynamodb!.NewImage as any);
   } catch (error) {
     console.error('Failed to unmarshall DynamoDB record:', error);
     return null;
+  }
+}
+
+/**
+ * Claim a job before launching: conditional queued -> claimed. At most one task per queued transition,
+ * even if the stream batch is retried or delivered twice. Returns false if someone else already claimed it.
+ */
+async function claimJob(jobId: string): Promise<boolean> {
+  try {
+    await ddb.send(new UpdateItemCommand({
+      TableName: JOB_TABLE_NAME,
+      Key: { id: { S: jobId } },
+      UpdateExpression: 'SET #status = :claimed, claimedByAgentId = :by, updatedAt = :now',
+      ConditionExpression: '#status = :queued',
+      ExpressionAttributeNames: { '#status': 'status' },
+      ExpressionAttributeValues: {
+        ':claimed': { S: 'claimed' },
+        ':queued': { S: 'queued' },
+        ':by': { S: 'render-trigger' },
+        ':now': { S: new Date().toISOString() },
+      },
+    }));
+    return true;
+  } catch (error: any) {
+    if (error?.name === 'ConditionalCheckFailedException') {
+      console.log(`Job ${jobId} already claimed or no longer queued; not launching another task`);
+      return false;
+    }
+    throw error;
+  }
+}
+
+/**
+ * The task could not be started after the job was claimed. Mark the job failed rather than
+ * re-queueing it, so a persistent launch error cannot cause a launch loop.
+ */
+async function failClaimedJob(jobId: string, reason: string) {
+  try {
+    await ddb.send(new UpdateItemCommand({
+      TableName: JOB_TABLE_NAME,
+      Key: { id: { S: jobId } },
+      UpdateExpression: 'SET #status = :failed, failureReason = :reason, updatedAt = :now',
+      ConditionExpression: '#status = :claimed',
+      ExpressionAttributeNames: { '#status': 'status' },
+      ExpressionAttributeValues: {
+        ':failed': { S: 'failed' },
+        ':claimed': { S: 'claimed' },
+        ':reason': { S: `Render task launch failed: ${reason}` },
+        ':now': { S: new Date().toISOString() },
+      },
+    }));
+  } catch (error) {
+    console.error(`Failed to mark job ${jobId} as failed:`, error);
   }
 }
 
@@ -55,6 +106,10 @@ function extractJobFromRecord(record: DynamoDBRecord): any | null {
  */
 async function startRenderTask(job: any) {
   try {
+    if (!(await claimJob(job.id))) {
+      return { jobId: job.id, status: 'skipped' };
+    }
+
     console.log(`Starting ECS task for job ${job.id}...`);
 
     const command = new RunTaskCommand({
@@ -103,6 +158,7 @@ async function startRenderTask(job: any) {
     };
   } catch (error) {
     console.error(`✗ Failed to start ECS task for job ${job.id}:`, error);
+    await failClaimedJob(job.id, error instanceof Error ? error.message : 'Unknown error');
     return {
       jobId: job.id,
       error: error instanceof Error ? error.message : 'Unknown error',
