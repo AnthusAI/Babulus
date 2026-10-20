@@ -65,7 +65,7 @@ async function startRenderTask(job: any) {
         awsvpcConfiguration: {
           subnets: SUBNET_IDS,
           securityGroups: [SECURITY_GROUP_ID],
-          assignPublicIp: 'DISABLED' // Use NAT gateway for internet access
+          assignPublicIp: 'ENABLED' // Public subnets, no NAT gateway: task needs a public IP for ECR/S3/AppSync (no inbound rules)
         }
       },
       overrides: {

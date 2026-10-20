@@ -235,13 +235,19 @@ const renderWorkerEcr = ecr.Repository.fromRepositoryName(
   'babulus-render-worker'
 );
 
-// Create VPC for ECS tasks (or use default VPC)
+// Create VPC for ECS tasks.
+// Public subnets only, no NAT gateway: a NAT gateway bills ~$32/month even when idle.
+// Tasks get a public IP while they run (billed only then) and reach ECR, S3, DynamoDB,
+// AppSync and CloudWatch Logs directly through the (free) internet gateway.
 const vpc = new ec2.Vpc(backend.stack, 'RenderWorkerVPC', {
   maxAzs: 2, // Use 2 availability zones
-  natGateways: 1, // One NAT gateway for cost optimization
+  natGateways: 0,
+  subnetConfiguration: [
+    { name: 'Public', subnetType: ec2.SubnetType.PUBLIC, cidrMask: 24 },
+  ],
 });
 
-// Create security group for ECS tasks
+// Create security group for ECS tasks (outbound only: no inbound rules, so the public IP is not reachable)
 const ecsSecurityGroup = new ec2.SecurityGroup(backend.stack, 'EcsSecurityGroup', {
   vpc,
   description: 'Security group for Babulus render worker tasks',
@@ -335,7 +341,7 @@ const renderTriggerLambda = new NodejsFunction(backend.stack, 'RenderTriggerFunc
   environment: {
     CLUSTER_ARN: renderCluster.clusterArn,
     TASK_DEFINITION_ARN: renderTaskDefinition.taskDefinitionArn,
-    SUBNET_IDS: vpc.privateSubnets.map(subnet => subnet.subnetId).join(','),
+    SUBNET_IDS: vpc.publicSubnets.map(subnet => subnet.subnetId).join(','),
     SECURITY_GROUP_ID: ecsSecurityGroup.securityGroupId,
     CONTAINER_NAME: 'render-worker',
     MAX_CONCURRENT_TASKS: '10',
