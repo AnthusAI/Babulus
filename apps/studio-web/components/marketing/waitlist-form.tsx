@@ -231,7 +231,8 @@ export function WaitlistForm({ source }: { source?: string }) {
           </div>
         </div>
 
-        <div className="sr-only">
+        {/* Honeypot: hidden from sight and from assistive tech, so only bots fill it in. */}
+        <div aria-hidden="true" className="absolute -left-[10000px] top-auto h-px w-px overflow-hidden">
           <Label htmlFor="website">Website</Label>
           <Input
             id="website"
