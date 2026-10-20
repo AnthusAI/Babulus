@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "event_id": "8e7e451f-2199-44b7-b95c-f1b39a6cd43f",
+  "issue_id": "babulus-0d79e0a0-dddf-4f70-9800-04b8669395d9",
+  "event_type": "issue_created",
+  "occurred_at": "2026-10-20T04:29:24.485Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "Session handoff and overnight-summary files are committed in docs/archive of the public repo",
+    "description": "**Problem**\ndocs/archive/streams-and-rendering-sessions/ holds 14 agent session files in the public repository. They are working notes, not documentation, and contain phrases like \"as requested\".\n\n**Evidence**\nFiles on main: ALTERNATIVE_STREAMS_APPROACH.md, DYNAMODB_STREAMS_SOLUTION.md, ECS_INFRASTRUCTURE_COMPLETE.md, HANDOFF.md, MORNING_CHECK.md, OVERNIGHT_SUMMARY.txt, RENDERING_MODES_STATUS.md, SESSION-FILES-CHANGED.md, SESSION-SUMMARY.md, START_HERE.md, STREAMS_README.md, STREAMS_STATUS.md, TESTING_RENDERING_MODES.md, VERIFY_STREAMS_DEPLOYMENT.md.\n\n**Fix**\nDelete the folder, or fold anything worth keeping into proper docs. History keeps the originals.\n\n**How to verify**\n`ls docs/archive/streams-and-rendering-sessions` fails (directory gone) on main.\n\nSource: Anthus repo audit, 2026-10-20.",
+    "issue_type": "bug",
+    "status": "open",
+    "priority": 2,
+    "assignee": null,
+    "parent": null,
+    "labels": [],
+    "agent": {
+      "platform": "claude_code",
+      "model": "claude-opus-5-5",
+      "name": "audit-filing"
+    }
+  }
+}

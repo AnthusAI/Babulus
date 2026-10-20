@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "event_id": "5c2f09c4-8f1a-4fc1-9eba-5838452f26a9",
+  "issue_id": "babulus-ec56aaaa-eda8-48f1-8bec-d9753561fac8",
+  "event_type": "issue_created",
+  "occurred_at": "2026-10-20T04:29:24.447Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "Public docs at babul.us contain about 20 internal links that return 404",
+    "description": "**Problem**\nThe live docs on https://babul.us and https://babulus.anth.us link to about 20 internal pages that do not exist. Some links are repo source paths used as docs routes.\n\n**Evidence**\n- /docs/rendering/{encoding,frames,performance,docker,monitoring,cost,troubleshooting}\n- /docs/rendering-overview and /docs/components-layouts (apps/studio-web/lib/docs-content/videoml-standard.ts:718,725)\n- /docs/components-guide, /docs/project-storage-architecture, /docs/tts-aws-polly-quickstart\n- /docs/worker-job-spec and /docs/security-verification (technical.ts:88,96 in the same folder)\n- source paths used as docs links, such as /docs/lib/project-storage.ts\n- Example: `curl -s -o /dev/null -w '%{http_code}' https://babul.us/docs/rendering-overview` returns 404 (2026-10-20).\n\n**Fix**\nPoint each link at an existing docs page, create the missing pages, or remove the links. Replace the source-path links with repository URLs.\n\n**How to verify**\nCrawl https://babul.us/docs and confirm every internal link returns 200, for example `curl -s -o /dev/null -w '%{http_code}' <url>` on each.\n\nSource: Anthus repo audit, 2026-10-20.",
+    "issue_type": "bug",
+    "status": "open",
+    "priority": 2,
+    "assignee": null,
+    "parent": null,
+    "labels": [],
+    "agent": {
+      "platform": "claude_code",
+      "model": "claude-opus-5-5",
+      "name": "audit-filing"
+    }
+  }
+}
