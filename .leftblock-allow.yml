@@ -1,0 +1,14 @@
+# LeftBlock overrides: each entry approves one finding (one rule on one exact
+# line content in one file). Changing that line re-blocks it.
+version: 1
+allow:
+  - id: "1e3f0a6256bbe0dd"
+    rule: "leftblock-personal-email"
+    file: "apps/studio-web/app/(public)/privacy/page.tsx"
+    reason: "Company role address for privacy requests, required on the public privacy notice Ryan approved 2026-10-20"
+    added: 2026-10-20
+  - id: "f52a80672f3964a0"
+    rule: "leftblock-personal-email"
+    file: "apps/studio-web/app/(public)/privacy/page.tsx"
+    reason: "Company role address for privacy requests, required on the public privacy notice Ryan approved 2026-10-20"
+    added: 2026-10-20

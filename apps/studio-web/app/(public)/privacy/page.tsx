@@ -31,6 +31,13 @@ export default function PrivacyPage() {
         <p className="text-muted-foreground">
           We don’t sell your information. You can unsubscribe from updates at any time.
         </p>
+        <p className="text-muted-foreground">
+          We keep your signup until you ask us to delete it. To unsubscribe or request deletion, email{" "}
+          <a href="mailto:info@anth.us" className="underline underline-offset-2">
+            info@anth.us
+          </a>
+          .
+        </p>
       </div>
     </div>
   );
