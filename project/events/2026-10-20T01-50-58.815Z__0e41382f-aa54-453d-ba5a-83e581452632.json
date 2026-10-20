@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "event_id": "0e41382f-aa54-453d-ba5a-83e581452632",
+  "issue_id": "babulus-ea9ba53b-c6ae-49ea-ad01-cd70e086dd58",
+  "event_type": "issue_created",
+  "occurred_at": "2026-10-20T01:50:58.815Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "Go live with the Babulus waitlist via Prospectus",
+    "description": "The code is merged (AnthusAI/Prospectus#48, Babulus #11). The form shows \"The waitlist opens soon\" until all of these are done:\n\n1. Ryan approves the babulus-waitlist-v1 notice: owner, privacy wording (Babulus privacy/terms copy from #11), retention, abuse controls, and the meaning of marketing_opt_in (updates email).\n2. In Prospectus, set the Babulus entry in intake-forms.json to enabled:true with the approval string, then deploy. Read the IntakeWaitlistBaseUrl output.\n3. Set NEXT_PUBLIC_PROSPECTUS_INTAKE_BASE_URL in Babulus's Amplify hosting environment to that base URL.\n4. Deploy babul.us (blocked on 84493f / 6abb0a), then submit one real test signup and confirm it lands in the Prospectus CRM with labels waitlist + app-babulus.\n\nOpen product question for Ryan: should waitlist leads ever get follow-up dates, or be reviewed in bulk by label?",
+    "issue_type": "task",
+    "status": "open",
+    "priority": 2,
+    "assignee": null,
+    "parent": null,
+    "labels": []
+  }
+}
