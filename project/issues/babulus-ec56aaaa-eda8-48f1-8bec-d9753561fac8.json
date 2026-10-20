@@ -3,23 +3,31 @@
   "title": "Public docs at babul.us contain about 20 internal links that return 404",
   "description": "**Problem**\nThe live docs on https://babul.us and https://babulus.anth.us link to about 20 internal pages that do not exist. Some links are repo source paths used as docs routes.\n\n**Evidence**\n- /docs/rendering/{encoding,frames,performance,docker,monitoring,cost,troubleshooting}\n- /docs/rendering-overview and /docs/components-layouts (apps/studio-web/lib/docs-content/videoml-standard.ts:718,725)\n- /docs/components-guide, /docs/project-storage-architecture, /docs/tts-aws-polly-quickstart\n- /docs/worker-job-spec and /docs/security-verification (technical.ts:88,96 in the same folder)\n- source paths used as docs links, such as /docs/lib/project-storage.ts\n- Example: `curl -s -o /dev/null -w '%{http_code}' https://babul.us/docs/rendering-overview` returns 404 (2026-10-20).\n\n**Fix**\nPoint each link at an existing docs page, create the missing pages, or remove the links. Replace the source-path links with repository URLs.\n\n**How to verify**\nCrawl https://babul.us/docs and confirm every internal link returns 200, for example `curl -s -o /dev/null -w '%{http_code}' <url>` on each.\n\nSource: Anthus repo audit, 2026-10-20.",
   "type": "bug",
-  "status": "open",
+  "status": "closed",
   "priority": 2,
   "assignee": null,
   "creator": null,
   "parent": null,
   "labels": [],
   "dependencies": [],
-  "comments": [],
+  "comments": [
+    {
+      "id": "dae025aa-8c0f-4894-9ea7-c66d4fb2d610",
+      "author": "home",
+      "text": "Fixed all broken /docs links (rendering/*, rendering-overview, components-layouts, worker-job-spec, security-verification, glossary docSlug links, relative source-path links). Link-check script now reports zero broken.",
+      "created_at": "2026-10-20T10:26:09.817186Z",
+      "comment_type": "default"
+    }
+  ],
   "created_at": "2026-10-20T04:29:24.447391Z",
-  "updated_at": "2026-10-20T04:29:24.447418Z",
-  "closed_at": null,
+  "updated_at": "2026-10-20T10:26:10.771479Z",
+  "closed_at": "2026-10-20T10:26:10.732250Z",
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {},
   "agent": {
     "platform": "claude_code",
     "model": "claude-opus-5-5",
     "name": "audit-filing"
-  },
-  "right_now_summary": null,
-  "right_now_updated_at": null,
-  "custom": {}
+  }
 }

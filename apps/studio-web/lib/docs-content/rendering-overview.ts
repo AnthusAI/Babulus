@@ -97,9 +97,9 @@ For a 60-second video at 30fps, this means capturing 1,800 individual frames and
 
 Want to understand what's happening under the hood?
 
-- [Video Encoding Guide](/docs/rendering/encoding) - H.264, bitrates, quality settings
-- [Frame Capture](/docs/rendering/frames) - How Playwright captures browser output
-- [Performance Tuning](/docs/rendering/performance) - Optimize render speed
+- Video encoding: H.264, bitrates, quality settings (see Quality Settings in [Mode 1: Local Rendering](/docs/rendering/local))
+- Frame capture: how Playwright captures browser output (see "What Happens During Rendering" above)
+- Performance tuning: see "Performance Characteristics" above and Performance Tips in [Mode 1: Local Rendering](/docs/rendering/local)
 `;
 
 export const renderingOverviewDoc: DocsEntry = {

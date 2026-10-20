@@ -20,10 +20,19 @@ const ORG_ID = '2ee41f23-4003-47c8-bd94-6f4ff46beab6';
 const RUN_ID = process.argv[2] || 'gen-1769973903';
 type GenerationRunCreateResult = { data?: { id?: string | null } | null; errors?: unknown };
 
+function requireWorkerPassword(): string {
+  const password = process.env.WORKER_PASSWORD;
+  if (!password) {
+    console.error('WORKER_PASSWORD environment variable is required (the render-worker password).');
+    process.exit(1);
+  }
+  return password;
+}
+
 async function main() {
   const { isSignedIn } = await signIn({
     username: 'render-worker@babulus.internal',
-    password: 'BabulusRenderWorker2026!'
+    password: requireWorkerPassword()
   });
 
   if (!isSignedIn) {

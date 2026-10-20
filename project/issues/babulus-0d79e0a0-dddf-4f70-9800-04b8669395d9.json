@@ -3,23 +3,31 @@
   "title": "Session handoff and overnight-summary files are committed in docs/archive of the public repo",
   "description": "**Problem**\ndocs/archive/streams-and-rendering-sessions/ holds 14 agent session files in the public repository. They are working notes, not documentation, and contain phrases like \"as requested\".\n\n**Evidence**\nFiles on main: ALTERNATIVE_STREAMS_APPROACH.md, DYNAMODB_STREAMS_SOLUTION.md, ECS_INFRASTRUCTURE_COMPLETE.md, HANDOFF.md, MORNING_CHECK.md, OVERNIGHT_SUMMARY.txt, RENDERING_MODES_STATUS.md, SESSION-FILES-CHANGED.md, SESSION-SUMMARY.md, START_HERE.md, STREAMS_README.md, STREAMS_STATUS.md, TESTING_RENDERING_MODES.md, VERIFY_STREAMS_DEPLOYMENT.md.\n\n**Fix**\nDelete the folder, or fold anything worth keeping into proper docs. History keeps the originals.\n\n**How to verify**\n`ls docs/archive/streams-and-rendering-sessions` fails (directory gone) on main.\n\nSource: Anthus repo audit, 2026-10-20.",
   "type": "bug",
-  "status": "open",
+  "status": "closed",
   "priority": 2,
   "assignee": null,
   "creator": null,
   "parent": null,
   "labels": [],
   "dependencies": [],
-  "comments": [],
+  "comments": [
+    {
+      "id": "3cd6675d-a366-4122-8967-eab67d770652",
+      "author": "home",
+      "text": "Deleted docs/archive/streams-and-rendering-sessions (14 files, the only content in docs/archive). Removed the hard-coded worker password from root and scripts/ test scripts; they now require WORKER_PASSWORD. Only amplify/backend.ts still holds the literal (handled separately).",
+      "created_at": "2026-10-20T10:26:11.660707Z",
+      "comment_type": "default"
+    }
+  ],
   "created_at": "2026-10-20T04:29:24.485227Z",
-  "updated_at": "2026-10-20T04:29:24.485251Z",
-  "closed_at": null,
+  "updated_at": "2026-10-20T10:26:12.039785Z",
+  "closed_at": "2026-10-20T10:26:12.001005Z",
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {},
   "agent": {
     "platform": "claude_code",
     "model": "claude-opus-5-5",
     "name": "audit-filing"
-  },
-  "right_now_summary": null,
-  "right_now_updated_at": null,
-  "custom": {}
+  }
 }

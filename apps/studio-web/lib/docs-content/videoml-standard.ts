@@ -715,14 +715,14 @@ render({
   <li><a href="/docs/videoml-conformance">VideoML Conformance</a> — Validation and testing</li>
   <li><a href="/docs/live-vom">Live VOM</a> — Real-time editing and recording</li>
   <li><a href="/docs/components">Components Guide</a> — Built-in Web Components</li>
-  <li><a href="/docs/rendering-overview">Rendering Overview</a> — Generating MP4 outputs</li>
+  <li><a href="/docs/rendering/overview">Rendering Overview</a> — Generating MP4 outputs</li>
   <li><a href="/docs/glossary">Glossary</a> — VideoML terminology reference</li>
 </ul>
 
 <h2 id="next-steps">Next Steps</h2>
 <ul>
   <li><strong>Try It:</strong> Create your first VideoML file in <a href="/code-to-video">Code to Video</a></li>
-  <li><strong>Learn Components:</strong> Explore <a href="/docs/components-layouts">Layouts</a> and <a href="/docs/components">Components</a></li>
+  <li><strong>Learn Components:</strong> Explore <a href="/docs/components/layouts">Layouts</a> and <a href="/docs/components">Components</a></li>
   <li><strong>Advanced:</strong> Read about <a href="/docs/live-vom">Live Mode</a> for interactive editing</li>
 </ul>
 `,

@@ -5,7 +5,7 @@ Babulus turns a `.babulus.xml` file into timing JSON + generated audio for Remot
 ## Quick Start
 
 Requirements:
-- Node.js 18+
+- Node.js 22.12.0 (see `.nvmrc`)
 - `ffmpeg` + `ffprobe` on PATH
 - Playwright (for PNG/MP4 rendering helpers)
 

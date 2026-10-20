@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "event_id": "16996045-f834-419a-9ac6-5ffe6fca3170",
+  "issue_id": "babulus-5b47136e-d98d-412f-bcb3-bff3ee833845",
+  "event_type": "state_transition",
+  "occurred_at": "2026-10-20T10:21:41.433Z",
+  "actor_id": "home",
+  "payload": {
+    "from_status": "open",
+    "to_status": "in_progress"
+  }
+}

@@ -175,7 +175,7 @@ window.addEventListener('timeline:tick', (e) => {
     definition:
       "Text-to-Speech. Converts written text into spoken audio using AI voice synthesis. Babulus supports multiple TTS providers with different quality/cost profiles: ElevenLabs (high quality, ~$1/1000 chars), AWS Polly (good quality, ~$4/1M chars), Azure Speech (good quality, ~$16/1M chars). Generated audio determines scene duration in narration-driven videos.",
     relatedTerms: ["Cue", "Duration", "Narration"],
-    docSlug: "tts-aws-polly-quickstart",
+    docSlug: "tts/aws-polly-quickstart",
   },
   {
     term: "Rendering",
@@ -184,7 +184,7 @@ window.addEventListener('timeline:tick', (e) => {
     technicalNote:
       "Three rendering modes: Local (your machine), Container (Docker locally), Cloud (AWS Fargate). Local is fastest for development; cloud scales for production.",
     relatedTerms: ["Generation", "Encoding", "FPS"],
-    docSlug: "rendering-overview",
+    docSlug: "rendering/overview",
   },
   {
     term: "Generation",
@@ -193,7 +193,7 @@ window.addEventListener('timeline:tick', (e) => {
     technicalNote:
       "Generation creates: script.json (scene structure), timeline.json (timing data), and audio files (TTS output).",
     relatedTerms: ["Rendering", "TTS", "Timeline API"],
-    docSlug: "rendering-overview",
+    docSlug: "rendering/overview",
   },
   {
     term: "Encoding",
@@ -228,7 +228,7 @@ window.addEventListener('timeline:tick', (e) => {
 <!-- Bind progress to timeline -->
 <progress-bar value="{{ timeline.time / timeline.duration }}" />`,
     relatedTerms: ["Component", "Timeline API", "Scene"],
-    docSlug: "components-guide",
+    docSlug: "components/guide",
   },
   {
     term: "Layout",
@@ -241,7 +241,7 @@ window.addEventListener('timeline:tick', (e) => {
   <!-- Content goes here -->
 </content-screen>`,
     relatedTerms: ["Component", "Scene", "Layer"],
-    docSlug: "components-layouts",
+    docSlug: "components/layouts",
   },
   {
     term: "Aspect Ratio",
@@ -255,7 +255,7 @@ window.addEventListener('timeline:tick', (e) => {
       "Cloud-based file storage system for Babulus projects. Files are stored in S3, metadata in DynamoDB, and served via CloudFront CDN. Provides version control and multi-tenant isolation.",
     technicalNote: "Uses AWS S3 for files, DynamoDB for metadata, CloudFront for CDN.",
     relatedTerms: ["Rendering", "Cloud"],
-    docSlug: "project-storage-architecture",
+    docSlug: "project-storage/architecture",
   },
   {
     term: "Narration",
