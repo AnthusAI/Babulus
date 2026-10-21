@@ -3,7 +3,7 @@
   "title": "Go live with the Babulus waitlist via Prospectus",
   "description": "The code is merged (AnthusAI/Prospectus#48, Babulus #11). The form shows \"The waitlist opens soon\" until all of these are done:\n\n1. Ryan approves the babulus-waitlist-v1 notice: owner, privacy wording (Babulus privacy/terms copy from #11), retention, abuse controls, and the meaning of marketing_opt_in (updates email).\n2. In Prospectus, set the Babulus entry in intake-forms.json to enabled:true with the approval string, then deploy. Read the IntakeWaitlistBaseUrl output.\n3. Set NEXT_PUBLIC_PROSPECTUS_INTAKE_BASE_URL in Babulus's Amplify hosting environment to that base URL.\n4. Deploy babul.us (blocked on 84493f / 6abb0a), then submit one real test signup and confirm it lands in the Prospectus CRM with labels waitlist + app-babulus.\n\nOpen product question for Ryan: should waitlist leads ever get follow-up dates, or be reviewed in bulk by label?",
   "type": "task",
-  "status": "open",
+  "status": "closed",
   "priority": 2,
   "assignee": null,
   "creator": null,
@@ -17,17 +17,24 @@
       "text": "2026-10-20: dependency text updated. Step 4 (deploy babul.us) is now blocked only on 84493f (AWS Support approval for the cross-account babul.us association); 6abb0a is closed and 023a32 is superseded. babulus.anth.us already deploys from the new account.",
       "created_at": "2026-10-20T13:17:55.497592Z",
       "comment_type": "default"
+    },
+    {
+      "id": "42636be5-419c-43bc-9408-94121bfdf1a2",
+      "author": "home",
+      "text": "Live 2026-10-20 on https://babulus.anth.us/waitlist, posting to Prospectus form babulus-waitlist-v1 (Prospectus kanbus-e6dcd7, closed). Notice fixes (#21), endpoint and honeypot fixes (#22). Prospectus confirmed a labelled test signup landed as kind=waitlist with labels waitlist + app-babulus. babul.us still redirects to babulus.anth.us; only that origin is allowed.",
+      "created_at": "2026-10-21T00:08:25.048836Z",
+      "comment_type": "default"
     }
   ],
   "created_at": "2026-10-20T01:50:58.814808Z",
-  "updated_at": "2026-10-20T13:17:55.497616Z",
-  "closed_at": null,
+  "updated_at": "2026-10-21T00:08:25.294224Z",
+  "closed_at": "2026-10-21T00:08:25.275308Z",
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {},
   "agent": {
     "platform": "claude_code",
     "model": "claude-opus-5-5",
     "name": "Babulus implementation"
-  },
-  "right_now_summary": null,
-  "right_now_updated_at": null,
-  "custom": {}
+  }
 }
