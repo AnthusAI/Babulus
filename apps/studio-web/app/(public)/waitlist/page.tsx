@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { WaitlistForm } from "@/components/marketing/waitlist-form";
 import { WaitlistExpectations } from "@/components/marketing/waitlist-expectations";
+import { contactUrl } from "@/lib/analytics";
 
 export const metadata: Metadata = {
   title: "Waitlist",
@@ -50,6 +51,14 @@ export default function WaitlistPage() {
             <Link href="/" className="text-foreground/80 underline underline-offset-4">
               See how it works
             </Link>
+            .
+          </p>
+
+          <p className="text-sm text-muted-foreground">
+            Want help putting Babulus to work for your team?{" "}
+            <a href={contactUrl("waitlist")} className="text-foreground/80 underline underline-offset-4">
+              Work with us on Babulus
+            </a>
             .
           </p>
         </div>

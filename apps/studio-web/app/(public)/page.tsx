@@ -16,6 +16,7 @@ import {
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { WaitlistExpectations } from "@/components/marketing/waitlist-expectations";
+import { contactUrl } from "@/lib/analytics";
 
 export const metadata: Metadata = {
   title: {
@@ -61,16 +62,19 @@ export default function LandingPage() {
           <div className="mx-auto grid justify-center gap-4 sm:grid-cols-2 md:max-w-[64rem] md:grid-cols-3">
             <FeatureCard
               title="Research & Ideas"
+              featureId="research-ideas"
               description="Agents monitor the web and propose topics tailored to your brand."
               icon={<Bot className="h-10 w-10 text-primary" />}
             />
             <FeatureCard
               title="Script & Storyboard"
+              featureId="script-storyboard"
               description="Drafts become structured storyboards so reviews are fast and consistent."
               icon={<Sparkles className="h-10 w-10 text-primary" />}
             />
             <FeatureCard
               title="Render & Publish"
+              featureId="render-publish"
               description="Generate videos and distribute across channels—with an approval gate."
               icon={<Zap className="h-10 w-10 text-primary" />}
             />
@@ -80,7 +84,7 @@ export default function LandingPage() {
             <p className="text-sm text-muted-foreground">
               Want early access? Join the waitlist for launch invites and progress updates.
             </p>
-            <Link href="/waitlist">
+            <Link href="/waitlist" data-cta-location="home-workflow">
               <Button size="lg">Join waitlist</Button>
             </Link>
             <div className="pt-4">
@@ -125,16 +129,19 @@ export default function LandingPage() {
         <div className="mx-auto grid justify-center gap-4 sm:grid-cols-3 md:max-w-[64rem]">
           <FeatureCard
             title="YouTube"
+            featureId="publish-youtube"
             description="Auto-upload with optimized titles, descriptions, and tags."
             icon={<Share2 className="h-10 w-10 text-red-600" />}
           />
           <FeatureCard
             title="X / Twitter"
+            featureId="publish-x"
             description="Post clips to your feed to drive engagement."
             icon={<Share2 className="h-10 w-10 text-foreground" />}
           />
           <FeatureCard
             title="TikTok / Reels"
+            featureId="publish-tiktok"
             description="Vertical format support for short-form platforms."
             icon={<Share2 className="h-10 w-10 text-pink-500" />}
           />
@@ -159,16 +166,19 @@ export default function LandingPage() {
           <div className="mx-auto grid justify-center gap-4 sm:grid-cols-2 md:max-w-[64rem] md:grid-cols-3">
             <FeatureCard
               title="On-screen text"
+              featureId="translate-on-screen-text"
               description="Translate lower thirds, callouts, captions, and UI-like overlays."
               icon={<Languages className="h-10 w-10 text-primary" />}
             />
             <FeatureCard
               title="Voiceover"
+              featureId="translate-voiceover"
               description="Generate localized narration while preserving pacing and tone."
               icon={<Sparkles className="h-10 w-10 text-primary" />}
             />
             <FeatureCard
               title="Consistency"
+              featureId="translate-consistency"
               description="Keep brand terms and product language aligned across every variant."
               icon={<ShieldCheck className="h-10 w-10 text-primary" />}
             />
@@ -239,9 +249,16 @@ export default function LandingPage() {
           <p className="text-sm text-muted-foreground">
             Ready to see what this could do for your team?
           </p>
-          <Link href="/waitlist">
-            <Button size="lg">Join waitlist</Button>
-          </Link>
+          <div className="flex flex-wrap items-center justify-center gap-4">
+            <Link href="/waitlist" data-cta-location="home-closing">
+              <Button size="lg">Join waitlist</Button>
+            </Link>
+            <a href={contactUrl("home-closing")}>
+              <Button variant="outline" size="lg">
+                Work with us on Babulus
+              </Button>
+            </a>
+          </div>
         </div>
       </section>
     </div>

@@ -18,10 +18,10 @@ export function Hero() {
           Everything exports as portable VideoML (VML) projects you can run anywhere with the reference renderer—no vendor lock-in.
         </p>
         <div className="space-x-4">
-          <Link href="/waitlist">
+          <Link href="/waitlist" data-cta-location="hero">
             <Button size="lg">Join waitlist</Button>
           </Link>
-          <Link href="/docs/introduction">
+          <Link href="/docs/introduction" data-cta-location="hero">
             <Button variant="outline" size="lg">
               What is VideoML?
             </Button>

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { elapsedMs, sanitizeCampaign, sanitizePagePath, sanitizeSource } from "@/lib/waitlist-intake";
+import { SIGN_UP_FORM_ID, sendEvent, signUpParameters } from "@/lib/analytics";
 
 type Persona = "business" | "agency" | "marketer" | "creator" | "developer" | "other";
 
@@ -24,7 +25,7 @@ const PERSONAS: Array<{ value: Persona; label: string }> = [
   { value: "other", label: "Other" },
 ];
 
-const FORM_ID = "babulus-waitlist-v1";
+const FORM_ID = SIGN_UP_FORM_ID;
 const NOTICE_VERSION = "babulus-waitlist-v1";
 
 // Read at build time (inlined by Next.js). Unset means the waitlist is not live yet.
@@ -73,13 +74,14 @@ export function WaitlistForm({ source }: { source?: string }) {
         renderedAtRef.current === null ? undefined : elapsedMs(renderedAtRef.current, performance.now());
     }
 
+    const leadSource = sanitizeSource(source ?? "marketing-site", "marketing-site");
     const payload: Record<string, unknown> = {
       submission_id: submissionIdRef.current,
       email: email.trim(),
       notice_version: NOTICE_VERSION,
       marketing_opt_in: wantsUpdates,
       website,
-      attributes: { persona, source: sanitizeSource(source ?? "marketing-site", "marketing-site") },
+      attributes: { persona, source: leadSource },
     };
     if (name.trim()) payload.name = name.trim();
     const pagePath = sanitizePagePath(window.location.pathname);
@@ -94,6 +96,10 @@ export function WaitlistForm({ source }: { source?: string }) {
         headers: { "content-type": "application/json" },
         body: JSON.stringify(payload),
       });
+
+      // GA4 sign_up only for an accepted signup, with no personal data (no email, name or persona).
+      const signUp = signUpParameters(response.status, leadSource);
+      if (signUp) sendEvent("sign_up", signUp);
 
       if (response.status === 202) {
         setState({ status: "success" });
