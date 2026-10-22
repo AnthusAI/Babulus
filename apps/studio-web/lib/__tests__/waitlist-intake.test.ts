@@ -1,4 +1,4 @@
-import { sanitizeCampaign, sanitizePagePath, sanitizeSource } from "../waitlist-intake";
+import { elapsedMs, sanitizeCampaign, sanitizePagePath, sanitizeSource } from "../waitlist-intake";
 
 describe("sanitizeCampaign", () => {
   it("keeps valid utm values", () => {
@@ -50,5 +50,20 @@ describe("sanitizeSource", () => {
     expect(sanitizeSource("waitlist-page", "marketing-site")).toBe("waitlist-page");
     expect(sanitizeSource("Bad Source", "marketing-site")).toBe("marketing-site");
     expect(sanitizeSource("a".repeat(41), "marketing-site")).toBe("marketing-site");
+  });
+});
+
+describe("elapsedMs", () => {
+  it("rounds to whole milliseconds", () => {
+    expect(elapsedMs(1000.2, 4500.7)).toBe(3501);
+  });
+
+  it("caps at 24 hours", () => {
+    expect(elapsedMs(0, 90_000_000)).toBe(86_400_000);
+  });
+
+  it("omits negative or non-finite values", () => {
+    expect(elapsedMs(5000, 1000)).toBeUndefined();
+    expect(elapsedMs(Number.NaN, 1000)).toBeUndefined();
   });
 });
