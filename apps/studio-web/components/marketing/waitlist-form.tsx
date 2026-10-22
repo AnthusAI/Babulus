@@ -1,11 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { sanitizeCampaign, sanitizePagePath, sanitizeSource } from "@/lib/waitlist-intake";
+import { elapsedMs, sanitizeCampaign, sanitizePagePath, sanitizeSource } from "@/lib/waitlist-intake";
 
 type Persona = "business" | "agency" | "marketer" | "creator" | "developer" | "other";
 
@@ -42,6 +42,13 @@ export function WaitlistForm({ source }: { source?: string }) {
 
   // Reused on retry; cleared when the content changes (a reused id with new content is a 409).
   const submissionIdRef = useRef<string | null>(null);
+  // Render-to-submit time for Prospectus spam scoring; the first value is kept for retries of the same submission.
+  const renderedAtRef = useRef<number | null>(null);
+  const elapsedRef = useRef<number | undefined>(undefined);
+
+  useEffect(() => {
+    renderedAtRef.current = performance.now();
+  }, []);
 
   const live = INTAKE_BASE_URL.length > 0;
 
@@ -60,7 +67,11 @@ export function WaitlistForm({ source }: { source?: string }) {
     if (!live) return;
     setState({ status: "submitting" });
 
-    if (!submissionIdRef.current) submissionIdRef.current = crypto.randomUUID();
+    if (!submissionIdRef.current) {
+      submissionIdRef.current = crypto.randomUUID();
+      elapsedRef.current =
+        renderedAtRef.current === null ? undefined : elapsedMs(renderedAtRef.current, performance.now());
+    }
 
     const payload: Record<string, unknown> = {
       submission_id: submissionIdRef.current,
@@ -75,6 +86,7 @@ export function WaitlistForm({ source }: { source?: string }) {
     if (pagePath) payload.page_path = pagePath;
     const campaign = sanitizeCampaign(new URLSearchParams(window.location.search));
     if (campaign) payload.campaign = campaign;
+    if (elapsedRef.current !== undefined) payload.elapsed_ms = elapsedRef.current;
 
     try {
       const response = await fetch(`${INTAKE_BASE_URL}/intake/waitlist/${FORM_ID}`, {

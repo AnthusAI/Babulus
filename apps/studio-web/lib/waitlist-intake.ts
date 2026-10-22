@@ -23,3 +23,12 @@ export function sanitizePagePath(pathname: string): string | undefined {
 export function sanitizeSource(source: string, fallback: string): string {
   return SOURCE_PATTERN.test(source) ? source : fallback;
 }
+
+const ELAPSED_MS_MAX = 86_400_000;
+
+/** Milliseconds from form render to submit, as Prospectus intake expects (integer, capped at 24 hours). */
+export function elapsedMs(renderedAt: number, submittedAt: number): number | undefined {
+  const elapsed = Math.round(submittedAt - renderedAt);
+  if (!Number.isFinite(elapsed) || elapsed < 0) return undefined;
+  return Math.min(elapsed, ELAPSED_MS_MAX);
+}
