@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { COOKIE_SETTINGS_HASH, GA_MEASUREMENT_ID } from "@/lib/analytics-config";
 
 export const metadata: Metadata = {
   title: "Privacy",
@@ -37,6 +38,33 @@ export default function PrivacyPage() {
             info@anth.us
           </a>
           .
+        </p>
+
+        <h2 className="pt-6 font-heading text-3xl">Analytics and cookies</h2>
+        <p className="text-muted-foreground">
+          This site uses Google Analytics 4 (measurement ID {GA_MEASUREMENT_ID}) to understand how it is used: which
+          pages are visited, how visitors arrive, roughly what kind of device and browser they use, and which main
+          buttons and links are clicked, such as “Join waitlist”. When someone joins the waitlist we record that a
+          signup happened and which page it came from. Google Analytics uses cookies or similar identifiers in your
+          browser.
+        </p>
+        <p className="text-muted-foreground">
+          We don’t send personal data to Google Analytics: never your email address, your name, the role you select,
+          or anything else you type into a form.
+        </p>
+        <p className="text-muted-foreground">
+          If you are in the European Economic Area, the United Kingdom or Switzerland, analytics and advertising
+          cookies are off until you choose. Elsewhere, analytics is on by default and advertising stays off until you
+          accept it. The “Cookies and analytics” banner lets you choose “Accept all” or “Reject all”, and you can
+          change your choice at any time with the{" "}
+          <a href={COOKIE_SETTINGS_HASH} className="underline underline-offset-2">
+            Cookie settings
+          </a>{" "}
+          link in the footer of every page. We do not currently run advertising on this site.
+        </p>
+        <p className="text-muted-foreground">
+          Your choice is stored in your browser’s local storage for about six months, after which we ask again. You
+          can also block or delete cookies and local storage in your browser settings.
         </p>
       </div>
     </div>

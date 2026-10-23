@@ -51,12 +51,12 @@ export function SiteHeader() {
         </div>
         <div className="flex flex-1 items-center justify-end space-x-2">
           <nav className="flex items-center space-x-2">
-            <Link href="/dashboard">
+            <Link href="/dashboard" data-cta-location="header">
               <Button variant="ghost" size="sm">
                 Sign in
               </Button>
             </Link>
-            <Link href="/waitlist">
+            <Link href="/waitlist" data-cta-location="header">
               <Button size="sm">Join waitlist</Button>
             </Link>
           </nav>

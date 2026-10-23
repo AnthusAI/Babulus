@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import type { Metadata } from "next";
 import { SiteHeader } from "@/components/marketing/site-header";
 import { Footer } from "@/components/marketing/footer";
+import { Analytics } from "@/components/marketing/analytics";
 
 export const metadata: Metadata = {
   title: {
@@ -30,6 +31,7 @@ export default function PublicLayout({ children }: { children: ReactNode }) {
       <SiteHeader />
       <main className="flex-1">{children}</main>
       <Footer />
+      <Analytics />
     </div>
   );
 }

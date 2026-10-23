@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "event_id": "87e94683-34f1-4f24-949c-21c7b8aceeff",
+  "issue_id": "babulus-e6359e14-1bc7-44b1-b76e-ceddba77d9d1",
+  "event_type": "issue_created",
+  "occurred_at": "2026-10-22T16:05:20.705Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "Add GA4 with Consent Mode v2, consent banner, CTA events and contact CTAs",
+    "description": "As a site owner, I want GA4 (G-31SC26SDGX) with Consent Mode v2 region defaults, a first-party consent banner with a Cookie settings reopen link, cta_click and sign_up events without personal data, and contact CTAs to anth.us/engage, so that Babulus measures conversions the same way as anth.us (approved by Ryan for all Anthus sites).\n\nCopy the anth.us implementation (Papyrus consent.py + Anth.us-web conversion-events.js and availability labels). /privacy gets an analytics section. Home-page feature status labels driven by one config value per feature. Closes after Ryan approves the PR and it deploys.",
+    "issue_type": "task",
+    "status": "open",
+    "priority": 2,
+    "assignee": null,
+    "parent": null,
+    "labels": []
+  }
+}

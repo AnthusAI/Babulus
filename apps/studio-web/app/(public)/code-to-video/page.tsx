@@ -196,7 +196,7 @@ export default async function CodeToVideoPage() {
                 <p className="text-sm text-muted-foreground">
                   Ready to generate videos from code?
                 </p>
-                <Link href="/waitlist">
+                <Link href="/waitlist" data-cta-location="code-to-video">
                   <Button size="lg">Join waitlist</Button>
                 </Link>
               </div>
