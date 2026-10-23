@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "event_id": "24d8b466-acc8-403c-a7e0-b15ec27cf802",
+  "issue_id": "babulus-84493f28-3832-4da8-a78d-26eb964c34f1",
+  "event_type": "comment_added",
+  "occurred_at": "2026-10-23T13:26:13.577Z",
+  "actor_id": "home",
+  "payload": {
+    "comment_id": "6e2e3268-6022-4e0b-93d0-1f75c27b1f42",
+    "comment_author": "home"
+  }
+}

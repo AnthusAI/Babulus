@@ -24,17 +24,24 @@
       "text": "2026-10-20: infra PRs landed on main. #13 (ed5043e) removed the NAT gateway from the render worker network and added trigger guards. #16 (1666cc6) dropped reserved concurrency on the render trigger because new accounts cap Lambda concurrency at 10. A follow-up to restore it after the quota increase is filed separately.",
       "created_at": "2026-10-20T13:17:55.409494Z",
       "comment_type": "default"
+    },
+    {
+      "id": "6e2e3268-6022-4e0b-93d0-1f75c27b1f42",
+      "author": "home",
+      "text": "Status 2026-10-23 (pausing for usage throttle). Done: Babulus runs in 869507387405 (Amplify d23jak4ewu2gf9, no NAT); babulus.anth.us is attached to the new app and serves the waitlist (Prospectus intake live), GA4 and consent; legacy auto-build is off. Left: babul.us still 302s to babulus.anth.us via legacy app d3epcqvzbxdaq because AWS requires a Support case for the cross-account Amplify domain association; the Lambda concurrency increase to 1000 is pending at AWS. Next step: either Ryan files the AWS Support case (text drafted in the Babulus session), or babul.us moves to the Papyrus marketing site via its own CloudFront (epic 4f8c94), which avoids the case. Then retire legacy app d3epcqvzbxdaq and the old account's Babulus resources.",
+      "created_at": "2026-10-23T13:26:13.577863Z",
+      "comment_type": "default"
     }
   ],
   "created_at": "2026-10-19T16:40:55.515588Z",
-  "updated_at": "2026-10-20T13:17:55.409509Z",
+  "updated_at": "2026-10-23T13:26:13.621360Z",
   "closed_at": null,
+  "right_now_summary": "Babulus is being moved to a dedicated AWS account before its domains switch over and the footer is verified.",
+  "right_now_updated_at": "2026-10-19T16:41:04.218466Z",
+  "custom": {},
   "agent": {
     "platform": "claude_code",
     "model": "claude-sonnet-5-5",
     "name": "Cloud Agent"
-  },
-  "right_now_summary": "Babulus is being moved to a dedicated AWS account before its domains switch over and the footer is verified.",
-  "right_now_updated_at": "2026-10-19T16:41:04.218466Z",
-  "custom": {}
+  }
 }
