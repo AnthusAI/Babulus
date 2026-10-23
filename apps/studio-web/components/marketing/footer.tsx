@@ -1,3 +1,6 @@
+"use client";
+
+// Client component: anthus-footer is a client module, so its exports (defaultCommunityLinks) can't be used on the server.
 import AnthusFooter, { defaultCommunityLinks } from "anthus-footer";
 import { contactUrl } from "@/lib/analytics";
 import { COOKIE_SETTINGS_HASH } from "@/lib/analytics-config";
