@@ -19,11 +19,13 @@ import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import * as ecr from 'aws-cdk-lib/aws-ecr';
 import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
+import * as ssm from 'aws-cdk-lib/aws-ssm';
+import { Provider } from 'aws-cdk-lib/custom-resources';
 import { DynamoEventSource } from 'aws-cdk-lib/aws-lambda-event-sources';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
 import { readFileSync, existsSync } from 'fs';
-import { Duration } from 'aws-cdk-lib';
+import { CustomResource, Duration } from 'aws-cdk-lib';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -305,6 +307,60 @@ if (existsSync(amplifyOutputsPath)) {
   console.warn('  ECS tasks will fail until redeployed after amplify_outputs.json is generated');
 }
 
+// Render worker Cognito credential: generated at deploy time, set on the
+// worker's Cognito user and stored only in an SSM SecureString.
+// Bump RENDER_WORKER_CREDENTIAL_ROTATION to rotate the password.
+const RENDER_WORKER_USERNAME = 'render-worker@babulus.internal';
+const RENDER_WORKER_CREDENTIAL_ROTATION = '1';
+const renderWorkerPasswordParameterName = `/babulus/${backend.stack.stackName}/render-worker-password`;
+
+const renderWorkerCredentialFunction = new NodejsFunction(backend.stack, 'RenderWorkerCredentialFunction', {
+  runtime: lambda.Runtime.NODEJS_20_X,
+  handler: 'handler',
+  entry: path.join(__dirname, 'functions/render-worker-credential/handler.ts'),
+  bundling: {
+    externalModules: ['@aws-sdk/*'], // Provided by Lambda runtime
+    minify: true,
+    sourceMap: false,
+  },
+  timeout: Duration.seconds(30),
+});
+
+const userPool = backend.auth.resources.userPool;
+renderWorkerCredentialFunction.addToRolePolicy(
+  new iam.PolicyStatement({
+    actions: ['cognito-idp:AdminGetUser', 'cognito-idp:AdminCreateUser', 'cognito-idp:AdminSetUserPassword'],
+    resources: [userPool.userPoolArn],
+  })
+);
+renderWorkerCredentialFunction.addToRolePolicy(
+  new iam.PolicyStatement({
+    actions: ['ssm:PutParameter', 'ssm:DeleteParameter'],
+    resources: [
+      `arn:aws:ssm:${backend.stack.region}:${backend.stack.account}:parameter${renderWorkerPasswordParameterName}`,
+    ],
+  })
+);
+
+const renderWorkerCredential = new CustomResource(backend.stack, 'RenderWorkerCredential', {
+  serviceToken: new Provider(backend.stack, 'RenderWorkerCredentialProvider', {
+    onEventHandler: renderWorkerCredentialFunction,
+  }).serviceToken,
+  properties: {
+    UserPoolId: userPool.userPoolId,
+    Username: RENDER_WORKER_USERNAME,
+    ParameterName: renderWorkerPasswordParameterName,
+    Rotation: RENDER_WORKER_CREDENTIAL_ROTATION,
+  },
+});
+
+const renderWorkerPasswordParameter = ssm.StringParameter.fromSecureStringParameterAttributes(
+  backend.stack,
+  'RenderWorkerPasswordParameter',
+  { parameterName: renderWorkerPasswordParameterName, simpleName: false }
+);
+renderTaskDefinition.node.addDependency(renderWorkerCredential);
+
 // Add container to task definition
 const renderContainer = renderTaskDefinition.addContainer('render-worker', {
   image: ecs.ContainerImage.fromEcrRepository(renderWorkerEcr, 'latest'),
@@ -317,8 +373,10 @@ const renderContainer = renderTaskDefinition.addContainer('render-worker', {
     NODE_ENV: 'production',
     AMPLIFY_OUTPUTS: JSON.stringify(amplifyOutputs), // Pass Amplify config to container (may be empty on first deploy)
     S3_BUCKET: bucket.bucketName, // For downloading amplify_outputs.json from S3 if env var is empty
-    WORKER_EMAIL: 'render-worker@babulus.internal',
-    WORKER_PASSWORD: 'BabulusRenderWorker2026!' // TODO: Move to Secrets Manager
+    WORKER_EMAIL: RENDER_WORKER_USERNAME,
+  },
+  secrets: {
+    WORKER_PASSWORD: ecs.Secret.fromSsmParameter(renderWorkerPasswordParameter), // Injected by ECS at task start
   },
 });
 

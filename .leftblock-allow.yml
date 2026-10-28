@@ -1,5 +1,6 @@
 # LeftBlock overrides: each entry approves one finding (one rule on one exact
-# line content in one file). Changing that line re-blocks it.
+# line content in one file). Changing that line re-blocks it. `kind` is the
+# rule's category, shown for reviewers; it is not part of matching.
 version: 1
 allow:
   - id: "1e3f0a6256bbe0dd"
@@ -12,3 +13,9 @@ allow:
     file: "apps/studio-web/app/(public)/privacy/page.tsx"
     reason: "Company role address for privacy requests, required on the public privacy notice Ryan approved 2026-10-20"
     added: 2026-10-20
+  - id: "70e5722e548404f1"
+    rule: "leftblock-personal-email"
+    file: "apps/studio-web/amplify/backend.ts"
+    kind: "Personal email address"
+    reason: "Cognito username of the render-worker service account on the non-routable .internal domain; not a personal or deliverable address, and already in backend.ts on main"
+    added: 2026-10-28
