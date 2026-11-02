@@ -12,15 +12,36 @@
   "dependencies": [],
   "comments": [
     {
-      "id": "63e9713a-4175-4a60-afdb-fa6fcaa473da",
+      "id": "ec82855f-d1ed-4501-a59d-63867060e5b1",
       "author": "home",
-      "text": "PR 3 of 3 (remove the old render path) open. Leaves the ECR repo, the render-worker Cognito user and the Job table stream for a follow-up card.",
-      "created_at": "2026-11-02T22:03:50.085919Z",
+      "text": "PR 1 of 3 (claim correctness) open: fencing tokens, real heartbeat renewal, fallback gate, per-day quota reset. Attempt timeouts and account-wide budget scope remain M4.",
+      "created_at": "2026-11-02T21:37:43.126018Z",
+      "comment_type": "default"
+    },
+    {
+      "id": "ea0091a9-94d8-45da-a0eb-cbb57d76bee8",
+      "author": "home",
+      "text": "PR 2 of 3 (video jobs and one worker) open, stacked on PR 1: job kind, video hash and dedupe, local-only waiting reason, content store for narration audio, unified worker with the TypeScript subprocess, video commands with --json and Fix lines, WorkerAuth seam for M2. Voices in the content store and auritus-03327e follow as PR 2b.",
+      "created_at": "2026-11-02T21:52:46.711102Z",
+      "comment_type": "default"
+    },
+    {
+      "id": "0b069b9b-e8b2-440f-850d-18cef423768e",
+      "author": "home",
+      "text": "PR 2b open (stacked on PR 2): cloned voices in the content-addressed store with the manifest published last, Batch downloads and verifies them, Higgs/Bark reject named voices. Also: the claimable list now carries voice_id, so a local worker no longer sees every job as the default voice.",
+      "created_at": "2026-11-02T21:58:38.229652Z",
+      "comment_type": "default"
+    },
+    {
+      "id": "d68fda2f-d9c7-42a4-b50e-9bc4a4d51e46",
+      "author": "home",
+      "text": "PR 8 (remove the old render path and the generation worker) open; leftovers tracked in babulus-3504b2d4.",
+      "created_at": "2026-11-02T22:46:08.829985Z",
       "comment_type": "default"
     }
   ],
   "created_at": "2026-11-02T05:41:58.496769Z",
-  "updated_at": "2026-11-02T22:03:50.086081Z",
+  "updated_at": "2026-11-02T22:46:08.830201Z",
   "closed_at": null,
   "right_now_summary": null,
   "right_now_updated_at": null,

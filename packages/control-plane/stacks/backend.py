@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from aws_cdk import aws_cloudwatch as cloudwatch
+from aws_cdk import aws_cloudwatch_actions as cloudwatch_actions
 from aws_cdk import (
     CfnOutput,
     Duration,
@@ -84,7 +86,6 @@ from stacks.operator_auth_layer import build_operator_auth_layer
 LAMBDA_ROOT = Path(__file__).resolve().parents[1] / "lambdas"
 DEFAULT_CLAIM_TIMEOUT_SECONDS = 900
 DEFAULT_RACE_SECONDS = 900
-DEFAULT_DELIVERY_GRACE_SECONDS = 300
 DEFAULT_WARM_START_THRESHOLD_SECONDS = 60
 DEFAULT_PROVISIONING_OVERHEAD_SECONDS = 90
 
@@ -143,10 +144,6 @@ class BackendStack(Stack):
         )
         race_seconds = int(
             self.node.try_get_context("race_seconds") or DEFAULT_RACE_SECONDS
-        )
-        delivery_grace_seconds = int(
-            self.node.try_get_context("delivery_grace_seconds")
-            or DEFAULT_DELIVERY_GRACE_SECONDS
         )
 
         # Rate card for the job cost estimate: two components (GPU cost,
@@ -660,6 +657,10 @@ class BackendStack(Stack):
 
         for method, path in [
             (apigwv2.HttpMethod.GET, "/jobs/claimable"),
+            (apigwv2.HttpMethod.GET, "/jobs/{hash}/input"),
+            (apigwv2.HttpMethod.POST, "/store/{sha256}/presign-upload"),
+            (apigwv2.HttpMethod.GET, "/store/{sha256}"),
+            (apigwv2.HttpMethod.POST, "/voices/{voice_id}/publish"),
             (apigwv2.HttpMethod.GET, "/admin/overview"),
             (apigwv2.HttpMethod.GET, "/admin/costs"),
             (apigwv2.HttpMethod.GET, "/admin/jobs"),
@@ -825,34 +826,40 @@ class BackendStack(Stack):
             time=sfn.WaitTime.duration(Duration.seconds(race_seconds)),
         )
 
-        get_job_initial = sfn_tasks.DynamoGetItem(
+        # The gate is the only road to the queue. It performs one
+        # conditional write that succeeds only when no live claim exists and
+        # this timer's attempt is still the job's current one; the state
+        # machine submits to Batch only on its "submit" answer.
+        fallback_gate_fn = lambda_.Function(
             self,
-            "GetJobStatusInitial",
-            table=jobs,
-            key={
-                "content_hash": sfn_tasks.DynamoAttributeValue.from_string(
-                    sfn.JsonPath.string_at("$.content_hash")
-                )
-            },
-            result_path="$.job",
+            "FallbackGateFn",
+            runtime=lambda_.Runtime.PYTHON_3_11,
+            handler="handler.handler",
+            code=lambda_.Code.from_asset(str(LAMBDA_ROOT / "fallback_gate")),
+            timeout=Duration.seconds(30),
+            environment={"JOBS_TABLE": jobs.table_name},
+        )
+        jobs.grant_read_write_data(fallback_gate_fn)
+
+        reserve_fallback = sfn_tasks.LambdaInvoke(
+            self,
+            "ReserveFallback",
+            lambda_function=fallback_gate_fn,
+            payload=sfn.TaskInput.from_object(
+                {
+                    "content_hash": sfn.JsonPath.string_at("$.content_hash"),
+                    "job_token": sfn.JsonPath.string_at("$.job_token"),
+                    "claim_seconds": claim_timeout_seconds,
+                }
+            ),
+            payload_response_only=True,
+            result_path="$.gate",
         )
 
-        wait_delivery = sfn.Wait(
+        wait_live_claim = sfn.Wait(
             self,
-            "WaitForClaimedDeliveryGrace",
-            time=sfn.WaitTime.duration(Duration.seconds(delivery_grace_seconds)),
-        )
-
-        get_job_after_grace = sfn_tasks.DynamoGetItem(
-            self,
-            "GetJobStatusAfterGrace",
-            table=jobs,
-            key={
-                "content_hash": sfn_tasks.DynamoAttributeValue.from_string(
-                    sfn.JsonPath.string_at("$.content_hash")
-                )
-            },
-            result_path="$.job",
+            "WaitForLiveClaim",
+            time=sfn.WaitTime.seconds_path("$.gate.wait_seconds"),
         )
 
         submit_batch = sfn_tasks.BatchSubmitJob(
@@ -869,6 +876,7 @@ class BackendStack(Stack):
                     "AURITUS_CONTENT_HASH": sfn.JsonPath.string_at("$.content_hash"),
                     "AURITUS_JOB_TOKEN": sfn.JsonPath.string_at("$.job_token"),
                     "AURITUS_TTS_BACKEND": sfn.JsonPath.string_at("$.tts_backend"),
+                    "AURITUS_CLAIM_TOKEN": sfn.JsonPath.string_at("$.gate.claim_token"),
                 }
             ),
             result_path="$.batch",
@@ -880,6 +888,15 @@ class BackendStack(Stack):
             error="BatchFallbackFailed",
             cause="AWS Batch did not run the GPU job; the job was marked failed.",
         )
+        gate_failed = sfn.Fail(
+            self,
+            "FallbackGateFailed",
+            error="FallbackGateFailed",
+            cause="The fallback gate could not decide; no compute was started.",
+        )
+        # Releasing a failed submission is fenced by the gate's token, so it
+        # can only fail the attempt the gate reserved and never a job that a
+        # local worker has since taken.
         mark_job_failed_on_submit_error = sfn_tasks.DynamoUpdateItem(
             self,
             "MarkJobFailedOnSubmitError",
@@ -891,13 +908,16 @@ class BackendStack(Stack):
             },
             update_expression=(
                 "SET #status = :failed, error_message = :reason, "
-                "failed_at = :failed_at, updated_at = :failed_at"
+                "failed_at = :failed_at, updated_at = :failed_at "
+                "REMOVE claim_token, claim_deadline"
             ),
-            condition_expression="#status = :pending",
+            condition_expression="claim_token = :claim_token",
             expression_attribute_names={"#status": "status"},
             expression_attribute_values={
                 ":failed": sfn_tasks.DynamoAttributeValue.from_string("failed"),
-                ":pending": sfn_tasks.DynamoAttributeValue.from_string("pending"),
+                ":claim_token": sfn_tasks.DynamoAttributeValue.from_string(
+                    sfn.JsonPath.string_at("$.gate.claim_token")
+                ),
                 ":reason": sfn_tasks.DynamoAttributeValue.from_string(
                     "batch_fallback_failed"
                 ),
@@ -917,31 +937,24 @@ class BackendStack(Stack):
             result_path="$.submit_error",
         )
 
-        local_delivered = sfn.Succeed(self, "LocalWorkerDelivered")
+        fallback_not_needed = sfn.Succeed(self, "FallbackNotNeeded")
 
-        check_delivery_after_grace = sfn.Choice(self, "CheckDeliveryAfterGrace")
-        check_delivery_after_grace.when(
-            sfn.Condition.string_equals("$.job.Item.status.S", "done"),
-            local_delivered,
-        ).otherwise(submit_batch)
-
-        wait_delivery.next(get_job_after_grace).next(check_delivery_after_grace)
-
-        check_initial_status = sfn.Choice(self, "CheckInitialStatus")
-        check_initial_status.when(
-            sfn.Condition.string_equals("$.job.Item.status.S", "done"),
-            local_delivered,
-        ).when(
-            sfn.Condition.string_equals("$.job.Item.status.S", "pending"),
+        gate_decision = sfn.Choice(self, "GateDecision")
+        gate_decision.when(
+            sfn.Condition.string_equals("$.gate.decision", "submit"),
             submit_batch,
         ).when(
-            sfn.Condition.string_equals("$.job.Item.status.S", "claimed"),
-            wait_delivery,
+            sfn.Condition.string_equals("$.gate.decision", "wait"),
+            wait_live_claim,
         ).otherwise(
-            submit_batch
+            fallback_not_needed
         )
 
-        definition = wait_race.next(get_job_initial).next(check_initial_status)
+        reserve_fallback.add_catch(gate_failed, errors=["States.ALL"])
+        reserve_fallback.next(gate_decision)
+        wait_live_claim.next(reserve_fallback)
+
+        definition = wait_race.next(reserve_fallback)
 
         fallback = sfn.StateMachine(
             self,
@@ -966,6 +979,31 @@ class BackendStack(Stack):
         fallback.grant_start_execution(router_fn)
 
         budget_topic = sns.Topic(self, "AuritusBudgetTopic")
+
+        # A fallback timer that fails or times out can strand a reserved job,
+        # so either one raises an alarm that someone sees.
+        timer_problems = cloudwatch.MathExpression(
+            expression="failed + timed_out",
+            using_metrics={
+                "failed": fallback.metric_failed(period=Duration.minutes(5)),
+                "timed_out": fallback.metric_timed_out(period=Duration.minutes(5)),
+            },
+            period=Duration.minutes(5),
+        )
+        timer_alarm = cloudwatch.Alarm(
+            self,
+            "FallbackTimerFailedAlarm",
+            alarm_description=(
+                "A fallback timer execution failed or timed out; a job may be "
+                "waiting on a claim nobody holds."
+            ),
+            metric=timer_problems,
+            threshold=1,
+            evaluation_periods=1,
+            comparison_operator=cloudwatch.ComparisonOperator.GREATER_THAN_OR_EQUAL_TO_THRESHOLD,
+            treat_missing_data=cloudwatch.TreatMissingData.NOT_BREACHING,
+        )
+        timer_alarm.add_alarm_action(cloudwatch_actions.SnsAction(budget_topic))
         budget_guard_fn = lambda_.Function(
             self,
             "BudgetGuardFn",

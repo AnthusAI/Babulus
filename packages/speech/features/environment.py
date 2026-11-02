@@ -35,6 +35,11 @@ def reset_mocks(context):
 def before_scenario(context, scenario) -> None:
     """Attach fixtures and honor skip tags."""
     use_fixture(reset_mocks, context)
+    import tempfile
+
+    scratch = tempfile.TemporaryDirectory(prefix="spec-root-")
+    context.add_cleanup(scratch.cleanup)
+    context.scenario_root = scratch.name
     if "integration" in scenario.effective_tags and not context.integration:
         scenario.skip("Set AURITUS_INTEGRATION=1 to run integration scenarios")
     if "aws" in scenario.effective_tags and not context.aws_integration:
