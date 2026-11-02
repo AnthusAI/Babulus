@@ -16,7 +16,7 @@ Given("the deploy role template", () => {
 });
 
 Then("the deploy job needs the {string} job", (job: string) => {
-  assert.match(deployJob(), new RegExp(`needs: ${job}\\b`));
+  assert.match(deployJob(), new RegExp(`needs: \\[[^\\]]*\\b${job}\\b[^\\]]*\\]`));
 });
 
 Then("the deploy job runs only for a push to main", () => {
