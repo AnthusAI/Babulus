@@ -97,7 +97,7 @@ Given("the Studio web source", () => {
   try {
     source = execFileSync(
       "git",
-      ["grep", "-h", "-E", "kind: *['\"]render['\"]", "--", "apps/studio-web", ":!apps/studio-web/tests"],
+      ["grep", "-h", "-E", "kind: *['\"]render['\"]", "--", "apps/studio-web", ":!apps/studio-web/tests", ":!apps/studio-web/lib/__tests__"],
       { encoding: "utf8" },
     );
   } catch (error) {
