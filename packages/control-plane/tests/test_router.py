@@ -279,7 +279,10 @@ def test_claim_and_done_telemetry(router_resources: dict[str, object]) -> None:
         router_resources["event"](
             "PUT",
             f"/jobs/{content_hash}/done",
-            body={"audio_key": "audio/test.mp3"},
+            body={
+                "audio_key": "audio/test.mp3",
+                "claim_token": claim_body["claim_token"],
+            },
             headers=_operator_headers(),
             path_parameters={"hash": content_hash},
         ),
@@ -312,11 +315,27 @@ def test_mark_failed_records_telemetry(router_resources: dict[str, object]) -> N
     created = _create_job(router_resources)
     content_hash = router_resources["response_body"](created)["content_hash"]
 
+    claim_resp = router_resources["handler"].handler(
+        router_resources["event"](
+            "PUT",
+            f"/jobs/{content_hash}/claim",
+            body={"claim_owner": "batch:job-1234"},
+            headers=_operator_headers(),
+            path_parameters={"hash": content_hash},
+        ),
+        None,
+    )
+    claim_token = router_resources["response_body"](claim_resp)["claim_token"]
+
     fail_resp = router_resources["handler"].handler(
         router_resources["event"](
             "PUT",
             f"/jobs/{content_hash}/failed",
-            body={"owner": "batch:job-1234", "reason": "GPU out of memory"},
+            body={
+                "owner": "batch:job-1234",
+                "reason": "GPU out of memory",
+                "claim_token": claim_token,
+            },
             headers=_operator_headers(),
             path_parameters={"hash": content_hash},
         ),

@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, Protocol
 
 import httpx
 
@@ -18,19 +18,78 @@ from babulus_speech.config import load_config
 class AuritusApiError(RuntimeError):
     """Raised when the Auritus API returns an error."""
 
+    def __init__(self, message: str, *, status_code: int | None = None) -> None:
+        super().__init__(message)
+        self.status_code = status_code
+
 
 class AuritusSessionExpiredError(AuritusApiError):
     """Raised when the operator refresh token is dead and re-login is required."""
 
 
+class WorkerAuth(Protocol):
+    """How the CLI and worker authenticate to the jobs API.
+
+    This is the one seam for credentials. Today's implementation is
+    :class:`OperatorSessionAuth`; milestone M2 replaces it with a
+    ``cli-login`` session (and a job-scoped token for cloud workers) by
+    passing a different object to :class:`AuritusClient`, with no other
+    change to the worker or the API calls.
+    """
+
+    def access_token(self) -> str:
+        """Return a bearer token valid right now.
+
+        :raises AuritusSessionExpiredError: If the session cannot be renewed.
+        :raises AuritusApiError: If no credentials are available.
+        """
+        ...
+
+    def refresh(self) -> None:
+        """Renew the session after the API rejected the token (401)."""
+        ...
+
+
+class OperatorSessionAuth:
+    """The Cognito operator session cached by ``babulus login``."""
+
+    def access_token(self) -> str:
+        """Return the cached access token, refreshing it when it is stale."""
+        try:
+            return get_access_token()
+        except RefreshExpiredError as exc:
+            raise AuritusSessionExpiredError(
+                "Session expired. Run `babulus login`."
+            ) from exc
+        except AuthError as exc:
+            raise AuritusApiError(str(exc)) from exc
+
+    def refresh(self) -> None:
+        """Force a token refresh."""
+        try:
+            refresh_tokens()
+        except RefreshExpiredError as exc:
+            raise AuritusSessionExpiredError(
+                "Session expired. Run `babulus login`."
+            ) from exc
+        except AuthError as exc:
+            raise AuritusApiError(str(exc)) from exc
+
+
 class AuritusClient:
     """HTTP client for Auritus operator and site-management routes."""
 
-    def __init__(self, base_url: str | None = None, token: str | None = None) -> None:
+    def __init__(
+        self,
+        base_url: str | None = None,
+        token: str | None = None,
+        auth: WorkerAuth | None = None,
+    ) -> None:
         """Create a client.
 
         :param base_url: API base URL; defaults to config api_endpoint.
-        :param token: Bearer token; defaults to cached Cognito access token.
+        :param token: Fixed bearer token; overrides ``auth``.
+        :param auth: Credential source; defaults to the cached operator session.
         """
         cfg = load_config()
         self.base_url = (base_url or cfg.get("api_endpoint") or "").rstrip("/")
@@ -39,20 +98,14 @@ class AuritusClient:
                 "api_endpoint is not set. Run `auritus deploy` or `auritus config set`."
             )
         self._token = token
+        self._auth: WorkerAuth = auth or OperatorSessionAuth()
 
     def _headers(self, site_key: str | None = None) -> dict[str, str]:
         headers = {"Accept": "application/json", "Content-Type": "application/json"}
         if site_key:
             headers["X-Auritus-Site-Key"] = site_key
         else:
-            try:
-                token = self._token or get_access_token()
-            except RefreshExpiredError as exc:
-                raise AuritusSessionExpiredError(
-                    "Session expired. Run `auritus login`."
-                ) from exc
-            except AuthError as exc:
-                raise AuritusApiError(str(exc)) from exc
+            token = self._token or self._auth.access_token()
             headers["Authorization"] = f"Bearer {token}"
         return headers
 
@@ -85,14 +138,7 @@ class AuritusClient:
             method, url, headers=self._headers(site_key=site_key), json_body=json_body
         )
         if response.status_code == 401 and not site_key:
-            try:
-                refresh_tokens()
-            except RefreshExpiredError as exc:
-                raise AuritusSessionExpiredError(
-                    "Session expired. Run `auritus login`."
-                ) from exc
-            except AuthError as exc:
-                raise AuritusApiError(str(exc)) from exc
+            self._auth.refresh()
             response = self._send(
                 method,
                 url,
@@ -101,7 +147,8 @@ class AuritusClient:
             )
         if response.status_code >= 400:
             raise AuritusApiError(
-                f"{method} {path} failed: {response.status_code} {response.text}"
+                f"{method} {path} failed: {response.status_code} {response.text}",
+                status_code=response.status_code,
             )
         if not response.content:
             return {}
@@ -134,6 +181,60 @@ class AuritusClient:
             site_key=site_key,
         )
 
+    def create_video_job(
+        self,
+        *,
+        script: dict[str, Any],
+        timeline: dict[str, Any] | None = None,
+        audio_sha256: str | None = None,
+        options: dict[str, Any] | None = None,
+        name: str = "",
+    ) -> dict[str, Any]:
+        """Create a video render job; it waits for a local worker.
+
+        :returns: The API response with ``content_hash``, ``status`` and, for
+            a new job, the reason it is waiting.
+        """
+        return self._request(
+            "POST",
+            "/jobs",
+            json_body={
+                "kind": "video",
+                "script": script,
+                "timeline": timeline,
+                "audio_sha256": audio_sha256,
+                "options": options or {},
+                "name": name,
+            },
+        )
+
+    def get_job_input(self, content_hash: str) -> dict[str, Any]:
+        """Fetch a video job's script, timeline, options and audio URL."""
+        return self._request("GET", f"/jobs/{content_hash}/input")
+
+    def store_upload_url(self, sha256: str) -> dict[str, Any]:
+        """Ask for a URL to upload one object to the content store.
+
+        :returns: ``{"exists": True}`` when the store already has it.
+        """
+        return self._request("POST", f"/store/{sha256}/presign-upload", json_body={})
+
+    def store_download_url(self, sha256: str) -> dict[str, Any]:
+        """Ask for a URL to download one object from the content store."""
+        return self._request("GET", f"/store/{sha256}")
+
+    def publish_voice(self, voice_id: str, manifest_sha256: str) -> dict[str, Any]:
+        """Publish a voice whose files and manifest are in the content store.
+
+        :raises AuritusApiError: If the manifest or any file it lists is not
+            in the store; the error names what is missing.
+        """
+        return self._request(
+            "POST",
+            f"/voices/{voice_id}/publish",
+            json_body={"manifest_sha256": manifest_sha256},
+        )
+
     def get_job(self, content_hash: str, *, site_key: str) -> dict[str, Any]:
         """Fetch job status and metadata."""
         return self._request("GET", f"/jobs/{content_hash}", site_key=site_key)
@@ -143,52 +244,109 @@ class AuritusClient:
         data = self._request("GET", "/jobs/claimable")
         return list(data.get("jobs") or [])
 
-    def claim_job(self, content_hash: str, owner: str) -> dict[str, Any]:
-        """Attempt a mutex claim on a job."""
+    def claim_job(
+        self, content_hash: str, owner: str, claim_seconds: int | None = None
+    ) -> dict[str, Any]:
+        """Claim a job; the response carries the claim's fencing token.
+
+        :returns: The API response, including ``claim_token``. Present that
+            token with every later call for this job.
+        """
         return self._request(
             "PUT",
             f"/jobs/{content_hash}/claim",
-            json_body={"claim_owner": owner},
+            json_body=(
+                {"claim_owner": owner, "claim_seconds": claim_seconds}
+                if claim_seconds
+                else {"claim_owner": owner}
+            ),
         )
 
-    def renew_claim(self, content_hash: str, owner: str) -> dict[str, Any]:
-        """Renew an in-flight claim (heartbeat) for long-running generation."""
+    def renew_claim(
+        self,
+        content_hash: str,
+        owner: str,
+        claim_token: str,
+        claim_seconds: int | None = None,
+    ) -> dict[str, Any]:
+        """Renew an in-flight claim (heartbeat) for long-running work.
+
+        :raises AuritusApiError: With ``status_code`` 409 when the claim was
+            lost, meaning the worker must stop and write nothing.
+        """
         return self._request(
             "PUT",
             f"/jobs/{content_hash}/claim",
-            json_body={"claim_owner": owner, "renew": True},
+            json_body={
+                "claim_owner": owner,
+                "renew": True,
+                "claim_token": claim_token,
+                **({"claim_seconds": claim_seconds} if claim_seconds else {}),
+            },
+        )
+
+    def presign_upload(
+        self, content_hash: str, claim_token: str | None = None
+    ) -> dict[str, Any]:
+        """Get a presigned URL for the claim holder's audio upload."""
+        return self._request(
+            "POST",
+            f"/jobs/{content_hash}/presign-upload",
+            json_body={"claim_token": claim_token} if claim_token else {},
         )
 
     def mark_done(
-        self, content_hash: str, *, audio_key: str, owner: str
+        self,
+        content_hash: str,
+        *,
+        audio_key: str,
+        owner: str,
+        claim_token: str | None = None,
     ) -> dict[str, Any]:
         """Mark a job done after audio upload."""
         return self._request(
             "PUT",
             f"/jobs/{content_hash}/done",
-            json_body={"audio_key": audio_key, "owner": owner},
+            json_body={
+                "audio_key": audio_key,
+                "owner": owner,
+                "claim_token": claim_token,
+            },
         )
 
     def complete_job(
-        self, content_hash: str, *, audio_key: str, owner: str
+        self,
+        content_hash: str,
+        *,
+        audio_key: str,
+        owner: str,
+        claim_token: str | None = None,
     ) -> dict[str, Any]:
         """Mark a job done after audio upload (alias for :meth:`mark_done`)."""
-        return self.mark_done(content_hash, audio_key=audio_key, owner=owner)
+        return self.mark_done(
+            content_hash, audio_key=audio_key, owner=owner, claim_token=claim_token
+        )
 
     def mark_failed(
-        self, content_hash: str, *, reason: str, owner: str
+        self,
+        content_hash: str,
+        *,
+        reason: str,
+        owner: str,
+        claim_token: str | None = None,
     ) -> dict[str, Any]:
         """Release a claim and mark a job failed after an unrecoverable error.
 
         :param content_hash: The content hash identifying the job.
         :param reason: A short, human-readable description of the failure.
         :param owner: The claim owner releasing the job.
+        :param claim_token: The fencing token from the claim.
         :returns: The API response with the job reset to ``failed``.
         """
         return self._request(
             "PUT",
             f"/jobs/{content_hash}/failed",
-            json_body={"reason": reason, "owner": owner},
+            json_body={"reason": reason, "owner": owner, "claim_token": claim_token},
         )
 
     def create_site(self, *, origin: str, name: str = "") -> dict[str, Any]:
@@ -249,14 +407,6 @@ class AuritusClient:
         """Re-enable the Batch job queue after a kill-switch."""
         return self._request(
             "POST", "/admin/queue/toggle", json_body={"state": "ENABLED"}
-        )
-
-    def presign_upload(self, content_hash: str) -> dict[str, Any]:
-        """Obtain a presigned S3 upload URL for generated audio."""
-        return self._request(
-            "POST",
-            f"/jobs/{content_hash}/presign-upload",
-            json_body={},
         )
 
     def list_jobs(

@@ -69,18 +69,91 @@ sequenceDiagram
 
 - Partition key: `content_hash` (deduplication).
 - Status lifecycle: `pending` → `claimed` → `done` (or error paths).
-- Claim uses a conditional update: only one owner while
-  `claim_deadline` is in the future; expired claims may be stolen.
+- Claim uses a conditional update: a job is taken only when it is `pending`
+  or its previous claim has expired. The response carries a fencing token.
+- A claim lasts one window (`claim_seconds`, default 15 minutes, at most one
+  hour). The holder renews it with `PUT /jobs/{hash}/claim` and
+  `{"renew": true, "claim_token": ...}` while it works; a renewal succeeds only
+  for the current token.
+- Uploading audio and recording a result or a failure must present the token.
+  A write from any other token (a worker whose claim lapsed and was taken, or
+  whose claim an operator released) is refused with `409 stale_claim`.
 - GSI on `status` + `created_at` supports worker polling (`/jobs/claimable`).
 
 ## Local worker race vs Batch fallback
 
 - When a job is created, Step Functions waits `FALLBACK_SECONDS` (default 15
   minutes).
-- After the wait, the state machine reads the job; if still `pending`, it
-  submits an AWS Batch GPU task with the content hash and job token.
-- A local worker that claims first completes upload and marks `done`, so Batch
-  work becomes a no-op or loses the claim race.
+- After the wait, the state machine calls the fallback gate. The gate makes one
+  conditional write that succeeds only if this timer still belongs to the job's
+  current attempt and the job is `pending` or its claim has expired. A live
+  claim always wins: the timer waits until the claim's deadline and asks again.
+- Only a successful write leads to an AWS Batch submission, and the Batch job
+  receives the fencing token the gate obtained. A job that is done, failed,
+  requeued or deleted ends the timer without starting compute, and so does a
+  gate that cannot answer.
+- Arming the same attempt twice does not start a second timer; requeueing a job
+  issues a new attempt, so a timer from before a requeue starts nothing.
+- Daily site quotas count per UTC day and start again at one each day. The
+  quota is taken by a conditional increment (`daily_usage < quota`) before the
+  job is written, so concurrent creates cannot exceed it; a job whose timer
+  cannot be started is taken back and its reservation released.
+- A timer execution that fails or times out raises a CloudWatch alarm (sent to
+  the budget topic).
+- A Batch worker whose renewal is refused (401, 403 or 409) ends its process at
+  once so the GPU stops. Known limit: an upload URL already issued to a worker
+  stays usable until it expires (5 minutes), so a worker that lost its claim in
+  that window could still overwrite the audio object; it can never record a
+  result.
+
+### Deploy order for claim fencing
+
+1. Push the new worker image (it sends and renews the claim token) **before**
+   deploying the stack, so no Batch job starts with an old image against the new
+   router.
+2. Deploy when the job queue is idle (no claimed jobs, no running Batch jobs):
+   claims taken before the deploy have no token and finish only through the
+   tokenless path.
+3. Upgrade every CLI/worker to this version; an older worker ignores the claim
+   token and its upload, result and failure calls are refused with 409.
+
+## Job kinds: speech and video
+
+The job table holds two kinds of job with one claim lifecycle. A job with no
+`kind` is a speech job.
+
+- **Speech** jobs are created with a site key, counted against its daily quota,
+  and have a cloud fallback.
+- **Video** jobs are created by an operator (`kind: "video"` with `script`,
+  optional `timeline`, `audio_sha256` and `options`). Their hash covers the
+  script, timeline, narration audio and the options that change the picture, so
+  equal inputs share one job (a conditional write). Narration audio goes in the
+  content store (`POST /store/{sha256}/presign-upload`) before a job may refer
+  to it. They cost the cloud nothing, need no quota, and get **no fallback
+  timer**: cloud rendering is not enabled for video, so a video job waits, with
+  `waiting_reason: waiting_for_local_worker`, until a `babulus worker` claims
+  it. The fallback gate also refuses any job that is not a speech job.
+
+`babulus worker` claims both kinds. It runs a video job by starting the
+repository's TypeScript render entry point (`scripts/render-video-from-script.ts`)
+as a subprocess and reports progress while it runs. A machine without Node, the
+toolchain's packages, Chromium or ffmpeg is told which is missing and how to fix
+it (`babulus video check`), and leaves video jobs waiting.
+
+## Named (cloned) voices
+
+A cloned voice is a recording and its transcript. `babulus voice publish
+<voice> --voices-dir <folder>` uploads both to the content store (objects keyed
+by SHA-256), then a manifest that names them, and only then calls
+`POST /voices/{voice}/publish`. Publishing checks that the manifest is exactly
+the object its hash names, describes this voice, and that every file it lists is
+in the store; anything missing is refused by name, so a voice is never half
+published. Jobs for a published voice carry its manifest, and a Batch worker
+downloads the files from the redeem response, verifies each hash, and passes the
+folder to the backend. A named voice that cannot be found, or that a backend
+cannot speak at all (Higgs and Bark have only their default voice), fails the
+job with `VoiceNotFound`; it is never spoken in a stock voice. Local workers
+read their own voices folder.
 
 ## Site keys and embed auth
 

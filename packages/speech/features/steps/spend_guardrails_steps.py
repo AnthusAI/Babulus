@@ -17,6 +17,7 @@ from behave import given, then, when
 from moto import mock_aws
 from typer.testing import CliRunner
 
+from support.fallback_machine import synthesize_fallback_definition
 from support.operator_tokens import operator_access_token
 
 LAMBDAS_PATH = (
@@ -139,36 +140,9 @@ def step_queue_state(context, state: str) -> None:
     assert context.batch_queue_state == state
 
 
-def _fallback_definition() -> dict:
-    """Synthesize the backend stack and return the fallback state machine."""
-    cdk_path = str(Path(__file__).resolve().parents[4] / "packages" / "control-plane")
-    if cdk_path not in sys.path:
-        sys.path.insert(0, cdk_path)
-    from aws_cdk import App, Environment
-    from aws_cdk.assertions import Template
-    from stacks.backend import BackendStack
-
-    stack = BackendStack(
-        App(),
-        "FallbackSpecBackend",
-        env=Environment(account="123456789012", region="us-east-1"),
-    )
-    machines = Template.from_stack(stack).find_resources(
-        "AWS::StepFunctions::StateMachine"
-    )
-    for machine in machines.values():
-        parts = machine["Properties"]["DefinitionString"]["Fn::Join"][1]
-        definition = json.loads(
-            "".join(part if isinstance(part, str) else "TOKEN" for part in parts)
-        )
-        if "SubmitGpuJob" in definition["States"]:
-            return definition
-    raise AssertionError("no state machine submits the Batch GPU job")
-
-
 @given("the deployed Batch fallback state machine")
 def step_fallback_machine(context) -> None:
-    context.fallback_states = _fallback_definition()["States"]
+    context.fallback_states = synthesize_fallback_definition()["States"]
 
 
 @when("the fallback's Batch job for a pending job fails or is refused")
@@ -191,7 +165,10 @@ def step_marks_failed(context, error_message: str) -> None:
     values = parameters["ExpressionAttributeValues"]
     assignments = dict(
         clause.strip().split(" = ")
-        for clause in parameters["UpdateExpression"].removeprefix("SET ").split(",")
+        for clause in parameters["UpdateExpression"]
+        .removeprefix("SET ")
+        .split(" REMOVE")[0]
+        .split(",")
     )
     status_placeholder = next(key for key, name in names.items() if name == "status")
     assert values[assignments[status_placeholder]] == {"S": "failed"}
@@ -200,12 +177,12 @@ def step_marks_failed(context, error_message: str) -> None:
     assert "updated_at" in assignments
 
 
-@then("the fallback only marks the job failed while it is still pending")
-def step_marks_failed_only_pending(context) -> None:
+@then("the fallback only marks the job failed while its own claim still stands")
+def step_marks_failed_only_own_claim(context) -> None:
     parameters = context.submit_failure_state["Parameters"]
-    placeholder, value = parameters["ConditionExpression"].split(" = ")
-    assert parameters["ExpressionAttributeNames"][placeholder] == "status"
-    assert parameters["ExpressionAttributeValues"][value] == {"S": "pending"}
+    assert parameters["ConditionExpression"] == "claim_token = :claim_token"
+    token = parameters["ExpressionAttributeValues"][":claim_token"]
+    assert token == {"S.$": "$.gate.claim_token"}, token
 
 
 @then("the fallback execution ends as failed")

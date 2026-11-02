@@ -10,8 +10,10 @@ The browser embed computes the same value, so every rule here must match
 from __future__ import annotations
 
 import hashlib
+import json
 import re
 import unicodedata
+from typing import Any
 
 WHITESPACE_RUN = re.compile(
     "[\t\n\v\f\r \u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff]+"
@@ -67,4 +69,61 @@ def content_hash(text: str, raw_voice: str | None, tts_backend: str | None) -> s
     backend = tts_backend or DEFAULT_TTS_BACKEND
     voice_id = resolve_voice_id(raw_voice, backend)
     payload = f"{normalize_text(text)}\0{voice_id}\0{backend}"
+    return hashlib.sha256(payload.encode("utf-8")).hexdigest()
+
+
+# Render options that change the rendered pixels or timing. Anything else a
+# job may carry (worker count, encoder paths) only changes how the work runs,
+# so it is not part of the job's identity.
+VIDEO_OUTPUT_OPTIONS = (
+    "title",
+    "subtitle",
+    "fps",
+    "width",
+    "height",
+    "durationFrames",
+    "startFrame",
+    "endFrame",
+    "deviceScaleFactor",
+)
+
+
+def video_content_hash(
+    script: dict[str, Any],
+    timeline: dict[str, Any] | None,
+    audio_sha256: str | None,
+    options: dict[str, Any] | None,
+) -> str:
+    """Compute the content hash of a video render job.
+
+    The hash covers everything that decides the output: the script, the
+    timeline, the narration audio (by its own SHA-256) and the options that
+    affect the picture. Equal inputs always give the same job, so submitting
+    them twice reuses the first. The hashed form is canonical JSON with
+    sorted keys and a ``kind`` tag, so it can never equal a speech job's hash.
+
+    :param script: The script document to render.
+    :param timeline: The timeline document, if any.
+    :param audio_sha256: SHA-256 of the narration audio, if any.
+    :param options: Render options; only :data:`VIDEO_OUTPUT_OPTIONS` count.
+    :returns: Lower-case hex SHA-256.
+    """
+    chosen = {
+        key: (options or {})[key]
+        for key in VIDEO_OUTPUT_OPTIONS
+        if (options or {}).get(key) is not None
+    }
+    payload = json.dumps(
+        {
+            "kind": "video",
+            "version": 1,
+            "script": script,
+            "timeline": timeline,
+            "audio": audio_sha256,
+            "options": chosen,
+        },
+        sort_keys=True,
+        separators=(",", ":"),
+        ensure_ascii=False,
+    )
     return hashlib.sha256(payload.encode("utf-8")).hexdigest()

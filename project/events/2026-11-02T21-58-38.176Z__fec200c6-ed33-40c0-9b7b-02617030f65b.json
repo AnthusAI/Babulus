@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "event_id": "fec200c6-ed33-40c0-9b7b-02617030f65b",
+  "issue_id": "auritus-03327ec2-d00d-4510-8252-e41d8a34a8d9",
+  "event_type": "comment_added",
+  "occurred_at": "2026-11-02T21:58:38.176Z",
+  "actor_id": "home",
+  "payload": {
+    "comment_id": "939d727b-b5d6-46dd-b900-23b4fb386f9a",
+    "comment_author": "home"
+  }
+}
