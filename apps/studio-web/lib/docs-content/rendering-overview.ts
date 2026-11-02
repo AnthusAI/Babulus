@@ -37,23 +37,11 @@ This separation provides several benefits:
 
 ## Rendering Modes
 
-Babulus provides three different rendering modes to suit different use cases:
-
-| Mode | Environment | Speed | Setup | Cost |
-|------|-------------|-------|-------|------|
-| **Mode 1: Local** | Your machine | Fast | Easy | Free |
-| **Mode 2: Container** | Docker locally | Medium | Moderate | Free |
-| **Mode 3: Cloud** | AWS Fargate | Auto-scales | Complex | Pay per render |
-
-Each mode uses the same rendering engine (Playwright + ffmpeg) but runs in a different environment. Choose based on your needs:
-
-- **Use Mode 1** for development, testing, quick iterations
-- **Use Mode 2** for testing containerized deploys, reproducing production issues
-- **Use Mode 3** for production at scale, long videos, parallel batch processing
+Babulus renders video on your own computer, with Playwright and ffmpeg. A local worker (\`babulus worker\`) picks up videos you submit with \`babulus video submit\`, so a render costs nothing and never starts cloud compute. Cloud rendering is not available.
 
 ## What Happens During Rendering?
 
-Regardless of mode, the rendering process follows these steps:
+The rendering process follows these steps:
 
 1. **Load composition** - Read script.json and timeline.json
 2. **Launch browser** - Start headless Chromium with Playwright
@@ -71,27 +59,15 @@ For a 60-second video at 30fps, this means capturing 1,800 individual frames and
 
 ## Performance Characteristics
 
-**Local rendering (Mode 1):**
+**Local rendering:**
 - 60-second video: ~2-3 minutes
 - Dependent on your machine's CPU/RAM
 - No network latency
 
-**Container rendering (Mode 2):**
-- 60-second video: ~3-4 minutes
-- Container startup overhead (~30 seconds)
-- Consistent performance regardless of host
-
-**Cloud rendering (Mode 3):**
-- 60-second video: ~4-6 minutes
-- Task provisioning overhead (~2 minutes)
-- Scales to handle multiple renders in parallel
-- No local resource consumption
-
 ## Next Steps
 
-- [Mode 1: Local Rendering](/docs/rendering/local) - Start here for development
-- [Mode 2: Container Rendering](/docs/rendering/container) - Test production setup locally
-- [Mode 3: Cloud Rendering](/docs/rendering/cloud) - Deploy to production
+- [Local Rendering](/docs/rendering/local) - Start here
+- [Cloud Rendering](/docs/rendering/cloud) - Why there is no cloud option
 
 ## Technical Details
 

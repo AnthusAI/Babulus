@@ -10,9 +10,17 @@
   "parent": "babulus-d22d6854-6464-40b8-a446-b0a8265efdde",
   "labels": [],
   "dependencies": [],
-  "comments": [],
+  "comments": [
+    {
+      "id": "63e9713a-4175-4a60-afdb-fa6fcaa473da",
+      "author": "home",
+      "text": "PR 3 of 3 (remove the old render path) open. Leaves the ECR repo, the render-worker Cognito user and the Job table stream for a follow-up card.",
+      "created_at": "2026-11-02T22:03:50.085919Z",
+      "comment_type": "default"
+    }
+  ],
   "created_at": "2026-11-02T05:41:58.496769Z",
-  "updated_at": "2026-11-02T05:41:58.496790Z",
+  "updated_at": "2026-11-02T22:03:50.086081Z",
   "closed_at": null,
   "right_now_summary": null,
   "right_now_updated_at": null,

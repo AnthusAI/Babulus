@@ -1,13 +1,31 @@
 Feature: Cloud render containment
   As the operator of Babulus
-  I want cloud rendering switched off and job writes closed to the public
+  I want rendering to run only on a worker the user starts, and job writes closed to the public
   So that a stuck job or an anonymous caller cannot start paid compute
 
-  Cloud rendering stays paused until the capped local-first fallback replaces it.
+  The Studio backend has no cloud render path. A video is rendered by a local
+  worker; a capped cloud fallback, if it ever returns, is added deliberately
+  with its own spending guards.
 
-  Scenario: A deploy does not switch the render trigger back on
+  Scenario: The Studio backend defines no container or batch compute
     Given the Studio backend definition
-    Then the render trigger's event source is disabled
+    Then it imports no ECS, EC2, ECR or Batch constructs
+    And it grants no permission to run tasks or submit batch jobs
+
+  Scenario: Nothing reacts to Job table changes to start work
+    Given the Studio backend definition
+    Then it attaches no event source to any table
+
+  Scenario: There is no render worker credential
+    Given the Studio backend definition
+    Then it creates no worker user, no custom resource and no password parameter
+
+  Scenario: The old cloud render path is gone from the repository
+    Then none of the old render path files exist
+
+  Scenario: The Studio never queues a render job
+    Given the Studio web source
+    Then no code creates a job of kind "render"
 
   Scenario: The data API has no API key
     Given the Studio data schema

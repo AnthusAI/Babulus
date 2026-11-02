@@ -290,9 +290,8 @@ NODE_OPTIONS="--max-old-space-size=8192" npx tsx test-local-render.ts
 
 ## Next Steps
 
-- [Mode 2: Container Rendering](/docs/rendering/container) - Test with Docker
-- [Mode 3: Cloud Rendering](/docs/rendering/cloud) - Deploy to AWS
-- [Rendering Overview](/docs/rendering/overview) - Performance characteristics across all modes
+- [Cloud Rendering](/docs/rendering/cloud) - Why there is no cloud option
+- [Rendering Overview](/docs/rendering/overview) - How rendering works
 `;
 
 export const renderingMode1Doc: DocsEntry = {

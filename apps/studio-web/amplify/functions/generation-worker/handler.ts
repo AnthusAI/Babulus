@@ -15,7 +15,7 @@
  * 8. Update job status to "succeeded" or "failed"
  * 9. Emit JobEvents for progress tracking
  *
- * The actual worker logic is imported from src/worker-cloud.ts
+ * The actual worker logic is imported from src/worker-lib.ts
  * and adapted for Lambda execution.
  */
 

@@ -1,8 +1,8 @@
 /**
  * Worker library - testable functions for job processing
  *
- * This module extracts the core worker logic from worker-cloud.ts
- * to make it testable and reusable between local and Lambda execution.
+ * This module holds the core worker logic so it is testable and reusable
+ * between local and Lambda execution.
  *
  * Key principles:
  * - Dependency injection for external services

@@ -400,38 +400,10 @@ export function VideoEditor({ orgId, projectId, videoId }: VideoEditorProps) {
     }
   };
 
-  const handleRender = async () => {
-    if (activeJob) return;
-
-    // Find the latest successful generation run
-    const succeededRuns = runs.filter((r: any) => r.status === 'succeeded');
-    const latestRun = succeededRuns[0];
-
-    if (!latestRun) {
-      console.error("No successful generation run found. Generate first.");
-      return;
-    }
-
-    try {
-      // Queue render job with generation run ID
-      await createJobAction({
-        orgId,
-        kind: 'render',
-        status: 'queued',
-        inputJson: JSON.stringify({
-          videoId,
-          generationRunId: latestRun.id,
-        }),
-      }, orgId);
-      await refetchJobs();
-    } catch (e) {
-      console.error("Failed to queue render job", e);
-    }
-  };
-
-  // Check if we have a successful generation run to enable render
-  const succeededRuns = runs.filter((r: any) => r.status === 'succeeded');
-  const canRender = succeededRuns.length > 0 && !activeJob;
+  // Rendering runs on the user's own computer, never in the cloud: the Studio
+  // does not queue render jobs. A video is rendered by a local worker.
+  const RENDER_LOCAL_ONLY_HINT =
+    "Rendering runs on your own computer. Start `babulus worker`, then submit this video with `babulus video submit`.";
 
   // Find the latest successful render run for download
   const succeededRenderRuns = renderRuns.filter((r: any) => r.status === 'succeeded');
@@ -761,11 +733,10 @@ export function VideoEditor({ orgId, projectId, videoId }: VideoEditorProps) {
           <Button
             variant="secondary"
             size="sm"
-            onClick={handleRender}
-            disabled={!canRender}
-            title={!canRender ? "Generate first to enable rendering" : "Render video to MP4"}
+            disabled
+            title={RENDER_LOCAL_ONLY_HINT}
           >
-            Render
+            Render (local only)
           </Button>
           {canDownload && (
             <>

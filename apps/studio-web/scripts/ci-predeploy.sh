@@ -10,12 +10,6 @@ cd "${ROOT_DIR}"
 echo "[ci-predeploy] Installing root dependencies"
 npm ci --cache .npm --prefer-offline
 
-echo "[ci-predeploy] Installing render-trigger dependencies"
-(
-  cd amplify/functions/render-trigger
-  npm ci
-)
-
 echo "[ci-predeploy] Running Next.js build"
 npm run build
 

@@ -5,30 +5,15 @@ import { storage } from "./storage/resource.js";
 import { generationWorker } from "./functions/generation-worker/resource.js";
 // import * as cloudfront from 'aws-cdk-lib/aws-cloudfront';
 // import * as origins from 'aws-cdk-lib/aws-cloudfront-origins';
-import * as lambda from 'aws-cdk-lib/aws-lambda';
-import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 // import { experimental } from 'aws-cdk-lib/aws-cloudfront';
 import * as events from 'aws-cdk-lib/aws-events';
 import * as targets from 'aws-cdk-lib/aws-events-targets';
 import * as cloudwatch from 'aws-cdk-lib/aws-cloudwatch';
-import * as logs from 'aws-cdk-lib/aws-logs';
 import * as sns from 'aws-cdk-lib/aws-sns';
 import * as cloudwatchActions from 'aws-cdk-lib/aws-cloudwatch-actions';
-import * as ecs from 'aws-cdk-lib/aws-ecs';
-import * as ec2 from 'aws-cdk-lib/aws-ec2';
+import { Duration } from 'aws-cdk-lib';
 import * as iam from 'aws-cdk-lib/aws-iam';
-import * as ecr from 'aws-cdk-lib/aws-ecr';
 import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
-import * as ssm from 'aws-cdk-lib/aws-ssm';
-import { Provider } from 'aws-cdk-lib/custom-resources';
-import { DynamoEventSource } from 'aws-cdk-lib/aws-lambda-event-sources';
-import * as path from 'path';
-import { fileURLToPath } from 'url';
-import { readFileSync, existsSync } from 'fs';
-import { CustomResource, Duration } from 'aws-cdk-lib';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 const backend = defineBackend({
   auth,
@@ -227,279 +212,19 @@ console.log('- Dashboard:', dashboard.dashboardName);
 console.log('- Alarms: error rate, long execution, no completions');
 
 // ==========================================
-// Render Worker ECS Fargate Configuration
+// Rendering is local only
 // ==========================================
-
-// Reference the render worker ECR repository that already exists in the account
-const renderWorkerEcr = ecr.Repository.fromRepositoryName(
-  backend.stack,
-  'RenderWorkerRepository',
-  'babulus-render-worker'
-);
-
-// Create VPC for ECS tasks.
-// Public subnets only, no NAT gateway: a NAT gateway bills ~$32/month even when idle.
-// Tasks get a public IP while they run (billed only then) and reach ECR, S3, DynamoDB,
-// AppSync and CloudWatch Logs directly through the (free) internet gateway.
-const vpc = new ec2.Vpc(backend.stack, 'RenderWorkerVPC', {
-  maxAzs: 2, // Use 2 availability zones
-  natGateways: 0,
-  subnetConfiguration: [
-    { name: 'Public', subnetType: ec2.SubnetType.PUBLIC, cidrMask: 24 },
-  ],
-});
-
-// Create security group for ECS tasks (outbound only: no inbound rules, so the public IP is not reachable)
-const ecsSecurityGroup = new ec2.SecurityGroup(backend.stack, 'EcsSecurityGroup', {
-  vpc,
-  description: 'Security group for Babulus render worker tasks',
-  allowAllOutbound: true // Allow tasks to reach S3, DynamoDB, AppSync
-});
-
-// Create ECS cluster
-const renderCluster = new ecs.Cluster(backend.stack, 'RenderWorkerCluster', {
-  vpc,
-  clusterName: 'babulus-render-cluster',
-  containerInsights: true, // Enable CloudWatch Container Insights
-});
-
-// Create task execution role (for pulling images and logging)
-const taskExecutionRole = new iam.Role(backend.stack, 'RenderTaskExecutionRole', {
-  assumedBy: new iam.ServicePrincipal('ecs-tasks.amazonaws.com'),
-  managedPolicies: [
-    iam.ManagedPolicy.fromAwsManagedPolicyName('service-role/AmazonECSTaskExecutionRolePolicy'),
-  ],
-});
-
-// Create task role (for accessing AWS services from the container)
-const taskRole = new iam.Role(backend.stack, 'RenderTaskRole', {
-  assumedBy: new iam.ServicePrincipal('ecs-tasks.amazonaws.com'),
-});
-
-// Grant task role access to AppSync GraphQL API
-taskRole.addToPolicy(
-  new iam.PolicyStatement({
-    actions: ['appsync:GraphQL'],
-    resources: [backend.data.resources.graphqlApi.arn + '/*'],
-  })
-);
-
-// Grant task role access to S3 bucket
-bucket.grantReadWrite(taskRole);
-
-// Define Fargate task definition
-const renderTaskDefinition = new ecs.FargateTaskDefinition(backend.stack, 'RenderTaskDefinition', {
-  cpu: 4096, // 4 vCPU (needed for video rendering)
-  memoryLimitMiB: 16384, // 16 GB (needed for Playwright + ffmpeg)
-  executionRole: taskExecutionRole,
-  taskRole: taskRole,
-});
-
-// Load amplify_outputs.json for ECS task environment
-// After first deployment, this file exists and contains model_introspection needed by Amplify client
-const amplifyOutputsPath = path.join(__dirname, '..', 'amplify_outputs.json');
-let amplifyOutputs: any = {};
-if (existsSync(amplifyOutputsPath)) {
-  amplifyOutputs = JSON.parse(readFileSync(amplifyOutputsPath, 'utf8'));
-  console.log('✓ Loaded amplify_outputs.json for ECS task (includes model_introspection)');
-} else {
-  console.warn('⚠ amplify_outputs.json not found - this is expected on first deployment');
-  console.warn('  ECS tasks will fail until redeployed after amplify_outputs.json is generated');
-}
-
-// Render worker Cognito credential: generated at deploy time, set on the
-// worker's Cognito user and stored only in an SSM SecureString.
-// Bump RENDER_WORKER_CREDENTIAL_ROTATION to rotate the password.
-const RENDER_WORKER_USERNAME = 'render-worker@babulus.internal';
-const RENDER_WORKER_CREDENTIAL_ROTATION = '1';
-const renderWorkerPasswordParameterName = `/babulus/${backend.stack.stackName}/render-worker-password`;
-
-const renderWorkerCredentialFunction = new NodejsFunction(backend.stack, 'RenderWorkerCredentialFunction', {
-  runtime: lambda.Runtime.NODEJS_20_X,
-  handler: 'handler',
-  entry: path.join(__dirname, 'functions/render-worker-credential/handler.ts'),
-  bundling: {
-    externalModules: ['@aws-sdk/*'], // Provided by Lambda runtime
-    minify: true,
-    sourceMap: false,
-  },
-  timeout: Duration.seconds(30),
-});
-
-const userPool = backend.auth.resources.userPool;
-renderWorkerCredentialFunction.addToRolePolicy(
-  new iam.PolicyStatement({
-    actions: ['cognito-idp:AdminGetUser', 'cognito-idp:AdminCreateUser', 'cognito-idp:AdminSetUserPassword'],
-    resources: [userPool.userPoolArn],
-  })
-);
-renderWorkerCredentialFunction.addToRolePolicy(
-  new iam.PolicyStatement({
-    actions: ['ssm:PutParameter', 'ssm:DeleteParameter'],
-    resources: [
-      `arn:aws:ssm:${backend.stack.region}:${backend.stack.account}:parameter${renderWorkerPasswordParameterName}`,
-    ],
-  })
-);
-
-const renderWorkerCredential = new CustomResource(backend.stack, 'RenderWorkerCredential', {
-  serviceToken: new Provider(backend.stack, 'RenderWorkerCredentialProvider', {
-    onEventHandler: renderWorkerCredentialFunction,
-  }).serviceToken,
-  properties: {
-    UserPoolId: userPool.userPoolId,
-    Username: RENDER_WORKER_USERNAME,
-    ParameterName: renderWorkerPasswordParameterName,
-    Rotation: RENDER_WORKER_CREDENTIAL_ROTATION,
-  },
-});
-
-const renderWorkerPasswordParameter = ssm.StringParameter.fromSecureStringParameterAttributes(
-  backend.stack,
-  'RenderWorkerPasswordParameter',
-  { parameterName: renderWorkerPasswordParameterName, simpleName: false }
-);
-renderTaskDefinition.node.addDependency(renderWorkerCredential);
-
-// Add container to task definition
-const renderContainer = renderTaskDefinition.addContainer('render-worker', {
-  image: ecs.ContainerImage.fromEcrRepository(renderWorkerEcr, 'latest'),
-  logging: ecs.LogDrivers.awsLogs({
-    streamPrefix: 'render-worker',
-    logRetention: logs.RetentionDays.ONE_WEEK,
-  }),
-  environment: {
-    AWS_REGION: backend.stack.region,
-    NODE_ENV: 'production',
-    AMPLIFY_OUTPUTS: JSON.stringify(amplifyOutputs), // Pass Amplify config to container (may be empty on first deploy)
-    S3_BUCKET: bucket.bucketName, // For downloading amplify_outputs.json from S3 if env var is empty
-    WORKER_EMAIL: RENDER_WORKER_USERNAME,
-  },
-  secrets: {
-    WORKER_PASSWORD: ecs.Secret.fromSsmParameter(renderWorkerPasswordParameter), // Injected by ECS at task start
-  },
-});
-
-// Create Lambda function to trigger ECS task when render job is created
-// Use NodejsFunction for automatic TypeScript bundling without Docker
-const renderTriggerLambda = new NodejsFunction(backend.stack, 'RenderTriggerFunction', {
-  runtime: lambda.Runtime.NODEJS_20_X,
-  handler: 'index.handler', // Handler after esbuild bundling
-  entry: path.join(__dirname, 'functions/render-trigger/handler.ts'),
-  bundling: {
-    externalModules: [
-      '@aws-sdk/client-s3', // Provided by Lambda runtime
-      '@aws-sdk/client-dynamodb', // Provided by Lambda runtime
-      // Note: @aws-sdk/util-dynamodb is NOT in Lambda runtime - must be bundled
-    ],
-    minify: true,
-    sourceMap: false,
-  },
-  timeout: Duration.seconds(30),
-  environment: {
-    CLUSTER_ARN: renderCluster.clusterArn,
-    TASK_DEFINITION_ARN: renderTaskDefinition.taskDefinitionArn,
-    SUBNET_IDS: vpc.publicSubnets.map(subnet => subnet.subnetId).join(','),
-    SECURITY_GROUP_ID: ecsSecurityGroup.securityGroupId,
-    JOB_TABLE_NAME: backend.data.resources.tables['Job'].tableName,
-    CONTAINER_NAME: 'render-worker',
-    MAX_CONCURRENT_TASKS: '10',
-    GRAPHQL_ENDPOINT: backend.data.resources.cfnResources.cfnGraphqlApi.attrGraphQlUrl,
-  },
-});
-
-// Grant Lambda permission to run ECS tasks
-renderTriggerLambda.addToRolePolicy(
-  new iam.PolicyStatement({
-    actions: ['ecs:RunTask', 'ecs:DescribeTasks', 'ecs:TagResource'],
-    resources: ['*'], // Allow running any task (tasks are created dynamically with unique ARNs)
-  })
-);
-
-renderTriggerLambda.addToRolePolicy(
-  new iam.PolicyStatement({
-    actions: ['iam:PassRole'],
-    resources: [taskExecutionRole.roleArn, taskRole.roleArn],
-  })
-);
-
-// Grant Lambda permission to query AppSync for jobs
-renderTriggerLambda.addToRolePolicy(
-  new iam.PolicyStatement({
-    actions: ['appsync:GraphQL'],
-    resources: [backend.data.resources.graphqlApi.arn + '/*'],
-  })
-);
-
-// Enable DynamoDB Streams for event-driven job processing
-const jobTable = backend.data.resources.tables['Job'];
-
-// Use AmplifyDynamoDbTableWrapper which has streamSpecification setter
+//
+// The Studio backend starts no container compute. Video renders run on a
+// worker the user starts themselves (`babulus worker`), so there is no ECS
+// cluster, task definition, render trigger or worker credential here, and
+// nothing reads the Job table's change stream to launch work.
+//
+// The Job table's stream stays enabled only so this change does not touch the
+// table; no consumer reads it, and turning it off is a separate, reviewed step.
 const amplifyJobTable = backend.data.resources.cfnResources.amplifyDynamoDbTables['Job'];
 if (amplifyJobTable) {
-  console.log('✓ Enabling DynamoDB Streams on Job table via AmplifyDynamoDbTableWrapper');
   amplifyJobTable.streamSpecification = {
     streamViewType: dynamodb.StreamViewType.NEW_AND_OLD_IMAGES,
   };
-} else {
-  console.error('✗ Could not find Job table in cfnResources.amplifyDynamoDbTables');
-  console.log('Available amplifyDynamoDbTables:', Object.keys(backend.data.resources.cfnResources.amplifyDynamoDbTables || {}));
 }
-
-// Create Lambda event source from DynamoDB Stream
-const eventSource = new DynamoEventSource(jobTable, {
-  startingPosition: lambda.StartingPosition.LATEST,
-  batchSize: 10,
-  retryAttempts: 2, // Bounded retries (default is unlimited until the record expires)
-  maxRecordAge: Duration.hours(1), // Drop stale records instead of retrying them forever
-  bisectBatchOnError: true,
-  // Cloud renders stay paused until the capped fallback replaces this trigger (babulus-d22d68).
-  enabled: false,
-  filters: [
-    // Only invoke when a render job ENTERS 'queued':
-    // 1. INSERT with status='queued' and kind='render'
-    // 2. MODIFY to status='queued' from a different status (retry/requeue). Writes to a job that is
-    //    already 'queued' (OldImage.status = 'queued') are filtered out so they cannot launch more tasks.
-    lambda.FilterCriteria.filter({
-      eventName: lambda.FilterRule.isEqual('INSERT'),
-      dynamodb: {
-        NewImage: {
-          status: { S: lambda.FilterRule.isEqual('queued') },
-          kind: { S: lambda.FilterRule.isEqual('render') },
-        },
-      },
-    }),
-    lambda.FilterCriteria.filter({
-      eventName: lambda.FilterRule.isEqual('MODIFY'),
-      dynamodb: {
-        NewImage: {
-          status: { S: lambda.FilterRule.isEqual('queued') },
-          kind: { S: lambda.FilterRule.isEqual('render') },
-        },
-        OldImage: {
-          status: { S: lambda.FilterRule.notEquals('queued') },
-        },
-      },
-    }),
-  ],
-});
-
-// Allow the trigger to claim jobs with a conditional update
-jobTable.grantWriteData(renderTriggerLambda);
-
-// Add the event source to the Lambda function
-renderTriggerLambda.addEventSource(eventSource);
-
-// Export ECR repository URI for Docker build/push
-backend.addOutput({
-  custom: {
-    renderWorkerEcrUri: renderWorkerEcr.repositoryUri,
-    renderClusterName: renderCluster.clusterName,
-  },
-});
-
-console.log('Render worker ECS Fargate configured:');
-console.log('- ECR Repository:', renderWorkerEcr.repositoryName);
-console.log('- ECS Cluster:', renderCluster.clusterName);
-console.log('- Task Definition: 4 vCPU, 16 GB RAM');
-console.log('- Trigger: DynamoDB Streams (instant, event-driven)');
