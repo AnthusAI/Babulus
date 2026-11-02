@@ -69,6 +69,15 @@ def step_request_text(context, text: str) -> None:
     context.request_text = text
 
 
+@given('Kokoro runs on "{runtime}"')
+def step_kokoro_runtime(context, runtime: str) -> None:
+    from babulus_speech.tts.kokoro import KokoroBackend
+
+    previous = KokoroBackend._is_mlx
+    context.add_cleanup(setattr, KokoroBackend, "_is_mlx", previous)
+    KokoroBackend._is_mlx = runtime == "mlx"
+
+
 @when('the speech request key is computed for backend "{backend}" and voice "{voice}"')
 def step_compute_request_key(context, backend: str, voice: str) -> None:
     from babulus_speech.speech import Voice, request_key
