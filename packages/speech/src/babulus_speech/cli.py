@@ -15,7 +15,7 @@ from babulus_speech.commands import player as player_cmd
 from babulus_speech.commands import site as site_cmd
 from babulus_speech.commands import video as video_cmd
 from babulus_speech.commands import voice as voice_cmd
-from babulus_speech.commands.login import logout_cmd
+from babulus_speech.commands.login import logout_cmd, whoami_cmd
 
 # Compatibility bridge for Click 8.2+ signature change in make_metavar
 _orig_make_metavar = click.core.Parameter.make_metavar
@@ -79,10 +79,15 @@ app = typer.Typer(
     no_args_is_help=True,
 )
 
-app.add_typer(login_cmd.app, name="login")
 app.command(
-    name="logout", help="Revoke the cached refresh token and clear credentials."
+    name="login",
+    help="Sign in to a Babulus Studio with Google; the session is kept in your machine's secure store.",
+)(login_cmd.login)
+app.command(
+    name="logout",
+    help="Revoke the session where reachable and remove it from the secure store.",
 )(logout_cmd)
+app.command(name="whoami", help="Show who this machine is signed in as.")(whoami_cmd)
 app.add_typer(config_cmd.app, name="config")
 app.add_typer(deploy_cmd.app, name="deploy")
 app.add_typer(site_cmd.app, name="site")

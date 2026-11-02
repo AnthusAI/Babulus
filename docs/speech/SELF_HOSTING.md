@@ -107,16 +107,16 @@ Two things to know before enabling this in production:
 
 ## 3. Operator login
 
-Create a user in the Cognito user pool if you have not already, then:
+Sign in with Google through your Studio:
 
 ```bash
-auritus login --username you@example.com
+babulus login studio.example.test
 ```
 
-Enter the pool password when prompted (or pass `--password`). The CLI uses
-Cognito `USER_PASSWORD_AUTH`, caches short-lived JWTs under
-`~/.auritus/credentials`, and uses them for subsequent `auritus site`,
-`auritus worker`, and `auritus killswitch` commands.
+The command stores a renewable session in your machine's secure store (never in
+a file) and uses it for subsequent `babulus site`, `babulus worker`, and
+`babulus killswitch` commands. On a machine with no browser, use
+`babulus login --remote studio.example.test`. See [CLI sign-in](../cli-login.md).
 
 ## 4. Register a site and embed
 

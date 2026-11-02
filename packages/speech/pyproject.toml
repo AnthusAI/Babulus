@@ -16,6 +16,8 @@ dependencies = [
   "tomli>=2.0.0; python_version < '3.11'",
   "tomli-w>=1.0.0",
   "boto3>=1.34.0",
+  "cli-login==0.4.0; sys_platform != 'linux'",
+  "cli-login[linux]==0.4.0; sys_platform == 'linux'",
 ]
 
 [project.optional-dependencies]

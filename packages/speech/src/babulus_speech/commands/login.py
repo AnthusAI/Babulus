@@ -1,86 +1,94 @@
-"""auritus login command."""
+"""babulus login, logout and whoami: sign in to a Studio through ``cli-login``."""
 
 from __future__ import annotations
 
 import typer
 
-from babulus_speech.auth import (
+from babulus_speech.cli_session import (
     AuthError,
-    login_with_password,
-    login_with_sso,
-    revoke_tokens,
-)
-
-app = typer.Typer(
-    help="Authenticate with Cognito using email/password or SSO (Google / AWS IAM Identity Center)."
+    StudioSession,
+    load_login,
+    resolve_login,
+    save_login,
 )
 
 
-@app.callback(invoke_without_command=True)
+def _fail(exc: Exception) -> typer.Exit:
+    typer.secho(str(exc), fg=typer.colors.RED, err=True)
+    return typer.Exit(code=1)
+
+
 def login(
-    username: str | None = typer.Option(
+    site: str | None = typer.Argument(
         None,
-        "--username",
-        help="Cognito user email for native pool password authentication.",
+        help="Your Studio's host name (for example studio.example.test). Omit to sign in again to the last one.",
     ),
-    password: str | None = typer.Option(
-        None,
-        "--password",
-        help="Cognito password; prompted securely when omitted.",
+    remote: bool = typer.Option(
+        False,
+        "--remote",
+        help="Sign in from a machine with no browser: approve on another device with a short matching code.",
     ),
-    sso: str | None = typer.Option(
+    expect_email: str | None = typer.Option(
         None,
-        "--sso",
-        help="Authenticate via SSO: 'google' or 'aws-sso' (IAM Identity Center).",
+        "--expect-email",
+        help="With --remote: refuse, and store nothing, if anyone else approves.",
     ),
 ) -> None:
-    """Log in with Cognito email/password or SSO (Google / AWS IAM Identity Center). Caches short-lived JWTs."""
-    if sso:
-        provider_map = {
-            "google": "Google",
-            "aws-sso": "IdentityCenter",
-            "identity-center": "IdentityCenter",
-        }
-        provider = provider_map.get(sso.lower())
-        if not provider:
-            typer.secho(
-                f"Unknown SSO provider: {sso}. Choose 'google' or 'aws-sso'.",
-                fg=typer.colors.RED,
-                err=True,
-            )
-            raise typer.Exit(code=1)
-        try:
-            tokens = login_with_sso(provider)
-        except AuthError as exc:
-            typer.secho(str(exc), fg=typer.colors.RED, err=True)
-            raise typer.Exit(code=1) from exc
-        typer.secho(f"Logged in via {provider} SSO.", fg=typer.colors.GREEN)
-        expires = tokens.get("expires_in")
-        if expires:
-            typer.echo(f"Access token expires in {expires} seconds.")
-        return
-
-    if not username:
-        username = typer.prompt("Username (email)")
-
-    secret = password
-    if secret is None:
-        secret = typer.prompt("Password", hide_input=True)
+    """Sign in with Google. Opens your browser, or prints an approval link with --remote."""
+    if expect_email and not remote:
+        typer.secho(
+            "--expect-email only applies with --remote.", fg=typer.colors.RED, err=True
+        )
+        raise typer.Exit(code=2)
     try:
-        tokens = login_with_password(username, secret)
+        studio = resolve_login(site)
+        session = StudioSession(studio)
+        if remote:
+            options = {"expected_email": expect_email} if expect_email else {}
+            result = session.login_remote(out=typer.echo, **options)
+        else:
+            result = session.login()
+        save_login(studio)
     except AuthError as exc:
-        typer.secho(str(exc), fg=typer.colors.RED, err=True)
-        raise typer.Exit(code=1) from exc
-    typer.secho("Logged in.", fg=typer.colors.GREEN)
-    expires = tokens.get("expires_in")
-    if expires:
-        typer.echo(f"Access token expires in {expires} seconds.")
+        raise _fail(exc) from exc
+    typer.secho(f"Signed in as {result['label']}.", fg=typer.colors.GREEN)
 
 
 def logout_cmd() -> None:
-    """Revoke the cached Cognito refresh token and clear local credentials."""
+    """Sign out: revoke the session where reachable and remove it from the secure store."""
     try:
-        revoke_tokens()
+        studio = load_login()
+        if studio is None:
+            typer.echo("Not signed in.")
+            return
+        result = StudioSession(studio).logout()
     except AuthError as exc:
-        typer.secho(str(exc), fg=typer.colors.YELLOW, err=True)
-    typer.secho("Logged out.", fg=typer.colors.GREEN)
+        raise _fail(exc) from exc
+    typer.secho("Signed out on this machine.", fg=typer.colors.GREEN)
+    if result["remote_revocation"] == "unconfirmed":
+        typer.secho(
+            "The sign-in provider could not be reached, so the session was not revoked there.",
+            fg=typer.colors.YELLOW,
+            err=True,
+        )
+
+
+def whoami_cmd() -> None:
+    """Show who this machine is signed in as. Prints no token."""
+    try:
+        studio = load_login()
+        if studio is None:
+            typer.echo("Not signed in. Run `babulus login <studio>`.")
+            raise typer.Exit(code=1)
+        status = StudioSession(studio).status()
+    except AuthError as exc:
+        raise _fail(exc) from exc
+    if not status.get("signed_in"):
+        typer.echo(
+            f"Not signed in to {studio.host}. Run `babulus login {studio.host}`."
+        )
+        raise typer.Exit(code=1)
+    elapsed = int(status.get("elapsed_session_seconds") or 0)
+    typer.echo(
+        f"{status['label']} at {studio.host} (signed in {elapsed // 3600} hours ago)"
+    )

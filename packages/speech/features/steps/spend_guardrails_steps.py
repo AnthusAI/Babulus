@@ -117,12 +117,22 @@ def _send_to_router(context):
     return send
 
 
+class _OperatorTokenAuth:
+    """Stands in for the stored ``cli-login`` session: hands out a signed operator access token."""
+
+    def access_token(self) -> str:
+        return operator_access_token()
+
+    def refresh(self) -> None:
+        return None
+
+
 @when("the operator runs auritus killswitch {action}")
 def step_killswitch(context, action: str) -> None:
     context.killswitch_fallback = Mock()
     with (
         patch.object(api, "load_config", return_value=CLI_CONFIG),
-        patch.object(api, "get_access_token", side_effect=operator_access_token),
+        patch.object(api, "stored_session_auth", return_value=_OperatorTokenAuth()),
         patch.object(api.AuritusClient, "_send", _send_to_router(context)),
         patch.object(killswitch, "_batch_queue_state", context.killswitch_fallback),
     ):
