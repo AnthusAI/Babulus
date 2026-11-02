@@ -3,17 +3,25 @@
   "title": "Portable VideoML integration and local-first paid rendering",
   "description": "Babulus becomes an optional paid rendering platform for portable VideoML projects, using a local-worker grace period and bounded AWS Batch fallback. Native coordination record for VideoML/toolchain initiative videoml-dbc2b1 (Hyperframes inspiration), which remains the canonical design and execution plan. Preserve existing behavior while adopting shared demos; implement portable bundles, fenced leases, customer credits and hard admission controls through linked P packets. A dedicated new AWS account is required; do not reuse the existing Babulus account automatically. No deployment or costs enabled by this planning issue. Follow Babulus commit-approval rule; local implementation can proceed.",
   "type": "epic",
-  "status": "open",
+  "status": "closed",
   "priority": 1,
   "assignee": null,
   "creator": null,
   "parent": null,
   "labels": [],
   "dependencies": [],
-  "comments": [],
+  "comments": [
+    {
+      "id": "99283bd2-4804-48e7-badc-0c67b50c0b9e",
+      "author": "home",
+      "text": "Superseded by the combined epic babulus-d22d6854 (Auritus and Babulus become one product). Local-first rendering with a bounded Batch fallback is now delivered by milestones M3 and M4 there. The two surviving child cards, babulus-b4a899 and babulus-d366f1, were moved under the new epic.",
+      "created_at": "2026-11-02T19:01:10.934525Z",
+      "comment_type": "default"
+    }
+  ],
   "created_at": "2026-10-30T21:16:27.532423Z",
-  "updated_at": "2026-10-30T21:16:27.532612Z",
-  "closed_at": null,
+  "updated_at": "2026-11-02T19:01:10.952052Z",
+  "closed_at": "2026-11-02T19:01:10.952020Z",
   "right_now_summary": null,
   "right_now_updated_at": null,
   "custom": {}

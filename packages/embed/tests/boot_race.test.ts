@@ -1,0 +1,120 @@
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { JSDOM } from "jsdom";
+import { boot } from "../src/index.js";
+
+function pendingResponse(): Response {
+  return {
+    ok: true,
+    json: async () => ({ status: "pending", content_hash: "abc" }),
+    text: async () => "",
+  } as Response;
+}
+
+describe("overlapping boot", () => {
+  let dom: JSDOM;
+
+  beforeEach(() => {
+    dom = new JSDOM(
+      `<!DOCTYPE html><html><body>
+        <div class="auritus-player-host"></div>
+        <article class="example-article"><p>Hello speech.</p></article>
+        <div
+          data-auritus-site-key="demo-site-key"
+          data-auritus-api="https://api.test"
+          data-auritus-root=".example-article"
+          data-auritus-player-host=".auritus-player-host"
+        ></div>
+      </body></html>`,
+      { url: "https://aurit.us/examples/basic" },
+    );
+    globalThis.document = dom.window.document;
+    HTMLMediaElement.prototype.pause = function pause() {
+      return undefined;
+    };
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it("keeps player controls when a stale boot finishes after a newer boot", async () => {
+    let createCalls = 0;
+    const fetchImpl = vi.fn(async (_url: string, init?: RequestInit) => {
+      if (init?.method === "POST") {
+        createCalls += 1;
+        const delay = createCalls === 1 ? 80 : 10;
+        await new Promise((resolve) => {
+          setTimeout(resolve, delay);
+        });
+        return pendingResponse();
+      }
+      return pendingResponse();
+    });
+    vi.stubGlobal("fetch", fetchImpl);
+
+    const element = document.querySelector(
+      "[data-auritus-site-key]",
+    ) as HTMLElement;
+    const first = boot({ element });
+    const second = boot({ element });
+    await Promise.all([first, second]);
+
+    const hosts = document.querySelectorAll(".auritus-root");
+    expect(hosts.length).toBe(1);
+    const play = hosts[0]?.shadowRoot?.querySelector(".auritus-play");
+    expect(play).toBeTruthy();
+  });
+
+  it("never mounts a player for a boot superseded while it was hashing", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => pendingResponse()),
+    );
+    const mountPoint = document.querySelector(
+      ".auritus-player-host",
+    ) as HTMLElement;
+    let playersAttached = 0;
+    const observer = new dom.window.MutationObserver((records) => {
+      for (const record of records) {
+        playersAttached += Array.from(record.addedNodes).filter(
+          (node) => (node as HTMLElement).className === "auritus-root",
+        ).length;
+      }
+    });
+    observer.observe(mountPoint, { childList: true });
+
+    const element = document.querySelector(
+      "[data-auritus-site-key]",
+    ) as HTMLElement;
+    await Promise.all([boot({ element }), boot({ element })]);
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    observer.disconnect();
+
+    expect(playersAttached).toBe(1);
+  });
+  it("shows a calm message, never the raw API error, when job creation fails", async () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => ({
+        ok: false,
+        status: 400,
+        text: async () => '{"error": "content_hash_mismatch"}',
+      })),
+    );
+    const element = document.querySelector(
+      "[data-auritus-site-key]",
+    ) as HTMLElement;
+    await expect(boot({ element })).rejects.toThrow("content_hash_mismatch");
+
+    const errorEl = document
+      .querySelector(".auritus-root")
+      ?.shadowRoot?.querySelector(".auritus-error") as HTMLElement;
+    expect(errorEl.hidden).toBe(false);
+    expect(errorEl.textContent).toBe(
+      "Narration is unavailable right now. Please try again later.",
+    );
+    expect(errorEl.textContent).not.toContain("content_hash_mismatch");
+    expect(warn).toHaveBeenCalled();
+  });
+});

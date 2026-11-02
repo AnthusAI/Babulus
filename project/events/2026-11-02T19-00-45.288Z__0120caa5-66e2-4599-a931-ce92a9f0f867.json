@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "event_id": "0120caa5-66e2-4599-a931-ce92a9f0f867",
+  "issue_id": "babulus-b4a899dc-e8dc-4442-b8dd-6eeeb3536153",
+  "event_type": "field_updated",
+  "occurred_at": "2026-11-02T19:00:45.288Z",
+  "actor_id": "home",
+  "payload": {
+    "changes": {
+      "parent": {
+        "from": "babulus-48bc4e27-b336-4500-9e65-a7fdfe42698e",
+        "to": "babulus-d22d6854-6464-40b8-a446-b0a8265efdde"
+      }
+    }
+  }
+}

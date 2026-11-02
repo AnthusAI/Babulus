@@ -1,0 +1,9 @@
+# Only the worker image is built from the repository root; send it just what
+# it needs (packages/worker-image/Dockerfile).
+*
+!packages/speech/pyproject.toml
+!packages/speech/README.md
+!packages/speech/src/
+!packages/worker-image/
+**/__pycache__
+**/*.pyc

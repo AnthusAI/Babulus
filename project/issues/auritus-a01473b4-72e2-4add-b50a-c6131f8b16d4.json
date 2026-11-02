@@ -1,0 +1,63 @@
+{
+  "id": "auritus-a01473b4-72e2-4add-b50a-c6131f8b16d4",
+  "title": "CLI publishes to PyPI via semantic-release",
+  "description": "## Behavior\n```gherkin\nFeature: Release\n  Scenario: Merge to main releases\n    Given conventional commits on main\n    When the release workflow runs\n    Then python-semantic-release publishes auritus to PyPI via OIDC trusted publishing\n    And CHANGELOG is updated\n```\n\n## Implementation brief\n1. cli/pyproject.toml semantic_release config.\n2. .github/workflows/release.yml on main with PyPI trusted publisher.\n3. Docs model license verdict recorded.",
+  "type": "story",
+  "status": "open",
+  "priority": 2,
+  "assignee": null,
+  "creator": null,
+  "parent": "auritus-a983da8f-7347-4e81-b803-5b5d2249513b",
+  "labels": [],
+  "dependencies": [],
+  "comments": [
+    {
+      "id": "c6bb550f-44ea-4d52-b750-9561a11ab93d",
+      "author": "ryan",
+      "text": "Scaffold implemented by Composer 2.5. Code in place and passing tests. Story remains open pending real-AWS verification.",
+      "created_at": "2026-09-11T22:14:31.942945Z",
+      "comment_type": "default"
+    },
+    {
+      "id": "195e2e7c-4066-4e4a-9705-8bc176669f88",
+      "author": "ryan",
+      "text": "semantic-release created GitHub release v0.1.0 and v0.1.1. PyPI trusted publisher not yet configured - package may not be on PyPI yet. Need to set up OIDC trusted publisher on PyPI.",
+      "created_at": "2026-09-11T23:37:21.425397Z",
+      "comment_type": "default"
+    },
+    {
+      "id": "93986fac-bf60-4a82-973e-4c6a46e5d696",
+      "author": "ryan",
+      "text": "semantic-release created GitHub releases v0.1.0-v0.1.5. PyPI trusted publisher not yet configured.",
+      "created_at": "2026-09-12T00:53:41.383773Z",
+      "comment_type": "default"
+    },
+    {
+      "id": "db997765-ec2f-46a2-9432-d424fae41c97",
+      "author": "ryan",
+      "text": "pypi.org/pypi/auritus is not published. GitHub releases exist (0.6.5). Trusted publisher still required.",
+      "created_at": "2026-09-13T12:13:31.407257Z",
+      "comment_type": "default"
+    },
+    {
+      "id": "644e27f8-8bf9-4e34-aefc-259c9e3f6bfc",
+      "author": "ryan",
+      "text": "PyPI stays last. Do not publish until live examples, local worker, and Batch fallback (Kokoro and Qwen) are proven. No trusted-publisher work until then.\n",
+      "created_at": "2026-09-13T14:48:56.950969Z",
+      "comment_type": "default"
+    },
+    {
+      "id": "b8005892-9220-45de-89e0-95ac85965971",
+      "author": "ryan",
+      "text": "Live examples, local worker, and Batch Kokoro/Qwen are proven. Release workflow now skips PyPI unless AURITUS_PUBLISH_PYPI is true (PR #30). Do not configure the trusted publisher or publish until that variable is set on purpose. GitHub releases on main still run via semantic-release.",
+      "created_at": "2026-09-13T16:06:45.288244Z",
+      "comment_type": "default"
+    }
+  ],
+  "created_at": "2026-09-11T21:47:49.015523Z",
+  "updated_at": "2026-09-13T16:06:45.288288Z",
+  "closed_at": null,
+  "right_now_summary": "GitHub releases run, but PyPI publishing waits until AURITUS_PUBLISH_PYPI is enabled.",
+  "right_now_updated_at": "2026-09-13T16:06:47.636867Z",
+  "custom": {}
+}

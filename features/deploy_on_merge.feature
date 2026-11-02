@@ -6,6 +6,8 @@ Feature: Deploy on merge
   Scenario: The deploy waits for CI and runs only for main
     Given the CI workflow
     Then the deploy job needs the "node" job
+    And the deploy job needs the "speech" job
+    And the deploy job needs the "console" job
     And the deploy job runs only for a push to main
 
   Scenario: The deploy uses short-lived credentials

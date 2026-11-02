@@ -1,0 +1,28 @@
+{
+  "id": "auritus-6048c9a1-c5c8-406b-bf00-a85aac961d8a",
+  "title": "README names Kokoro and Qwen as speech backends",
+  "description": "README currently lists Higgs and Qwen first. Higgs is a tone stub. Document Kokoro (default speech) and Qwen (second backend); Higgs remains a stub.",
+  "type": "chore",
+  "status": "closed",
+  "priority": 2,
+  "assignee": null,
+  "creator": null,
+  "parent": "auritus-a983da8f-7347-4e81-b803-5b5d2249513b",
+  "labels": [],
+  "dependencies": [],
+  "comments": [
+    {
+      "id": "1ef7d765-96fa-449d-a86c-2e11601542a3",
+      "author": "ryan",
+      "text": "Implementing README honesty: Kokoro is the default speech backend; Qwen 3 CustomVoice is the second. Higgs stays a 440 Hz stub. Status will not claim a current Batch re-proof while the operator AWS login session is expired.\n",
+      "created_at": "2026-09-13T12:23:17.838958Z",
+      "comment_type": "default"
+    }
+  ],
+  "created_at": "2026-09-13T12:18:41.944583Z",
+  "updated_at": "2026-09-13T14:21:59.212535Z",
+  "closed_at": "2026-09-13T14:21:59.211938Z",
+  "right_now_summary": "The README is being updated to name Kokoro as default, Qwen as second, and Higgs as a stub.",
+  "right_now_updated_at": "2026-09-13T14:22:01.318649Z",
+  "custom": {}
+}

@@ -1,0 +1,35 @@
+{
+  "id": "auritus-19ba7b16-6f43-4136-ad99-3b8e4b434c6c",
+  "title": "M-TTS-3: Additional backends (Fish, Higgs, XTTS, Kokoro variants)",
+  "description": "Add Fish Speech, Higgs, XTTS, Bark, and other TTS backends behind the pluggable interface.",
+  "type": "epic",
+  "status": "closed",
+  "priority": 2,
+  "assignee": null,
+  "creator": null,
+  "parent": "auritus-a4de887a-f93e-428d-944a-a1e497994a0c",
+  "labels": [],
+  "dependencies": [],
+  "comments": [
+    {
+      "id": "c0d9741a-5fe6-4be9-91d5-63d71998c41e",
+      "author": "ryan",
+      "text": "Not started. v0 speech demos are Kokoro and Qwen only. Additional backends (Fish, Higgs, XTTS, Kokoro variants) stay open until each is specified and proven.",
+      "created_at": "2026-09-13T16:06:52.740366Z",
+      "comment_type": "default"
+    },
+    {
+      "id": "e590c008-b783-476d-99cc-e13cd683ee5c",
+      "author": "home",
+      "text": "All additional backends (Fish Speech, Higgs Audio v3, Chatterbox, F5-TTS) implemented, verified with MLX and CUDA, and live on aurit.us examples.",
+      "created_at": "2026-09-19T15:34:45.922531Z",
+      "comment_type": "default"
+    }
+  ],
+  "created_at": "2026-09-12T12:31:28.849919Z",
+  "updated_at": "2026-09-19T15:34:48.084179Z",
+  "closed_at": "2026-09-19T15:34:48.084157Z",
+  "right_now_summary": "Fish, Higgs, XTTS, Bark, and Kokoro variants still need specifications and working demos.",
+  "right_now_updated_at": "2026-09-13T16:06:54.331020Z",
+  "custom": {}
+}

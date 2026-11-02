@@ -1,0 +1,1163 @@
+"""Auritus backend CDK stack: API, DynamoDB mutex, Cognito, Batch fallback, budgets."""
+
+from __future__ import annotations
+
+from pathlib import Path
+
+from aws_cdk import (
+    CfnOutput,
+    Duration,
+    RemovalPolicy,
+    SecretValue,
+    Stack,
+)
+from aws_cdk import (
+    aws_apigatewayv2 as apigwv2,
+)
+from aws_cdk import (
+    aws_apigatewayv2_authorizers as apigwv2_auth,
+)
+from aws_cdk import (
+    aws_apigatewayv2_integrations as apigwv2_integrations,
+)
+from aws_cdk import (
+    aws_batch as batch,
+)
+from aws_cdk import (
+    aws_budgets as budgets,
+)
+from aws_cdk import (
+    aws_cloudfront as cloudfront,
+)
+from aws_cdk import (
+    aws_cloudfront_origins as origins,
+)
+from aws_cdk import (
+    aws_cognito as cognito,
+)
+from aws_cdk import (
+    aws_dynamodb as dynamodb,
+)
+from aws_cdk import (
+    aws_ec2 as ec2,
+)
+from aws_cdk import (
+    aws_ecr as ecr,
+)
+from aws_cdk import (
+    aws_events as events,
+)
+from aws_cdk import (
+    aws_events_targets as targets,
+)
+from aws_cdk import (
+    aws_iam as iam,
+)
+from aws_cdk import (
+    aws_lambda as lambda_,
+)
+from aws_cdk import (
+    aws_logs as logs,
+)
+from aws_cdk import (
+    aws_s3 as s3,
+)
+from aws_cdk import (
+    aws_secretsmanager as secretsmanager,
+)
+from aws_cdk import (
+    aws_sns as sns,
+)
+from aws_cdk import (
+    aws_sns_subscriptions as sns_subscriptions,
+)
+from aws_cdk import (
+    aws_stepfunctions as sfn,
+)
+from aws_cdk import (
+    aws_stepfunctions_tasks as sfn_tasks,
+)
+from constructs import Construct
+
+from stacks.operator_auth_layer import build_operator_auth_layer
+
+LAMBDA_ROOT = Path(__file__).resolve().parents[1] / "lambdas"
+DEFAULT_CLAIM_TIMEOUT_SECONDS = 900
+DEFAULT_RACE_SECONDS = 900
+DEFAULT_DELIVERY_GRACE_SECONDS = 300
+DEFAULT_WARM_START_THRESHOLD_SECONDS = 60
+DEFAULT_PROVISIONING_OVERHEAD_SECONDS = 90
+
+# On-demand hourly rate for a g4dn.xlarge in us-east-1, the instance type
+# our GPU compute environment uses. Sourced from two independent third-party
+# pricing aggregators (instances.vantage.sh and a second cross-check) in
+# September 2026, both agreeing on $0.526/hr; this was NOT read directly off
+# AWS's own pricing page (its on-demand table did not come back from an
+# automated fetch) and has not been confirmed against an AWS Cost Explorer
+# bill. Treat this as a reasonable default, not an authoritative, current
+# AWS-sourced figure -- override it with ``gpu_hourly_rate_usd`` context once
+# a real invoice is available to check it against.
+DEFAULT_GPU_HOURLY_RATE_USD = 0.526
+
+# Flat modelled allowance per job for the DynamoDB/Lambda/S3/CloudFront
+# activity every job causes regardless of who processes it (a handful of
+# DynamoDB reads/writes, a few Lambda invocations, an S3 object, some
+# CloudFront egress). This is a deliberately rough estimate, not a measured
+# figure -- nobody has itemized actual per-job AWS costs for these services
+# yet. Revisit once real billing data exists.
+DEFAULT_PLATFORM_COST_PER_JOB_USD = 0.0005
+
+DEFAULT_RATE_CARD_VERSION = "v1"
+
+# Retention window (days) for completed/failed job records (via DynamoDB TTL
+# on the jobs table's already-declared, previously-inert ``ttl`` attribute)
+# and their generated audio (via an S3 lifecycle expiration rule on
+# audio_bucket, using this exact same value -- see the single
+# ``retention_days`` variable below).
+#
+# Defaults to 0 (DISABLED), deliberately, even though every clip and every
+# job's full extracted narrated-page text is otherwise kept forever today
+# (a real cost and privacy liability). This codebase's existing posture is
+# conservative-by-default everywhere else: every DynamoDB table in this
+# stack uses RemovalPolicy.RETAIN, and audio_bucket is
+# auto_delete_objects=False. Silently starting to delete operator data by
+# default on every existing deployment that upgrades to this change would
+# be a surprising and potentially harmful default, sprung on operators who
+# never opted in. The mechanism is fully implemented and documented; an
+# operator opts in explicitly via --context retention_days=N once they've
+# made their own call on the tradeoff the story raises -- storage cost of
+# keeping clips forever vs. the GPU cost of regenerating an expired one the
+# next time a reader visits that page (see docs for the full writeup).
+DEFAULT_RETENTION_DAYS = 0
+
+
+class BackendStack(Stack):
+    """Cloud backend for Auritus just-in-time TTS generation."""
+
+    def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
+        super().__init__(scope, construct_id, **kwargs)
+
+        claim_timeout_seconds = int(
+            self.node.try_get_context("claim_timeout_seconds")
+            or DEFAULT_CLAIM_TIMEOUT_SECONDS
+        )
+        race_seconds = int(
+            self.node.try_get_context("race_seconds") or DEFAULT_RACE_SECONDS
+        )
+        delivery_grace_seconds = int(
+            self.node.try_get_context("delivery_grace_seconds")
+            or DEFAULT_DELIVERY_GRACE_SECONDS
+        )
+
+        # Rate card for the job cost estimate: two components (GPU cost,
+        # accrued only for Batch jobs, and a flat platform allowance charged
+        # on every job) plus a version tag stamped onto every costed job so
+        # a later rate-card change doesn't retroactively appear to have
+        # applied to historical jobs.
+        gpu_hourly_rate_usd = float(
+            self.node.try_get_context("gpu_hourly_rate_usd")
+            or DEFAULT_GPU_HOURLY_RATE_USD
+        )
+        platform_cost_per_job_usd = float(
+            self.node.try_get_context("platform_cost_per_job_usd")
+            or DEFAULT_PLATFORM_COST_PER_JOB_USD
+        )
+        rate_card_version = str(
+            self.node.try_get_context("rate_card_version") or DEFAULT_RATE_CARD_VERSION
+        )
+
+        # Single source of truth for both the jobs-table TTL and the audio
+        # bucket's S3 lifecycle expiration -- see DEFAULT_RETENTION_DAYS
+        # above. Both are threaded from this one variable so they can never
+        # drift apart.
+        retention_days = int(
+            self.node.try_get_context("retention_days") or DEFAULT_RETENTION_DAYS
+        )
+
+        google_secret_arn = self.node.try_get_context("google_oauth_secret_arn")
+        if google_secret_arn:
+            google_secret = secretsmanager.Secret.from_secret_complete_arn(
+                self,
+                "GoogleOAuthSecret",
+                google_secret_arn,
+            )
+        else:
+            google_secret = secretsmanager.Secret(
+                self,
+                "GoogleOAuthSecret",
+                description="Google OAuth client id/secret for Cognito IdP (placeholder)",
+                secret_object_value={
+                    "client_id": SecretValue.unsafe_plain_text("REPLACE_ME"),
+                    "client_secret": SecretValue.unsafe_plain_text("REPLACE_ME"),
+                },
+            )
+
+        jobs = dynamodb.Table(
+            self,
+            "AuritusJobs",
+            partition_key=dynamodb.Attribute(
+                name="content_hash",
+                type=dynamodb.AttributeType.STRING,
+            ),
+            billing_mode=dynamodb.BillingMode.PAY_PER_REQUEST,
+            removal_policy=RemovalPolicy.RETAIN,
+            time_to_live_attribute="ttl",
+        )
+        jobs.add_global_secondary_index(
+            index_name="status-created_at-index",
+            partition_key=dynamodb.Attribute(
+                name="status",
+                type=dynamodb.AttributeType.STRING,
+            ),
+            sort_key=dynamodb.Attribute(
+                name="created_at",
+                type=dynamodb.AttributeType.STRING,
+            ),
+            projection_type=dynamodb.ProjectionType.ALL,
+        )
+        # Correlates an AWS Batch "Job State Change" EventBridge event back
+        # to its job record. claimed_by is written as f"batch:{jobId}" by
+        # _claim_job (router) and independently by the Batch runner itself
+        # (worker-image/src/runner.py), so it's unique per Batch job. This
+        # is used instead of reading AURITUS_CONTENT_HASH off the event's
+        # container environment overrides, since AWS does not document
+        # whether that field reflects per-submission containerOverrides or
+        # only the job definition's original (unresolved) environment.
+        jobs.add_global_secondary_index(
+            index_name="claimed_by-index",
+            partition_key=dynamodb.Attribute(
+                name="claimed_by",
+                type=dynamodb.AttributeType.STRING,
+            ),
+            projection_type=dynamodb.ProjectionType.ALL,
+        )
+
+        sites = dynamodb.Table(
+            self,
+            "AuritusSites",
+            partition_key=dynamodb.Attribute(
+                name="site_id",
+                type=dynamodb.AttributeType.STRING,
+            ),
+            billing_mode=dynamodb.BillingMode.PAY_PER_REQUEST,
+            removal_policy=RemovalPolicy.RETAIN,
+        )
+        sites.add_global_secondary_index(
+            index_name="site_key-index",
+            partition_key=dynamodb.Attribute(
+                name="site_key",
+                type=dynamodb.AttributeType.STRING,
+            ),
+            projection_type=dynamodb.ProjectionType.ALL,
+        )
+
+        alerts = dynamodb.Table(
+            self,
+            "AuritusAlerts",
+            partition_key=dynamodb.Attribute(
+                name="alert_key",
+                type=dynamodb.AttributeType.STRING,
+            ),
+            billing_mode=dynamodb.BillingMode.PAY_PER_REQUEST,
+            removal_policy=RemovalPolicy.RETAIN,
+            time_to_live_attribute="ttl",
+        )
+
+        # Daily cost rollups by site: partition key site_id, sort key date
+        # (YYYY-MM-DD). This composite key -- not a single "site_id#date"
+        # rollup_key string -- is what makes /admin/costs' per-site
+        # date-range read a native DynamoDB Query (site_id = X AND date
+        # BETWEEN from AND to) instead of assembling a range of exact
+        # partition keys, which the Query API cannot do against a plain
+        # partition key. The date-site_id-index GSI (partition date, sort
+        # site_id) exists for the complementary "all sites" read: bounded by
+        # the number of days requested rather than by table size or number
+        # of sites (see _get_admin_costs in the router Lambda for the query
+        # shapes this key schema enables).
+        #
+        # Deliberately NO time_to_live_attribute here, unlike every other
+        # table in this stack: cost history must outlive the job records it
+        # is derived from. A future job-retention story (auritus-e45264, not
+        # yet implemented) will expire AuritusJobs rows via TTL; if rollups
+        # also had a TTL, that retention pass would silently destroy the
+        # accounting this story exists to provide. Rollups are retained
+        # indefinitely by design.
+        cost_rollups = dynamodb.Table(
+            self,
+            "AuritusCostRollups",
+            partition_key=dynamodb.Attribute(
+                name="site_id",
+                type=dynamodb.AttributeType.STRING,
+            ),
+            sort_key=dynamodb.Attribute(
+                name="date",
+                type=dynamodb.AttributeType.STRING,
+            ),
+            billing_mode=dynamodb.BillingMode.PAY_PER_REQUEST,
+            removal_policy=RemovalPolicy.RETAIN,
+        )
+        cost_rollups.add_global_secondary_index(
+            index_name="date-site_id-index",
+            partition_key=dynamodb.Attribute(
+                name="date",
+                type=dynamodb.AttributeType.STRING,
+            ),
+            sort_key=dynamodb.Attribute(
+                name="site_id",
+                type=dynamodb.AttributeType.STRING,
+            ),
+            projection_type=dynamodb.ProjectionType.ALL,
+        )
+
+        # Per-TTS-backend running average of observed AWS Batch billed
+        # seconds -- the counterfactual basis for "what would this local
+        # job have cost if the Batch fallback had won the race instead".
+        #
+        # Partition key ONLY (tts_backend, a handful of distinct values
+        # forever) -- no sort key. This is NOT shaped like AuritusCostRollups
+        # (site_id, date): that table aggregates a growing time series meant
+        # to be queried by date range. This table holds one row per TTS
+        # backend, updated forever, with no date dimension at all -- the
+        # average is all-time, not daily. Forcing it into the rollup table's
+        # (site_id, date) key would either scatter one backend's samples
+        # across many rows (breaking the "average" into meaningless partial
+        # averages) or require a fake constant sort key, which is just this
+        # table with extra steps.
+        #
+        # Only batch_billed_seconds_sum and batch_sample_count are stored;
+        # the average itself is computed at read time (sum / count). This is
+        # a deliberately simple running AVERAGE, not a true median -- an
+        # exact streaming median needs a sorted structure or an approximate
+        # percentile algorithm (t-digest, etc.) to maintain incrementally.
+        # An average aggregates trivially via the same additive ADD pattern
+        # already used for cost rollups (sum and count both increment with
+        # plain ADD), and is a defensible-enough "typical" figure for a
+        # counterfactual estimate. See router handler's avoided-cost
+        # computation and batch_telemetry's backend-timing rollup for where
+        # this trade-off is used and documented again in code.
+        #
+        # PAY_PER_REQUEST, RETAIN, no TTL: same reasoning as
+        # AuritusCostRollups above -- this is a permanent running statistic,
+        # not job-record-derived data subject to any future retention pass.
+        backend_timing = dynamodb.Table(
+            self,
+            "AuritusBackendTiming",
+            partition_key=dynamodb.Attribute(
+                name="tts_backend",
+                type=dynamodb.AttributeType.STRING,
+            ),
+            billing_mode=dynamodb.BillingMode.PAY_PER_REQUEST,
+            removal_policy=RemovalPolicy.RETAIN,
+        )
+
+        # Lifecycle expiration mirrors the jobs table's ttl retention window
+        # exactly (same retention_days variable -- see its definition
+        # above), so a job record and the audio clip it points to expire on
+        # the same policy. Only added when retention is enabled: an empty
+        # lifecycle_rules list (the default, retention_days == 0) leaves the
+        # bucket with no expiration at all, rather than a disabled rule --
+        # simpler and avoids depending on whether CDK/S3 tolerate a
+        # zero-day expiration rule that's merely marked disabled.
+        lifecycle_rules = (
+            [
+                s3.LifecycleRule(
+                    enabled=True,
+                    expiration=Duration.days(retention_days),
+                )
+            ]
+            if retention_days > 0
+            else []
+        )
+        audio_bucket = s3.Bucket(
+            self,
+            "AuritusAudio",
+            block_public_access=s3.BlockPublicAccess.BLOCK_ALL,
+            encryption=s3.BucketEncryption.S3_MANAGED,
+            enforce_ssl=True,
+            removal_policy=RemovalPolicy.RETAIN,
+            auto_delete_objects=False,
+            lifecycle_rules=lifecycle_rules,
+        )
+
+        distribution = cloudfront.Distribution(
+            self,
+            "AuritusAudioCdn",
+            default_behavior=cloudfront.BehaviorOptions(
+                origin=origins.S3BucketOrigin(audio_bucket),
+                viewer_protocol_policy=cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+                cache_policy=cloudfront.CachePolicy.CACHING_OPTIMIZED,
+            ),
+            comment="Auritus audio CDN (signed URLs issued by API)",
+        )
+
+        user_pool = cognito.UserPool(
+            self,
+            "AuritusUserPool",
+            self_sign_up_enabled=False,
+            sign_in_aliases=cognito.SignInAliases(email=True),
+            standard_attributes=cognito.StandardAttributes(
+                email=cognito.StandardAttribute(required=True, mutable=True)
+            ),
+            removal_policy=RemovalPolicy.DESTROY,
+        )
+
+        cognito_domain_prefix = (
+            self.node.try_get_context("cognito_domain_prefix") or "auritus-auth"
+        )
+        user_pool.add_domain(
+            "CognitoDomain",
+            cognito_domain=cognito.CognitoDomainOptions(
+                domain_prefix=cognito_domain_prefix,
+            ),
+        )
+
+        google_idp = cognito.UserPoolIdentityProviderGoogle(
+            self,
+            "GoogleIdP",
+            user_pool=user_pool,
+            client_id=google_secret.secret_value_from_json("client_id").unsafe_unwrap(),
+            client_secret_value=google_secret.secret_value_from_json("client_secret"),
+            scopes=["openid", "email", "profile"],
+            attribute_mapping=cognito.AttributeMapping(
+                email=cognito.ProviderAttribute.GOOGLE_EMAIL,
+                fullname=cognito.ProviderAttribute.GOOGLE_NAME,
+            ),
+        )
+
+        # AWS IAM Identity Center or corporate SAML 2.0 Identity Provider
+        saml_metadata_url = self.node.try_get_context("saml_metadata_url")
+        saml_idp = None
+        supported_idps = [
+            cognito.UserPoolClientIdentityProvider.COGNITO,
+            cognito.UserPoolClientIdentityProvider.GOOGLE,
+        ]
+
+        if saml_metadata_url:
+            saml_idp = cognito.UserPoolIdentityProviderSaml(
+                self,
+                "IdentityCenterSamlIdP",
+                user_pool=user_pool,
+                name="IdentityCenter",
+                metadata=cognito.UserPoolIdentityProviderSamlMetadata.url(
+                    saml_metadata_url
+                ),
+                attribute_mapping=cognito.AttributeMapping(
+                    email=cognito.ProviderAttribute.other("email"),
+                    fullname=cognito.ProviderAttribute.other("name"),
+                ),
+            )
+            supported_idps.append(
+                cognito.UserPoolClientIdentityProvider.custom("IdentityCenter")
+            )
+
+        user_pool_client = cognito.UserPoolClient(
+            self,
+            "AuritusCliClient",
+            user_pool=user_pool,
+            generate_secret=False,
+            access_token_validity=Duration.hours(1),
+            id_token_validity=Duration.hours(1),
+            refresh_token_validity=Duration.days(30),
+            refresh_token_rotation_grace_period=Duration.seconds(30),
+            enable_token_revocation=True,
+            o_auth=cognito.OAuthSettings(
+                flows=cognito.OAuthFlows(authorization_code_grant=True),
+                scopes=[
+                    cognito.OAuthScope.OPENID,
+                    cognito.OAuthScope.EMAIL,
+                    cognito.OAuthScope.PROFILE,
+                ],
+                callback_urls=[
+                    "http://127.0.0.1/callback",
+                    "http://localhost/callback",
+                    "http://localhost:8080/callback",
+                    "http://127.0.0.1:8080/callback",
+                ],
+            ),
+            supported_identity_providers=supported_idps,
+            auth_flows=cognito.AuthFlow(
+                user_password=True,
+                user_srp=True,
+            ),
+        )
+        user_pool_client.node.add_dependency(google_idp)
+        if saml_idp:
+            user_pool_client.node.add_dependency(saml_idp)
+
+        web_console_client = cognito.UserPoolClient(
+            self,
+            "AuritusWebConsoleClient",
+            user_pool=user_pool,
+            generate_secret=False,
+            access_token_validity=Duration.hours(1),
+            id_token_validity=Duration.hours(1),
+            refresh_token_validity=Duration.days(30),
+            refresh_token_rotation_grace_period=Duration.seconds(30),
+            enable_token_revocation=True,
+            o_auth=cognito.OAuthSettings(
+                flows=cognito.OAuthFlows(authorization_code_grant=True),
+                scopes=[
+                    cognito.OAuthScope.OPENID,
+                    cognito.OAuthScope.EMAIL,
+                    cognito.OAuthScope.PROFILE,
+                ],
+                callback_urls=[
+                    "http://localhost:3000/callback",
+                    "http://localhost:3000",
+                    "http://localhost:3001/callback",
+                    "http://localhost:3001",
+                    "https://console.aurit.us/callback",
+                    "https://console.aurit.us",
+                    "https://aurit.us/console/callback",
+                ],
+                logout_urls=[
+                    "http://localhost:3000/login",
+                    "http://localhost:3001/login",
+                    "https://console.aurit.us/login",
+                    "https://aurit.us/console/login",
+                ],
+            ),
+            supported_identity_providers=supported_idps,
+            auth_flows=cognito.AuthFlow(
+                user_password=True,
+                user_srp=True,
+            ),
+        )
+        web_console_client.node.add_dependency(google_idp)
+        if saml_idp:
+            web_console_client.node.add_dependency(saml_idp)
+
+        operator_auth_layer = build_operator_auth_layer(self)
+        operator_client_ids = ",".join(
+            [
+                user_pool_client.user_pool_client_id,
+                web_console_client.user_pool_client_id,
+            ]
+        )
+
+        router_fn = lambda_.Function(
+            self,
+            "RouterFn",
+            runtime=lambda_.Runtime.PYTHON_3_11,
+            handler="handler.handler",
+            code=lambda_.Code.from_asset(str(LAMBDA_ROOT / "router")),
+            layers=[operator_auth_layer],
+            timeout=Duration.seconds(30),
+            memory_size=512,
+            environment={
+                "JOBS_TABLE": jobs.table_name,
+                "SITES_TABLE": sites.table_name,
+                "AUDIO_BUCKET": audio_bucket.bucket_name,
+                "CLOUDFRONT_DOMAIN": distribution.distribution_domain_name,
+                "FALLBACK_SECONDS": str(claim_timeout_seconds),
+                "DAILY_SITE_QUOTA": str(
+                    self.node.try_get_context("daily_site_quota") or 100
+                ),
+                "USER_POOL_ID": user_pool.user_pool_id,
+                "ALLOWED_CLIENT_IDS": operator_client_ids,
+                "SES_FROM_ADDRESS": str(
+                    self.node.try_get_context("alert_from_address")
+                    or "auritus@example.com"
+                ),
+                "ALERTS_TABLE": alerts.table_name,
+                "GPU_HOURLY_RATE_USD": str(gpu_hourly_rate_usd),
+                "PLATFORM_COST_PER_JOB_USD": str(platform_cost_per_job_usd),
+                "RATE_CARD_VERSION": rate_card_version,
+                "COST_ROLLUPS_TABLE": cost_rollups.table_name,
+                "COST_ROLLUPS_DATE_INDEX": "date-site_id-index",
+                "BACKEND_TIMING_TABLE": backend_timing.table_name,
+                "RETENTION_DAYS": str(retention_days),
+            },
+        )
+        jobs.grant_read_write_data(router_fn)
+        sites.grant_read_write_data(router_fn)
+        alerts.grant_read_write_data(router_fn)
+        cost_rollups.grant_read_write_data(router_fn)
+        backend_timing.grant_read_data(router_fn)
+        audio_bucket.grant_read_write(router_fn)
+        user_pool.grant(
+            router_fn,
+            "cognito-idp:AdminGetUser",
+        )
+        router_fn.add_to_role_policy(
+            iam.PolicyStatement(
+                actions=["ses:SendEmail", "ses:SendRawEmail"],
+                resources=["*"],
+            )
+        )
+        router_fn.add_to_role_policy(
+            iam.PolicyStatement(
+                actions=["batch:DescribeJobQueues", "batch:UpdateJobQueue"],
+                resources=["*"],
+            )
+        )
+
+        authorizer_fn = lambda_.Function(
+            self,
+            "AuthorizerFn",
+            runtime=lambda_.Runtime.PYTHON_3_11,
+            handler="handler.handler",
+            code=lambda_.Code.from_asset(str(LAMBDA_ROOT / "authorizer")),
+            layers=[operator_auth_layer],
+            timeout=Duration.seconds(10),
+            environment={
+                "USER_POOL_ID": user_pool.user_pool_id,
+                "ALLOWED_CLIENT_IDS": operator_client_ids,
+            },
+        )
+
+        http_api = apigwv2.HttpApi(
+            self,
+            "AuritusApi",
+            api_name="auritus-api",
+            cors_preflight=apigwv2.CorsPreflightOptions(
+                allow_headers=[
+                    "Authorization",
+                    "Content-Type",
+                    "X-Auritus-Site-Key",
+                    "Origin",
+                ],
+                allow_methods=[
+                    apigwv2.CorsHttpMethod.GET,
+                    apigwv2.CorsHttpMethod.POST,
+                    apigwv2.CorsHttpMethod.PUT,
+                    apigwv2.CorsHttpMethod.DELETE,
+                    apigwv2.CorsHttpMethod.OPTIONS,
+                ],
+                allow_origins=["*"],
+                max_age=Duration.days(1),
+            ),
+        )
+
+        router_integration = apigwv2_integrations.HttpLambdaIntegration(
+            "RouterIntegration",
+            router_fn,
+        )
+
+        lambda_authorizer = apigwv2_auth.HttpLambdaAuthorizer(
+            "OperatorAuthorizer",
+            authorizer_fn,
+            authorizer_name="AuritusOperatorAuthorizer",
+            identity_source=["$request.header.Authorization"],
+            response_types=[apigwv2_auth.HttpLambdaResponseType.SIMPLE],
+        )
+
+        for method, path in [
+            (apigwv2.HttpMethod.POST, "/jobs"),
+            (apigwv2.HttpMethod.GET, "/jobs/{hash}"),
+            (apigwv2.HttpMethod.POST, "/jobs/{hash}/redeem"),
+            (apigwv2.HttpMethod.PUT, "/jobs/{hash}/claim"),
+            (apigwv2.HttpMethod.PUT, "/jobs/{hash}/done"),
+            (apigwv2.HttpMethod.PUT, "/jobs/{hash}/failed"),
+            (apigwv2.HttpMethod.POST, "/jobs/{hash}/presign-upload"),
+            (apigwv2.HttpMethod.POST, "/alerts/session"),
+        ]:
+            http_api.add_routes(
+                path=path,
+                methods=[method],
+                integration=router_integration,
+            )
+
+        for method, path in [
+            (apigwv2.HttpMethod.GET, "/jobs/claimable"),
+            (apigwv2.HttpMethod.GET, "/admin/overview"),
+            (apigwv2.HttpMethod.GET, "/admin/costs"),
+            (apigwv2.HttpMethod.GET, "/admin/jobs"),
+            (apigwv2.HttpMethod.GET, "/admin/jobs/{hash}"),
+            (apigwv2.HttpMethod.DELETE, "/admin/jobs/{hash}"),
+            (apigwv2.HttpMethod.POST, "/admin/jobs/{hash}/regenerate"),
+            (apigwv2.HttpMethod.POST, "/admin/jobs/{hash}/retry"),
+            (apigwv2.HttpMethod.POST, "/admin/jobs/bulk-delete"),
+            (apigwv2.HttpMethod.POST, "/admin/queue/toggle"),
+        ]:
+            http_api.add_routes(
+                path=path,
+                methods=[method],
+                integration=router_integration,
+                authorizer=lambda_authorizer,
+            )
+
+        for method, path in [
+            (apigwv2.HttpMethod.POST, "/sites"),
+            (apigwv2.HttpMethod.GET, "/sites"),
+            (apigwv2.HttpMethod.DELETE, "/sites/{id}"),
+        ]:
+            http_api.add_routes(
+                path=path,
+                methods=[method],
+                integration=router_integration,
+                authorizer=lambda_authorizer,
+            )
+
+        worker_repo = ecr.Repository(
+            self,
+            "WorkerImageRepo",
+            repository_name="auritus-worker",
+            removal_policy=RemovalPolicy.RETAIN,
+        )
+        worker_image_tag = self.node.try_get_context("worker_image_tag") or "latest"
+        worker_image_uri = f"{worker_repo.repository_uri}:{worker_image_tag}"
+
+        vpc = ec2.Vpc(
+            self,
+            "AuritusVpc",
+            max_azs=2,
+            nat_gateways=0,
+            subnet_configuration=[
+                ec2.SubnetConfiguration(
+                    name="Public",
+                    subnet_type=ec2.SubnetType.PUBLIC,
+                    cidr_mask=18,
+                ),
+            ],
+        )
+        batch_sg = ec2.SecurityGroup(self, "BatchSg", vpc=vpc, allow_all_outbound=True)
+        instance_profile = self._batch_instance_profile()
+
+        batch_launch_template = ec2.LaunchTemplate(
+            self,
+            "BatchGpuLaunchTemplate",
+            block_devices=[
+                ec2.BlockDevice(
+                    device_name="/dev/xvda",
+                    volume=ec2.BlockDeviceVolume.ebs(
+                        100,
+                        volume_type=ec2.EbsDeviceVolumeType.GP3,
+                    ),
+                )
+            ],
+        )
+
+        compute_env = batch.CfnComputeEnvironment(
+            self,
+            "GpuComputeEnv",
+            type="MANAGED",
+            compute_resources=batch.CfnComputeEnvironment.ComputeResourcesProperty(
+                type="EC2",
+                maxv_cpus=8,
+                minv_cpus=0,
+                desiredv_cpus=0,
+                instance_types=["g4dn.xlarge"],
+                allocation_strategy="BEST_FIT_PROGRESSIVE",
+                subnets=[subnet.subnet_id for subnet in vpc.public_subnets],
+                security_group_ids=[batch_sg.security_group_id],
+                instance_role=instance_profile.attr_arn,
+                launch_template=batch.CfnComputeEnvironment.LaunchTemplateSpecificationProperty(
+                    launch_template_id=batch_launch_template.launch_template_id,
+                    version="$Latest",
+                ),
+            ),
+        )
+
+        job_queue_name = "auritus-gpu"
+        batch.CfnJobQueue(
+            self,
+            "AuritusJobQueueV2",
+            job_queue_name=job_queue_name,
+            priority=2,
+            compute_environment_order=[
+                batch.CfnJobQueue.ComputeEnvironmentOrderProperty(
+                    order=1,
+                    compute_environment=compute_env.ref,
+                )
+            ],
+            state="ENABLED",
+        )
+        job_queue_arn = Stack.of(self).format_arn(
+            service="batch",
+            resource="job-queue",
+            resource_name=job_queue_name,
+        )
+
+        job_role = iam.Role(
+            self,
+            "BatchJobRole",
+            assumed_by=iam.ServicePrincipal("ecs-tasks.amazonaws.com"),
+        )
+        jobs.grant_read_write_data(job_role)
+        audio_bucket.grant_read_write(job_role)
+
+        job_def = batch.CfnJobDefinition(
+            self,
+            "AuritusGpuJobDef",
+            type="container",
+            platform_capabilities=["EC2"],
+            container_properties=batch.CfnJobDefinition.ContainerPropertiesProperty(
+                image=worker_image_uri,
+                resource_requirements=[
+                    batch.CfnJobDefinition.ResourceRequirementProperty(
+                        type="VCPU",
+                        value="2",
+                    ),
+                    batch.CfnJobDefinition.ResourceRequirementProperty(
+                        type="MEMORY",
+                        value="12288",
+                    ),
+                    batch.CfnJobDefinition.ResourceRequirementProperty(
+                        type="GPU",
+                        value="1",
+                    ),
+                ],
+                job_role_arn=job_role.role_arn,
+                environment=[
+                    batch.CfnJobDefinition.EnvironmentProperty(
+                        name="AURITUS_API_ENDPOINT",
+                        value=http_api.api_endpoint or "",
+                    ),
+                    batch.CfnJobDefinition.EnvironmentProperty(
+                        name="AURITUS_JOBS_TABLE",
+                        value=jobs.table_name,
+                    ),
+                    batch.CfnJobDefinition.EnvironmentProperty(
+                        name="AURITUS_TTS_BACKEND",
+                        value="kokoro",
+                    ),
+                ],
+                log_configuration=batch.CfnJobDefinition.LogConfigurationProperty(
+                    log_driver="awslogs"
+                ),
+            ),
+        )
+
+        wait_race = sfn.Wait(
+            self,
+            "WaitForLocalWorkerRace",
+            time=sfn.WaitTime.duration(Duration.seconds(race_seconds)),
+        )
+
+        get_job_initial = sfn_tasks.DynamoGetItem(
+            self,
+            "GetJobStatusInitial",
+            table=jobs,
+            key={
+                "content_hash": sfn_tasks.DynamoAttributeValue.from_string(
+                    sfn.JsonPath.string_at("$.content_hash")
+                )
+            },
+            result_path="$.job",
+        )
+
+        wait_delivery = sfn.Wait(
+            self,
+            "WaitForClaimedDeliveryGrace",
+            time=sfn.WaitTime.duration(Duration.seconds(delivery_grace_seconds)),
+        )
+
+        get_job_after_grace = sfn_tasks.DynamoGetItem(
+            self,
+            "GetJobStatusAfterGrace",
+            table=jobs,
+            key={
+                "content_hash": sfn_tasks.DynamoAttributeValue.from_string(
+                    sfn.JsonPath.string_at("$.content_hash")
+                )
+            },
+            result_path="$.job",
+        )
+
+        submit_batch = sfn_tasks.BatchSubmitJob(
+            self,
+            "SubmitGpuJob",
+            job_name=sfn.JsonPath.format(
+                "auritus-{}",
+                sfn.JsonPath.string_at("$.content_hash"),
+            ),
+            job_definition_arn=job_def.ref,
+            job_queue_arn=job_queue_arn,
+            container_overrides=sfn_tasks.BatchContainerOverrides(
+                environment={
+                    "AURITUS_CONTENT_HASH": sfn.JsonPath.string_at("$.content_hash"),
+                    "AURITUS_JOB_TOKEN": sfn.JsonPath.string_at("$.job_token"),
+                    "AURITUS_TTS_BACKEND": sfn.JsonPath.string_at("$.tts_backend"),
+                }
+            ),
+            result_path="$.batch",
+        )
+
+        batch_submit_failed = sfn.Fail(
+            self,
+            "BatchFallbackFailed",
+            error="BatchFallbackFailed",
+            cause="AWS Batch did not run the GPU job; the job was marked failed.",
+        )
+        mark_job_failed_on_submit_error = sfn_tasks.DynamoUpdateItem(
+            self,
+            "MarkJobFailedOnSubmitError",
+            table=jobs,
+            key={
+                "content_hash": sfn_tasks.DynamoAttributeValue.from_string(
+                    sfn.JsonPath.string_at("$.content_hash")
+                )
+            },
+            update_expression=(
+                "SET #status = :failed, error_message = :reason, "
+                "failed_at = :failed_at, updated_at = :failed_at"
+            ),
+            condition_expression="#status = :pending",
+            expression_attribute_names={"#status": "status"},
+            expression_attribute_values={
+                ":failed": sfn_tasks.DynamoAttributeValue.from_string("failed"),
+                ":pending": sfn_tasks.DynamoAttributeValue.from_string("pending"),
+                ":reason": sfn_tasks.DynamoAttributeValue.from_string(
+                    "batch_fallback_failed"
+                ),
+                ":failed_at": sfn_tasks.DynamoAttributeValue.from_string(
+                    sfn.JsonPath.string_at("$$.State.EnteredTime")
+                ),
+            },
+            result_path=sfn.JsonPath.DISCARD,
+        )
+        mark_job_failed_on_submit_error.add_catch(
+            batch_submit_failed, errors=["States.ALL"]
+        )
+        mark_job_failed_on_submit_error.next(batch_submit_failed)
+        submit_batch.add_catch(
+            mark_job_failed_on_submit_error,
+            errors=["States.ALL"],
+            result_path="$.submit_error",
+        )
+
+        local_delivered = sfn.Succeed(self, "LocalWorkerDelivered")
+
+        check_delivery_after_grace = sfn.Choice(self, "CheckDeliveryAfterGrace")
+        check_delivery_after_grace.when(
+            sfn.Condition.string_equals("$.job.Item.status.S", "done"),
+            local_delivered,
+        ).otherwise(submit_batch)
+
+        wait_delivery.next(get_job_after_grace).next(check_delivery_after_grace)
+
+        check_initial_status = sfn.Choice(self, "CheckInitialStatus")
+        check_initial_status.when(
+            sfn.Condition.string_equals("$.job.Item.status.S", "done"),
+            local_delivered,
+        ).when(
+            sfn.Condition.string_equals("$.job.Item.status.S", "pending"),
+            submit_batch,
+        ).when(
+            sfn.Condition.string_equals("$.job.Item.status.S", "claimed"),
+            wait_delivery,
+        ).otherwise(
+            submit_batch
+        )
+
+        definition = wait_race.next(get_job_initial).next(check_initial_status)
+
+        fallback = sfn.StateMachine(
+            self,
+            "AuritusFallback",
+            definition_body=sfn.DefinitionBody.from_chainable(definition),
+            timeout=Duration.hours(2),
+            logs=sfn.LogOptions(
+                destination=logs.LogGroup(
+                    self,
+                    "FallbackLogs",
+                    retention=logs.RetentionDays.ONE_MONTH,
+                    removal_policy=RemovalPolicy.DESTROY,
+                ),
+                level=sfn.LogLevel.ERROR,
+            ),
+        )
+        router_fn.add_environment(
+            "FALLBACK_STATE_MACHINE_ARN",
+            fallback.state_machine_arn,
+        )
+        router_fn.add_environment("BATCH_JOB_QUEUE_NAME", job_queue_name)
+        fallback.grant_start_execution(router_fn)
+
+        budget_topic = sns.Topic(self, "AuritusBudgetTopic")
+        budget_guard_fn = lambda_.Function(
+            self,
+            "BudgetGuardFn",
+            runtime=lambda_.Runtime.PYTHON_3_11,
+            handler="handler.handler",
+            code=lambda_.Code.from_asset(str(LAMBDA_ROOT / "budget_guard")),
+            timeout=Duration.seconds(30),
+            environment={
+                "BATCH_JOB_QUEUE_ARN": job_queue_arn,
+                "BATCH_JOB_QUEUE_NAME": job_queue_name,
+            },
+        )
+        budget_guard_fn.add_to_role_policy(
+            iam.PolicyStatement(
+                actions=["batch:UpdateJobQueue", "batch:DescribeJobQueues"],
+                resources=["*"],
+            )
+        )
+
+        budget_topic.grant_publish(iam.ServicePrincipal("budgets.amazonaws.com"))
+        budget_topic.add_subscription(
+            sns_subscriptions.LambdaSubscription(budget_guard_fn)
+        )
+
+        events.Rule(
+            self,
+            "BudgetAlarmRule",
+            event_pattern=events.EventPattern(source=["aws.budgets"]),
+            targets=[targets.LambdaFunction(budget_guard_fn)],
+        )
+
+        warm_start_threshold_seconds = int(
+            self.node.try_get_context("warm_start_threshold_seconds")
+            or DEFAULT_WARM_START_THRESHOLD_SECONDS
+        )
+        provisioning_overhead_seconds = int(
+            self.node.try_get_context("provisioning_overhead_seconds")
+            or DEFAULT_PROVISIONING_OVERHEAD_SECONDS
+        )
+        batch_telemetry_fn = lambda_.Function(
+            self,
+            "BatchTelemetryFn",
+            runtime=lambda_.Runtime.PYTHON_3_11,
+            handler="handler.handler",
+            code=lambda_.Code.from_asset(str(LAMBDA_ROOT / "batch_telemetry")),
+            timeout=Duration.seconds(30),
+            memory_size=256,
+            environment={
+                "JOBS_TABLE": jobs.table_name,
+                "CLAIMED_BY_INDEX": "claimed_by-index",
+                "WARM_START_THRESHOLD_SECONDS": str(warm_start_threshold_seconds),
+                "PROVISIONING_OVERHEAD_SECONDS": str(provisioning_overhead_seconds),
+                "GPU_HOURLY_RATE_USD": str(gpu_hourly_rate_usd),
+                "RATE_CARD_VERSION": rate_card_version,
+                "COST_ROLLUPS_TABLE": cost_rollups.table_name,
+                "BACKEND_TIMING_TABLE": backend_timing.table_name,
+            },
+        )
+        jobs.grant_read_write_data(batch_telemetry_fn)
+        cost_rollups.grant_read_write_data(batch_telemetry_fn)
+        backend_timing.grant_read_write_data(batch_telemetry_fn)
+
+        events.Rule(
+            self,
+            "BatchTelemetryRule",
+            event_pattern=events.EventPattern(
+                source=["aws.batch"],
+                detail_type=["Batch Job State Change"],
+                detail={
+                    "status": ["SUCCEEDED", "FAILED"],
+                    "jobQueue": [job_queue_arn],
+                },
+            ),
+            targets=[targets.LambdaFunction(batch_telemetry_fn)],
+        )
+
+        variance_threshold_percent = float(
+            self.node.try_get_context("variance_threshold_percent") or 20
+        )
+        reconciliation_lookback_days = int(
+            self.node.try_get_context("reconciliation_lookback_days") or 7
+        )
+        cost_reconciliation_fn = lambda_.Function(
+            self,
+            "CostReconciliationFn",
+            runtime=lambda_.Runtime.PYTHON_3_11,
+            handler="handler.handler",
+            code=lambda_.Code.from_asset(str(LAMBDA_ROOT / "cost_reconciliation")),
+            timeout=Duration.seconds(60),
+            memory_size=256,
+            environment={
+                "COST_ROLLUPS_TABLE": cost_rollups.table_name,
+                "COST_ROLLUPS_DATE_INDEX": "date-site_id-index",
+                "variance_threshold_percent": str(variance_threshold_percent),
+                "RECONCILIATION_LOOKBACK_DAYS": str(reconciliation_lookback_days),
+            },
+        )
+        cost_rollups.grant_read_write_data(cost_reconciliation_fn)
+        cost_reconciliation_fn.add_to_role_policy(
+            iam.PolicyStatement(
+                # ce:GetCostAndUsage has no resource-level permissions --
+                # AWS Cost Explorer's IAM actions only support "*" as the
+                # resource (there is no ARN format for a Cost Explorer
+                # query or report to scope this to). This mirrors the
+                # budget_guard_fn role's batch:UpdateJobQueue/
+                # DescribeJobQueues grant above, which uses resources=["*"]
+                # for the same reason -- some AWS APIs simply don't offer
+                # finer-grained resource ARNs.
+                actions=["ce:GetCostAndUsage"],
+                resources=["*"],
+            )
+        )
+
+        events.Rule(
+            self,
+            "CostReconciliationSchedule",
+            # Once daily at 06:00 UTC: comfortably after AWS Cost Explorer
+            # typically finishes updating a closed day's data (AWS
+            # generally refreshes Cost Explorer data at least once every
+            # 24 hours, usually earlier in the day), and outside the
+            # 00:00-02:00 UTC window other scheduled AWS billing/budget
+            # processes commonly run in, to reduce any chance of
+            # contending with them.
+            schedule=events.Schedule.cron(minute="0", hour="6"),
+            targets=[targets.LambdaFunction(cost_reconciliation_fn)],
+        )
+
+        daily_budget_limit = float(
+            self.node.try_get_context("daily_budget_usd") or 50.0
+        )
+        budgets.CfnBudget(
+            self,
+            "DailyGpuBudget",
+            budget=budgets.CfnBudget.BudgetDataProperty(
+                budget_type="COST",
+                time_unit="DAILY",
+                budget_limit=budgets.CfnBudget.SpendProperty(
+                    amount=daily_budget_limit,
+                    unit="USD",
+                ),
+                budget_name="AuritusDailyGpuBudget",
+            ),
+            notifications_with_subscribers=[
+                budgets.CfnBudget.NotificationWithSubscribersProperty(
+                    notification=budgets.CfnBudget.NotificationProperty(
+                        comparison_operator="GREATER_THAN",
+                        notification_type="ACTUAL",
+                        threshold=100,
+                        threshold_type="PERCENTAGE",
+                    ),
+                    subscribers=[
+                        budgets.CfnBudget.SubscriberProperty(
+                            address=budget_topic.topic_arn,
+                            subscription_type="SNS",
+                        )
+                    ],
+                )
+            ],
+        )
+
+        CfnOutput(self, "ApiUrl", value=http_api.api_endpoint or "")
+        CfnOutput(self, "UserPoolId", value=user_pool.user_pool_id)
+        CfnOutput(self, "UserPoolClientId", value=user_pool_client.user_pool_client_id)
+        CfnOutput(
+            self, "WebConsoleClientId", value=web_console_client.user_pool_client_id
+        )
+        CfnOutput(self, "JobsTableName", value=jobs.table_name)
+        CfnOutput(self, "SitesTableName", value=sites.table_name)
+        CfnOutput(self, "AudioBucketName", value=audio_bucket.bucket_name)
+        CfnOutput(self, "CloudFrontDomain", value=distribution.distribution_domain_name)
+        CfnOutput(self, "BatchQueueArn", value=job_queue_arn)
+        CfnOutput(self, "ClaimTimeoutSeconds", value=str(claim_timeout_seconds))
+        CfnOutput(self, "WorkerEcrRepositoryUri", value=worker_repo.repository_uri)
+        CfnOutput(self, "GoogleOAuthSecretArn", value=google_secret.secret_arn)
+
+    def _batch_instance_profile(self) -> iam.CfnInstanceProfile:
+        """Create an EC2 instance profile for AWS Batch GPU workers.
+
+        :returns: Instance profile for the Batch compute environment.
+        """
+        role = iam.Role(
+            self,
+            "BatchInstanceRole",
+            assumed_by=iam.ServicePrincipal("ec2.amazonaws.com"),
+            managed_policies=[
+                iam.ManagedPolicy.from_aws_managed_policy_name(
+                    "service-role/AmazonEC2ContainerServiceforEC2Role"
+                )
+            ],
+        )
+        return iam.CfnInstanceProfile(
+            self,
+            "BatchInstanceProfile",
+            roles=[role.role_name],
+        )

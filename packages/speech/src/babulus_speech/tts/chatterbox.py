@@ -1,0 +1,240 @@
+"""Chatterbox-TTS (Resemble AI) backend for AWS Batch and Linux GPU workers.
+
+Weights are fetched at runtime per docs/TTS_LICENSES.md.
+"""
+
+from __future__ import annotations
+
+import io
+import struct
+import wave
+from pathlib import Path
+from typing import Any
+
+from babulus_speech.tts.base import BackendUnavailable, TTSBackend
+from babulus_speech.tts.breaks import (
+    AURITUS_BREAK_MARKER,
+    AURITUS_PAUSE_MARKER,
+    DEFAULT_PAUSE_SILENCE_SECONDS,
+    split_on_breaks,
+    split_on_pauses,
+)
+from babulus_speech.tts.voices import require_reference_audio
+
+__all__ = [
+    "AURITUS_BREAK_MARKER",
+    "AURITUS_PAUSE_MARKER",
+    "ChatterboxBackend",
+    "resolve_chatterbox_voice",
+    "split_on_breaks",
+    "split_on_pauses",
+]
+
+CHATTERBOX_DEFAULT_VOICE = "default"
+#: Voice ids that ask for Chatterbox's default voice rather than naming one;
+#: the router resolves an unset Chatterbox voice to ``narrator``.
+CHATTERBOX_DEFAULT_VOICE_IDS = frozenset({CHATTERBOX_DEFAULT_VOICE, "narrator"})
+CHATTERBOX_TORCH_MODEL = "ResembleAI/chatterbox"
+CHATTERBOX_MLX_MODEL = "mlx-community/chatterbox-fp16"
+
+# How long a real silence gap is between AURITUS_BREAK_MARKER-delimited
+# blocks for this specific backend/voice. The marker itself and how it's
+# split live in tts.breaks, shared by every backend -- only the gap length
+# is a per-backend tuning choice.
+BREAK_SILENCE_SECONDS = 0.75
+PAUSE_SILENCE_SECONDS = DEFAULT_PAUSE_SILENCE_SECONDS
+
+
+def resolve_chatterbox_voice(meta: dict[str, Any]) -> str:
+    """Return a Chatterbox voice or reference style name for synthesis.
+
+    :param meta: Job metadata containing an optional ``voice_id``.
+    :returns: Voice identifier string.
+    """
+    raw = meta.get("voice_id")
+    if raw is None:
+        return CHATTERBOX_DEFAULT_VOICE
+    if isinstance(raw, str) and not raw.strip():
+        return CHATTERBOX_DEFAULT_VOICE
+    return str(raw)
+
+
+class ChatterboxBackend(TTSBackend):
+    """Chatterbox-TTS backend using Resemble AI Chatterbox.
+
+    On Apple Silicon: loads mlx-community/chatterbox-fp16 via mlx-audio.
+    On Linux / AWS Batch GPU: loads ResembleAI/chatterbox via PyTorch on CUDA.
+    """
+
+    name = "chatterbox"
+    _model = None
+    _is_mlx = None
+
+    def model_id(self) -> str:
+        """:returns: The MLX or PyTorch model repo this machine uses."""
+        cls = type(self)
+        if cls._is_mlx is None:
+            cls._is_mlx = cls._detect_mlx()
+        return CHATTERBOX_MLX_MODEL if cls._is_mlx else CHATTERBOX_TORCH_MODEL
+
+    @classmethod
+    def _detect_mlx(cls) -> bool:
+        """Detect whether MLX is available on this platform."""
+        import platform
+
+        if platform.system() != "Darwin":
+            return False
+        machine = platform.machine().lower()
+        return machine.startswith(("arm", "aarch"))
+
+    def generate(self, text: str, meta: dict[str, Any]) -> bytes:
+        """Generate speech audio using Chatterbox-TTS.
+
+        A named voice with no reference recording raises
+        :class:`~babulus_speech.tts.voices.VoiceNotFound` before any model loads.
+
+        :param text: TTS input text.
+        :param meta: Job metadata (voice_id, name, byline).
+        :returns: WAV audio bytes at 24000 Hz mono 16-bit.
+        :raises VoiceNotFound: If the named voice has no reference recording.
+        """
+        if not text.strip():
+            raise ValueError("Cannot generate audio for empty text")
+        reference = require_reference_audio(
+            resolve_chatterbox_voice(meta),
+            meta.get("voices_dir"),
+            default_voice_ids=CHATTERBOX_DEFAULT_VOICE_IDS,
+        )
+        if ChatterboxBackend._is_mlx is None:
+            ChatterboxBackend._is_mlx = ChatterboxBackend._detect_mlx()
+
+        if ChatterboxBackend._is_mlx:
+            return self._generate_mlx(text, meta, reference)
+        return self._generate_torch(text, meta, reference)
+
+    def _generate_mlx(
+        self, text: str, meta: dict[str, Any], reference: Path | None
+    ) -> bytes:
+        """Generate via mlx-audio on Apple Silicon.
+
+        :param reference: The voice's reference recording, or None to speak
+            in the model's own default voice.
+        """
+        import numpy as np
+        from mlx_audio.tts.utils import load_model
+
+        if ChatterboxBackend._model is None:
+            ChatterboxBackend._model = load_model(
+                CHATTERBOX_MLX_MODEL,
+                lazy=False,
+            )
+        sample_rate = int(
+            getattr(
+                ChatterboxBackend._model,
+                "sample_rate",
+                getattr(ChatterboxBackend._model, "sr", 24000),
+            )
+        )
+        ref_audio_arg = str(reference) if reference is not None else None
+
+        blocks = split_on_breaks(text)
+        all_chunks: list[np.ndarray] = []
+        silence = np.zeros(int(sample_rate * BREAK_SILENCE_SECONDS), dtype=np.float32)
+        pause_silence = np.zeros(
+            int(sample_rate * PAUSE_SILENCE_SECONDS), dtype=np.float32
+        )
+
+        for i, block in enumerate(blocks):
+            if i > 0:
+                all_chunks.append(silence)
+            pause_segments = split_on_pauses(block)
+            for p_idx, pause_text in enumerate(pause_segments):
+                if p_idx > 0:
+                    all_chunks.append(pause_silence)
+                gen = (
+                    ChatterboxBackend._model.generate(
+                        pause_text, ref_audio=ref_audio_arg
+                    )
+                    if ref_audio_arg
+                    else ChatterboxBackend._model.generate(pause_text)
+                )
+                block_chunks = [np.array(result.audio) for result in gen]
+                if block_chunks:
+                    all_chunks.extend(block_chunks)
+
+        if not all_chunks:
+            raise ValueError("Chatterbox-TTS generated no audio segments")
+        audio_np = np.concatenate(all_chunks) if len(all_chunks) > 1 else all_chunks[0]
+        return _to_wav(audio_np, sample_rate=sample_rate)
+
+    def _generate_torch(
+        self, text: str, meta: dict[str, Any], reference: Path | None
+    ) -> bytes:
+        """Generate via PyTorch / CUDA.
+
+        Every failure raises, so a job is marked failed rather than reporting
+        success with fake audio. Missing libraries raise
+        :class:`BackendUnavailable`.
+
+        :param reference: The voice's reference recording, or None to speak
+            in the model's own default voice.
+        """
+        try:
+            import numpy as np
+            import torch
+            from chatterbox.tts import ChatterboxTTS
+        except ImportError as exc:
+            raise BackendUnavailable.from_import_error(self.name, exc) from exc
+
+        if ChatterboxBackend._model is None:
+            device = "cuda" if torch.cuda.is_available() else "cpu"
+            print(f"[chatterbox] resolved device={device}", flush=True)
+            ChatterboxBackend._model = ChatterboxTTS.from_pretrained(
+                device=device,
+            )
+        ref_audio_arg = str(reference) if reference is not None else None
+
+        blocks = split_on_breaks(text)
+        all_chunks: list[np.ndarray] = []
+        sample_rate = int(getattr(ChatterboxBackend._model, "sr", 24000))
+        silence = np.zeros(int(sample_rate * BREAK_SILENCE_SECONDS), dtype=np.float32)
+        pause_silence = np.zeros(
+            int(sample_rate * PAUSE_SILENCE_SECONDS), dtype=np.float32
+        )
+        for i, block in enumerate(blocks):
+            if i > 0:
+                all_chunks.append(silence)
+            pause_segments = split_on_pauses(block)
+            for p_idx, pause_text in enumerate(pause_segments):
+                if p_idx > 0:
+                    all_chunks.append(pause_silence)
+                if ref_audio_arg:
+                    wav = ChatterboxBackend._model.generate(
+                        pause_text, audio_prompt_path=ref_audio_arg
+                    )
+                else:
+                    wav = ChatterboxBackend._model.generate(pause_text)
+                if hasattr(wav, "cpu"):
+                    wav = wav.cpu().numpy()
+                all_chunks.append(np.asarray(wav, dtype=np.float32).reshape(-1))
+
+        if not all_chunks:
+            raise ValueError("Chatterbox-TTS generated no audio segments")
+        audio_np = np.concatenate(all_chunks) if len(all_chunks) > 1 else all_chunks[0]
+        return _to_wav(audio_np, sample_rate=sample_rate)
+
+
+def _to_wav(samples: list | Any, sample_rate: int = 24000) -> bytes:
+    """Convert normalized audio samples to mono 16-bit WAV bytes."""
+    buffer = io.BytesIO()
+    flat = list(samples)
+    with wave.open(buffer, "wb") as handle:
+        handle.setnchannels(1)
+        handle.setsampwidth(2)
+        handle.setframerate(sample_rate)
+        frames = struct.pack(
+            "<" + "h" * len(flat),
+            *[max(-32768, min(32767, int(float(sample) * 32767))) for sample in flat],
+        )
+        handle.writeframes(frames)
+    return buffer.getvalue()

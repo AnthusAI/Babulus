@@ -1,0 +1,49 @@
+{
+  "id": "auritus-537a893d-6b1e-4cc9-80ff-0d15252ac7d4",
+  "title": "DNS delegation for aurit.us starts early",
+  "description": "## Behavior\n```gherkin\nFeature: DNS long pole\n  Scenario: Route 53 owns aurit.us\n    Given aurit.us is registered at GoDaddy\n    When the Route 53 hosted zone is created and GoDaddy NS are updated\n    Then dig NS aurit.us returns the AWS nameservers\n    And Amplify later attaches to this zone without creating a second zone\n```\n\n## Implementation brief\n1. Follow docs/DNS.md.\n2. `aws route53 create-hosted-zone --name aurit.us ...`\n3. Update GoDaddy nameservers manually.\n4. Record ROUTE53_HOSTED_ZONE_ID in AGENTS.local.md.\n5. Acceptance: `dig NS aurit.us +short` shows AWS NS.",
+  "type": "story",
+  "status": "closed",
+  "priority": 2,
+  "assignee": null,
+  "creator": null,
+  "parent": "auritus-8a79e5f2-b1d0-4962-b6f3-aadbfd52bb4d",
+  "labels": [],
+  "dependencies": [],
+  "comments": [
+    {
+      "id": "dfecf8ba-fde6-45af-a6c1-cebe470ca0c7",
+      "author": "ryan",
+      "text": "Route 53 hosted zone created: Z0891357UAST0841IMEZ\n\nNameservers (set these in GoDaddy for aurit.us):\n- ns-1028.awsdns-00.org\n- ns-74.awsdns-09.com\n- ns-717.awsdns-25.net\n- ns-1772.awsdns-29.co.uk\n\ndig still shows GoDaddy ns55/ns56.domaincontrol.com — awaiting GoDaddy NS update (human step). Amplify must attach to this existing zone only.",
+      "created_at": "2026-09-11T22:00:52.829317Z",
+      "comment_type": "default"
+    },
+    {
+      "id": "94c2e96b-a0c8-4b76-915b-c9208e9226e0",
+      "author": "ryan",
+      "text": "Route 53 hosted zone exists: Z0891357UAST0841IMEZ.\n\nNS to set at GoDaddy (still on domaincontrol.com as of this comment):\n- ns-1028.awsdns-00.org\n- ns-74.awsdns-09.com\n- ns-717.awsdns-25.net\n- ns-1772.awsdns-29.co.uk\n\nScript: ./scripts/setup-dns.sh\nDocs: docs/DNS.md",
+      "created_at": "2026-09-11T22:01:41.917231Z",
+      "comment_type": "default"
+    },
+    {
+      "id": "fe65d499-176f-45b9-a10c-b21f63f10fbd",
+      "author": "ryan",
+      "text": "GoDaddy nameservers set by user. dig still shows domaincontrol.com (propagating). Zone Z0891357UAST0841IMEZ ready.",
+      "created_at": "2026-09-11T22:13:16.597511Z",
+      "comment_type": "default"
+    },
+    {
+      "id": "ba19117f-62d5-4a68-95d8-55205eb636da",
+      "author": "ryan",
+      "text": "DNS propagated. dig NS aurit.us now shows AWS nameservers (ns-1028.awsdns-00.org etc.). Cognito domain set to auritus-auth.auth.us-east-1.amazoncognito.com.",
+      "created_at": "2026-09-11T23:25:01.010644Z",
+      "comment_type": "default"
+    }
+  ],
+  "created_at": "2026-09-11T21:40:16.498951Z",
+  "updated_at": "2026-09-11T23:25:01.010923Z",
+  "closed_at": "2026-09-11T22:13:22.339579Z",
+  "right_now_summary": "DNS now points aurit.us to Route 53, and the Cognito domain is configured.",
+  "right_now_updated_at": "2026-09-11T23:25:02.108547Z",
+  "custom": {}
+}
