@@ -1,0 +1,133 @@
+# Babulus speech (imported from Auritus)
+
+This folder documents the speech side of Babulus, which came from the Auritus project. It is imported as is for now; the product name, commands and cloud design change in later milestones. The code is in `packages/speech` (the `babulus-speech` Python distribution), `packages/embed`, `packages/control-plane`, `packages/worker-image`, `packages/construct` and `apps/console`.
+
+Open-source (MIT) drop-in web embed that just-in-time generates TTS audio of a
+page's content. You choose the open model, its parameters, and where synthesis
+runs: a GPU you control first, with AWS GPU capacity available as a dependable
+fallback.
+
+## What it does
+
+1. A generator module walks the host page DOM, applies ignore rules, and builds
+   a TTS input string plus a stable content hash.
+2. A player module requests (or waits for) audio for that hash and plays it.
+3. A cloud backend (CDK) stores jobs behind a DynamoDB mutex. A local GPU
+   worker can claim jobs; if none claims within a configurable timeout
+   (default 15 minutes), Step Functions submits an AWS Batch GPU job.
+4. Pluggable TTS backends: Kokoro (default speech), Qwen 3 CustomVoice,
+   F5-TTS, Higgs Audio v3, Chatterbox, and Fish Speech.
+
+## How it works
+
+![Auritus architecture: the publisher page sends a content hash to Auritus; a local GPU worker handles synthesis first, AWS handles the fallback, and the reader receives a private signed audio URL.](diagrams/rendered/overview.svg)
+
+Auritus is designed for teams that want the convenience of embedded narration
+without handing their page content and model choices to a TTS vendor. The
+browser sends only the content it needs to narrate to infrastructure you
+operate. A local worker can remove cloud GPU cost for ordinary work; AWS Batch
+keeps the experience available when that worker is offline or busy.
+
+## AWS deployment architecture
+
+![AWS architecture: a publisher origin calls the Auritus API, which coordinates DynamoDB, Step Functions, AWS Batch, private audio storage, and a short-lived playback URL; an optional local worker can claim first.](diagrams/rendered/aws-deployment.svg)
+
+The complete component explanation, identity choices, and security-design
+status are in [ARCHITECTURE.md](ARCHITECTURE.md). To regenerate these
+SVGs from their D2 source, see [diagrams/README.md](diagrams/README.md)
+and run `make diagrams`.
+
+## Quick start (operators)
+
+```bash
+git clone https://github.com/AnthusAI/Babulus.git
+cd Babulus
+pip install -e packages/speech/
+babulus deploy
+babulus login --username you@example.com
+babulus site create --origin https://example.com
+babulus worker
+```
+
+`babulus deploy` writes Cognito pool and client ids into local config.
+`babulus login` then prompts for your Cognito password when `--password` is
+omitted.
+
+Embed snippet (after `babulus site create`):
+
+```html
+<script
+  src="https://YOUR_HOST/embed.js"
+  data-babulus-site-key="YOUR_SITE_KEY"
+  data-babulus-api="YOUR_API_URL"
+  data-babulus-name="Article title"
+  data-babulus-byline="By Author"
+></script>
+```
+
+## Use as a library
+
+Other programs can synthesize speech offline, with no login, config file or AWS. You only need the chosen backend's dependencies.
+
+```python
+from babulus_speech import SpeechOptions, Voice, synthesize
+
+speech = synthesize(
+    "Welcome to the show. [[auritus:break]] Tonight, something new.",
+    Voice.parse("kokoro:af_heart"),
+    SpeechOptions(speed=1.1, seed=3),
+)
+speech.wav          # mono 16-bit WAV bytes
+speech.sample_rate  # e.g. 24000
+speech.segments     # one timed Segment per [[auritus:break]] block
+speech.provenance   # engine, version, backend, model, voice, options
+speech.request_key  # stable SHA-256 of the request, for caching
+```
+
+`request_key(text, voice, options)` gives the same key without synthesizing. A backend that can't honour an option raises `UnsupportedOption` rather than ignoring it. The `fake` backend makes a deterministic tone for tests.
+
+### Use from another language
+
+Run `python -m babulus_speech.speech_bridge` and exchange protocol-v1 newline-delimited
+JSON requests. The process handles multiple requests until EOF. stdout contains
+JSON responses; diagnostics go to stderr. Start with a capabilities request:
+
+```json
+{"protocol":1,"id":"check-1","op":"capabilities","voice":"kokoro:af_heart"}
+```
+
+Synthesis accepts `text`, `voice`, `speed`, `seed`, and `outputDir` alongside
+`protocol`, `id`, and `op: "synthesize"`. Create an empty, non-symlink segment
+directory for each request. The bridge publishes `speech.wav` and `speech.json`
+together there and returns sample counts, digests, and model provenance.
+
+Install runtime dependencies and model and voice files explicitly before use.
+The bridge does not download them or fall back to a paid provider. Readiness
+currently checks Kokoro's cached files; it does not prove successful inference.
+Other real backends report not ready until their offline loading is supported.
+The `fake` backend is simulated and intended for protocol tests.
+
+`request_key` identifies the Auritus request but does not include immutable
+snapshot revisions. Consumers caching bridge audio must include both
+`modelRevision` and `extensions["auritus.kokoro"].voiceRevision`, and disable
+reuse when either is unavailable or `cacheDisabledReason` is non-null.
+
+## Layout
+
+| Path | Role |
+| --- | --- |
+| `packages/speech/` | Python distribution `babulus-speech`: local models, the speech bridge and the `babulus` command (`auritus` still works) |
+| `packages/control-plane/` | Python CDK backend |
+| `packages/embed/` | TypeScript generator + player (`@anthusai/babulus`; `data-auritus-*` attributes still work) |
+| `packages/construct/` | CDK construct for the GPU render fleet (`@anthusai/babulus-construct`) |
+| `packages/worker-image/` | GPU Batch container |
+| `apps/console/` | Operator console |
+| `packages/speech/features/` | Gherkin specifications for the Python packages |
+
+## Development
+
+From `packages/speech`: `pip install -e ".[dev]"`, then `python -m pytest -q` and `python -m behave features`. See `.github/workflows/ci.yml` for every command CI runs.
+
+## License
+
+MIT. See the repository `LICENSE`. TTS model licenses are recorded in `TTS_LICENSES.md` and `MODEL_LICENSES.md`.

@@ -1,0 +1,91 @@
+direction: right
+
+vars: {
+  d2-config: {
+    pad: 32
+    theme-overrides: {
+      N1: "#21180f"
+      N2: "#665846"
+      N3: "#9a8668"
+      N4: "#cdbfa8"
+      N5: "#e6dcc9"
+      N6: "#f5eedf"
+      N7: "#fbf5e8"
+      B1: "#482015"
+      B2: "#943c2e"
+      B3: "#b8614e"
+      B4: "#d99a80"
+      B5: "#efcbbb"
+      B6: "#fae8de"
+      AA2: "#6e4f2b"
+      AA4: "#b88e4c"
+      AA5: "#e5c88f"
+      AB4: "#b87925"
+      AB5: "#f2d8a4"
+    }
+    dark-theme-overrides: {
+      N1: "#f3e6cf"
+      N2: "#cfbea4"
+      N3: "#a99273"
+      N4: "#705c44"
+      N5: "#4a3928"
+      N6: "#382b21"
+      N7: "#2d231b"
+      B1: "#f3d3c1"
+      B2: "#e19a78"
+      B3: "#bd7258"
+      B4: "#704132"
+      B5: "#482c22"
+      B6: "#301e18"
+      AA2: "#d7b57a"
+      AA4: "#926e39"
+      AA5: "#4f3920"
+      AB4: "#efb85d"
+      AB5: "#5c401f"
+    }
+  }
+}
+
+# d2 fills a grid column-major: column 1 top, column 1 bottom, column 2 top, ...
+grid-columns: 3
+grid-gap: 80
+
+request: {
+  label: "Page asks\nfor audio"
+  style.font-size: 34
+}
+
+delivery: {
+  label: "Short-lived link\nback to the page"
+  style.font-size: 34
+}
+
+claim: {
+  label: "One conditional claim\nonly one worker wins"
+  style.font-size: 34
+  style.bold: true
+}
+
+audio: {
+  label: "Private audio"
+  style.font-size: 34
+  style.bold: true
+}
+
+yours: {
+  label: "Your GPU\nclaims it first"
+  style.font-size: 34
+}
+
+batch: {
+  label: "AWS Batch\nonly if unclaimed"
+  style.font-size: 34
+  style.stroke-dash: 4
+}
+
+request -> claim
+claim -> yours
+yours -> batch: "no claim\nbefore the timeout" {style.font-size: 28; style.stroke-dash: 4}
+yours -> audio
+batch -> audio
+audio -> delivery {style.bold: true}
