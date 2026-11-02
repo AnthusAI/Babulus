@@ -1,0 +1,65 @@
+# Worker image for AWS Batch (GPU provided by Batch at runtime).
+# Build from the repository root: docker build -f packages/worker-image/Dockerfile .
+# All supported TTS synthesizer packages are pre-baked so Batch jobs
+# do not spend their startup window installing packages at runtime.
+FROM python:3.11-slim
+
+ENV DEBIAN_FRONTEND=noninteractive \
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    espeak-ng \
+    libgomp1 \
+    libsndfile1 \
+    sox \
+    libsox-dev \
+    libsox-fmt-all \
+    git \
+    gcc \
+    python3-dev \
+    portaudio19-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# 1. Main virtualenv for Kokoro & Chatterbox (Torch 2.6.0, Transformers 5.2.0)
+COPY packages/worker-image/requirements.txt /app/requirements.txt
+RUN python3 -m venv /opt/venv-main && \
+    /opt/venv-main/bin/pip install --no-cache-dir -r /app/requirements.txt
+
+# 2. Dedicated virtualenv for F5-TTS
+COPY packages/worker-image/requirements-f5.txt /app/requirements-f5.txt
+RUN python3 -m venv /opt/venv-f5 && \
+    /opt/venv-f5/bin/pip install --no-cache-dir -r /app/requirements-f5.txt
+
+# 3. Dedicated virtualenv for Qwen (strictly requires transformers 4.57.x and torch 2.5.1)
+COPY packages/worker-image/requirements-qwen.txt /app/requirements-qwen.txt
+RUN python3 -m venv /opt/venv-qwen && \
+    /opt/venv-qwen/bin/pip install --no-cache-dir -r /app/requirements-qwen.txt
+
+# 4. Dedicated virtualenv for Higgs (requires transformers>=5.5.0 for native higgs_audio_v2_tokenizer)
+COPY packages/worker-image/requirements-higgs.txt /app/requirements-higgs.txt
+RUN python3 -m venv /opt/venv-higgs && \
+    /opt/venv-higgs/bin/pip install --no-cache-dir -r /app/requirements-higgs.txt
+
+# 5. Dedicated virtualenv for Fish Speech (PyTorch/CUDA)
+COPY packages/worker-image/requirements-fish.txt /app/requirements-fish.txt
+RUN python3 -m venv /opt/venv-fish && \
+    /opt/venv-fish/bin/pip install --no-cache-dir -r /app/requirements-fish.txt && \
+    /opt/venv-fish/bin/pip install --no-cache-dir --no-deps git+https://github.com/fishaudio/fish-speech.git && \
+    touch /opt/venv-fish/lib/python3.11/site-packages/fish_speech/.project-root
+
+# The babulus-speech package (TTS backends and the speech library) goes into every
+# virtualenv on top of its pinned model stack. It comes last so that changing
+# it doesn't rebuild the heavy layers above.
+COPY packages/speech /app/speech
+RUN for venv in /opt/venv-*; do "$venv/bin/pip" install --no-cache-dir /app/speech; done
+
+COPY packages/worker-image/entrypoint.sh /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
+
+COPY packages/worker-image/src/ /app/src/
+ENV PYTHONPATH=/app/src
+
+ENTRYPOINT ["/app/entrypoint.sh"]

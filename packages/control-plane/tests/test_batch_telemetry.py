@@ -1,0 +1,320 @@
+"""Unit tests for the batch_telemetry Lambda's timing math and correlation."""
+
+from __future__ import annotations
+
+import importlib
+import json
+import os
+import sys
+from decimal import Decimal
+from typing import Any
+
+import boto3
+import pytest
+from moto import mock_aws
+
+
+@pytest.fixture
+def batch_telemetry() -> Any:
+    """Provide the batch_telemetry handler module with a mocked jobs table."""
+    with mock_aws():
+        dynamodb = boto3.client("dynamodb", region_name="us-east-1")
+        dynamodb.create_table(
+            TableName="jobs",
+            KeySchema=[{"AttributeName": "content_hash", "KeyType": "HASH"}],
+            AttributeDefinitions=[
+                {"AttributeName": "content_hash", "AttributeType": "S"},
+                {"AttributeName": "claimed_by", "AttributeType": "S"},
+            ],
+            GlobalSecondaryIndexes=[
+                {
+                    "IndexName": "claimed_by-index",
+                    "KeySchema": [{"AttributeName": "claimed_by", "KeyType": "HASH"}],
+                    "Projection": {"ProjectionType": "ALL"},
+                    "ProvisionedThroughput": {
+                        "ReadCapacityUnits": 1,
+                        "WriteCapacityUnits": 1,
+                    },
+                }
+            ],
+            BillingMode="PAY_PER_REQUEST",
+        )
+        dynamodb.create_table(
+            TableName="cost_rollups",
+            KeySchema=[
+                {"AttributeName": "site_id", "KeyType": "HASH"},
+                {"AttributeName": "date", "KeyType": "RANGE"},
+            ],
+            AttributeDefinitions=[
+                {"AttributeName": "site_id", "AttributeType": "S"},
+                {"AttributeName": "date", "AttributeType": "S"},
+            ],
+            BillingMode="PAY_PER_REQUEST",
+        )
+        os.environ.update(
+            {
+                "JOBS_TABLE": "jobs",
+                "CLAIMED_BY_INDEX": "claimed_by-index",
+                "WARM_START_THRESHOLD_SECONDS": "60",
+                "PROVISIONING_OVERHEAD_SECONDS": "90",
+                "GPU_HOURLY_RATE_USD": "0.526",
+                "RATE_CARD_VERSION": "v1",
+                "COST_ROLLUPS_TABLE": "cost_rollups",
+                "AWS_DEFAULT_REGION": "us-east-1",
+            }
+        )
+        sys.modules.pop("handler", None)
+        lambdas_dir = os.path.join(
+            os.path.dirname(__file__), "..", "lambdas", "batch_telemetry"
+        )
+        sys.path.insert(0, lambdas_dir)
+        module = importlib.import_module("handler")
+        try:
+            yield module
+        finally:
+            sys.path.remove(lambdas_dir)
+            sys.modules.pop("handler", None)
+            # COST_ROLLUPS_TABLE (and CLAIMED_BY_INDEX/the warm-start knobs,
+            # which only this module reads) must not leak past this test:
+            # os.environ is process-wide, and test_router.py's own fixture
+            # never sets COST_ROLLUPS_TABLE at all, so a leftover value
+            # pointing at "cost_rollups" -- a table that doesn't exist in
+            # ITS mock -- made router tests fail with
+            # ResourceNotFoundException whenever this file's tests ran
+            # first in the same pytest session.
+            for key in (
+                "COST_ROLLUPS_TABLE",
+                "CLAIMED_BY_INDEX",
+                "WARM_START_THRESHOLD_SECONDS",
+                "PROVISIONING_OVERHEAD_SECONDS",
+            ):
+                os.environ.pop(key, None)
+
+
+def test_compute_timing_cold_start_adds_provisioning_overhead(
+    batch_telemetry: Any,
+) -> None:
+    """A startup gap over the warm-start threshold adds provisioning overhead."""
+    created_at_ms = 1_700_000_000_000
+    started_at_ms = created_at_ms + 120_000  # 120s gap: a cold start
+    stopped_at_ms = started_at_ms + 30_000  # 30s of actual container work
+
+    timing = batch_telemetry.compute_timing(created_at_ms, started_at_ms, stopped_at_ms)
+
+    assert timing["container_seconds"] == 30.0
+    assert timing["provisioning_seconds"] == 90.0
+    assert timing["billed_seconds"] == 120.0
+
+
+def test_compute_timing_warm_start_has_no_provisioning_overhead(
+    batch_telemetry: Any,
+) -> None:
+    """A startup gap under the warm-start threshold adds no overhead."""
+    created_at_ms = 1_700_000_000_000
+    started_at_ms = created_at_ms + 5_000  # 5s gap: a warm start
+    stopped_at_ms = started_at_ms + 45_000
+
+    timing = batch_telemetry.compute_timing(created_at_ms, started_at_ms, stopped_at_ms)
+
+    assert timing["container_seconds"] == 45.0
+    assert timing["provisioning_seconds"] == 0.0
+    assert timing["billed_seconds"] == 45.0
+
+
+def test_compute_timing_handles_missing_started_and_stopped(
+    batch_telemetry: Any,
+) -> None:
+    """A job that failed before starting a container has no container time."""
+    created_at_ms = 1_700_000_000_000
+
+    timing = batch_telemetry.compute_timing(created_at_ms, None, None)
+
+    assert timing["container_seconds"] == 0.0
+    assert timing["provisioning_seconds"] == 0.0
+    assert timing["billed_seconds"] == 0.0
+
+
+def test_handler_records_timing_on_matching_job(batch_telemetry: Any) -> None:
+    """The handler correlates via claimed_by and writes timing fields."""
+    jobs = boto3.resource("dynamodb", region_name="us-east-1").Table("jobs")
+    jobs.put_item(
+        Item={
+            "content_hash": "abc123",
+            "status": "claimed",
+            "claimed_by": "batch:job-xyz",
+        }
+    )
+
+    created_at_ms = 1_700_000_000_000
+    event = {
+        "detail": {
+            "jobId": "job-xyz",
+            "status": "SUCCEEDED",
+            "createdAt": created_at_ms,
+            "startedAt": created_at_ms + 120_000,
+            "stoppedAt": created_at_ms + 150_000,
+            "container": {"instanceType": "g4dn.xlarge"},
+        }
+    }
+
+    result = batch_telemetry.handler(event, None)
+
+    assert result["status"] == "recorded"
+    item = jobs.get_item(Key={"content_hash": "abc123"})["Item"]
+    assert item["instance_type"] == "g4dn.xlarge"
+    assert item["container_seconds"] == Decimal("30")
+    assert item["provisioning_seconds"] == Decimal("90")
+    assert item["billed_seconds"] == Decimal("120")
+    assert item["batch_created_at"].endswith("Z")
+    # duration_seconds means something else (claim-to-done) and must be
+    # left untouched by this handler.
+    assert "duration_seconds" not in item
+
+
+def test_handler_computes_gpu_cost_from_billed_seconds_and_rate(
+    batch_telemetry: Any,
+) -> None:
+    """gpu_cost_usd = billed_seconds * hourly_rate / 3600, at the configured rate."""
+    jobs = boto3.resource("dynamodb", region_name="us-east-1").Table("jobs")
+    jobs.put_item(
+        Item={
+            "content_hash": "cost-job-1",
+            "status": "claimed",
+            "claimed_by": "batch:job-cost-1",
+        }
+    )
+
+    created_at_ms = 1_700_000_000_000
+    event = {
+        "detail": {
+            "jobId": "job-cost-1",
+            "status": "SUCCEEDED",
+            "createdAt": created_at_ms,
+            # 5s gap: warm start, so billed_seconds == container_seconds == 3600.
+            "startedAt": created_at_ms + 5_000,
+            "stoppedAt": created_at_ms + 5_000 + 3_600_000,
+            "container": {"instanceType": "g4dn.xlarge"},
+        }
+    }
+
+    result = batch_telemetry.handler(event, None)
+
+    assert result["status"] == "recorded"
+    assert result["billed_seconds"] == 3600.0
+
+    item = jobs.get_item(Key={"content_hash": "cost-job-1"})["Item"]
+    assert item["billed_seconds"] == Decimal("3600")
+    # 3600 billed seconds at $0.526/hr is exactly one hour's rate.
+    assert item["gpu_cost_usd"] == Decimal("0.526")
+    assert item["cost_rate_usd_per_hour"] == Decimal("0.526")
+    assert item["rate_card_version"] == "v1"
+    # batch_telemetry never writes the flat platform allowance -- that's
+    # the router's job, charged on every job regardless of worker type.
+    assert "platform_cost_usd" not in item
+
+
+def test_handler_rolls_up_gpu_cost_by_site_and_date(batch_telemetry: Any) -> None:
+    """A completed Batch job's gpu cost and count land in that site's daily rollup."""
+    jobs = boto3.resource("dynamodb", region_name="us-east-1").Table("jobs")
+    rollups = boto3.resource("dynamodb", region_name="us-east-1").Table("cost_rollups")
+    jobs.put_item(
+        Item={
+            "content_hash": "rollup-job-1",
+            "status": "claimed",
+            "claimed_by": "batch:job-rollup-1",
+            "site_id": "site-a",
+            "created_at": "2026-01-15T10:00:00Z",
+        }
+    )
+
+    created_at_ms = 1_700_000_000_000
+    event = {
+        "detail": {
+            "jobId": "job-rollup-1",
+            "status": "SUCCEEDED",
+            "createdAt": created_at_ms,
+            "startedAt": created_at_ms + 5_000,
+            "stoppedAt": created_at_ms + 5_000 + 3_600_000,
+            "container": {"instanceType": "g4dn.xlarge"},
+        }
+    }
+
+    result = batch_telemetry.handler(event, None)
+    assert result["status"] == "recorded"
+
+    job_item = jobs.get_item(Key={"content_hash": "rollup-job-1"})["Item"]
+    assert job_item["gpu_cost_rolled_up"] is True
+
+    rollup_item = rollups.get_item(Key={"site_id": "site-a", "date": "2026-01-15"})[
+        "Item"
+    ]
+    assert rollup_item["gpu_cost_usd"] == Decimal("0.526")
+    assert rollup_item["billed_seconds"] == Decimal("3600")
+    assert rollup_item["batch_job_count"] == Decimal("1")
+
+
+def test_handler_retried_delivery_does_not_double_count_gpu_cost(
+    batch_telemetry: Any,
+) -> None:
+    """A genuine EventBridge at-least-once redelivery must not double the rollup.
+
+    This calls the exact same handler with the exact same event twice --
+    that IS what an at-least-once redelivery looks like on the wire, not a
+    simulation of one. If the idempotency guard were missing or broken,
+    the second call would add gpu_cost_usd/billed_seconds/batch_job_count
+    a second time.
+    """
+    jobs = boto3.resource("dynamodb", region_name="us-east-1").Table("jobs")
+    rollups = boto3.resource("dynamodb", region_name="us-east-1").Table("cost_rollups")
+    jobs.put_item(
+        Item={
+            "content_hash": "rollup-job-retry",
+            "status": "claimed",
+            "claimed_by": "batch:job-rollup-retry",
+            "site_id": "site-b",
+            "created_at": "2026-02-01T09:00:00Z",
+        }
+    )
+
+    created_at_ms = 1_700_000_000_000
+    event = {
+        "detail": {
+            "jobId": "job-rollup-retry",
+            "status": "SUCCEEDED",
+            "createdAt": created_at_ms,
+            "startedAt": created_at_ms + 5_000,
+            "stoppedAt": created_at_ms + 5_000 + 3_600_000,
+            "container": {"instanceType": "g4dn.xlarge"},
+        }
+    }
+
+    first = batch_telemetry.handler(event, None)
+    second = batch_telemetry.handler(json.loads(json.dumps(event)), None)
+
+    assert first["status"] == "recorded"
+    assert second["status"] == "recorded"  # the job's own fields still rewrite fine
+
+    rollup_item = rollups.get_item(Key={"site_id": "site-b", "date": "2026-02-01"})[
+        "Item"
+    ]
+    # Not doubled: exactly one job's worth of cost/seconds/count.
+    assert rollup_item["gpu_cost_usd"] == Decimal("0.526")
+    assert rollup_item["billed_seconds"] == Decimal("3600")
+    assert rollup_item["batch_job_count"] == Decimal("1")
+
+
+def test_handler_skips_cleanly_when_no_job_matches(batch_telemetry: Any) -> None:
+    """An unrecognized Batch job (e.g. manual testing) does not raise."""
+    event = {
+        "detail": {
+            "jobId": "stray-job",
+            "status": "SUCCEEDED",
+            "createdAt": 1_700_000_000_000,
+            "startedAt": 1_700_000_010_000,
+            "stoppedAt": 1_700_000_020_000,
+        }
+    }
+
+    result = batch_telemetry.handler(event, None)
+
+    assert result == {"status": "skipped", "reason": "no_matching_job"}
