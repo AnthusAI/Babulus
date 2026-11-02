@@ -3,7 +3,7 @@
   "title": "P18 Implement render authority transitions and transaction contract",
   "description": "Implement VideoML packet videoml-e97334 under canonical initiative videoml-dbc2b1 D09/D09a/D09b. New dedicated server-owned RenderJobs/RenderLedger/RenderOutbox authority, separate from shared Amplify Job. Add executable Gherkin first and observe failure, then pure transition decisions and conditional transaction interface using server-owned time, generation/owner/status/lease predicates, attempt-scoped publication and exact ledger/outbox effects. Preserve original 300s grace, 15s heartbeat, 60s lease, 1200s attempt bound, two total and one cloud attempt. Cover all table edges, prohibited edges, races, cancellation orderings, crash/replay and unknown-submit reservation retention. Preserve generation/non-render paths; do not deploy/migrate/enable cloud or silently refactor legacy writers. Document explicit future cutover inventory and migration command contract. No commits without user approval. Primary owns Kanbus updates and acceptance; return source/tests/evidence.",
   "type": "task",
-  "status": "in_progress",
+  "status": "closed",
   "priority": 1,
   "assignee": null,
   "creator": null,
@@ -24,11 +24,18 @@
       "text": "Sequencing decision recorded in canonical VideoML P18 and P22: P18 delivers pure authority/transaction contract plus read-only legacy inventory and migration apply contract. Actual explicit idempotent apply command is now mandatory P22 cutover work, blocked on new authority and disabled legacy writers; final P28 remains gated. This preserves the migration requirement without inventing a premature cross-account apply path. D09c authoritative API admission time and all observed CAS predicates replace impossible database commit-time clock. Independent Terra source review dispatched; heavy gates await portability slot.",
       "created_at": "2026-10-31T03:13:45.742669Z",
       "comment_type": "default"
+    },
+    {
+      "id": "9aae130d-6337-4480-b444-0172114df51d",
+      "author": "home",
+      "text": "Superseded by the combined plan (epic babulus-d22d6854). The separate render authority tables are dropped in favour of the shared control plane in M3 and M4, which adds a video job kind to the Auritus job design.",
+      "created_at": "2026-11-02T19:01:10.879070Z",
+      "comment_type": "default"
     }
   ],
   "created_at": "2026-10-31T03:07:49.456644Z",
-  "updated_at": "2026-10-31T03:13:45.742858Z",
-  "closed_at": null,
+  "updated_at": "2026-11-02T19:01:10.898301Z",
+  "closed_at": "2026-11-02T19:01:10.898275Z",
   "right_now_summary": null,
   "right_now_updated_at": null,
   "custom": {}

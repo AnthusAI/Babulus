@@ -1,0 +1,70 @@
+{
+  "id": "auritus-a983da8f-7347-4e81-b803-5b5d2249513b",
+  "title": "M7 - Release and hardening",
+  "description": "First PyPI release (semantic-release on main, OIDC trusted publisher); prod deploy gates; model-license record; hardening pass with architect acceptance.",
+  "type": "epic",
+  "status": "open",
+  "priority": 2,
+  "assignee": null,
+  "creator": null,
+  "parent": "auritus-55faa0cb-66e9-423a-9298-caa8f7a3df79",
+  "labels": [],
+  "dependencies": [],
+  "comments": [
+    {
+      "id": "b423986a-3061-4f4e-a46c-79695774259b",
+      "author": "ryan",
+      "text": "aurit.us examples now show Play chrome on first paint and speak Kokoro (~23s) and Qwen (~48s) after promoting develop to main (PR #29). Local worker and Batch (Kokoro + Qwen) were already proven. Remaining on this epic: CLI PyPI via trusted publishing (a01473), kept last.",
+      "created_at": "2026-09-13T15:51:07.978490Z",
+      "comment_type": "default"
+    },
+    {
+      "id": "35e61b4f-504d-4090-aebb-6461473a4511",
+      "author": "ryan",
+      "text": "Model-license record now cites shipped Kokoro and Qwen Apache-2.0 cards (PR #30). Release workflow skips PyPI unless AURITUS_PUBLISH_PYPI is true. Remaining on this epic: a01473 trusted publisher, still last.",
+      "created_at": "2026-09-13T16:03:52.102163Z",
+      "comment_type": "default"
+    },
+    {
+      "id": "dfbdff03-91e0-4ecb-bde3-99cbcd20aa31",
+      "author": "ryan",
+      "text": "Stopping point: license record and PyPI skip gate landed (PR #30). Live examples, local worker, and Batch (Kokoro + Qwen) are proven. Remaining specified work is a01473 (trusted publisher / first PyPI upload), still last.",
+      "created_at": "2026-09-13T16:06:40.652693Z",
+      "comment_type": "default"
+    },
+    {
+      "id": "5bfca8e4-e7bb-428a-a003-353e0ddc7158",
+      "author": "ryan",
+      "text": "Home-page self-narrating demo (hash `2caf28aa`) is on develop via PR #34, with newsprint lockup. Next product step is promote develop to main so aurit.us serves it. PyPI (a01473) stays last.",
+      "created_at": "2026-09-13T18:09:42.782475Z",
+      "comment_type": "default"
+    },
+    {
+      "id": "ad8e32ba-2fa1-46ba-947f-fd8fdb08bde2",
+      "author": "ryan",
+      "text": "Promoted via PR #35. https://aurit.us/ now has Hear it for yourself (Kokoro `2caf28aa`); Playwright against aurit.us passed for the home pitch POST, Kokoro example speech, and Qwen example POST. Remaining on this epic: a01473 PyPI, still last.",
+      "created_at": "2026-09-13T18:13:45.705871Z",
+      "comment_type": "default"
+    },
+    {
+      "id": "61ec9b51-28ef-4ca7-a6a6-1109b822a65a",
+      "author": "ryan",
+      "text": "CI now runs Gherkin and Playwright (PR #36 / 472d2c). Remaining specified work on this epic is still a01473 PyPI, last.",
+      "created_at": "2026-09-13T18:30:51.038957Z",
+      "comment_type": "default"
+    },
+    {
+      "id": "eaea7780-8043-41ce-8434-cfe25311fe21",
+      "author": "ryan",
+      "text": "Play-while-waiting is on aurit.us (Amplify main job 92 SUCCEEDED; embed.js serves Starting when ready). Playwright against https://aurit.us is 18/18 green, including spoken-length Qwen. Remaining on this epic: a01473 PyPI, still last.",
+      "created_at": "2026-09-13T22:25:09.312879Z",
+      "comment_type": "default"
+    }
+  ],
+  "created_at": "2026-09-11T21:38:50.679842Z",
+  "updated_at": "2026-09-13T22:25:09.312896Z",
+  "closed_at": null,
+  "right_now_summary": "The first PyPI release awaits trusted-publisher setup and enabling the repository publish gate.",
+  "right_now_updated_at": "2026-10-16T18:01:26.993590Z",
+  "custom": {}
+}

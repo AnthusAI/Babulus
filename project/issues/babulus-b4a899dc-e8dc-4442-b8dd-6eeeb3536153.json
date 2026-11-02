@@ -7,7 +7,7 @@
   "priority": 1,
   "assignee": null,
   "creator": null,
-  "parent": "babulus-48bc4e27-b336-4500-9e65-a7fdfe42698e",
+  "parent": "babulus-d22d6854-6464-40b8-a446-b0a8265efdde",
   "labels": [
     "videoml-integration"
   ],
@@ -19,10 +19,17 @@
       "text": "Primary review follow-up: output-reader and callback exceptions now propagate as ISOLATION_UNAVAILABLE after attempted cleanup, and startup/cleanup errors retain fencing. Five source tests passed under primary execution. Real local ARM Linux rerun passed six scenarios / eighteen steps, including callback failure and read failure after child READY (log /private/tmp/p20a-linux/gherkin-reader-final.log). This verifies local process-group handling only; no cloud slot/reservation release proof. Chromium/FFmpeg compatibility experiment is being prepared with bounded Debian dependency preflight, no cloud write or production enablement. No commit performed.",
       "created_at": "2026-10-30T23:30:04.677405Z",
       "comment_type": "default"
+    },
+    {
+      "id": "784f7011-368f-429f-9c61-dcb570c0ca05",
+      "author": "home",
+      "text": "Kept open and moved under the combined epic babulus-d22d6854: a fail-closed renderer sandbox is still needed for the video job kind in M4.",
+      "created_at": "2026-11-02T19:00:45.467113Z",
+      "comment_type": "default"
     }
   ],
   "created_at": "2026-10-30T23:12:55.481534Z",
-  "updated_at": "2026-10-30T23:30:04.677868Z",
+  "updated_at": "2026-11-02T19:01:31.966347Z",
   "closed_at": null,
   "right_now_summary": null,
   "right_now_updated_at": null,

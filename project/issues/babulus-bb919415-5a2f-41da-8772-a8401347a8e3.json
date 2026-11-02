@@ -3,7 +3,7 @@
   "title": "M0: Contain cloud rendering",
   "description": "",
   "type": "task",
-  "status": "open",
+  "status": "closed",
   "priority": 2,
   "assignee": null,
   "creator": null,
@@ -38,11 +38,18 @@
       "text": "Board restarted in a new repository; earlier event history is not carried over.",
       "created_at": "2026-11-02T16:50:35.181036Z",
       "comment_type": "default"
+    },
+    {
+      "id": "d17e8457-a495-4a55-8df9-00c0ccb8c68e",
+      "author": "home",
+      "text": "M0 done. Cloud rendering is contained: CI runs on the new repository, and an automatic deploy on merge to main was verified. The render trigger stays disabled and the public API key is removed from the Job model (recorded in the comments above).",
+      "created_at": "2026-11-02T19:01:11.071032Z",
+      "comment_type": "default"
     }
   ],
   "created_at": "2026-11-02T05:41:58.223234Z",
-  "updated_at": "2026-11-02T16:50:51.054849Z",
-  "closed_at": null,
+  "updated_at": "2026-11-02T19:01:25.819660Z",
+  "closed_at": "2026-11-02T19:01:11.098680Z",
   "right_now_summary": null,
   "right_now_updated_at": null,
   "custom": {}

@@ -1,0 +1,42 @@
+{
+  "id": "auritus-c1d94988-951b-4912-8a40-f65d947b3420",
+  "title": "Player shows name byline and theme tokens",
+  "description": "## Behavior\n```gherkin\nFeature: Embed player\n  Scenario: Renders clip metadata\n    Given a job with name and byline\n    When the player mounts\n    Then name and byline are visible\n  Scenario: Theme via CSS variables\n    Given host CSS sets --auritus-accent and --auritus-font\n    When the player mounts\n    Then the player uses those tokens\n```\n\n## Implementation brief\n1. embed/src/player — shadow DOM, poll GET /jobs/{hash}, CSS vars.\n2. Drop-in src/index.ts with data-auritus-site-key/name/byline.",
+  "type": "story",
+  "status": "closed",
+  "priority": 2,
+  "assignee": null,
+  "creator": null,
+  "parent": "auritus-f9b2a4b9-4a73-4c3b-aba9-b0825bc31906",
+  "labels": [],
+  "dependencies": [],
+  "comments": [
+    {
+      "id": "cbbbe4b0-b980-4711-8016-3ee9269b436f",
+      "author": "ryan",
+      "text": "Scaffold implemented by Composer 2.5. Code in place and passing tests. Story remains open pending real-AWS verification.",
+      "created_at": "2026-09-11T22:13:57.558891Z",
+      "comment_type": "default"
+    },
+    {
+      "id": "00ea4750-b737-4970-8586-d2d74f35b66f",
+      "author": "ryan",
+      "text": "Player with CSS custom property theming implemented. BDD tests pass.",
+      "created_at": "2026-09-12T00:53:31.100015Z",
+      "comment_type": "default"
+    },
+    {
+      "id": "77860148-3ef8-4c47-9559-e63dc254350a",
+      "author": "ryan",
+      "text": "VERIFIED ON LIVE SITE: player mounts with CSS theming, shows name+byline, play button, and progress bar. Pending state (waiting for audio) is correct.",
+      "created_at": "2026-09-12T05:24:15.351778Z",
+      "comment_type": "default"
+    }
+  ],
+  "created_at": "2026-09-11T21:47:15.164374Z",
+  "updated_at": "2026-09-12T05:24:15.351798Z",
+  "closed_at": "2026-09-12T00:53:36.346712Z",
+  "right_now_summary": "The player works with name, byline, CSS themes, and live audio loading.",
+  "right_now_updated_at": "2026-09-12T05:24:16.888972Z",
+  "custom": {}
+}

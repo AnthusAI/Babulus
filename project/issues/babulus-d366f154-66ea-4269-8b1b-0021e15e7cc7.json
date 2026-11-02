@@ -7,7 +7,7 @@
   "priority": 1,
   "assignee": null,
   "creator": null,
-  "parent": "babulus-48bc4e27-b336-4500-9e65-a7fdfe42698e",
+  "parent": "babulus-d22d6854-6464-40b8-a446-b0a8265efdde",
   "labels": [],
   "dependencies": [],
   "comments": [
@@ -24,10 +24,17 @@
       "text": "P06 browser and scoped behavior checks pass; required Studio build initially failed because local amplify_outputs.json was absent. Primary verified existing Babulus app <amplify-app-id>/main in AWS account869507387405 using chatticus-staging profile and generated real gitignored outputs with installed ampx. This was read-only AWS configuration retrieval, not deployment. CI mirror is being rerun; no Babulus commit authorized yet.",
       "created_at": "2026-10-30T22:09:00.640097Z",
       "comment_type": "default"
+    },
+    {
+      "id": "7d030e95-8660-47ce-bd1b-df1746ca0619",
+      "author": "home",
+      "text": "Kept open and moved under the combined epic babulus-d22d6854 when the old integration epic was closed. This story is about shared VideoML animation demos and is not affected by the Auritus merge.",
+      "created_at": "2026-11-02T19:00:45.578505Z",
+      "comment_type": "default"
     }
   ],
   "created_at": "2026-10-30T21:16:40.861460Z",
-  "updated_at": "2026-10-30T22:09:00.640793Z",
+  "updated_at": "2026-11-02T19:01:32.077095Z",
   "closed_at": null,
   "right_now_summary": null,
   "right_now_updated_at": null,
