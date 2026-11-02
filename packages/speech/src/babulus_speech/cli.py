@@ -13,6 +13,7 @@ from babulus_speech.commands import killswitch as killswitch_cmd
 from babulus_speech.commands import login as login_cmd
 from babulus_speech.commands import player as player_cmd
 from babulus_speech.commands import site as site_cmd
+from babulus_speech.commands import video as video_cmd
 from babulus_speech.commands.login import logout_cmd
 
 # Compatibility bridge for Click 8.2+ signature change in make_metavar
@@ -86,6 +87,7 @@ app.add_typer(deploy_cmd.app, name="deploy")
 app.add_typer(site_cmd.app, name="site")
 app.add_typer(job_cmd.app, name="job")
 app.add_typer(cost_cmd.app, name="cost")
+app.add_typer(video_cmd.app, name="video")
 app.add_typer(player_cmd.app, name="player")
 worker_cmd.register(app)
 app.add_typer(killswitch_cmd.app, name="killswitch")

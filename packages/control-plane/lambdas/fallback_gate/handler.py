@@ -59,6 +59,7 @@ def handler(event: dict[str, Any], _context: Any) -> dict[str, Any]:
             # The whole guarantee: same attempt, and either nobody has the
             # job or the holder's claim has expired.
             ConditionExpression=(
+                "(attribute_not_exists(kind) OR kind = :speech) AND "
                 "job_token = :job_token AND "
                 "(#status = :pending OR "
                 "(#status = :claimed AND claim_deadline < :now_epoch))"
@@ -67,6 +68,7 @@ def handler(event: dict[str, Any], _context: Any) -> dict[str, Any]:
             ExpressionAttributeValues={
                 ":claimed": "claimed",
                 ":pending": "pending",
+                ":speech": "speech",
                 ":job_token": job_token,
                 ":owner": FALLBACK_OWNER,
                 ":wtype": "batch",
@@ -96,6 +98,10 @@ def _explain_refusal(content_hash: str, job_token: str, now: int) -> dict[str, A
     status = item.get("status")
     if status in ("done", "failed"):
         return {"decision": "stop", "reason": f"job_{status}"}
+    if item.get("kind", "speech") != "speech":
+        # Cloud rendering of this kind is not enabled: it waits for a local
+        # worker, however long that takes.
+        return {"decision": "stop", "reason": "local_worker_only"}
     if item.get("job_token") != job_token:
         return {"decision": "stop", "reason": "requeued"}
     if status == "claimed":

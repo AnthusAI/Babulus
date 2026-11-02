@@ -657,6 +657,9 @@ class BackendStack(Stack):
 
         for method, path in [
             (apigwv2.HttpMethod.GET, "/jobs/claimable"),
+            (apigwv2.HttpMethod.GET, "/jobs/{hash}/input"),
+            (apigwv2.HttpMethod.POST, "/store/{sha256}/presign-upload"),
+            (apigwv2.HttpMethod.GET, "/store/{sha256}"),
             (apigwv2.HttpMethod.GET, "/admin/overview"),
             (apigwv2.HttpMethod.GET, "/admin/costs"),
             (apigwv2.HttpMethod.GET, "/admin/jobs"),
