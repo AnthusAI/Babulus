@@ -37,3 +37,14 @@ Feature: The babulus command and the Auritus names that still work
     Examples:
       | backend | voice    | key                                                              |
       | fake    | default  | f749770ee15af77b59e55bda6fbe04905935fccfa5a3cd40594eafea50c5f693 |
+
+  Scenario Outline: Kokoro speech request identity is unchanged on each platform
+    Given the text "Hello world."
+    And Kokoro runs on "<runtime>"
+    When the speech request key is computed for backend "kokoro" and voice "af_heart"
+    Then the speech request key is "<key>"
+
+    Examples:
+      | runtime | key                                                              |
+      | mlx     | b3b9cb8fb00a15f38f0a57ef653363d705a7b250941b6b7b7480784f7c9c82d8 |
+      | torch   | efc08b2a379d3e50a14a32dc81777d6d541a4eb67f551db928ee1b2d79a18102 |
