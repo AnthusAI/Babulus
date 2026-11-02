@@ -140,6 +140,21 @@ as a subprocess and reports progress while it runs. A machine without Node, the
 toolchain's packages, Chromium or ffmpeg is told which is missing and how to fix
 it (`babulus video check`), and leaves video jobs waiting.
 
+## Named (cloned) voices
+
+A cloned voice is a recording and its transcript. `babulus voice publish
+<voice> --voices-dir <folder>` uploads both to the content store (objects keyed
+by SHA-256), then a manifest that names them, and only then calls
+`POST /voices/{voice}/publish`. Publishing checks that the manifest is exactly
+the object its hash names, describes this voice, and that every file it lists is
+in the store; anything missing is refused by name, so a voice is never half
+published. Jobs for a published voice carry its manifest, and a Batch worker
+downloads the files from the redeem response, verifies each hash, and passes the
+folder to the backend. A named voice that cannot be found, or that a backend
+cannot speak at all (Higgs and Bark have only their default voice), fails the
+job with `VoiceNotFound`; it is never spoken in a stock voice. Local workers
+read their own voices folder.
+
 ## Site keys and embed auth
 
 - Publisher-origin registration and enforcement are planned secure-by-design

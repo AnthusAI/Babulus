@@ -20,6 +20,7 @@ from pathlib import Path
 
 __all__ = [
     "VoiceNotFound",
+    "reject_named_voice",
     "list_voices",
     "require_reference_audio",
     "resolve_reference_audio",
@@ -41,9 +42,26 @@ class VoiceNotFound(ValueError):
     :param voice_id: The voice the request named.
     :param directory: The voices folder that was searched, or None when no
         folder was configured.
+    :param unsupported_by: Set when the backend cannot clone voices at all, so
+        no folder could ever supply this one.
     """
 
-    def __init__(self, voice_id: str, directory: Path | None) -> None:
+    def __init__(
+        self,
+        voice_id: str,
+        directory: Path | None,
+        *,
+        unsupported_by: str | None = None,
+    ) -> None:
+        if unsupported_by is not None:
+            super().__init__(
+                f"Voice {voice_id!r} was requested, but the {unsupported_by!r} "
+                "backend cannot speak in a named voice; it has only its default "
+                "voice. Refusing to substitute it."
+            )
+            self.voice_id = voice_id
+            self.directory = directory
+            return
         if directory is None:
             where = (
                 "no voices folder is configured "
@@ -166,3 +184,22 @@ def require_reference_audio(
     if not clean_id or clean_id in {v.lower() for v in default_voice_ids}:
         return None
     raise VoiceNotFound(voice_id, voices_directory(voices_dir))
+
+
+def reject_named_voice(
+    backend: str, voice_id: str | None, default_voice_ids: Collection[str]
+) -> None:
+    """Refuse a named voice on a backend that cannot clone voices.
+
+    Call this before any model loads. A request for the default voice (an
+    empty id or one of ``default_voice_ids``) passes.
+
+    :param backend: The backend's name, for the error message.
+    :param voice_id: The voice the request resolved to.
+    :param default_voice_ids: Ids that mean "the backend's default voice".
+    :raises VoiceNotFound: If the request names any other voice.
+    """
+    clean_id = (voice_id or "").strip()
+    if not clean_id or clean_id.lower() in {v.lower() for v in default_voice_ids}:
+        return
+    raise VoiceNotFound(clean_id, None, unsupported_by=backend)

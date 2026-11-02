@@ -223,6 +223,18 @@ class AuritusClient:
         """Ask for a URL to download one object from the content store."""
         return self._request("GET", f"/store/{sha256}")
 
+    def publish_voice(self, voice_id: str, manifest_sha256: str) -> dict[str, Any]:
+        """Publish a voice whose files and manifest are in the content store.
+
+        :raises AuritusApiError: If the manifest or any file it lists is not
+            in the store; the error names what is missing.
+        """
+        return self._request(
+            "POST",
+            f"/voices/{voice_id}/publish",
+            json_body={"manifest_sha256": manifest_sha256},
+        )
+
     def get_job(self, content_hash: str, *, site_key: str) -> dict[str, Any]:
         """Fetch job status and metadata."""
         return self._request("GET", f"/jobs/{content_hash}", site_key=site_key)
