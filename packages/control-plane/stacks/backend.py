@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from aws_cdk import aws_cloudwatch as cloudwatch
+from aws_cdk import aws_cloudwatch_actions as cloudwatch_actions
 from aws_cdk import (
     CfnOutput,
     Duration,
@@ -973,6 +975,31 @@ class BackendStack(Stack):
         fallback.grant_start_execution(router_fn)
 
         budget_topic = sns.Topic(self, "AuritusBudgetTopic")
+
+        # A fallback timer that fails or times out can strand a reserved job,
+        # so either one raises an alarm that someone sees.
+        timer_problems = cloudwatch.MathExpression(
+            expression="failed + timed_out",
+            using_metrics={
+                "failed": fallback.metric_failed(period=Duration.minutes(5)),
+                "timed_out": fallback.metric_timed_out(period=Duration.minutes(5)),
+            },
+            period=Duration.minutes(5),
+        )
+        timer_alarm = cloudwatch.Alarm(
+            self,
+            "FallbackTimerFailedAlarm",
+            alarm_description=(
+                "A fallback timer execution failed or timed out; a job may be "
+                "waiting on a claim nobody holds."
+            ),
+            metric=timer_problems,
+            threshold=1,
+            evaluation_periods=1,
+            comparison_operator=cloudwatch.ComparisonOperator.GREATER_THAN_OR_EQUAL_TO_THRESHOLD,
+            treat_missing_data=cloudwatch.TreatMissingData.NOT_BREACHING,
+        )
+        timer_alarm.add_alarm_action(cloudwatch_actions.SnsAction(budget_topic))
         budget_guard_fn = lambda_.Function(
             self,
             "BudgetGuardFn",

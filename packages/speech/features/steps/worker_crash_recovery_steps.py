@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import time
+
+import httpx
 from unittest.mock import MagicMock, patch
 
 from behave import given, then, when
@@ -145,3 +147,23 @@ def step_nothing_written(context) -> None:
     assert not context.mock_client.presign_upload.called
     assert not context.mock_client.mark_done.called
     assert not context.mock_client.mark_failed.called
+
+
+@given("the first claim renewal fails with a dropped connection")
+def step_first_renewal_drops(context) -> None:
+    calls = {"n": 0}
+
+    def renew(*_args):
+        calls["n"] += 1
+        if calls["n"] == 1:
+            raise httpx.ConnectError("connection dropped")
+        return {}
+
+    context.mock_client.renew_claim.side_effect = renew
+
+
+@then('the claim was renewed at least {count:d} times with claim token "{token}"')
+def step_renewed_n(context, count: int, token: str) -> None:
+    calls = context.mock_client.renew_claim.call_args_list
+    assert len(calls) >= count, calls
+    assert all(call.args[2] == token for call in calls), calls

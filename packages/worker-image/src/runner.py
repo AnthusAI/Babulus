@@ -6,6 +6,7 @@ import os
 import sys
 import threading
 import traceback
+from collections.abc import Callable
 from typing import Any
 
 import httpx
@@ -125,6 +126,10 @@ def mark_failed(
         pass
 
 
+LOST_CLAIM_STATUSES = (401, 403, 409)
+LOST_CLAIM_EXIT_CODE = 75
+
+
 def take_claim(
     api_url: str,
     job_hash: str,
@@ -132,8 +137,11 @@ def take_claim(
     *,
     owner: str,
     claim_token: str | None,
-) -> tuple[bool, str | None]:
-    """Take hold of the job; return whether it is held and the fencing token.
+) -> tuple[bool, str | None, int | None]:
+    """Take hold of the job.
+
+    Returns whether it is held, the fencing token, and the HTTP status of a
+    refusal (``None`` when held).
 
     When the fallback gate reserved the job for this run, its token arrives
     in the environment and is renewed under this run's owner id. Without one
@@ -151,9 +159,9 @@ def take_claim(
     )
     if claim.status_code >= 400:
         print(f"claim failed: {claim.status_code} {claim.text}", file=sys.stderr)
-        return False, None
+        return False, None, claim.status_code
     held = claim.json() if claim.content else {}
-    return True, str(held.get("claim_token") or claim_token or "") or None
+    return True, str(held.get("claim_token") or claim_token or "") or None, None
 
 
 def _keep_claim(
@@ -166,8 +174,16 @@ def _keep_claim(
     stop: threading.Event,
     lost: threading.Event,
     interval: float,
+    exit_process: Callable[[int], Any] = os._exit,
 ) -> None:
-    """Renew the claim until ``stop``; set ``lost`` if the claim is taken away."""
+    """Renew the claim until ``stop``.
+
+    If the API says the claim is gone (401, 403 or 409: another worker holds
+    it, the job was requeued, or the job token was rotated) the run is
+    worthless, so this sets ``lost`` and ends the whole process at once, which
+    stops the GPU. Network errors and server errors are retried at the next
+    beat; the claim is still good until it lapses.
+    """
     while not stop.wait(interval):
         try:
             response = httpx.put(
@@ -176,10 +192,11 @@ def _keep_claim(
                 json={"claim_owner": owner, "renew": True, "claim_token": claim_token},
                 timeout=30.0,
             )
-        except httpx.HTTPError:
+        except Exception:  # noqa: BLE001 - transient errors never end the run
             continue
-        if response.status_code == 409:
+        if response.status_code in LOST_CLAIM_STATUSES:
             lost.set()
+            exit_process(LOST_CLAIM_EXIT_CODE)
             return
 
 
@@ -219,7 +236,7 @@ def main() -> int:
         job_response.raise_for_status()
         job_body = job_response.json()
 
-    claimed, claim_token = take_claim(
+    claimed, claim_token, refused = take_claim(
         api_url,
         job_hash,
         headers,
@@ -227,7 +244,20 @@ def main() -> int:
         claim_token=os.environ.get("AURITUS_CLAIM_TOKEN", "").strip() or None,
     )
     if not claimed:
-        return 0
+        if refused == 409:
+            # Another worker holds the job: nothing for this run to do.
+            return 0
+        # Any other refusal (a server error, a rotated token) must not strand
+        # the reserved job: fail it under our token so it is visible.
+        mark_failed(
+            api_url,
+            job_hash,
+            headers,
+            owner=owner,
+            reason=f"claim_refused:{refused}",
+            claim_token=os.environ.get("AURITUS_CLAIM_TOKEN", "").strip() or None,
+        )
+        return 1
 
     stop = threading.Event()
     lost = threading.Event()

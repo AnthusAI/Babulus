@@ -35,8 +35,9 @@ def _heartbeat_loop(
     """Renew the claim until ``stop``; set ``lost`` if it was taken away.
 
     A refused renewal (409) means another worker holds the job or it was
-    requeued; the work in flight must then write nothing. Network errors are
-    retried at the next beat, because the claim is still good until it lapses.
+    requeued; the work in flight must then write nothing. Any other failure
+    (a dropped connection, a timeout, a server error) is retried at the next
+    beat, because the claim is still good until it lapses.
     """
     if claim_token is None:
         return
@@ -47,6 +48,8 @@ def _heartbeat_loop(
             if exc.status_code == 409:
                 lost.set()
                 return
+        except Exception:  # noqa: BLE001 - a network blip must not stop the beat
+            continue
 
 
 def worker_voices_dir(worker_cfg: dict[str, Any], *, cwd: Path | None = None) -> Path:

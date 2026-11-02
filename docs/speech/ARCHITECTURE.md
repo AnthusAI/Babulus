@@ -94,7 +94,28 @@ sequenceDiagram
   gate that cannot answer.
 - Arming the same attempt twice does not start a second timer; requeueing a job
   issues a new attempt, so a timer from before a requeue starts nothing.
-- Daily site quotas count per UTC day and start again at one each day.
+- Daily site quotas count per UTC day and start again at one each day. The
+  quota is taken by a conditional increment (`daily_usage < quota`) before the
+  job is written, so concurrent creates cannot exceed it; a job whose timer
+  cannot be started is taken back and its reservation released.
+- A timer execution that fails or times out raises a CloudWatch alarm (sent to
+  the budget topic).
+- A Batch worker whose renewal is refused (401, 403 or 409) ends its process at
+  once so the GPU stops. Known limit: an upload URL already issued to a worker
+  stays usable until it expires (5 minutes), so a worker that lost its claim in
+  that window could still overwrite the audio object; it can never record a
+  result.
+
+### Deploy order for claim fencing
+
+1. Push the new worker image (it sends and renews the claim token) **before**
+   deploying the stack, so no Batch job starts with an old image against the new
+   router.
+2. Deploy when the job queue is idle (no claimed jobs, no running Batch jobs):
+   claims taken before the deploy have no token and finish only through the
+   tokenless path.
+3. Upgrade every CLI/worker to this version; an older worker ignores the claim
+   token and its upload, result and failure calls are refused with 409.
 
 ## Site keys and embed auth
 

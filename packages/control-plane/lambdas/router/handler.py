@@ -255,35 +255,33 @@ def _site_from_headers(headers: dict[str, str]) -> dict[str, Any]:
     return site
 
 
-def _check_daily_quota(site: dict[str, Any]) -> None:
-    day = datetime.now(timezone.utc).strftime("%Y-%m-%d")
-    # Lightweight quota via sites table attribute; production may use a dedicated counter.
-    used = int(site.get("daily_usage") or 0)
-    if site.get("usage_day") != day:
-        used = 0
-    quota = int(site.get("daily_quota") or DAILY_SITE_QUOTA)
-    if used >= quota:
-        raise PermissionError("daily_quota_exceeded")
+def _reserve_quota(site: dict[str, Any]) -> None:
+    """Count one job against a site's daily quota, atomically, before it exists.
 
+    The increment itself enforces the limit (``daily_usage < quota``), so
+    concurrent creates cannot exceed it. The counter belongs to a UTC day: the
+    first reservation of a later day starts it again at one. The reset only
+    applies when the stored day is strictly earlier, so a worker with a slow
+    clock cannot reset a day that has already moved on.
 
-def _increment_quota(site_id: str) -> None:
-    """Count one new job against a site's quota for the current UTC day.
-
-    The counter belongs to a day: the first job of a new day starts it again
-    at one, so a site's quota resets at UTC midnight instead of accumulating
-    forever. Both writes are conditional, so concurrent requests on either
-    side of midnight each count exactly once.
-
-    :param site_id: The site that created the job.
+    :param site: The site record.
+    :raises PermissionError: ``daily_quota_exceeded`` when the day is full.
     """
     day = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    quota = int(site.get("daily_quota") or DAILY_SITE_QUOTA)
+    if quota < 1:
+        raise PermissionError("daily_quota_exceeded")
+    key = {"site_id": site["site_id"]}
     for _ in range(3):
         try:
             _sites.update_item(
-                Key={"site_id": site_id},
+                Key=key,
                 UpdateExpression="ADD daily_usage :one",
-                ConditionExpression="attribute_exists(site_id) AND usage_day = :day",
-                ExpressionAttributeValues={":day": day, ":one": 1},
+                ConditionExpression=(
+                    "attribute_exists(site_id) AND usage_day = :day "
+                    "AND daily_usage < :quota"
+                ),
+                ExpressionAttributeValues={":day": day, ":one": 1, ":quota": quota},
             )
             return
         except ClientError as exc:
@@ -291,11 +289,11 @@ def _increment_quota(site_id: str) -> None:
                 raise
         try:
             _sites.update_item(
-                Key={"site_id": site_id},
+                Key=key,
                 UpdateExpression="SET usage_day = :day, daily_usage = :one",
                 ConditionExpression=(
                     "attribute_exists(site_id) AND "
-                    "(attribute_not_exists(usage_day) OR usage_day <> :day)"
+                    "(attribute_not_exists(usage_day) OR usage_day < :day)"
                 ),
                 ExpressionAttributeValues={":day": day, ":one": 1},
             )
@@ -303,7 +301,29 @@ def _increment_quota(site_id: str) -> None:
         except ClientError as exc:
             if exc.response["Error"]["Code"] != "ConditionalCheckFailedException":
                 raise
-    raise RuntimeError("quota_counter_contended")
+            current = _sites.get_item(Key=key, ConsistentRead=True).get("Item")
+            if (
+                current
+                and current.get("usage_day") == day
+                and int(current.get("daily_usage") or 0) >= quota
+            ):
+                raise PermissionError("daily_quota_exceeded") from exc
+    raise PermissionError("daily_quota_exceeded")
+
+
+def _release_quota(site_id: str) -> None:
+    """Give back a reservation for a job that was not created."""
+    day = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    try:
+        _sites.update_item(
+            Key={"site_id": site_id},
+            UpdateExpression="ADD daily_usage :minus",
+            ConditionExpression="usage_day = :day AND daily_usage > :zero",
+            ExpressionAttributeValues={":day": day, ":minus": -1, ":zero": 0},
+        )
+    except ClientError as exc:
+        if exc.response["Error"]["Code"] != "ConditionalCheckFailedException":
+            raise
 
 
 def _record_rollup_contribution(
@@ -553,7 +573,6 @@ def _arm_fallback(content_hash: str, job_token: str, tts_backend: str) -> None:
 
 def _create_job(body: dict[str, Any], headers: dict[str, str]) -> dict[str, Any]:
     site = _site_from_headers(headers)
-    _check_daily_quota(site)
 
     text = body.get("text") or ""
     tts_backend = body.get("tts_backend") or "kokoro"
@@ -586,29 +605,56 @@ def _create_job(body: dict[str, Any], headers: dict[str, str]) -> dict[str, Any]
         "updated_at": now,
     }
 
+    def already_there() -> dict[str, Any] | None:
+        existing = _jobs.get_item(Key={"content_hash": content_hash}).get("Item")
+        if not existing:
+            return None
+        return _response(
+            200,
+            {
+                "content_hash": content_hash,
+                "status": existing.get("status"),
+                "existing": True,
+            },
+        )
+
+    # An identical job costs no quota.
+    duplicate = already_there()
+    if duplicate:
+        return duplicate
+
+    # The quota is taken first and enforced by the increment itself. A job is
+    # only written after its reservation, so a failure here leaves no job.
+    _reserve_quota(site)
     try:
         _jobs.put_item(
             Item=item,
             ConditionExpression="attribute_not_exists(content_hash)",
         )
     except ClientError as exc:
+        _release_quota(site["site_id"])
         if exc.response["Error"]["Code"] != "ConditionalCheckFailedException":
             raise
-        existing = _jobs.get_item(Key={"content_hash": content_hash}).get("Item")
-        if existing:
-            return _response(
-                200,
-                {
-                    "content_hash": content_hash,
-                    "status": existing.get("status"),
-                    "existing": True,
-                },
-            )
+        duplicate = already_there()
+        if duplicate:
+            return duplicate
+        raise
+    except Exception:
+        _release_quota(site["site_id"])
         raise
 
-    _increment_quota(site["site_id"])
-
-    _arm_fallback(content_hash, job_token, tts_backend)
+    try:
+        _arm_fallback(content_hash, job_token, tts_backend)
+    except Exception:
+        # A job with no timer could wait for the cloud forever. Take it back
+        # (only while it is still ours) so the caller retries the whole create.
+        _jobs.delete_item(
+            Key={"content_hash": content_hash},
+            ConditionExpression="job_token = :token",
+            ExpressionAttributeValues={":token": job_token},
+        )
+        _release_quota(site["site_id"])
+        raise
 
     return _response(
         201,
@@ -876,8 +922,9 @@ def _holder_condition(claim_token: str | None) -> str:
     """Return the condition under which a worker may write a job's outcome.
 
     A worker that presents its fencing token may write only while it still
-    holds that exact claim. A caller with no token (an operator completing a
-    job by hand) may write only to a job no token guards.
+    holds that exact claim. A caller with no token may write only to a
+    claimed job that no token guards (a record from before tokens existed);
+    a pending, requeued or finished job refuses it.
 
     :param claim_token: The token the caller presented, if any.
     :returns: A DynamoDB condition expression using ``#status`` and, when a
@@ -885,10 +932,7 @@ def _holder_condition(claim_token: str | None) -> str:
     """
     if claim_token:
         return "#status = :claimed AND claim_token = :holder_token"
-    return (
-        "#status = :pending OR "
-        "(#status = :claimed AND attribute_not_exists(claim_token))"
-    )
+    return "#status = :claimed AND attribute_not_exists(claim_token)"
 
 
 def _retention_ttl_epoch() -> int | None:
@@ -1006,7 +1050,7 @@ def _mark_done(
     claim_token = body.get("claim_token")
     if claim_token:
         attr_values[":holder_token"] = claim_token
-        attr_values.pop(":pending", None)
+    attr_values.pop(":pending", None)
     try:
         _jobs.update_item(
             Key={"content_hash": content_hash},
@@ -1115,7 +1159,7 @@ def _mark_failed(
     claim_token = body.get("claim_token")
     if claim_token:
         attr_values[":holder_token"] = claim_token
-        attr_values.pop(":pending", None)
+    attr_values.pop(":pending", None)
     try:
         _jobs.update_item(
             Key={"content_hash": content_hash},

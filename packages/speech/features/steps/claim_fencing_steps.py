@@ -9,6 +9,7 @@ from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import Mock
 
+import boto3
 from behave import given, then, when
 from botocore.exceptions import ClientError
 from support.fallback_machine import (
@@ -69,6 +70,9 @@ def step_router(context) -> None:
     gate = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(gate)
     gate.time = _fake_time(clock)
+    router.router.FALLBACK_STATE_MACHINE_ARN = (
+        "arn:aws:states:us-east-1:111122223333:stateMachine:spec"
+    )
     context.fencing_router = router
     context.clock = clock
     context.gate = gate
@@ -169,6 +173,8 @@ def step_batch_behaviour(context, every: int, total: int) -> None:
 
 def _submit(context, environment: dict) -> None:
     context.batch_submissions.append(environment)
+    if getattr(context, "batch_refuses", False):
+        raise RuntimeError("Batch queue is disabled")
     if context.batch_behaviour is None:
         return
     every, total = context.batch_behaviour
@@ -186,6 +192,11 @@ def _gate(context, payload: dict) -> dict:
     return context.gate.handler(payload, None)
 
 
+def _dynamo_update(context, params: dict) -> None:
+    params = {**params, "TableName": _router(context).router.JOBS_TABLE}
+    boto3.client("dynamodb", region_name="us-east-1").update_item(**params)
+
+
 def _run_timer(context, start_at: str | None = None) -> None:
     context.timer_result = run_machine(
         context.definition,
@@ -194,6 +205,7 @@ def _run_timer(context, start_at: str | None = None) -> None:
         gate=lambda payload: _gate(context, payload),
         submit=lambda env: _submit(context, env),
         start_at=start_at,
+        dynamo=lambda params: _dynamo_update(context, params),
     )
 
 
@@ -401,7 +413,7 @@ def step_refused_all(context, owner: str) -> None:
 def step_no_token_done(context) -> None:
     response = _complete(context, "local:a", with_token=False)
     assert response["statusCode"] == 409, response
-    assert _item(context)["status"] == "claimed"
+    assert _item(context)["status"] != "done", _item(context)
 
 
 @then("renewing without a token is rejected as a bad request")
@@ -420,3 +432,103 @@ def step_second_arm(context) -> None:
     assert context.arm_error is None, context.arm_error
     names = {c.kwargs["name"] for c in context.arm_sfn.start_execution.call_args_list}
     assert len(names) == 1, names
+
+
+def _router(context):
+    return context.fencing_router
+
+
+def _new_site(context, quota: int, usage_day: str, usage: int) -> None:
+    context.fencing_router.sites_table.put_item(
+        Item={
+            "site_id": "site-fencing",
+            "site_key": SITE_KEY,
+            "allowed_origins": ["https://example.com"],
+            "daily_quota": quota,
+            "daily_usage": usage,
+            "usage_day": usage_day,
+            "disabled": False,
+        }
+    )
+
+
+def _create_text(context, text: str) -> dict:
+    return context.fencing_router.call(
+        "POST",
+        "/jobs",
+        headers={"x-auritus-site-key": SITE_KEY, "origin": "https://example.com"},
+        body={"text": text},
+    )
+
+
+@given("a site with a daily quota of {quota:d} and nothing used today")
+def step_site_fresh(context, quota: int) -> None:
+    _new_site(context, quota, datetime.now(timezone.utc).strftime("%Y-%m-%d"), 0)
+
+
+@given("a site whose usage is recorded for a later day than the router's clock")
+def step_site_future(context) -> None:
+    _new_site(context, 2, "2999-01-01", 2)
+
+
+@when("the site creates {count:d} different jobs at the same time")
+def step_concurrent(context, count: int) -> None:
+    from concurrent.futures import ThreadPoolExecutor
+
+    with ThreadPoolExecutor(max_workers=count) as pool:
+        context.concurrent = list(
+            pool.map(
+                lambda n: _create_text(context, f"Concurrent paragraph {n}."),
+                range(count),
+            )
+        )
+
+
+@then(
+    'exactly {created:d} of those jobs are created and {refused:d} are refused with "{error}"'
+)
+def step_concurrent_result(context, created: int, refused: int, error: str) -> None:
+    statuses = [r["statusCode"] for r in context.concurrent]
+    assert statuses.count(201) == created, statuses
+    assert statuses.count(403) == refused, statuses
+    assert all(
+        _body(r) == {"error": error}
+        for r in context.concurrent
+        if r["statusCode"] == 403
+    )
+
+
+@given("starting the fallback timer fails")
+def step_timer_start_fails(context) -> None:
+    context.fencing_router.router._sfn.start_execution.side_effect = ClientError(
+        {"Error": {"Code": "ThrottlingException", "Message": "slow down"}},
+        "StartExecution",
+    )
+
+
+@when("the site creates a job and the router fails")
+def step_create_fails(context) -> None:
+    context.router_error = None
+    try:
+        context.router_response = _create_text(context, "A narrated paragraph.")
+    except ClientError as exc:
+        context.router_error = exc
+    assert context.router_error is not None, context.router_response
+
+
+@then("no job was stored")
+def step_no_job(context) -> None:
+    assert context.fencing_router.jobs_table.scan()["Items"] == []
+
+
+@given("AWS Batch refuses the submission")
+def step_batch_refuses(context) -> None:
+    context.batch_refuses = True
+
+
+@then('the job is failed with reason "{reason}"')
+def step_failed_reason(context, reason: str) -> None:
+    item = _item(context)
+    assert item["status"] == "failed", item
+    assert item["error_message"] == reason, item
+    assert "claim_token" not in item, item

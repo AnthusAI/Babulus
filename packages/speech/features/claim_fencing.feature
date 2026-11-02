@@ -114,3 +114,35 @@ Feature: Claims are fenced and the cloud fallback respects them
     Given a site whose quota of 2 was used up today
     When the site creates a job
     Then the job is refused with "daily_quota_exceeded"
+
+  Scenario: Concurrent creates cannot exceed a site's quota
+    Given a site with a daily quota of 2 and nothing used today
+    When the site creates 6 different jobs at the same time
+    Then exactly 2 of those jobs are created and 4 are refused with "daily_quota_exceeded"
+    And the site's usage for today is 2
+
+  Scenario: A slow clock cannot reset a day that has moved on
+    Given a site whose usage is recorded for a later day than the router's clock
+    When the site creates a job
+    Then the job is refused with "daily_quota_exceeded"
+
+  Scenario: A failure to start the timer leaves no job and no quota used
+    Given a site with a daily quota of 2 and nothing used today
+    And starting the fallback timer fails
+    When the site creates a job and the router fails
+    Then no job was stored
+    And the site's usage for today is 0
+
+  Scenario: A write with no token cannot complete a requeued job
+    Given a pending job with a fallback timer
+    And local worker "local:a" claims the job
+    When an operator force-retries the job
+    Then completing the job without a token is refused
+    And the job is "pending"
+
+  Scenario: A refused Batch submission fails only the attempt the gate reserved
+    Given a pending job with a fallback timer
+    And AWS Batch refuses the submission
+    When the fallback timer runs
+    Then the timer ends with "BatchFallbackFailed"
+    And the job is failed with reason "batch_fallback_failed"

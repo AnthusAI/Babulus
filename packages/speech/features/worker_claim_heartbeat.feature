@@ -26,3 +26,11 @@ Feature: Local worker keeps and respects its claim
     When the worker runs a single poll cycle
     Then the worker uploaded nothing and recorded no result
     And the worker does not crash
+
+  Scenario: A dropped connection does not stop the heartbeat
+    Given a claimable job that a local worker will claim with claim token "claim-token-1"
+    And the worker's TTS backend takes a while to generate audio
+    And the first claim renewal fails with a dropped connection
+    When the worker runs a single poll cycle
+    Then the claim was renewed at least 2 times with claim token "claim-token-1"
+    And the job is marked done

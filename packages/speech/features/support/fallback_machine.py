@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import json
 import sys
+import time
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Callable
@@ -82,6 +83,24 @@ def _resolve(path: str, data: dict[str, Any]) -> Any:
     return value
 
 
+def _resolve_params(value: Any, data: dict[str, Any], clock: FakeClock) -> Any:
+    """Resolve ``.$`` references in a state's parameters."""
+    if isinstance(value, dict):
+        out = {}
+        for key, item in value.items():
+            if key.endswith(".$"):
+                if item == "$$.State.EnteredTime":
+                    out[key[:-2]] = time.strftime(
+                        "%Y-%m-%dT%H:%M:%SZ", time.gmtime(clock.now)
+                    )
+                else:
+                    out[key[:-2]] = _resolve(item, data)
+            else:
+                out[key] = _resolve_params(item, data, clock)
+        return out
+    return value
+
+
 def _compare(rule: dict[str, Any], data: dict[str, Any]) -> bool:
     actual = _resolve(rule["Variable"], data)
     if "StringEquals" in rule:
@@ -106,6 +125,7 @@ def run_machine(
     gate: Callable[[dict[str, Any]], dict[str, Any]],
     submit: Callable[[dict[str, Any]], None],
     start_at: str | None = None,
+    dynamo: Callable[[dict[str, Any]], None] | None = None,
     max_steps: int = 500,
 ) -> Execution:
     """Interpret the fallback machine until it ends.
@@ -115,6 +135,8 @@ def run_machine(
     :param clock: The fake clock that ``Wait`` states advance.
     :param gate: Runs the gate Lambda for a payload and returns its result.
     :param submit: Called with the Batch container environment on submit.
+    :param dynamo: Runs a DynamoDB ``UpdateItem`` task with its resolved
+        parameters; it may raise, which follows the state's ``Catch``.
     :param start_at: Begin at this state instead of the machine's first one
         (a timer that has already waited out its race window).
     :returns: The visited states and how the execution ended.
@@ -132,7 +154,11 @@ def run_machine(
             else:
                 seconds = int(state["Seconds"])
             clock.advance(seconds)
-        elif kind == "Task" and "JobDefinition" not in state["Parameters"]:
+        elif (
+            kind == "Task"
+            and "JobDefinition" not in state["Parameters"]
+            and "UpdateExpression" not in state["Parameters"]
+        ):
             payload = {
                 key.removesuffix(".$"): (
                     _resolve(value, execution.data) if key.endswith(".$") else value
@@ -144,6 +170,13 @@ def run_machine(
             except Exception:  # noqa: BLE001 - any gate error must stop the run
                 name = state["Catch"][0]["Next"]
                 continue
+        elif kind == "Task" and "UpdateExpression" in state["Parameters"]:
+            assert dynamo is not None, "no DynamoDB stand-in given"
+            try:
+                dynamo(_resolve_params(state["Parameters"], execution.data, clock))
+            except Exception:  # noqa: BLE001 - follows the state's Catch
+                name = state["Catch"][0]["Next"]
+                continue
         elif kind == "Task":
             env = {
                 item["Name"]: (
@@ -153,7 +186,12 @@ def run_machine(
                 )
                 for item in state["Parameters"]["ContainerOverrides"]["Environment"]
             }
-            submit(env)
+            try:
+                submit(env)
+            except Exception as exc:  # noqa: BLE001 - follows the state's Catch
+                execution.data["submit_error"] = str(exc)
+                name = state["Catch"][0]["Next"]
+                continue
             execution.data["batch"] = {"JobId": "spec-batch-job"}
         elif kind == "Choice":
             for choice in state["Choices"]:
