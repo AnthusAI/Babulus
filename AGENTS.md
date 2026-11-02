@@ -106,6 +106,18 @@ BABULUS_ENV=production npm run babulus -- generate content/<video>.babulus.xml
 - `src/sfx-workflow.ts` - SFX variant selection/archiving
 - `.babulus/config.yml` - API keys (ElevenLabs, OpenAI, AWS, Azure)
 
+## Speech, embed and control-plane packages (imported from Auritus)
+
+Milestone M1 of the Auritus and Babulus merge (epic `babulus-d22d6854`) imported the Auritus code as a flat copy. These parts are **not** in the root npm workspaces and have their own installs:
+
+- `packages/speech` - Python distribution `babulus-speech`: local TTS models, the NDJSON speech bridge and the `babulus` command (`auritus` still works, and `import auritus` is an alias for `babulus_speech`). Python specs are in `packages/speech/features` (run `python -m behave features` from `packages/speech`); unit tests with `python -m pytest -q`.
+- `packages/embed` - `@anthusai/babulus` article narration player (`data-babulus-*` attributes, with `data-auritus-*` as aliases).
+- `packages/construct` - `@anthusai/babulus-construct` render fleet construct (jsii).
+- `packages/control-plane` - Python CDK jobs API, claim logic and Batch fallback; `packages/worker-image` - the Batch worker container.
+- `apps/console` - the operator console (merges into studio-web in M5).
+- Docs: `docs/speech/`. The speech content hash and request key must not change; pinned values are in the specs.
+- Python style: Black and Ruff must pass for `packages/speech`, `packages/control-plane` and `packages/worker-image/src`. CI job "Speech and control plane checks" runs everything above; paid providers are never used (mock and fake backends only).
+
 ## VideoML Project Split (Important For Refactors)
 
 Babulus is in the process of factoring VideoML (VML) out into a separate set of public projects.
