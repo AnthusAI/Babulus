@@ -98,6 +98,11 @@ WAITING_REASONS = {
 }
 VIDEO_WAITING_REASON = "waiting_for_local_worker"
 SHA256_HEX = re.compile(r"^[0-9a-f]{64}$")
+# A voice is named in lower case, as the speech package looks it up.
+VOICE_ID = re.compile(r"^[a-z0-9][a-z0-9_-]{0,63}$")
+VOICE_FILE = re.compile(r"^[a-z0-9][a-z0-9_-]*\.(wav|mp3|flac|ogg|m4a|txt)$")
+VOICE_AUDIO_SUFFIXES = (".wav", ".mp3", ".flac", ".ogg", ".m4a")
+MAX_VOICE_MANIFEST_BYTES = 65536
 
 # The complete set of job lifecycle statuses, as also enumerated in
 # _get_admin_overview's counts dict. Shared here so the unfiltered admin
@@ -133,6 +138,13 @@ def handler(event: dict[str, Any], _context: Any) -> dict[str, Any]:
     try:
         if method == "POST" and path == "/jobs":
             return _create_job(body, headers)
+        if (
+            method == "POST"
+            and path.startswith("/voices/")
+            and path.endswith("/publish")
+        ):
+            voice_id = path_params.get("voice_id") or path.split("/")[2]
+            return _publish_voice(voice_id, body, headers)
         if path.startswith("/store/"):
             sha256 = path_params.get("sha256") or path.split("/")[2]
             if method == "POST" and path.endswith("/presign-upload"):
@@ -648,6 +660,9 @@ def _create_job(body: dict[str, Any], headers: dict[str, str]) -> dict[str, Any]
         "created_at": now,
         "updated_at": now,
     }
+    voice_manifest = _published_voice_manifest(voice_id, tts_backend)
+    if voice_manifest:
+        item["voice_manifest"] = voice_manifest
 
     def already_there() -> dict[str, Any] | None:
         existing = _jobs.get_item(Key={"content_hash": content_hash}).get("Item")
@@ -751,6 +766,115 @@ def _store_object_exists(sha256: str) -> bool:
             return False
         raise
     return True
+
+
+def _voice_pointer_key(voice_id: str) -> str:
+    return f"voices/{voice_id}.json"
+
+
+def _published_voice_manifest(voice_id: str | None, backend: str) -> str | None:
+    """Return the manifest SHA-256 published for a named voice, if any.
+
+    Only voices a cloning backend would read are looked up; the default
+    voice has no recording to publish.
+    """
+    clean = (voice_id or "").strip().lower()
+    if not clean or clean == "default" or not VOICE_ID.match(clean):
+        return None
+    try:
+        pointer = _s3.get_object(Bucket=AUDIO_BUCKET, Key=_voice_pointer_key(clean))
+    except ClientError as exc:
+        if exc.response["Error"]["Code"] in ("NoSuchKey", "404"):
+            return None
+        raise
+    return json.loads(pointer["Body"].read()).get("manifest_sha256")
+
+
+def _publish_voice(
+    voice_id: str, body: dict[str, Any], headers: dict[str, str]
+) -> dict[str, Any]:
+    """Make a cloned voice available to every worker, Batch included.
+
+    The voice's recording and transcript, and a manifest naming them by
+    SHA-256, are uploaded to the content store first. Publishing is the last
+    step and the only one that makes the voice visible: it checks that the
+    manifest is exactly the object its SHA-256 says, that it describes this
+    voice, and that every file it lists is in the store, and only then writes
+    the pointer jobs look up. Anything missing is refused by name, so a voice
+    is never half published.
+    """
+    _require_operator(headers)
+    clean = voice_id.strip().lower()
+    if not VOICE_ID.match(clean):
+        raise ValueError("voice_id_invalid")
+    manifest_sha = body.get("manifest_sha256")
+    if not isinstance(manifest_sha, str) or not SHA256_HEX.match(manifest_sha):
+        raise ValueError("manifest_sha256_invalid")
+    try:
+        raw = _s3.get_object(Bucket=AUDIO_BUCKET, Key=f"store/{manifest_sha}")[
+            "Body"
+        ].read(MAX_VOICE_MANIFEST_BYTES + 1)
+    except ClientError as exc:
+        if exc.response["Error"]["Code"] in ("NoSuchKey", "404"):
+            raise ValueError("voice_manifest_not_uploaded") from exc
+        raise
+    if len(raw) > MAX_VOICE_MANIFEST_BYTES or (
+        hashlib.sha256(raw).hexdigest() != manifest_sha
+    ):
+        raise ValueError("voice_manifest_hash_mismatch")
+    try:
+        manifest = json.loads(raw)
+        files = manifest["files"]
+        named = manifest["voice_id"]
+    except (ValueError, KeyError, TypeError) as exc:
+        raise ValueError("voice_manifest_invalid") from exc
+    if named != clean or not isinstance(files, dict):
+        raise ValueError("voice_manifest_invalid")
+    if not any(name.endswith(VOICE_AUDIO_SUFFIXES) for name in files):
+        raise ValueError("voice_manifest_has_no_recording")
+    for name, sha in sorted(files.items()):
+        if not VOICE_FILE.match(name) or not name.startswith(clean):
+            raise ValueError("voice_manifest_invalid")
+        if not isinstance(sha, str) or not SHA256_HEX.match(sha):
+            raise ValueError("voice_manifest_invalid")
+        if not _store_object_exists(sha):
+            raise ValueError(f"voice_file_not_uploaded:{name}")
+    _s3.put_object(
+        Bucket=AUDIO_BUCKET,
+        Key=_voice_pointer_key(clean),
+        Body=json.dumps(
+            {"manifest_sha256": manifest_sha, "published_at": _utc_now_iso()}
+        ).encode("utf-8"),
+        ContentType="application/json",
+    )
+    return _response(
+        200,
+        {"voice_id": clean, "manifest_sha256": manifest_sha, "files": sorted(files)},
+    )
+
+
+def _voice_files_for(item: dict[str, Any]) -> list[dict[str, str]]:
+    """Return download URLs for the files of a job's published voice."""
+    manifest_sha = item.get("voice_manifest") or _published_voice_manifest(
+        item.get("voice_id"), item.get("tts_backend", "kokoro")
+    )
+    if not manifest_sha:
+        return []
+    manifest = json.loads(
+        _s3.get_object(Bucket=AUDIO_BUCKET, Key=f"store/{manifest_sha}")["Body"].read()
+    )
+    return [
+        {
+            "name": name,
+            "sha256": sha,
+            "url": _s3.generate_presigned_url(
+                "get_object",
+                Params={"Bucket": AUDIO_BUCKET, "Key": f"store/{sha}"},
+                ExpiresIn=900,
+            ),
+        }
+        for name, sha in sorted(manifest["files"].items())
+    ]
 
 
 def _create_video_job(body: dict[str, Any], headers: dict[str, str]) -> dict[str, Any]:
@@ -1464,6 +1588,7 @@ def _redeem_token(
             "tts_backend": item.get("tts_backend", "kokoro"),
             "name": item.get("name", ""),
             "byline": item.get("byline", ""),
+            "voice_files": _voice_files_for(item),
             "bearer": token,
         },
     )

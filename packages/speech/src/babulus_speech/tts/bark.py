@@ -8,6 +8,9 @@ import wave
 from typing import Any
 
 from babulus_speech.tts.base import TTSBackend
+from babulus_speech.tts.voices import reject_named_voice
+
+BARK_DEFAULT_VOICE_IDS = frozenset({"default"})
 
 
 class BarkBackend(TTSBackend):
@@ -21,6 +24,7 @@ class BarkBackend(TTSBackend):
         """Generate 24 kHz mono WAV audio with Bark."""
         if not text.strip():
             raise ValueError("Cannot generate audio for empty text")
+        reject_named_voice("bark", meta.get("voice_id"), BARK_DEFAULT_VOICE_IDS)
         if BarkBackend._processor is None or BarkBackend._model is None:
             # TODO: Verify the Bark Transformers API against the installed release.
             from transformers import AutoProcessor, BarkModel
