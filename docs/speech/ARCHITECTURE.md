@@ -117,6 +117,44 @@ sequenceDiagram
 3. Upgrade every CLI/worker to this version; an older worker ignores the claim
    token and its upload, result and failure calls are refused with 409.
 
+## Job kinds: speech and video
+
+The job table holds two kinds of job with one claim lifecycle. A job with no
+`kind` is a speech job.
+
+- **Speech** jobs are created with a site key, counted against its daily quota,
+  and have a cloud fallback.
+- **Video** jobs are created by an operator (`kind: "video"` with `script`,
+  optional `timeline`, `audio_sha256` and `options`). Their hash covers the
+  script, timeline, narration audio and the options that change the picture, so
+  equal inputs share one job (a conditional write). Narration audio goes in the
+  content store (`POST /store/{sha256}/presign-upload`) before a job may refer
+  to it. They cost the cloud nothing, need no quota, and get **no fallback
+  timer**: cloud rendering is not enabled for video, so a video job waits, with
+  `waiting_reason: waiting_for_local_worker`, until a `babulus worker` claims
+  it. The fallback gate also refuses any job that is not a speech job.
+
+`babulus worker` claims both kinds. It runs a video job by starting the
+repository's TypeScript render entry point (`scripts/render-video-from-script.ts`)
+as a subprocess and reports progress while it runs. A machine without Node, the
+toolchain's packages, Chromium or ffmpeg is told which is missing and how to fix
+it (`babulus video check`), and leaves video jobs waiting.
+
+## Named (cloned) voices
+
+A cloned voice is a recording and its transcript. `babulus voice publish
+<voice> --voices-dir <folder>` uploads both to the content store (objects keyed
+by SHA-256), then a manifest that names them, and only then calls
+`POST /voices/{voice}/publish`. Publishing checks that the manifest is exactly
+the object its hash names, describes this voice, and that every file it lists is
+in the store; anything missing is refused by name, so a voice is never half
+published. Jobs for a published voice carry its manifest, and a Batch worker
+downloads the files from the redeem response, verifies each hash, and passes the
+folder to the backend. A named voice that cannot be found, or that a backend
+cannot speak at all (Higgs and Bark have only their default voice), fails the
+job with `VoiceNotFound`; it is never spoken in a stock voice. Local workers
+read their own voices folder.
+
 ## Site keys and embed auth
 
 - Publisher-origin registration and enforcement are planned secure-by-design

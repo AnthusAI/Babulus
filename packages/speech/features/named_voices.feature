@@ -103,3 +103,28 @@ Feature: A named voice that cannot be found fails the job
     And the cloning speech models are stubbed
     When the worker runs a single poll cycle
     Then the job is marked done
+
+  Scenario Outline: A backend that cannot clone voices refuses a named voice
+    Given no voices folder is configured
+    And the speech model libraries are not installed
+    When I try to synthesize "Hello" with voice "<backend>:serious"
+    Then a VoiceNotFound error names "serious" and says the backend has only its default voice
+    And no speech was returned
+
+    Examples:
+      | backend |
+      | higgs   |
+      | bark    |
+
+  Scenario Outline: A backend that cannot clone voices still accepts the default voice
+    Given no voices folder is configured
+    And the speech model libraries are not installed
+    When I try to synthesize "Hello" with voice "<voice>"
+    Then the voice was accepted and any failure is not about the voice
+
+    Examples:
+      | voice           |
+      | higgs           |
+      | higgs:default   |
+      | bark            |
+      | bark:default    |

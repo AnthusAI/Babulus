@@ -7,6 +7,7 @@ import hashlib
 import hmac
 import json
 import os
+import re
 import secrets
 import time
 import uuid
@@ -16,7 +17,12 @@ from typing import Any
 
 import boto3
 from auritus_content_hash import content_hash as compute_content_hash
-from auritus_content_hash import normalize_text, resolve_voice_id
+from auritus_content_hash import (
+    VIDEO_OUTPUT_OPTIONS,
+    normalize_text,
+    resolve_voice_id,
+)
+from auritus_content_hash import video_content_hash as compute_video_hash
 from auritus_operator_auth import (
     OperatorTokenError,
     bearer_token,
@@ -74,6 +80,30 @@ COST_QUERY_MAX_DAYS = 366
 # without forcing every dashboard load to specify an explicit range.
 DEFAULT_COST_RANGE_DAYS = 31
 
+# Job kinds. A job with no ``kind`` is a speech job.
+JOB_KINDS = ("speech", "video")
+# Execution-only render options: accepted, but not part of a video job's
+# identity (see ``auritus_content_hash.VIDEO_OUTPUT_OPTIONS``).
+VIDEO_EXECUTION_OPTIONS = ("workers", "framePattern")
+# A video job's script and timeline travel inside its record; larger inputs
+# are refused rather than truncated.
+MAX_VIDEO_INPUT_BYTES = 300_000
+# Why a job is waiting, shown to whoever looks at it.
+WAITING_REASONS = {
+    "waiting_for_local_worker": (
+        "Waiting for a local worker. Cloud rendering is not enabled for video "
+        "jobs, so this job runs when a worker started with `babulus worker` "
+        "claims it."
+    ),
+}
+VIDEO_WAITING_REASON = "waiting_for_local_worker"
+SHA256_HEX = re.compile(r"^[0-9a-f]{64}$")
+# A voice is named in lower case, as the speech package looks it up.
+VOICE_ID = re.compile(r"^[a-z0-9][a-z0-9_-]{0,63}$")
+VOICE_FILE = re.compile(r"^[a-z0-9][a-z0-9_-]*\.(wav|mp3|flac|ogg|m4a|txt)$")
+VOICE_AUDIO_SUFFIXES = (".wav", ".mp3", ".flac", ".ogg", ".m4a")
+MAX_VOICE_MANIFEST_BYTES = 65536
+
 # The complete set of job lifecycle statuses, as also enumerated in
 # _get_admin_overview's counts dict. Shared here so the unfiltered admin
 # jobs listing queries the same statuses the overview reports on.
@@ -108,6 +138,22 @@ def handler(event: dict[str, Any], _context: Any) -> dict[str, Any]:
     try:
         if method == "POST" and path == "/jobs":
             return _create_job(body, headers)
+        if (
+            method == "POST"
+            and path.startswith("/voices/")
+            and path.endswith("/publish")
+        ):
+            voice_id = path_params.get("voice_id") or path.split("/")[2]
+            return _publish_voice(voice_id, body, headers)
+        if path.startswith("/store/"):
+            sha256 = path_params.get("sha256") or path.split("/")[2]
+            if method == "POST" and path.endswith("/presign-upload"):
+                return _store_presign_upload(sha256, headers)
+            if method == "GET" and path.count("/") == 2:
+                return _store_presign_download(sha256, headers)
+        if method == "GET" and path.endswith("/input") and path.startswith("/jobs/"):
+            content_hash = path_params.get("hash") or path.split("/")[2]
+            return _get_job_input(content_hash, headers)
         if method == "GET" and path.startswith("/jobs/") and path != "/jobs/claimable":
             content_hash = path_params.get("hash") or path.removeprefix("/jobs/")
             return _get_job(content_hash, headers)
@@ -536,7 +582,9 @@ def _roll_up_request_path_cost(
     )
 
 
-def _arm_fallback(content_hash: str, job_token: str, tts_backend: str) -> None:
+def _arm_fallback(
+    content_hash: str, job_token: str, tts_backend: str, kind: str = "speech"
+) -> None:
     """Start the Step Functions fallback timer for a job, once per job token.
 
     The execution name is derived from the job token, so arming the same
@@ -547,8 +595,10 @@ def _arm_fallback(content_hash: str, job_token: str, tts_backend: str) -> None:
     :param content_hash: The content hash identifying the job.
     :param job_token: The job's current single-use token.
     :param tts_backend: The TTS backend the job will use.
+    :param kind: The job kind. Only speech jobs have a cloud fallback; a video
+        job waits for a local worker and never gets a timer.
     """
-    if not FALLBACK_STATE_MACHINE_ARN:
+    if not FALLBACK_STATE_MACHINE_ARN or kind != "speech":
         return
     baseline_epoch = int(time.time())
     token_digest = hashlib.sha256(job_token.encode("utf-8")).hexdigest()[:16]
@@ -572,6 +622,11 @@ def _arm_fallback(content_hash: str, job_token: str, tts_backend: str) -> None:
 
 
 def _create_job(body: dict[str, Any], headers: dict[str, str]) -> dict[str, Any]:
+    kind = body.get("kind") or "speech"
+    if kind not in JOB_KINDS:
+        raise ValueError("unsupported_kind")
+    if kind == "video":
+        return _create_video_job(body, headers)
     site = _site_from_headers(headers)
 
     text = body.get("text") or ""
@@ -592,6 +647,7 @@ def _create_job(body: dict[str, Any], headers: dict[str, str]) -> dict[str, Any]
 
     item = {
         "content_hash": content_hash,
+        "kind": "speech",
         "status": "pending",
         "tts_backend": tts_backend,
         "voice_id": voice_id,
@@ -604,6 +660,9 @@ def _create_job(body: dict[str, Any], headers: dict[str, str]) -> dict[str, Any]
         "created_at": now,
         "updated_at": now,
     }
+    voice_manifest = _published_voice_manifest(voice_id, tts_backend)
+    if voice_manifest:
+        item["voice_manifest"] = voice_manifest
 
     def already_there() -> dict[str, Any] | None:
         existing = _jobs.get_item(Key={"content_hash": content_hash}).get("Item")
@@ -662,6 +721,294 @@ def _create_job(body: dict[str, Any], headers: dict[str, str]) -> dict[str, Any]
     )
 
 
+def _waiting_message(item: dict[str, Any]) -> str | None:
+    """Return the human-readable reason a job is waiting, if it has one."""
+    reason = item.get("waiting_reason")
+    return WAITING_REASONS.get(reason) if reason else None
+
+
+def _validated_video_input(
+    body: dict[str, Any],
+) -> tuple[dict[str, Any], dict[str, Any] | None, str | None, dict[str, Any]]:
+    """Validate a video job's script, timeline, audio reference and options.
+
+    :raises ValueError: With a stable error code for anything unusable.
+    """
+    script = body.get("script")
+    if not isinstance(script, dict) or not script:
+        raise ValueError("script_required")
+    timeline = body.get("timeline")
+    if timeline is not None and not isinstance(timeline, dict):
+        raise ValueError("timeline_must_be_an_object")
+    audio_sha256 = body.get("audio_sha256")
+    if audio_sha256 is not None and not (
+        isinstance(audio_sha256, str) and SHA256_HEX.match(audio_sha256)
+    ):
+        raise ValueError("audio_sha256_invalid")
+    options = body.get("options") or {}
+    if not isinstance(options, dict):
+        raise ValueError("options_must_be_an_object")
+    allowed = set(VIDEO_OUTPUT_OPTIONS) | set(VIDEO_EXECUTION_OPTIONS)
+    unknown = sorted(set(options) - allowed)
+    if unknown:
+        raise ValueError(f"unsupported_option:{unknown[0]}")
+    size = len(json.dumps([script, timeline, options]).encode("utf-8"))
+    if size > MAX_VIDEO_INPUT_BYTES:
+        raise ValueError("video_input_too_large")
+    return script, timeline, audio_sha256, options
+
+
+def _store_object_exists(sha256: str) -> bool:
+    try:
+        _s3.head_object(Bucket=AUDIO_BUCKET, Key=f"store/{sha256}")
+    except ClientError as exc:
+        if exc.response["Error"]["Code"] in ("404", "NoSuchKey", "NotFound"):
+            return False
+        raise
+    return True
+
+
+def _voice_pointer_key(voice_id: str) -> str:
+    return f"voices/{voice_id}.json"
+
+
+def _published_voice_manifest(voice_id: str | None, backend: str) -> str | None:
+    """Return the manifest SHA-256 published for a named voice, if any.
+
+    Only voices a cloning backend would read are looked up; the default
+    voice has no recording to publish.
+    """
+    clean = (voice_id or "").strip().lower()
+    if not clean or clean == "default" or not VOICE_ID.match(clean):
+        return None
+    try:
+        pointer = _s3.get_object(Bucket=AUDIO_BUCKET, Key=_voice_pointer_key(clean))
+    except ClientError as exc:
+        if exc.response["Error"]["Code"] in ("NoSuchKey", "404"):
+            return None
+        raise
+    return json.loads(pointer["Body"].read()).get("manifest_sha256")
+
+
+def _publish_voice(
+    voice_id: str, body: dict[str, Any], headers: dict[str, str]
+) -> dict[str, Any]:
+    """Make a cloned voice available to every worker, Batch included.
+
+    The voice's recording and transcript, and a manifest naming them by
+    SHA-256, are uploaded to the content store first. Publishing is the last
+    step and the only one that makes the voice visible: it checks that the
+    manifest is exactly the object its SHA-256 says, that it describes this
+    voice, and that every file it lists is in the store, and only then writes
+    the pointer jobs look up. Anything missing is refused by name, so a voice
+    is never half published.
+    """
+    _require_operator(headers)
+    clean = voice_id.strip().lower()
+    if not VOICE_ID.match(clean):
+        raise ValueError("voice_id_invalid")
+    manifest_sha = body.get("manifest_sha256")
+    if not isinstance(manifest_sha, str) or not SHA256_HEX.match(manifest_sha):
+        raise ValueError("manifest_sha256_invalid")
+    try:
+        raw = _s3.get_object(Bucket=AUDIO_BUCKET, Key=f"store/{manifest_sha}")[
+            "Body"
+        ].read(MAX_VOICE_MANIFEST_BYTES + 1)
+    except ClientError as exc:
+        if exc.response["Error"]["Code"] in ("NoSuchKey", "404"):
+            raise ValueError("voice_manifest_not_uploaded") from exc
+        raise
+    if len(raw) > MAX_VOICE_MANIFEST_BYTES or (
+        hashlib.sha256(raw).hexdigest() != manifest_sha
+    ):
+        raise ValueError("voice_manifest_hash_mismatch")
+    try:
+        manifest = json.loads(raw)
+        files = manifest["files"]
+        named = manifest["voice_id"]
+    except (ValueError, KeyError, TypeError) as exc:
+        raise ValueError("voice_manifest_invalid") from exc
+    if named != clean or not isinstance(files, dict):
+        raise ValueError("voice_manifest_invalid")
+    if not any(name.endswith(VOICE_AUDIO_SUFFIXES) for name in files):
+        raise ValueError("voice_manifest_has_no_recording")
+    for name, sha in sorted(files.items()):
+        if not VOICE_FILE.match(name) or not name.startswith(clean):
+            raise ValueError("voice_manifest_invalid")
+        if not isinstance(sha, str) or not SHA256_HEX.match(sha):
+            raise ValueError("voice_manifest_invalid")
+        if not _store_object_exists(sha):
+            raise ValueError(f"voice_file_not_uploaded:{name}")
+    _s3.put_object(
+        Bucket=AUDIO_BUCKET,
+        Key=_voice_pointer_key(clean),
+        Body=json.dumps(
+            {"manifest_sha256": manifest_sha, "published_at": _utc_now_iso()}
+        ).encode("utf-8"),
+        ContentType="application/json",
+    )
+    return _response(
+        200,
+        {"voice_id": clean, "manifest_sha256": manifest_sha, "files": sorted(files)},
+    )
+
+
+def _voice_files_for(item: dict[str, Any]) -> list[dict[str, str]]:
+    """Return download URLs for the files of a job's published voice."""
+    manifest_sha = item.get("voice_manifest") or _published_voice_manifest(
+        item.get("voice_id"), item.get("tts_backend", "kokoro")
+    )
+    if not manifest_sha:
+        return []
+    manifest = json.loads(
+        _s3.get_object(Bucket=AUDIO_BUCKET, Key=f"store/{manifest_sha}")["Body"].read()
+    )
+    return [
+        {
+            "name": name,
+            "sha256": sha,
+            "url": _s3.generate_presigned_url(
+                "get_object",
+                Params={"Bucket": AUDIO_BUCKET, "Key": f"store/{sha}"},
+                ExpiresIn=900,
+            ),
+        }
+        for name, sha in sorted(manifest["files"].items())
+    ]
+
+
+def _create_video_job(body: dict[str, Any], headers: dict[str, str]) -> dict[str, Any]:
+    """Create a video render job, or return the identical job already stored.
+
+    Video jobs are created by an operator, cost the cloud nothing, need no
+    quota, and get no fallback timer: they wait, with a visible reason, until
+    a local worker claims them. The content hash covers the script, timeline,
+    narration audio and output-affecting options, so equal inputs share one
+    job; creation is a conditional write.
+    """
+    _require_operator(headers)
+    script, timeline, audio_sha256, options = _validated_video_input(body)
+    if audio_sha256 and not _store_object_exists(audio_sha256):
+        # The audio must be in the store before a job may refer to it.
+        raise ValueError("audio_not_uploaded")
+    content_hash = compute_video_hash(script, timeline, audio_sha256, options)
+    claimed_hash = body.get("content_hash")
+    if claimed_hash and claimed_hash != content_hash:
+        raise ValueError("content_hash_mismatch")
+    now = _utc_now_iso()
+    item = {
+        "content_hash": content_hash,
+        "kind": "video",
+        "status": "pending",
+        "name": body.get("name") or "",
+        "video_input": json.dumps(
+            {"script": script, "timeline": timeline, "options": options},
+            separators=(",", ":"),
+        ),
+        "waiting_reason": VIDEO_WAITING_REASON,
+        "created_at": now,
+        "updated_at": now,
+    }
+    if audio_sha256:
+        item["audio_sha256"] = audio_sha256
+    try:
+        _jobs.put_item(
+            Item=item, ConditionExpression="attribute_not_exists(content_hash)"
+        )
+    except ClientError as exc:
+        if exc.response["Error"]["Code"] != "ConditionalCheckFailedException":
+            raise
+        existing = _jobs.get_item(Key={"content_hash": content_hash}).get("Item")
+        if existing:
+            return _response(
+                200,
+                {
+                    "content_hash": content_hash,
+                    "kind": "video",
+                    "status": existing.get("status"),
+                    "existing": True,
+                },
+            )
+        raise
+    return _response(
+        201,
+        {
+            "content_hash": content_hash,
+            "kind": "video",
+            "status": "pending",
+            "waiting_reason": VIDEO_WAITING_REASON,
+            "waiting_message": WAITING_REASONS[VIDEO_WAITING_REASON],
+        },
+    )
+
+
+def _store_presign_upload(sha256: str, headers: dict[str, str]) -> dict[str, Any]:
+    """Give an operator a URL to upload one object to the content store.
+
+    Objects live at ``store/<sha256>`` and are immutable: an object that
+    already exists is reported, not offered for upload again. Readers verify
+    the SHA-256 of what they download.
+    """
+    _require_operator(headers)
+    if not SHA256_HEX.match(sha256):
+        raise ValueError("sha256_invalid")
+    if _store_object_exists(sha256):
+        return _response(200, {"sha256": sha256, "exists": True})
+    upload_url = _s3.generate_presigned_url(
+        "put_object",
+        Params={"Bucket": AUDIO_BUCKET, "Key": f"store/{sha256}"},
+        ExpiresIn=900,
+        HttpMethod="PUT",
+    )
+    return _response(200, {"sha256": sha256, "exists": False, "upload_url": upload_url})
+
+
+def _store_presign_download(sha256: str, headers: dict[str, str]) -> dict[str, Any]:
+    """Give an operator a URL to download one object from the content store."""
+    _require_operator(headers)
+    if not SHA256_HEX.match(sha256):
+        raise ValueError("sha256_invalid")
+    if not _store_object_exists(sha256):
+        raise LookupError("object_not_found")
+    url = _s3.generate_presigned_url(
+        "get_object",
+        Params={"Bucket": AUDIO_BUCKET, "Key": f"store/{sha256}"},
+        ExpiresIn=900,
+    )
+    return _response(200, {"sha256": sha256, "download_url": url})
+
+
+def _get_job_input(content_hash: str, headers: dict[str, str]) -> dict[str, Any]:
+    """Return a video job's inputs to the worker that claimed it."""
+    _require_operator(headers)
+    item = _jobs.get_item(Key={"content_hash": content_hash}).get("Item")
+    if not item:
+        raise LookupError("job_not_found")
+    if item.get("kind", "speech") != "video":
+        raise ValueError("job_has_no_video_input")
+    payload = json.loads(item.get("video_input") or "{}")
+    audio_sha256 = item.get("audio_sha256")
+    return _response(
+        200,
+        {
+            "content_hash": content_hash,
+            "kind": "video",
+            "name": item.get("name", ""),
+            **payload,
+            "audio_sha256": audio_sha256,
+            "audio_url": (
+                _s3.generate_presigned_url(
+                    "get_object",
+                    Params={"Bucket": AUDIO_BUCKET, "Key": f"store/{audio_sha256}"},
+                    ExpiresIn=900,
+                )
+                if audio_sha256
+                else None
+            ),
+        },
+    )
+
+
 def _audio_url(audio_key: str | None) -> str | None:
     if not audio_key:
         return None
@@ -676,16 +1023,23 @@ def _get_job(content_hash: str, headers: dict[str, str]) -> dict[str, Any]:
     item = _jobs.get_item(Key={"content_hash": content_hash}).get("Item")
     if not item:
         raise LookupError("job_not_found")
-    if not _check_job_token(headers, content_hash):
+    kind = item.get("kind", "speech")
+    if kind == "video":
+        _require_operator(headers)
+    elif not _check_job_token(headers, content_hash):
         site = _site_from_headers(headers)
         if item.get("site_id") and item["site_id"] != site["site_id"]:
             raise PermissionError("site_mismatch")
 
     payload = {
         "content_hash": content_hash,
+        "kind": kind,
         "status": item.get("status"),
+        "waiting_reason": item.get("waiting_reason"),
+        "waiting_message": _waiting_message(item),
         "tts_backend": item.get("tts_backend"),
         "audio_url": _audio_url(item.get("audio_key")),
+        "output_url": _audio_url(item.get("output_key")),
         "name": item.get("name"),
         "byline": item.get("byline"),
         "worker_type": item.get("worker_type"),
@@ -728,8 +1082,10 @@ def _list_claimable(headers: dict[str, str]) -> dict[str, Any]:
             "jobs": [
                 {
                     "content_hash": row["content_hash"],
+                    "kind": row.get("kind", "speech"),
                     "status": row["status"],
                     "tts_backend": row.get("tts_backend"),
+                    "voice_id": row.get("voice_id"),
                     "claim_deadline": row.get("claim_deadline"),
                     "text": row.get("text", ""),
                     "name": row.get("name", ""),
@@ -815,6 +1171,7 @@ def _claim_job(
                 "claimed_at = :now, claimed_at_epoch = :now_epoch, "
                 "claim_deadline = :deadline, claim_deadline_at = :deadline_at, "
                 "claim_token = :token, updated_at = :now "
+                "REMOVE waiting_reason "
                 "ADD claim_generation :one"
             ),
             # A claimant may take a job that is pending, or reclaim one
@@ -953,18 +1310,28 @@ def _retention_ttl_epoch() -> int | None:
     return int(time.time()) + RETENTION_DAYS * 86400
 
 
+def _platform_cost(is_video: bool) -> Decimal:
+    """The flat platform allowance charged to a finished job.
+
+    A video job runs on a local worker and costs the cloud nothing, so it is
+    charged nothing.
+    """
+    return Decimal(0) if is_video else Decimal(PLATFORM_COST_PER_JOB_USD)
+
+
 def _mark_done(
     content_hash: str, body: dict[str, Any], headers: dict[str, str]
 ) -> dict[str, Any]:
     if not _check_job_token(headers, content_hash):
         _require_operator(headers)
-    audio_key = body.get("audio_key")
+    audio_key = body.get("output_key") or body.get("audio_key")
     if not audio_key:
         raise ValueError("audio_key_required")
     now = _utc_now_iso()
     now_epoch = int(time.time())
 
     item = _jobs.get_item(Key={"content_hash": content_hash}).get("Item")
+    is_video = bool(item) and item.get("kind", "speech") == "video"
     claimed_epoch = int(item.get("claimed_at_epoch", now_epoch)) if item else now_epoch
     duration_seconds = max(1, now_epoch - claimed_epoch)
     worker_type = item.get("worker_type") if item else None
@@ -976,7 +1343,10 @@ def _mark_done(
     # so the field reads as zero rather than absent, distinct from a failed
     # job -- see _mark_failed -- where it is left unset because there is no
     # completed synthesis to have a counterfactual for at all).
-    if worker_type == "local":
+    if is_video:
+        # A local render costs nothing and avoids no GPU time.
+        avoided_cost_usd, avoided_cost_basis = Decimal(0), "not_applicable"
+    elif worker_type == "local":
         avoided_cost_usd, avoided_cost_basis = _compute_avoided_cost(
             tts_backend=item.get("tts_backend") if item else None,
             local_duration_seconds=duration_seconds,
@@ -1011,7 +1381,7 @@ def _mark_done(
     #   batch_telemetry never fires for local jobs.
     set_clauses = [
         "#status = :done",
-        "audio_key = :key",
+        "output_key = :key" if is_video else "audio_key = :key",
         "updated_at = :now",
         "completed_at = :now",
         "duration_seconds = :duration",
@@ -1030,7 +1400,7 @@ def _mark_done(
         ":claimed": "claimed",
         ":pending": "pending",
         ":gpu_cost": Decimal(0),
-        ":platform_cost": Decimal(PLATFORM_COST_PER_JOB_USD),
+        ":platform_cost": _platform_cost(is_video),
         ":cost_rate": Decimal(GPU_HOURLY_RATE_USD),
         ":rate_card_version": RATE_CARD_VERSION,
         ":avoided_cost": avoided_cost_usd,
@@ -1072,7 +1442,7 @@ def _mark_done(
         site_id=item.get("site_id") if item else None,
         worker_type=worker_type,
         date=now[:10],
-        platform_cost=Decimal(PLATFORM_COST_PER_JOB_USD),
+        platform_cost=_platform_cost(is_video),
         local_duration_seconds=duration_seconds,
         avoided_cost=avoided_cost_usd,
     )
@@ -1100,6 +1470,7 @@ def _mark_failed(
     # is still the sole source of truth for the job record itself, guarded
     # by its own ConditionExpression exactly as before this story.
     item = _jobs.get_item(Key={"content_hash": content_hash}).get("Item")
+    is_video = bool(item) and item.get("kind", "speech") == "video"
     # See the comment in _mark_done: a failed job is still costed. GPU cost
     # starts at 0 (correct and final for local jobs; a placeholder for
     # Batch jobs, overwritten by batch_telemetry's independent, correct
@@ -1122,7 +1493,7 @@ def _mark_failed(
         ":claimed": "claimed",
         ":pending": "pending",
         ":gpu_cost": Decimal(0),
-        ":platform_cost": Decimal(PLATFORM_COST_PER_JOB_USD),
+        ":platform_cost": _platform_cost(is_video),
         ":cost_rate": Decimal(GPU_HOURLY_RATE_USD),
         ":rate_card_version": RATE_CARD_VERSION,
     }
@@ -1181,7 +1552,7 @@ def _mark_failed(
         site_id=item.get("site_id") if item else None,
         worker_type=resolved_worker_type,
         date=now[:10],
-        platform_cost=Decimal(PLATFORM_COST_PER_JOB_USD),
+        platform_cost=_platform_cost(is_video),
         local_duration_seconds=None,
     )
 
@@ -1217,6 +1588,7 @@ def _redeem_token(
             "tts_backend": item.get("tts_backend", "kokoro"),
             "name": item.get("name", ""),
             "byline": item.get("byline", ""),
+            "voice_files": _voice_files_for(item),
             "bearer": token,
         },
     )
@@ -1250,19 +1622,23 @@ def _presign_upload(
         return _response(409, {"error": "claim_token_required"})
     if job_authorized and item.get("status") != "claimed":
         raise PermissionError("job_not_claimed")
-    audio_key = f"audio/{content_hash}.wav"
+    if item.get("kind", "speech") == "video":
+        output_key, content_type = f"video/{content_hash}.mp4", "video/mp4"
+    else:
+        output_key, content_type = f"audio/{content_hash}.wav", "audio/wav"
     upload_url = _s3.generate_presigned_url(
         "put_object",
-        Params={"Bucket": AUDIO_BUCKET, "Key": audio_key},
-        ExpiresIn=300,
+        Params={"Bucket": AUDIO_BUCKET, "Key": output_key},
+        ExpiresIn=300 if content_type == "audio/wav" else 3600,
         HttpMethod="PUT",
     )
     return _response(
         200,
         {
             "upload_url": upload_url,
-            "audio_key": audio_key,
-            "content_type": "audio/wav",
+            "audio_key": output_key,
+            "output_key": output_key,
+            "content_type": content_type,
         },
     )
 
@@ -1802,7 +2178,9 @@ def _list_admin_jobs(
         formatted_jobs.append(
             {
                 "content_hash": item["content_hash"],
+                "kind": item.get("kind", "speech"),
                 "status": item.get("status"),
+                "waiting_reason": item.get("waiting_reason"),
                 "tts_backend": item.get("tts_backend"),
                 "voice_id": item.get("voice_id"),
                 "text": str(item.get("text", ""))[:120],
@@ -1818,6 +2196,7 @@ def _list_admin_jobs(
                 "duration_seconds": item.get("duration_seconds"),
                 "error_message": item.get("error_message"),
                 "audio_url": _audio_url(audio_key) if audio_key else None,
+                "output_url": _audio_url(item.get("output_key")),
             }
         )
 
@@ -1835,7 +2214,11 @@ def _get_admin_job(content_hash: str, headers: dict[str, str]) -> dict[str, Any]
         200,
         {
             "content_hash": content_hash,
+            "kind": item.get("kind", "speech"),
             "status": item.get("status"),
+            "waiting_reason": item.get("waiting_reason"),
+            "waiting_message": _waiting_message(item),
+            "output_url": _audio_url(item.get("output_key")),
             "tts_backend": item.get("tts_backend"),
             "voice_id": item.get("voice_id"),
             "text": item.get("text", ""),
@@ -1875,9 +2258,9 @@ def _delete_job_record_and_audio(item: dict[str, Any]) -> None:
 
     :param item: A full job record (must include ``content_hash``).
     """
-    audio_key = item.get("audio_key")
-    if audio_key:
-        _s3.delete_object(Bucket=AUDIO_BUCKET, Key=audio_key)
+    for key_attr in ("audio_key", "output_key"):
+        if item.get(key_attr):
+            _s3.delete_object(Bucket=AUDIO_BUCKET, Key=item[key_attr])
     _jobs.delete_item(Key={"content_hash": item["content_hash"]})
 
 
@@ -2058,9 +2441,9 @@ def _regenerate_admin_job(content_hash: str, headers: dict[str, str]) -> dict[st
     if status in ("pending", "claimed"):
         raise ConflictError(f"job_is_{status}")
 
-    audio_key = item.get("audio_key")
-    if audio_key:
-        _s3.delete_object(Bucket=AUDIO_BUCKET, Key=audio_key)
+    for key_attr in ("audio_key", "output_key"):
+        if item.get(key_attr):
+            _s3.delete_object(Bucket=AUDIO_BUCKET, Key=item[key_attr])
 
     job_token = secrets.token_urlsafe(32)
     now = _utc_now_iso()
@@ -2073,8 +2456,9 @@ def _regenerate_admin_job(content_hash: str, headers: dict[str, str]) -> dict[st
     _jobs.update_item(
         Key={"content_hash": content_hash},
         UpdateExpression=(
-            "SET #status = :pending, job_token = :token, updated_at = :now "
-            "REMOVE audio_key, claimed_by, claim_owner, claimed_at, "
+            "SET #status = :pending, job_token = :token, updated_at = :now"
+            + (", waiting_reason = :waiting" if item.get("kind") == "video" else "")
+            + " REMOVE audio_key, output_key, claimed_by, claim_owner, claimed_at, "
             "claimed_at_epoch, claim_deadline, claim_deadline_at, claim_token, completed_at, failed_at, "
             "duration_seconds, error_message, worker_type, "
             "gpu_cost_usd, platform_cost_usd, cost_rate_usd_per_hour, "
@@ -2089,10 +2473,20 @@ def _regenerate_admin_job(content_hash: str, headers: dict[str, str]) -> dict[st
             ":pending": "pending",
             ":token": job_token,
             ":now": now,
+            **(
+                {":waiting": VIDEO_WAITING_REASON}
+                if item.get("kind") == "video"
+                else {}
+            ),
         },
     )
 
-    _arm_fallback(content_hash, job_token, item.get("tts_backend", "kokoro"))
+    _arm_fallback(
+        content_hash,
+        job_token,
+        item.get("tts_backend", "kokoro"),
+        item.get("kind", "speech"),
+    )
 
     return _response(200, {"content_hash": content_hash, "status": "pending"})
 
@@ -2143,8 +2537,9 @@ def _retry_admin_job(
     _jobs.update_item(
         Key={"content_hash": content_hash},
         UpdateExpression=(
-            "SET #status = :pending, job_token = :token, updated_at = :now "
-            "REMOVE claimed_by, claim_owner, claimed_at, claimed_at_epoch, "
+            "SET #status = :pending, job_token = :token, updated_at = :now"
+            + (", waiting_reason = :waiting" if item.get("kind") == "video" else "")
+            + " REMOVE claimed_by, claim_owner, claimed_at, claimed_at_epoch, "
             "claim_deadline, claim_deadline_at, claim_token, failed_at, error_message, worker_type, "
             "gpu_cost_usd, platform_cost_usd, cost_rate_usd_per_hour, "
             "rate_card_version, avoided_cost_usd, avoided_cost_basis, "
@@ -2158,10 +2553,20 @@ def _retry_admin_job(
             ":pending": "pending",
             ":token": job_token,
             ":now": now,
+            **(
+                {":waiting": VIDEO_WAITING_REASON}
+                if item.get("kind") == "video"
+                else {}
+            ),
         },
     )
 
-    _arm_fallback(content_hash, job_token, item.get("tts_backend", "kokoro"))
+    _arm_fallback(
+        content_hash,
+        job_token,
+        item.get("tts_backend", "kokoro"),
+        item.get("kind", "speech"),
+    )
 
     return _response(200, {"content_hash": content_hash, "status": "pending"})
 

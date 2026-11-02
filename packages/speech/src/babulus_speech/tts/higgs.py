@@ -11,6 +11,7 @@ import wave
 from typing import Any
 
 from babulus_speech.tts.base import BackendUnavailable, TTSBackend
+from babulus_speech.tts.voices import reject_named_voice
 from babulus_speech.tts.breaks import (
     AURITUS_BREAK_MARKER,
     AURITUS_PAUSE_MARKER,
@@ -92,6 +93,7 @@ class HiggsBackend(TTSBackend):
         """
         if not text.strip():
             raise ValueError("Cannot generate audio for empty text")
+        reject_named_voice("higgs", resolve_higgs_voice(meta), {HIGGS_DEFAULT_VOICE})
         if HiggsBackend._is_mlx is None:
             HiggsBackend._is_mlx = HiggsBackend._detect_mlx()
 
@@ -109,8 +111,6 @@ class HiggsBackend(TTSBackend):
                 HIGGS_MLX_MODEL,
                 lazy=False,
             )
-        voice = resolve_higgs_voice(meta)
-        _ = voice
         sample_rate = int(getattr(HiggsBackend._model, "sample_rate", 24000))
         blocks = split_on_breaks(text)
         all_chunks: list[np.ndarray] = []
@@ -177,8 +177,6 @@ class HiggsBackend(TTSBackend):
                     .eval()
                 )
 
-            voice = resolve_higgs_voice(meta)
-            _ = voice
             blocks = split_on_breaks(text)
             sample_rate = 24000
             silence = [0.0] * int(sample_rate * BREAK_SILENCE_SECONDS)

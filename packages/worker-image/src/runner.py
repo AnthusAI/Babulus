@@ -2,11 +2,14 @@
 
 from __future__ import annotations
 
+import hashlib
 import os
 import sys
+import tempfile
 import threading
 import traceback
 from collections.abc import Callable
+from pathlib import Path
 from typing import Any
 
 import httpx
@@ -103,6 +106,25 @@ def redeem_job_token(
     bearer = str(body.get("access_token") or body.get("bearer") or job_token)
     job = body.get("job") if isinstance(body.get("job"), dict) else body
     return bearer, job
+
+
+def fetch_voice_files(files: list[dict[str, Any]], destination: Path) -> Path | None:
+    """Download a job's published voice into a folder, verifying every file.
+
+    :param files: ``name``, ``sha256`` and ``url`` for each file of the voice.
+    :param destination: An empty folder to write into.
+    :returns: The folder, or ``None`` when the job has no published voice.
+    :raises ValueError: If a downloaded file is not the one its hash names.
+    """
+    if not files:
+        return None
+    for entry in files:
+        response = httpx.get(entry["url"], timeout=120.0)
+        response.raise_for_status()
+        if hashlib.sha256(response.content).hexdigest() != entry["sha256"]:
+            raise ValueError(f"voice file {entry['name']} does not match its hash")
+        (destination / entry["name"]).write_bytes(response.content)
+    return destination
 
 
 def mark_failed(
@@ -279,14 +301,22 @@ def main() -> int:
         backend_name = job_body.get("tts_backend") or default_backend
         _install_backend(backend_name)
         backend = get_backend(str(backend_name))
-        audio = backend.generate(
-            job_body.get("text") or "",
-            {
-                "voice_id": job_body.get("voice_id"),
-                "name": job_body.get("name") or "",
-                "byline": job_body.get("byline") or "",
-            },
-        )
+        with tempfile.TemporaryDirectory(prefix="babulus-voice-") as voices:
+            # A published voice is fetched from the content store; with none,
+            # a named voice fails loudly in the backend rather than being
+            # replaced by a stock voice.
+            voices_dir = fetch_voice_files(
+                list(job_body.get("voice_files") or []), Path(voices)
+            )
+            audio = backend.generate(
+                job_body.get("text") or "",
+                {
+                    "voice_id": job_body.get("voice_id"),
+                    "name": job_body.get("name") or "",
+                    "byline": job_body.get("byline") or "",
+                    "voices_dir": voices_dir,
+                },
+            )
 
         if lost.is_set():
             print(f"job {job_hash}: claim lost; discarding result", file=sys.stderr)

@@ -213,3 +213,18 @@ def step_claimable_named_voice_job(context, backend: str, voice: str) -> None:
 def step_failure_reason_names(context, voice: str) -> None:
     _, kwargs = context.mock_client.mark_failed.call_args
     assert repr(voice) in kwargs["reason"], kwargs["reason"]
+
+
+@then(
+    'a VoiceNotFound error names "{voice}" and says the backend has only its default voice'
+)
+def step_voice_unsupported(context, voice: str) -> None:
+    error = _assert_voice_not_found(context, voice)
+    assert "cannot speak in a named voice" in str(error), str(error)
+
+
+@then("the voice was accepted and any failure is not about the voice")
+def step_voice_accepted(context) -> None:
+    from babulus_speech.tts.voices import VoiceNotFound
+
+    assert not isinstance(context.error, VoiceNotFound), repr(context.error)
