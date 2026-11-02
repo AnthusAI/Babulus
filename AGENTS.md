@@ -263,22 +263,9 @@ npm run test:integration
 
 ## Amplify Deployment
 
-### Automatic (Recommended)
+A merge to `main` deploys. CI runs first; when it passes, the Deploy job starts the Amplify build for that commit through GitHub OIDC, so no AWS keys are stored in GitHub. The role and app come from the repository variables `AMPLIFY_DEPLOY_ROLE_ARN` and `AMPLIFY_APP_ID`, and the role is defined in `infra/github-deploy/template.yml`.
 
-Push to `main` branch triggers automatic deployment:
-
-```bash
-git push origin main
-```
-
-Check status at: [AWS Amplify Console](https://console.aws.amazon.com/amplify/home?region=us-east-1)
-
-### Manual
-
-```bash
-cd apps/studio-web
-npm run amplify:deploy
-```
+Never deploy from a laptop.
 
 ## AWS Account Info
 
