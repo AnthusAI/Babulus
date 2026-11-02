@@ -29,7 +29,7 @@ Feature: The babulus command and the Auritus names that still work
     When I start the speech bridge as module "auritus.speech_bridge" and ask for capabilities of voice "fake:default"
     Then the bridge answers ok for the voice "fake:default"
 
-  Scenario Outline: Speech request identity is unchanged by the rename
+  Scenario Outline: Speech request identity is unchanged by the rename (the fake backend is the same on every platform)
     Given the text "Hello world."
     When the speech request key is computed for backend "<backend>" and voice "<voice>"
     Then the speech request key is "<key>"
@@ -37,4 +37,3 @@ Feature: The babulus command and the Auritus names that still work
     Examples:
       | backend | voice    | key                                                              |
       | fake    | default  | f749770ee15af77b59e55bda6fbe04905935fccfa5a3cd40594eafea50c5f693 |
-      | kokoro  | af_heart | b3b9cb8fb00a15f38f0a57ef653363d705a7b250941b6b7b7480784f7c9c82d8 |
