@@ -13,7 +13,8 @@ import {
 } from "@babulus/shared";
 import { useVideos, useGenerationRuns, useJobs, useVideoRenderRuns } from "@/lib/use-org-data";
 import { useSettings } from "@/lib/settings-context";
-import { createJobAction, createPublishedVideoAction } from "@/app/actions";
+import { createPublishedVideoAction } from "@/app/actions";
+import { findActiveJob } from "@/lib/active-job";
 import { uploadProjectFileAction, readProjectFileAction } from "@/app/actions/project-files";
 import { Button } from "@/components/ui/button";
 import { PublishModal } from "@/components/publish-modal";
@@ -109,7 +110,7 @@ type VideoEditorProps = {
 
 export function VideoEditor({ orgId, projectId, videoId }: VideoEditorProps) {
   const { videos } = useVideos(orgId, projectId);
-  const { runs, refetch: refetchRuns } = useGenerationRuns(orgId, videoId);
+  const { refetch: refetchRuns } = useGenerationRuns(orgId, videoId);
   const { runs: renderRuns } = useVideoRenderRuns(orgId, videoId);
   const { jobs, refetch: refetchJobs } = useJobs(orgId);
   const { layout, updateLayout } = useSettings();
@@ -341,18 +342,7 @@ export function VideoEditor({ orgId, projectId, videoId }: VideoEditorProps) {
     [script, timelineSummary],
   );
 
-  const activeJob = useMemo(() => {
-    return jobs.find(j => {
-      let input: any = {};
-      try {
-        input = j.inputJson ? JSON.parse(j.inputJson) : {};
-      } catch (e) {
-        // ignore invalid json
-      }
-      return input.videoId === videoId && 
-        ['queued', 'claimed', 'running'].includes(j.status);
-    });
-  }, [jobs, videoId]);
+  const activeJob = useMemo(() => findActiveJob(jobs, videoId), [jobs, videoId]);
 
   // Poll for job updates if there is an active job
   useEffect(() => {
@@ -366,42 +356,10 @@ export function VideoEditor({ orgId, projectId, videoId }: VideoEditorProps) {
   }, [activeJob, refetchJobs, refetchRuns]);
 
 
-  const handleGenerate = async () => {
-    if (activeJob) return;
-    try {
-      // 1. Save to S3 as ProjectFile
-      if (video?.title) {
-        try {
-          // Generate filename from video title (sanitized)
-        const fileName = `${video.title.replace(/[^a-z0-9]/gi, '-').toLowerCase()}.babulus.xml`;
-          await uploadProjectFileAction(
-            projectId,
-            fileName,
-            editorCode,
-            'video',
-            'text/xml'
-          );
-        } catch (s3Error) {
-          console.error("Failed to save to S3:", s3Error);
-          throw s3Error;
-        }
-      }
-
-      // 2. Queue job
-      await createJobAction({
-        orgId,
-        kind: 'generate',
-        status: 'queued',
-        inputJson: JSON.stringify({ videoId }),
-      }, orgId);
-      await refetchJobs();
-    } catch (e) {
-      console.error("Failed to queue generation job", e);
-    }
-  };
-
   // Rendering runs on the user's own computer, never in the cloud: the Studio
   // does not queue render jobs. A video is rendered by a local worker.
+  const GENERATE_LOCAL_ONLY_HINT =
+    "Generation runs on your own computer: use `babulus generate`. Save stores the project file.";
   const RENDER_LOCAL_ONLY_HINT =
     "Rendering runs on your own computer. Start `babulus worker`, then submit this video with `babulus video submit`.";
 
@@ -725,10 +683,10 @@ export function VideoEditor({ orgId, projectId, videoId }: VideoEditorProps) {
           <Button
             variant="default"
             size="sm"
-            onClick={handleGenerate}
-            disabled={!!activeJob || !video?.title}
+            disabled
+            title={GENERATE_LOCAL_ONLY_HINT}
           >
-            Generate
+            Generate (local only)
           </Button>
           <Button
             variant="secondary"

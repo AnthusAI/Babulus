@@ -1,7 +1,7 @@
 import { Given, Then } from "@cucumber/cucumber";
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 
 const amplifyFile = (relativePath: string) =>
@@ -18,8 +18,20 @@ const modelAuthorization = (schema: string, model: string) => {
 
 let source = "";
 
+const amplifySources = (directory = ""): string[] => {
+  const root = join(process.cwd(), "apps/studio-web/amplify", directory);
+  return readdirSync(root, { withFileTypes: true }).flatMap((entry) => {
+    if (entry.name === "node_modules") return [];
+    const relative = join(directory, entry.name);
+    if (entry.isDirectory()) return amplifySources(relative);
+    return /\.(ts|js|mjs)$/.test(entry.name) ? [relative] : [];
+  });
+};
+
+// The whole Amplify backend: backend.ts and every function, resource and
+// helper beside it, so compute cannot hide in a file backend.ts imports.
 Given("the Studio backend definition", () => {
-  source = amplifyFile("backend.ts");
+  source = amplifySources().map((file) => amplifyFile(file)).join("\n");
 });
 
 Given("the Studio data schema", () => {
@@ -48,6 +60,13 @@ Then("it attaches no event source to any table", () => {
   );
 });
 
+Then("it defines no function and no schedule", () => {
+  assert.doesNotMatch(
+    withoutComments(source),
+    /defineFunction|NodejsFunction|lambda\.Function|aws-events|events\.Rule|Schedule\.|aws-cdk-lib\/aws-lambda/,
+  );
+});
+
 Then("it creates no worker user, no custom resource and no password parameter", () => {
   assert.doesNotMatch(
     withoutComments(source),
@@ -59,6 +78,10 @@ Then("none of the old render path files exist", () => {
   const gone = [
     "src/worker-ecs.ts",
     "src/worker-cloud.ts",
+    "src/worker-lib.ts",
+    "apps/studio-web/amplify/functions",
+    "apps/studio-web/app/api/render",
+    "apps/studio-web/components/studio-workspace.tsx",
     "Dockerfile",
     "Dockerfile.render-worker",
     "scripts/deploy-ecs-infrastructure.sh",

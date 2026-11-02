@@ -3,7 +3,9 @@ Feature: Cloud render containment
   I want rendering to run only on a worker the user starts, and job writes closed to the public
   So that a stuck job or an anonymous caller cannot start paid compute
 
-  The Studio backend has no cloud render path. A video is rendered by a local
+  The Studio backend has no cloud render path and runs no compute of its own:
+  no function, schedule, alarm or event source. The check reads every source
+  file under the Amplify folder, not only backend.ts. A video is rendered by a local
   worker; a capped cloud fallback, if it ever returns, is added deliberately
   with its own spending guards.
 
@@ -15,6 +17,10 @@ Feature: Cloud render containment
   Scenario: Nothing reacts to Job table changes to start work
     Given the Studio backend definition
     Then it attaches no event source to any table
+
+  Scenario: The Studio backend has no function and no schedule
+    Given the Studio backend definition
+    Then it defines no function and no schedule
 
   Scenario: There is no render worker credential
     Given the Studio backend definition
