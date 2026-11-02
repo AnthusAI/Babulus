@@ -279,7 +279,10 @@ def test_claim_and_done_telemetry(router_resources: dict[str, object]) -> None:
         router_resources["event"](
             "PUT",
             f"/jobs/{content_hash}/done",
-            body={"audio_key": "audio/test.mp3"},
+            body={
+                "audio_key": "audio/test.mp3",
+                "claim_token": claim_body["claim_token"],
+            },
             headers=_operator_headers(),
             path_parameters={"hash": content_hash},
         ),

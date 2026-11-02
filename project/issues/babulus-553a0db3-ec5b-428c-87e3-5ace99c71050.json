@@ -10,9 +10,17 @@
   "parent": "babulus-d22d6854-6464-40b8-a446-b0a8265efdde",
   "labels": [],
   "dependencies": [],
-  "comments": [],
+  "comments": [
+    {
+      "id": "ec82855f-d1ed-4501-a59d-63867060e5b1",
+      "author": "home",
+      "text": "PR 1 of 3 (claim correctness) open: fencing tokens, real heartbeat renewal, fallback gate, per-day quota reset. Attempt timeouts and account-wide budget scope remain M4.",
+      "created_at": "2026-11-02T21:37:43.126018Z",
+      "comment_type": "default"
+    }
+  ],
   "created_at": "2026-11-02T05:41:58.496769Z",
-  "updated_at": "2026-11-02T05:41:58.496790Z",
+  "updated_at": "2026-11-02T21:37:43.126213Z",
   "closed_at": null,
   "right_now_summary": null,
   "right_now_updated_at": null,

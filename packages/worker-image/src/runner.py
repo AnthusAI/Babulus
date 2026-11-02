@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import os
 import sys
+import threading
 import traceback
 from typing import Any
 
@@ -110,17 +111,76 @@ def mark_failed(
     *,
     owner: str,
     reason: str,
+    claim_token: str | None = None,
 ) -> None:
     """Best-effort failure notification for operators and Step Functions."""
     try:
         httpx.put(
             f"{api_url}/jobs/{job_hash}/failed",
             headers=headers,
-            json={"owner": owner, "reason": reason},
+            json={"owner": owner, "reason": reason, "claim_token": claim_token},
             timeout=30.0,
         )
     except httpx.HTTPError:
         pass
+
+
+def take_claim(
+    api_url: str,
+    job_hash: str,
+    headers: dict[str, str],
+    *,
+    owner: str,
+    claim_token: str | None,
+) -> tuple[bool, str | None]:
+    """Take hold of the job; return whether it is held and the fencing token.
+
+    When the fallback gate reserved the job for this run, its token arrives
+    in the environment and is renewed under this run's owner id. Without one
+    (the run was started by hand) the job is claimed the ordinary way, which
+    succeeds only if no live claim exists.
+    """
+    body: dict[str, Any] = {"claim_owner": owner}
+    if claim_token:
+        body.update({"renew": True, "claim_token": claim_token})
+    claim = httpx.put(
+        f"{api_url}/jobs/{job_hash}/claim",
+        headers=headers,
+        json=body,
+        timeout=30.0,
+    )
+    if claim.status_code >= 400:
+        print(f"claim failed: {claim.status_code} {claim.text}", file=sys.stderr)
+        return False, None
+    held = claim.json() if claim.content else {}
+    return True, str(held.get("claim_token") or claim_token or "") or None
+
+
+def _keep_claim(
+    api_url: str,
+    job_hash: str,
+    headers: dict[str, str],
+    *,
+    owner: str,
+    claim_token: str,
+    stop: threading.Event,
+    lost: threading.Event,
+    interval: float,
+) -> None:
+    """Renew the claim until ``stop``; set ``lost`` if the claim is taken away."""
+    while not stop.wait(interval):
+        try:
+            response = httpx.put(
+                f"{api_url}/jobs/{job_hash}/claim",
+                headers=headers,
+                json={"claim_owner": owner, "renew": True, "claim_token": claim_token},
+                timeout=30.0,
+            )
+        except httpx.HTTPError:
+            continue
+        if response.status_code == 409:
+            lost.set()
+            return
 
 
 def main() -> int:
@@ -159,15 +219,31 @@ def main() -> int:
         job_response.raise_for_status()
         job_body = job_response.json()
 
-    claim = httpx.put(
-        f"{api_url}/jobs/{job_hash}/claim",
-        headers=headers,
-        json={"claim_owner": owner},
-        timeout=30.0,
+    claimed, claim_token = take_claim(
+        api_url,
+        job_hash,
+        headers,
+        owner=owner,
+        claim_token=os.environ.get("AURITUS_CLAIM_TOKEN", "").strip() or None,
     )
-    if claim.status_code >= 400:
-        print(f"claim failed: {claim.status_code} {claim.text}", file=sys.stderr)
+    if not claimed:
         return 0
+
+    stop = threading.Event()
+    lost = threading.Event()
+    if claim_token:
+        threading.Thread(
+            target=_keep_claim,
+            args=(api_url, job_hash, headers),
+            kwargs={
+                "owner": owner,
+                "claim_token": claim_token,
+                "stop": stop,
+                "lost": lost,
+                "interval": float(os.environ.get("CLAIM_RENEW_SECONDS", "120")),
+            },
+            daemon=True,
+        ).start()
 
     try:
         backend_name = job_body.get("tts_backend") or default_backend
@@ -182,10 +258,13 @@ def main() -> int:
             },
         )
 
+        if lost.is_set():
+            print(f"job {job_hash}: claim lost; discarding result", file=sys.stderr)
+            return 0
         presign = httpx.post(
             f"{api_url}/jobs/{job_hash}/presign-upload",
             headers=headers,
-            json={},
+            json={"claim_token": claim_token},
             timeout=30.0,
         )
         presign.raise_for_status()
@@ -200,9 +279,16 @@ def main() -> int:
         done = httpx.put(
             f"{api_url}/jobs/{job_hash}/done",
             headers=headers,
-            json={"audio_key": upload["audio_key"], "owner": owner},
+            json={
+                "audio_key": upload["audio_key"],
+                "owner": owner,
+                "claim_token": claim_token,
+            },
             timeout=30.0,
         )
+        if done.status_code == 409:
+            print(f"job {job_hash}: claim lost; result not recorded", file=sys.stderr)
+            return 0
         done.raise_for_status()
         print(f"done {job_hash}")
         return 0
@@ -210,8 +296,17 @@ def main() -> int:
         reason = f"{type(exc).__name__}: {exc}"
         print(reason, file=sys.stderr)
         traceback.print_exc()
-        mark_failed(api_url, job_hash, headers, owner=owner, reason=reason)
+        mark_failed(
+            api_url,
+            job_hash,
+            headers,
+            owner=owner,
+            reason=reason,
+            claim_token=claim_token,
+        )
         return 1
+    finally:
+        stop.set()
 
 
 if __name__ == "__main__":

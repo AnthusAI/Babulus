@@ -69,18 +69,32 @@ sequenceDiagram
 
 - Partition key: `content_hash` (deduplication).
 - Status lifecycle: `pending` → `claimed` → `done` (or error paths).
-- Claim uses a conditional update: only one owner while
-  `claim_deadline` is in the future; expired claims may be stolen.
+- Claim uses a conditional update: a job is taken only when it is `pending`
+  or its previous claim has expired. The response carries a fencing token.
+- A claim lasts one window (`claim_seconds`, default 15 minutes, at most one
+  hour). The holder renews it with `PUT /jobs/{hash}/claim` and
+  `{"renew": true, "claim_token": ...}` while it works; a renewal succeeds only
+  for the current token.
+- Uploading audio and recording a result or a failure must present the token.
+  A write from any other token (a worker whose claim lapsed and was taken, or
+  whose claim an operator released) is refused with `409 stale_claim`.
 - GSI on `status` + `created_at` supports worker polling (`/jobs/claimable`).
 
 ## Local worker race vs Batch fallback
 
 - When a job is created, Step Functions waits `FALLBACK_SECONDS` (default 15
   minutes).
-- After the wait, the state machine reads the job; if still `pending`, it
-  submits an AWS Batch GPU task with the content hash and job token.
-- A local worker that claims first completes upload and marks `done`, so Batch
-  work becomes a no-op or loses the claim race.
+- After the wait, the state machine calls the fallback gate. The gate makes one
+  conditional write that succeeds only if this timer still belongs to the job's
+  current attempt and the job is `pending` or its claim has expired. A live
+  claim always wins: the timer waits until the claim's deadline and asks again.
+- Only a successful write leads to an AWS Batch submission, and the Batch job
+  receives the fencing token the gate obtained. A job that is done, failed,
+  requeued or deleted ends the timer without starting compute, and so does a
+  gate that cannot answer.
+- Arming the same attempt twice does not start a second timer; requeueing a job
+  issues a new attempt, so a timer from before a requeue starts nothing.
+- Daily site quotas count per UTC day and start again at one each day.
 
 ## Site keys and embed auth
 

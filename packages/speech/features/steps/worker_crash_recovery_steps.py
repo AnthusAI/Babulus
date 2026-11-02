@@ -2,10 +2,12 @@
 
 from __future__ import annotations
 
+import time
 from unittest.mock import MagicMock, patch
 
 from behave import given, then, when
 
+from babulus_speech.api import AuritusApiError
 from babulus_speech.worker import daemon
 
 _CONTENT_HASH = "worker-crash-hash-001"
@@ -52,6 +54,7 @@ def step_run_worker_once(context) -> None:
             "claim_timeout": 30,
             "tts_backend": "kokoro",
             "voices_dir": getattr(context, "worker_voices_dir", None),
+            "heartbeat_interval": getattr(context, "heartbeat_interval", None),
         }
     }
     mock_put_response = MagicMock()
@@ -92,3 +95,53 @@ def step_job_marked_done(context) -> None:
 @then("the worker does not crash")
 def step_worker_did_not_crash(context) -> None:
     assert not context.worker_crashed, "run_worker raised instead of recovering"
+
+
+@given('a claimable job that a local worker will claim with claim token "{token}"')
+def step_claimable_job_with_token(context, token: str) -> None:
+    step_claimable_job(context)
+    context.mock_client.claim_job.return_value = {
+        "status": "claimed",
+        "claim_token": token,
+    }
+    context.mock_client.presign_upload.return_value = {
+        "upload_url": "https://uploads.example.com/audio/worker-crash-hash-001.wav",
+        "audio_key": "audio/worker-crash-hash-001.wav",
+    }
+    context.heartbeat_interval = 0.05
+
+
+@given("the worker's TTS backend takes a while to generate audio")
+def step_backend_slow(context) -> None:
+    def generate(_text, _meta):
+        time.sleep(0.4)
+        return b"fake-audio-bytes"
+
+    context.mock_backend.generate.side_effect = generate
+
+
+@given("the API refuses the claim renewal because the claim was lost")
+def step_renewal_refused(context) -> None:
+    context.mock_client.renew_claim.side_effect = AuritusApiError(
+        "PUT claim failed: 409 claim_lost", status_code=409
+    )
+
+
+@then('every call for the job carried claim token "{token}"')
+def step_calls_carry_token(context, token: str) -> None:
+    assert context.mock_client.presign_upload.call_args.args[1] == token
+    assert context.mock_client.mark_done.call_args.kwargs["claim_token"] == token
+
+
+@then('the claim was renewed at least once with claim token "{token}"')
+def step_claim_renewed(context, token: str) -> None:
+    calls = context.mock_client.renew_claim.call_args_list
+    assert calls, "the claim was never renewed"
+    assert all(call.args[2] == token for call in calls), calls
+
+
+@then("the worker uploaded nothing and recorded no result")
+def step_nothing_written(context) -> None:
+    assert not context.mock_client.presign_upload.called
+    assert not context.mock_client.mark_done.called
+    assert not context.mock_client.mark_failed.called

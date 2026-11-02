@@ -26,14 +26,27 @@ def _heartbeat_loop(
     client: AuritusClient,
     content_hash: str,
     owner: str,
+    claim_token: str | None,
+    claim_seconds: int,
     stop: threading.Event,
-    interval: int,
+    lost: threading.Event,
+    interval: float,
 ) -> None:
+    """Renew the claim until ``stop``; set ``lost`` if it was taken away.
+
+    A refused renewal (409) means another worker holds the job or it was
+    requeued; the work in flight must then write nothing. Network errors are
+    retried at the next beat, because the claim is still good until it lapses.
+    """
+    if claim_token is None:
+        return
     while not stop.wait(interval):
         try:
-            client.renew_claim(content_hash, owner)
-        except AuritusApiError:
-            pass
+            client.renew_claim(content_hash, owner, claim_token, claim_seconds)
+        except AuritusApiError as exc:
+            if exc.status_code == 409:
+                lost.set()
+                return
 
 
 def worker_voices_dir(worker_cfg: dict[str, Any], *, cwd: Path | None = None) -> Path:
@@ -62,7 +75,11 @@ def run_worker(*, once: bool = False) -> None:
     poll_interval = int(worker_cfg["poll_interval"])
     claim_timeout = int(worker_cfg["claim_timeout"])
     tts_backend_name = str(worker_cfg["tts_backend"])
-    heartbeat_interval = max(5, min(poll_interval, claim_timeout // 3))
+    # Renew well inside the claim window; ``heartbeat_interval`` overrides it.
+    heartbeat_interval = float(
+        worker_cfg.get("heartbeat_interval")
+        or max(5, min(poll_interval, claim_timeout // 3))
+    )
     owner = f"local:{socket.gethostname()}:{uuid.uuid4().hex[:8]}"
     voices_dir = worker_voices_dir(worker_cfg)
     typer.echo(
@@ -108,7 +125,7 @@ def run_worker(*, once: bool = False) -> None:
             if not content_hash:
                 continue
             try:
-                claim = client.claim_job(content_hash, owner)
+                claim = client.claim_job(content_hash, owner, claim_timeout)
             except AuritusApiError:
                 typer.echo(f"Claim failed for {content_hash[:16]}", err=True)
                 continue
@@ -118,6 +135,7 @@ def run_worker(*, once: bool = False) -> None:
             ):
                 continue
             typer.echo(f"Claimed {content_hash[:16]}")
+            claim_token = claim.get("claim_token")
             text = job.get("text") or ""
             job_backend = job.get("tts_backend") or tts_backend_name
             meta = {
@@ -130,13 +148,23 @@ def run_worker(*, once: bool = False) -> None:
                 f"Generating audio for {content_hash[:16]} backend={job_backend}"
             )
             stop = threading.Event()
+            lost = threading.Event()
             heartbeat: threading.Thread | None = None
             generation_exc: Exception | None = None
             try:
                 backend = get_backend(job_backend)
                 heartbeat = threading.Thread(
                     target=_heartbeat_loop,
-                    args=(client, content_hash, owner, stop, heartbeat_interval),
+                    args=(
+                        client,
+                        content_hash,
+                        owner,
+                        claim_token,
+                        claim_timeout,
+                        stop,
+                        lost,
+                        heartbeat_interval,
+                    ),
                     daemon=True,
                 )
                 heartbeat.start()
@@ -155,6 +183,17 @@ def run_worker(*, once: bool = False) -> None:
                 if heartbeat is not None:
                     heartbeat.join(timeout=1.0)
 
+            if lost.is_set():
+                typer.secho(
+                    f"Claim on {content_hash[:16]} was lost; discarding the result.",
+                    fg=typer.colors.YELLOW,
+                    err=True,
+                )
+                processed = True
+                if once is True:
+                    return
+                continue
+
             if generation_exc is not None:
                 typer.secho(
                     f"Generation failed for {content_hash[:16]}: {generation_exc}",
@@ -163,7 +202,10 @@ def run_worker(*, once: bool = False) -> None:
                 )
                 try:
                     client.mark_failed(
-                        content_hash, reason=str(generation_exc)[:500], owner=owner
+                        content_hash,
+                        reason=str(generation_exc)[:500],
+                        owner=owner,
+                        claim_token=claim_token,
                     )
                 except AuritusApiError as mark_exc:
                     typer.secho(
@@ -177,17 +219,32 @@ def run_worker(*, once: bool = False) -> None:
                     return
                 continue
 
-            upload = client.presign_upload(content_hash)
-            upload_url = upload["upload_url"]
-            audio_key = upload["audio_key"]
-            put = httpx.put(
-                upload_url,
-                content=audio_bytes,
-                timeout=120.0,
-            )
-            put.raise_for_status()
-            client.mark_done(content_hash, audio_key=audio_key, owner=owner)
-            typer.secho(f"Completed {content_hash}", fg=typer.colors.GREEN)
+            try:
+                upload = client.presign_upload(content_hash, claim_token)
+                upload_url = upload["upload_url"]
+                audio_key = upload["audio_key"]
+                put = httpx.put(
+                    upload_url,
+                    content=audio_bytes,
+                    timeout=120.0,
+                )
+                put.raise_for_status()
+                client.mark_done(
+                    content_hash,
+                    audio_key=audio_key,
+                    owner=owner,
+                    claim_token=claim_token,
+                )
+            except AuritusApiError as exc:
+                if exc.status_code != 409:
+                    raise
+                typer.secho(
+                    f"Claim on {content_hash[:16]} was lost; result not recorded.",
+                    fg=typer.colors.YELLOW,
+                    err=True,
+                )
+            else:
+                typer.secho(f"Completed {content_hash}", fg=typer.colors.GREEN)
             processed = True
             if once is True:
                 return

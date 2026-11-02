@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import base64
+import hashlib
 import hmac
 import json
 import os
@@ -39,6 +40,12 @@ CLOUDFRONT_DOMAIN = os.environ.get("CLOUDFRONT_DOMAIN", "")
 FALLBACK_STATE_MACHINE_ARN = os.environ.get("FALLBACK_STATE_MACHINE_ARN", "")
 FALLBACK_SECONDS = int(os.environ.get("FALLBACK_SECONDS", "900"))
 DAILY_SITE_QUOTA = int(os.environ.get("DAILY_SITE_QUOTA", "100"))
+# A claim lasts this long unless its holder renews it. Workers renew while
+# they work, so a long job never loses its claim; a worker that dies stops
+# renewing and the claim lapses after one window.
+CLAIM_WINDOW_SECONDS = FALLBACK_SECONDS
+# No single claim or renewal may reach further ahead than this.
+MAX_CLAIM_SECONDS = 3600
 BATCH_JOB_QUEUE_NAME = os.environ.get("BATCH_JOB_QUEUE_NAME", "")
 USER_POOL_ID = os.environ.get("USER_POOL_ID", "")
 SES_FROM_ADDRESS = os.environ.get("SES_FROM_ADDRESS", "")
@@ -120,7 +127,7 @@ def handler(event: dict[str, Any], _context: Any) -> dict[str, Any]:
             return _mark_failed(content_hash, body, headers)
         if method == "POST" and path.endswith("/presign-upload"):
             content_hash = path_params.get("hash") or ""
-            return _presign_upload(content_hash, headers)
+            return _presign_upload(content_hash, body, headers)
         if method == "POST" and path == "/alerts/session":
             return _alert_session(body)
         if method == "POST" and path == "/sites":
@@ -260,16 +267,43 @@ def _check_daily_quota(site: dict[str, Any]) -> None:
 
 
 def _increment_quota(site_id: str) -> None:
+    """Count one new job against a site's quota for the current UTC day.
+
+    The counter belongs to a day: the first job of a new day starts it again
+    at one, so a site's quota resets at UTC midnight instead of accumulating
+    forever. Both writes are conditional, so concurrent requests on either
+    side of midnight each count exactly once.
+
+    :param site_id: The site that created the job.
+    """
     day = datetime.now(timezone.utc).strftime("%Y-%m-%d")
-    _sites.update_item(
-        Key={"site_id": site_id},
-        UpdateExpression=(
-            "SET usage_day = :day, "
-            "daily_usage = if_not_exists(daily_usage, :zero) + :one"
-        ),
-        ConditionExpression="attribute_exists(site_id)",
-        ExpressionAttributeValues={":day": day, ":zero": 0, ":one": 1},
-    )
+    for _ in range(3):
+        try:
+            _sites.update_item(
+                Key={"site_id": site_id},
+                UpdateExpression="ADD daily_usage :one",
+                ConditionExpression="attribute_exists(site_id) AND usage_day = :day",
+                ExpressionAttributeValues={":day": day, ":one": 1},
+            )
+            return
+        except ClientError as exc:
+            if exc.response["Error"]["Code"] != "ConditionalCheckFailedException":
+                raise
+        try:
+            _sites.update_item(
+                Key={"site_id": site_id},
+                UpdateExpression="SET usage_day = :day, daily_usage = :one",
+                ConditionExpression=(
+                    "attribute_exists(site_id) AND "
+                    "(attribute_not_exists(usage_day) OR usage_day <> :day)"
+                ),
+                ExpressionAttributeValues={":day": day, ":one": 1},
+            )
+            return
+        except ClientError as exc:
+            if exc.response["Error"]["Code"] != "ConditionalCheckFailedException":
+                raise
+    raise RuntimeError("quota_counter_contended")
 
 
 def _record_rollup_contribution(
@@ -483,7 +517,12 @@ def _roll_up_request_path_cost(
 
 
 def _arm_fallback(content_hash: str, job_token: str, tts_backend: str) -> None:
-    """Start the Step Functions fallback execution for a job, if configured.
+    """Start the Step Functions fallback timer for a job, once per job token.
+
+    The execution name is derived from the job token, so arming the same
+    job twice (a retried request, a repeated event) is refused by Step
+    Functions instead of starting a second timer. Requeueing a job issues a
+    new token and therefore a new timer.
 
     :param content_hash: The content hash identifying the job.
     :param job_token: The job's current single-use token.
@@ -492,19 +531,24 @@ def _arm_fallback(content_hash: str, job_token: str, tts_backend: str) -> None:
     if not FALLBACK_STATE_MACHINE_ARN:
         return
     baseline_epoch = int(time.time())
-    _sfn.start_execution(
-        stateMachineArn=FALLBACK_STATE_MACHINE_ARN,
-        name=f"auritus-{content_hash[:16]}-{uuid.uuid4().hex[:8]}",
-        input=json.dumps(
-            {
-                "content_hash": content_hash,
-                "job_token": job_token,
-                "tts_backend": tts_backend,
-                "baseline_epoch": baseline_epoch,
-                "fallback_seconds": FALLBACK_SECONDS,
-            }
-        ),
-    )
+    token_digest = hashlib.sha256(job_token.encode("utf-8")).hexdigest()[:16]
+    try:
+        _sfn.start_execution(
+            stateMachineArn=FALLBACK_STATE_MACHINE_ARN,
+            name=f"auritus-{content_hash[:16]}-{token_digest}",
+            input=json.dumps(
+                {
+                    "content_hash": content_hash,
+                    "job_token": job_token,
+                    "tts_backend": tts_backend,
+                    "baseline_epoch": baseline_epoch,
+                    "fallback_seconds": FALLBACK_SECONDS,
+                }
+            ),
+        )
+    except ClientError as exc:
+        if exc.response["Error"]["Code"] != "ExecutionAlreadyExists":
+            raise
 
 
 def _create_job(body: dict[str, Any], headers: dict[str, str]) -> dict[str, Any]:
@@ -651,69 +695,86 @@ def _list_claimable(headers: dict[str, str]) -> dict[str, Any]:
     )
 
 
+def _deadline_iso(epoch: int) -> str:
+    """Format a claim deadline as an ISO-8601 UTC timestamp with milliseconds.
+
+    The fixed-width form sorts like time, which lets the fallback state
+    machine compare it with its own clock inside a DynamoDB condition.
+    """
+    stamp = datetime.fromtimestamp(epoch, tz=timezone.utc)
+    return stamp.isoformat(timespec="milliseconds").replace("+00:00", "Z")
+
+
+def _claim_window(body: dict[str, Any], now_epoch: int) -> int:
+    """Return the epoch second a new or renewed claim lasts until.
+
+    :param body: Request body; ``claim_seconds`` asks for a window, and the
+        older ``claim_deadline`` epoch is still accepted.
+    :param now_epoch: The current epoch second.
+    :returns: The deadline, never more than ``MAX_CLAIM_SECONDS`` ahead.
+    """
+    if body.get("claim_seconds"):
+        window = int(body["claim_seconds"])
+    elif body.get("claim_deadline"):
+        window = int(body["claim_deadline"]) - now_epoch
+    else:
+        window = CLAIM_WINDOW_SECONDS
+    return now_epoch + max(1, min(window, MAX_CLAIM_SECONDS))
+
+
 def _claim_job(
     content_hash: str, body: dict[str, Any], headers: dict[str, str]
 ) -> dict[str, Any]:
-    """Atomically claim a job via a conditional DynamoDB UpdateItem.
+    """Claim a job, or renew a claim, with a conditional DynamoDB write.
+
+    A claim succeeds only when the job is pending or its previous claim has
+    expired, and it returns a fencing token. Every later write by the holder
+    (renewal, upload, result, failure) must present that token, and a write
+    carrying any other token is refused, so a worker that lost its claim can
+    never change the job. Renewal extends the deadline only for the current
+    token.
 
     :param content_hash: The content hash identifying the job.
-    :param body: Request body with ``claim_owner`` and ``claim_deadline``.
+    :param body: Request body with ``claim_owner``; ``renew`` and
+        ``claim_token`` to renew; optional ``claim_seconds``.
     :param headers: Request headers for auth.
-    :returns: 200 on success, 409 if already claimed.
+    :returns: 200 with the claim token, 409 if the job is already claimed
+        (or, on renewal, the claim was lost).
     """
     if not _check_job_token(headers, content_hash):
         _require_operator(headers)
     claim_owner = body.get("claim_owner")
     if not claim_owner:
         raise ValueError("claim_owner_required")
-    deadline_val = body.get("claim_deadline")
-    deadline_epoch = int(deadline_val) if deadline_val else int(time.time() + 900)
     now = _utc_now_iso()
     now_int = int(time.time())
-    now_epoch = Decimal(now_int)
+    deadline_epoch = _claim_window(body, now_int)
     worker_type = "batch" if claim_owner.startswith("batch:") else "local"
+    if body.get("renew"):
+        return _renew_claim(
+            content_hash,
+            body,
+            owner=claim_owner,
+            worker_type=worker_type,
+            deadline_epoch=deadline_epoch,
+            now=now,
+        )
+    claim_token = secrets.token_urlsafe(24)
     try:
-        _jobs.update_item(
+        updated = _jobs.update_item(
             Key={"content_hash": content_hash},
             UpdateExpression=(
                 "SET #status = :claimed, claim_owner = :owner, "
                 "claimed_by = :owner, worker_type = :wtype, "
                 "claimed_at = :now, claimed_at_epoch = :now_epoch, "
-                "claim_deadline = :deadline, updated_at = :now"
+                "claim_deadline = :deadline, claim_deadline_at = :deadline_at, "
+                "claim_token = :token, updated_at = :now "
+                "ADD claim_generation :one"
             ),
             # A claimant may take a job that is pending, or reclaim one
-            # whose existing claim has genuinely expired -- that's the
-            # whole mutex, and it must hold the same way for every
-            # claimant. This condition used to carry two more problems,
-            # both found the same day live jobs were double-processed:
-            #
-            # 1. An extra clause, "(#status = :claimed AND :is_batch =
-            #    :true_val)". :is_batch and :true_val were both literal
-            #    values computed in Python before the call (worker_type ==
-            #    "batch"), not DynamoDB attribute comparisons, so the
-            #    clause reduced to "status = claimed AND True" for every
-            #    Batch claim attempt -- Batch could steal *any*
-            #    already-claimed job at any moment, deadline or not,
-            #    including one a local worker was actively mid-synthesis
-            #    on. Reproduced live: a local worker completed a job's
-            #    mark_done, then Batch's independent, already-running
-            #    fallback execution (started at job creation, per the
-            #    architecture) claimed the same job anyway and overwrote it
-            #    with its own (also successful) result -- both workers did
-            #    the same work, and whichever finished last silently won.
-            #
-            # 2. The deadline check itself was "claim_deadline < :now_epoch
-            #    OR claim_deadline < :now_str" -- comparing the same stored
-            #    Number attribute against both a Decimal and a string
-            #    literal. Only one of those can ever type-match a given
-            #    item; the other is a Number-vs-String order comparison,
-            #    which is invalid. claim_deadline is written as a Decimal a
-            #    few lines below (and confirmed Decimal in every live
-            #    record checked), so the string half was dead weight that
-            #    also broke a straightforward regression test for fix #1
-            #    (moto raises on the mismatched compare; real DynamoDB's
-            #    behavior on it was never something to depend on either
-            #    way). Compare against :now_epoch only.
+            # whose existing claim has genuinely expired. That is the whole
+            # mutex, and it holds the same way for every claimant, Batch
+            # included: nothing may take a claim that has not expired.
             ConditionExpression=(
                 "#status = :pending OR "
                 "(#status = :claimed AND claim_deadline < :now_epoch)"
@@ -725,12 +786,16 @@ def _claim_job(
                 ":owner": claim_owner,
                 ":wtype": worker_type,
                 ":deadline": Decimal(deadline_epoch),
+                ":deadline_at": _deadline_iso(deadline_epoch),
+                ":token": claim_token,
+                ":one": 1,
                 ":now": now,
-                ":now_epoch": now_epoch,
+                ":now_epoch": Decimal(now_int),
             },
+            ReturnValues="UPDATED_NEW",
         )
     except ClientError as exc:
-        if "ConditionalCheckFailed" in str(exc):
+        if exc.response["Error"]["Code"] == "ConditionalCheckFailedException":
             return _response(409, {"error": "already_claimed"})
         raise
     return _response(
@@ -741,7 +806,88 @@ def _claim_job(
             "worker_type": worker_type,
             "claimed_by": claim_owner,
             "claimed_at": now,
+            "claim_token": claim_token,
+            "claim_deadline": deadline_epoch,
+            "claim_generation": int(
+                (updated.get("Attributes") or {}).get("claim_generation") or 1
+            ),
         },
+    )
+
+
+def _renew_claim(
+    content_hash: str,
+    body: dict[str, Any],
+    *,
+    owner: str,
+    worker_type: str,
+    deadline_epoch: int,
+    now: str,
+) -> dict[str, Any]:
+    """Extend a live claim for the holder of its fencing token.
+
+    The write succeeds only while the job is still claimed under exactly the
+    presented token. A claim that lapsed and was taken by someone else, or a
+    job that was requeued, finished or failed, refuses the renewal, which
+    tells the holder it has lost the job and must stop.
+
+    :returns: 200 with the new deadline, or 409 ``claim_lost``.
+    """
+    token = body.get("claim_token")
+    if not token:
+        raise ValueError("claim_token_required")
+    try:
+        _jobs.update_item(
+            Key={"content_hash": content_hash},
+            UpdateExpression=(
+                "SET claim_deadline = :deadline, claim_deadline_at = :deadline_at, "
+                "claim_owner = :owner, claimed_by = :owner, "
+                "worker_type = :wtype, updated_at = :now"
+            ),
+            ConditionExpression="#status = :claimed AND claim_token = :token",
+            ExpressionAttributeNames={"#status": "status"},
+            ExpressionAttributeValues={
+                ":claimed": "claimed",
+                ":token": token,
+                ":owner": owner,
+                ":wtype": worker_type,
+                ":deadline": Decimal(deadline_epoch),
+                ":deadline_at": _deadline_iso(deadline_epoch),
+                ":now": now,
+            },
+        )
+    except ClientError as exc:
+        if exc.response["Error"]["Code"] == "ConditionalCheckFailedException":
+            return _response(409, {"error": "claim_lost"})
+        raise
+    return _response(
+        200,
+        {
+            "content_hash": content_hash,
+            "status": "claimed",
+            "claim_token": token,
+            "claim_deadline": deadline_epoch,
+            "renewed": True,
+        },
+    )
+
+
+def _holder_condition(claim_token: str | None) -> str:
+    """Return the condition under which a worker may write a job's outcome.
+
+    A worker that presents its fencing token may write only while it still
+    holds that exact claim. A caller with no token (an operator completing a
+    job by hand) may write only to a job no token guards.
+
+    :param claim_token: The token the caller presented, if any.
+    :returns: A DynamoDB condition expression using ``#status`` and, when a
+        token was presented, ``:holder_token``.
+    """
+    if claim_token:
+        return "#status = :claimed AND claim_token = :holder_token"
+    return (
+        "#status = :pending OR "
+        "(#status = :claimed AND attribute_not_exists(claim_token))"
     )
 
 
@@ -857,13 +1003,25 @@ def _mark_done(
         attr_values[":ttl"] = ttl_epoch
         attr_names["#ttl"] = "ttl"
 
-    _jobs.update_item(
-        Key={"content_hash": content_hash},
-        UpdateExpression=f"SET {', '.join(set_clauses)} REMOVE claim_deadline, job_token",
-        ConditionExpression="#status IN (:claimed, :pending)",
-        ExpressionAttributeNames=attr_names,
-        ExpressionAttributeValues=attr_values,
-    )
+    claim_token = body.get("claim_token")
+    if claim_token:
+        attr_values[":holder_token"] = claim_token
+        attr_values.pop(":pending", None)
+    try:
+        _jobs.update_item(
+            Key={"content_hash": content_hash},
+            UpdateExpression=(
+                f"SET {', '.join(set_clauses)} "
+                "REMOVE claim_deadline, claim_deadline_at, claim_token, job_token"
+            ),
+            ConditionExpression=_holder_condition(claim_token),
+            ExpressionAttributeNames=attr_names,
+            ExpressionAttributeValues=attr_values,
+        )
+    except ClientError as exc:
+        if exc.response["Error"]["Code"] == "ConditionalCheckFailedException":
+            return _response(409, {"error": "stale_claim"})
+        raise
 
     _roll_up_request_path_cost(
         content_hash,
@@ -949,15 +1107,27 @@ def _mark_failed(
         attr_values[":ttl"] = ttl_epoch
         attr_names["#ttl"] = "ttl"
 
-    update_expr = f"SET {', '.join(set_clauses)} REMOVE claim_deadline, job_token"
-
-    _jobs.update_item(
-        Key={"content_hash": content_hash},
-        UpdateExpression=update_expr,
-        ConditionExpression="#status IN (:claimed, :pending)",
-        ExpressionAttributeNames=attr_names,
-        ExpressionAttributeValues=attr_values,
+    update_expr = (
+        f"SET {', '.join(set_clauses)} "
+        "REMOVE claim_deadline, claim_deadline_at, claim_token, job_token"
     )
+
+    claim_token = body.get("claim_token")
+    if claim_token:
+        attr_values[":holder_token"] = claim_token
+        attr_values.pop(":pending", None)
+    try:
+        _jobs.update_item(
+            Key={"content_hash": content_hash},
+            UpdateExpression=update_expr,
+            ConditionExpression=_holder_condition(claim_token),
+            ExpressionAttributeNames=attr_names,
+            ExpressionAttributeValues=attr_values,
+        )
+    except ClientError as exc:
+        if exc.response["Error"]["Code"] == "ConditionalCheckFailedException":
+            return _response(409, {"error": "stale_claim"})
+        raise
 
     resolved_worker_type = attr_values.get(":wtype") or (
         item.get("worker_type") if item else None
@@ -1008,19 +1178,34 @@ def _redeem_token(
     )
 
 
-def _presign_upload(content_hash: str, headers: dict[str, str]) -> dict[str, Any]:
+def _presign_upload(
+    content_hash: str, body: dict[str, Any], headers: dict[str, str]
+) -> dict[str, Any]:
     """Generate a presigned S3 PUT URL for audio upload.
 
+    The audio lives at a key derived from the content hash, so an upload
+    from a worker that lost its claim could overwrite a good result. A caller
+    presenting a fencing token therefore gets a URL only while it still
+    holds that exact claim.
+
     :param content_hash: The content hash identifying the job.
+    :param body: Request body; ``claim_token`` is the holder's fencing token.
     :param headers: Request headers for auth.
-    :returns: 200 with ``upload_url``, ``audio_key``, and ``content_type``.
+    :returns: 200 with ``upload_url``, ``audio_key``, and ``content_type``,
+        or 409 ``stale_claim``.
     """
-    if _check_job_token(headers, content_hash):
-        item = _jobs.get_item(Key={"content_hash": content_hash}).get("Item") or {}
-        if item.get("status") != "claimed":
-            raise PermissionError("job_not_claimed")
-    else:
+    job_authorized = _check_job_token(headers, content_hash)
+    if not job_authorized:
         _require_operator(headers)
+    item = _jobs.get_item(Key={"content_hash": content_hash}).get("Item") or {}
+    presented = body.get("claim_token")
+    stored = item.get("claim_token")
+    if presented and (item.get("status") != "claimed" or presented != stored):
+        return _response(409, {"error": "stale_claim"})
+    if stored and not presented and item.get("status") == "claimed":
+        return _response(409, {"error": "claim_token_required"})
+    if job_authorized and item.get("status") != "claimed":
+        raise PermissionError("job_not_claimed")
     audio_key = f"audio/{content_hash}.wav"
     upload_url = _s3.generate_presigned_url(
         "put_object",
@@ -1846,7 +2031,7 @@ def _regenerate_admin_job(content_hash: str, headers: dict[str, str]) -> dict[st
         UpdateExpression=(
             "SET #status = :pending, job_token = :token, updated_at = :now "
             "REMOVE audio_key, claimed_by, claim_owner, claimed_at, "
-            "claimed_at_epoch, claim_deadline, completed_at, failed_at, "
+            "claimed_at_epoch, claim_deadline, claim_deadline_at, claim_token, completed_at, failed_at, "
             "duration_seconds, error_message, worker_type, "
             "gpu_cost_usd, platform_cost_usd, cost_rate_usd_per_hour, "
             "rate_card_version, avoided_cost_usd, avoided_cost_basis, "
@@ -1916,7 +2101,7 @@ def _retry_admin_job(
         UpdateExpression=(
             "SET #status = :pending, job_token = :token, updated_at = :now "
             "REMOVE claimed_by, claim_owner, claimed_at, claimed_at_epoch, "
-            "claim_deadline, failed_at, error_message, worker_type, "
+            "claim_deadline, claim_deadline_at, claim_token, failed_at, error_message, worker_type, "
             "gpu_cost_usd, platform_cost_usd, cost_rate_usd_per_hour, "
             "rate_card_version, avoided_cost_usd, avoided_cost_basis, "
             "platform_cost_rolled_up, gpu_cost_rolled_up, "
