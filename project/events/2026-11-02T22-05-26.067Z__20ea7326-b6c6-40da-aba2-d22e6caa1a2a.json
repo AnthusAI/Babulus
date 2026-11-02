@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "event_id": "20ea7326-b6c6-40da-aba2-d22e6caa1a2a",
+  "issue_id": "babulus-4f435470-f0dc-4922-82a7-f7be5176c9f7",
+  "event_type": "issue_deleted",
+  "occurred_at": "2026-11-02T22:05:26.067Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "After M3 merge: delete the leftover render-worker resources by hand",
+    "issue_type": "task",
+    "status": "open"
+  }
+}

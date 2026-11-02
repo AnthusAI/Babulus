@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "event_id": "451c360a-bef3-4e2f-8433-84fa8af40a0d",
+  "issue_id": "babulus-3504b2d4-6416-4a8d-954f-03bd38dff030",
+  "event_type": "issue_created",
+  "occurred_at": "2026-11-02T22:05:26.119Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "After M3 merge: delete the leftover render-worker resources by hand",
+    "description": "The M3 PR that removes the old render path leaves three things behind on purpose, because they are stateful or outside the stack: the ECR repository babulus-render-worker (images), the render worker's Cognito service user in the Studio user pool (the credential custom resource only deletes the SSM parameter, never the user), and the Job table change stream (no consumer, still enabled). After the deploy is confirmed, delete the repository, disable and delete the service user, and turn the stream off in a reviewed change.",
+    "issue_type": "task",
+    "status": "open",
+    "priority": 2,
+    "assignee": null,
+    "parent": "babulus-d22d6854-6464-40b8-a446-b0a8265efdde",
+    "labels": []
+  }
+}

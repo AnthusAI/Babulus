@@ -14,12 +14,6 @@ allow:
     file: "apps/studio-web/app/(public)/privacy/page.tsx"
     reason: "Company role address for privacy requests, required on the public privacy notice Ryan approved 2026-10-20"
     added: 2026-10-20
-  - id: "70e5722e548404f1"
-    rule: "leftblock-personal-email"
-    file: "apps/studio-web/amplify/backend.ts"
-    kind: "Personal email address"
-    reason: "Cognito username of the render-worker service account on the non-routable .internal domain; not a personal or deliverable address, and already in backend.ts on main"
-    added: 2026-10-28
   - id: "ddd8efdb42efe1fc"
     rule: "generic-api-key"
     file: "packages/shared/src/records.ts"

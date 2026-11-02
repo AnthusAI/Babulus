@@ -7,7 +7,6 @@ applications:
             - cd ../..
             - npm install --no-audit --no-fund --cache .npm --prefer-offline
             - cd apps/studio-web
-            - cd amplify/functions/render-trigger && npm ci && cd -
             - cd ../..
             - |
               ROOT_GRAPHQL="$(pwd)/node_modules/graphql"

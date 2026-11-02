@@ -1,7 +1,7 @@
 import { Given, Then } from "@cucumber/cucumber";
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
-import { readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 
 const amplifyFile = (relativePath: string) =>
@@ -18,18 +18,97 @@ const modelAuthorization = (schema: string, model: string) => {
 
 let source = "";
 
+const amplifySources = (directory = ""): string[] => {
+  const root = join(process.cwd(), "apps/studio-web/amplify", directory);
+  return readdirSync(root, { withFileTypes: true }).flatMap((entry) => {
+    if (entry.name === "node_modules") return [];
+    const relative = join(directory, entry.name);
+    if (entry.isDirectory()) return amplifySources(relative);
+    return /\.(ts|js|mjs)$/.test(entry.name) ? [relative] : [];
+  });
+};
+
+// The whole Amplify backend: backend.ts and every function, resource and
+// helper beside it, so compute cannot hide in a file backend.ts imports.
 Given("the Studio backend definition", () => {
-  source = amplifyFile("backend.ts");
+  source = amplifySources().map((file) => amplifyFile(file)).join("\n");
 });
 
 Given("the Studio data schema", () => {
   source = amplifyFile("data/resource.ts");
 });
 
-Then("the render trigger's event source is disabled", () => {
-  const eventSource = source.slice(source.indexOf("new DynamoEventSource(jobTable"));
-  assert.match(eventSource, /enabled: false/);
-  assert.doesNotMatch(eventSource.slice(0, eventSource.indexOf("filters:")), /enabled: true/);
+// Comments explain what was removed; only code counts.
+const withoutComments = (text: string) =>
+  text.replace(/\/\*[\s\S]*?\*\//g, "").replace(/^\s*\/\/.*$/gm, "");
+
+Then("it imports no ECS, EC2, ECR or Batch constructs", () => {
+  assert.doesNotMatch(
+    withoutComments(source),
+    /aws-cdk-lib\/aws-(ecs|ec2|ecr|batch)|FargateTaskDefinition|ecs\.Cluster/,
+  );
+});
+
+Then("it grants no permission to run tasks or submit batch jobs", () => {
+  assert.doesNotMatch(withoutComments(source), /ecs:RunTask|batch:SubmitJob|iam:PassRole/);
+});
+
+Then("it attaches no event source to any table", () => {
+  assert.doesNotMatch(
+    withoutComments(source),
+    /DynamoEventSource|addEventSource|aws-lambda-event-sources/,
+  );
+});
+
+Then("it defines no function and no schedule", () => {
+  assert.doesNotMatch(
+    withoutComments(source),
+    /defineFunction|NodejsFunction|lambda\.Function|aws-events|events\.Rule|Schedule\.|aws-cdk-lib\/aws-lambda/,
+  );
+});
+
+Then("it creates no worker user, no custom resource and no password parameter", () => {
+  assert.doesNotMatch(
+    withoutComments(source),
+    /CustomResource|custom-resources|AdminCreateUser|StringParameter|WORKER_PASSWORD|WORKER_EMAIL/,
+  );
+});
+
+Then("none of the old render path files exist", () => {
+  const gone = [
+    "src/worker-ecs.ts",
+    "src/worker-cloud.ts",
+    "src/worker-lib.ts",
+    "apps/studio-web/amplify/functions",
+    "apps/studio-web/app/api/render",
+    "apps/studio-web/components/studio-workspace.tsx",
+    "Dockerfile",
+    "Dockerfile.render-worker",
+    "scripts/deploy-ecs-infrastructure.sh",
+    "apps/studio-web/amplify/functions/render-trigger",
+    "apps/studio-web/amplify/functions/render-worker-credential",
+  ];
+  for (const path of gone) {
+    assert.equal(existsSync(join(process.cwd(), path)), false, `${path} should be removed`);
+  }
+});
+
+Given("the Studio web source", () => {
+  try {
+    source = execFileSync(
+      "git",
+      ["grep", "-h", "-E", "kind: *['\"]render['\"]", "--", "apps/studio-web", ":!apps/studio-web/tests", ":!apps/studio-web/lib/__tests__"],
+      { encoding: "utf8" },
+    );
+  } catch (error) {
+    // git grep exits 1 when nothing matches, which is the passing case.
+    if ((error as { status?: number }).status !== 1) throw error;
+    source = "";
+  }
+});
+
+Then("no code creates a job of kind {string}", (_kind: string) => {
+  assert.equal(source.trim(), "");
 });
 
 Then("the {string} model allows signed-in users", (model: string) => {

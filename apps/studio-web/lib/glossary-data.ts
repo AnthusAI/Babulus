@@ -182,7 +182,7 @@ window.addEventListener('timeline:tick', (e) => {
     definition:
       "The process of converting a VideoML document and generated assets (audio, images) into a final MP4 video file. Rendering captures browser frames at your target FPS and encodes them with ffmpeg.",
     technicalNote:
-      "Three rendering modes: Local (your machine), Container (Docker locally), Cloud (AWS Fargate). Local is fastest for development; cloud scales for production.",
+      "Rendering runs on your own computer through a local worker; there is no cloud rendering.",
     relatedTerms: ["Generation", "Encoding", "FPS"],
     docSlug: "rendering/overview",
   },
