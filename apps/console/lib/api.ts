@@ -1,0 +1,197 @@
+/** Admin API client for Auritus monitoring and queue control. */
+
+import { getAuthorizationHeader } from './auth';
+
+export interface OverviewMetrics {
+  counts: {
+    pending: number;
+    claimed: number;
+    done: number;
+    failed: number;
+  };
+  worker_breakdown: {
+    local: number;
+    batch: number;
+  };
+  avg_duration_seconds: number;
+  batch_queue_state: string;
+  total_sampled_jobs: number;
+}
+
+export interface JobSummary {
+  content_hash: string;
+  status: 'pending' | 'claimed' | 'done' | 'failed';
+  tts_backend?: string;
+  voice_id?: string;
+  text?: string;
+  name?: string;
+  byline?: string;
+  site_id?: string;
+  worker_type?: 'local' | 'batch';
+  claimed_by?: string;
+  created_at?: string;
+  claimed_at?: string;
+  completed_at?: string;
+  failed_at?: string;
+  duration_seconds?: number;
+  error_message?: string;
+  audio_url?: string;
+}
+
+export interface JobDetail extends JobSummary {
+  site_key?: string;
+  gpu_cost_usd?: number;
+  platform_cost_usd?: number;
+  cost_rate_usd_per_hour?: number;
+  rate_card_version?: string;
+  avoided_cost_usd?: number;
+  avoided_cost_basis?: string;
+}
+
+export interface DailyCost {
+  site_id: string;
+  date: string;
+  gpu_cost_usd: number;
+  platform_cost_usd: number;
+  avoided_cost_usd: number;
+  batch_job_count: number;
+  local_job_count: number;
+  billed_seconds: number;
+  local_duration_seconds: number;
+}
+
+export interface ReconciliationDay {
+  site_id: string;
+  date: string;
+  actual_cost_usd: number;
+  estimated_gpu_cost_usd: number;
+  variance_usd: number;
+  out_of_tolerance: boolean;
+  reconciled_at: string;
+}
+
+export interface CostSummary {
+  daily: DailyCost[];
+  total: Omit<DailyCost, 'site_id' | 'date'>;
+  // Account-wide actual-vs-estimated GPU cost, one row per reconciled day.
+  // AWS Cost Explorer cannot attribute spend per-site, so this is separate
+  // from `daily` rather than a per-site figure -- see the router's
+  // _get_admin_costs docstring. Only populated for the "all sites" query
+  // (no site_id filter); absent or empty otherwise.
+  reconciliation?: ReconciliationDay[];
+}
+
+const API_BASE = (process.env.NEXT_PUBLIC_AURITUS_API_ENDPOINT || '').replace(/\/+$/, '');
+
+async function apiFetch<T>(path: string, options: RequestInit = {}): Promise<T> {
+  const url = `${API_BASE}${path}`;
+  const authHeaders = getAuthorizationHeader();
+  const headers = {
+    'Content-Type': 'application/json',
+    ...authHeaders,
+    ...(options.headers || {}),
+  };
+
+  const response = await fetch(url, { ...options, headers });
+  if (response.status === 401 || response.status === 403) {
+    throw new Error('Unauthorized');
+  }
+  if (!response.ok) {
+    const errorBody = await response.json().catch(() => ({}));
+    throw new Error(errorBody.error || `HTTP ${response.status}`);
+  }
+  return response.json();
+}
+
+export async function fetchOverview(): Promise<OverviewMetrics> {
+  return apiFetch<OverviewMetrics>('/admin/overview');
+}
+
+export interface JobsResponse {
+  jobs: JobSummary[];
+  next_token: string | null;
+}
+
+export async function fetchJobs(
+  status?: string,
+  limit?: number,
+  nextToken?: string
+): Promise<JobsResponse> {
+  const params = new URLSearchParams();
+  if (status) params.set('status', status);
+  if (limit) params.set('limit', String(limit));
+  if (nextToken) params.set('next_token', nextToken);
+  const query = params.toString() ? `?${params.toString()}` : '';
+  return apiFetch<JobsResponse>(`/admin/jobs${query}`);
+}
+
+export async function fetchJobDetail(hash: string): Promise<JobDetail> {
+  return apiFetch<JobDetail>(`/admin/jobs/${encodeURIComponent(hash)}`);
+}
+
+export async function toggleQueue(desiredState?: 'ENABLED' | 'DISABLED'): Promise<{ state: string }> {
+  return apiFetch<{ state: string }>('/admin/queue/toggle', {
+    method: 'POST',
+    body: JSON.stringify(desiredState ? { state: desiredState } : {}),
+  });
+}
+
+export async function deleteJob(hash: string): Promise<{ content_hash: string; deleted: boolean }> {
+  return apiFetch<{ content_hash: string; deleted: boolean }>(
+    `/admin/jobs/${encodeURIComponent(hash)}`,
+    { method: 'DELETE' }
+  );
+}
+
+export async function regenerateJob(hash: string): Promise<{ content_hash: string; status: string }> {
+  return apiFetch<{ content_hash: string; status: string }>(
+    `/admin/jobs/${encodeURIComponent(hash)}/regenerate`,
+    {
+      method: 'POST',
+      body: JSON.stringify({}),
+    }
+  );
+}
+
+export async function retryJob(hash: string, force = false): Promise<{ content_hash: string; status: string }> {
+  return apiFetch<{ content_hash: string; status: string }>(
+    `/admin/jobs/${encodeURIComponent(hash)}/retry`,
+    {
+      method: 'POST',
+      body: JSON.stringify(force ? { force: true } : {}),
+    }
+  );
+}
+
+export interface Site {
+  site_id: string;
+  label: string;
+  disabled: boolean;
+  created_at: string;
+}
+
+export interface CreatedSite extends Site {
+  site_key: string;
+}
+
+export async function fetchSites(): Promise<Site[]> {
+  const data = await apiFetch<{ sites: Site[] }>('/sites');
+  return data.sites || [];
+}
+
+export async function createSite(label: string): Promise<CreatedSite> {
+  return apiFetch('/sites', { method: 'POST', body: JSON.stringify({ label }) });
+}
+
+export async function revokeSite(siteId: string): Promise<{ site_id: string; deleted: boolean }> {
+  return apiFetch(`/sites/${encodeURIComponent(siteId)}`, { method: 'DELETE' });
+}
+
+export async function fetchCosts(siteId?: string, from?: string, to?: string): Promise<CostSummary> {
+  const params = new URLSearchParams();
+  if (siteId) params.set('site_id', siteId);
+  if (from) params.set('from', from);
+  if (to) params.set('to', to);
+  const query = params.toString() ? `?${params.toString()}` : '';
+  return apiFetch<CostSummary>(`/admin/costs${query}`);
+}
