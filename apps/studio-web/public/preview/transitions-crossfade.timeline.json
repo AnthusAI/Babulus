@@ -1,0 +1,37 @@
+{
+  "items": [
+    {
+      "type": "tts",
+      "sceneId": "crossfade-a",
+      "cueId": "hold-a",
+      "startSec": 0,
+      "endSec": 2.5,
+      "segments": [
+        {
+          "type": "pause",
+          "startSec": 0,
+          "endSec": 2.5,
+          "seconds": 2.5
+        }
+      ]
+    },
+    {
+      "type": "tts",
+      "sceneId": "crossfade-b",
+      "cueId": "hold-b",
+      "startSec": 2.5,
+      "endSec": 5,
+      "segments": [
+        {
+          "type": "pause",
+          "startSec": 2.5,
+          "endSec": 5,
+          "seconds": 2.5
+        }
+      ]
+    }
+  ],
+  "audio": {
+    "tracks": []
+  }
+}

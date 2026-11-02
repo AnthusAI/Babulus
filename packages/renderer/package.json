@@ -1,0 +1,40 @@
+{
+  "name": "@babulus/renderer",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./player": "./src/player.tsx",
+    "./context": "./src/context.tsx",
+    "./browser-context": "./src/browser-context.tsx",
+    "./encode": "./src/encode.ts",
+    "./pipeline": "./src/pipeline.ts",
+    "./render": "./src/render.tsx",
+    "./storyboard-frames": "./src/storyboard-frames.ts",
+    "./storyboard-frames-png": "./src/storyboard-frames-png.ts",
+    "./storyboard-render": "./src/storyboard-render.ts"
+  },
+  "dependencies": {
+    "@babulus/shared": "file:../shared",
+    "animejs": "^4.1.2",
+    "d3": "^7.9.0",
+    "framer-motion": "^11.0.0",
+    "gsap": "^3.12.5",
+    "lottie-web": "^5.12.0",
+    "p5": "^1.9.0",
+    "three": "^0.163.0",
+    "@videoml/stdlib": "file:../../vendor/videoml/videoml-stdlib-0.0.0.tgz"
+  },
+  "devDependencies": {
+    "@types/d3": "^7.4.3",
+    "@types/p5": "^1.7.6",
+    "@types/three": "^0.163.0"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
+  }
+}

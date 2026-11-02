@@ -1,0 +1,22 @@
+{
+  "items": [
+    {
+      "type": "tts",
+      "sceneId": "chapter",
+      "cueId": "preview",
+      "startSec": 0,
+      "endSec": 9,
+      "segments": [
+        {
+          "type": "pause",
+          "startSec": 0,
+          "endSec": 9,
+          "seconds": 9
+        }
+      ]
+    }
+  ],
+  "audio": {
+    "tracks": []
+  }
+}

@@ -1,0 +1,164 @@
+import React from "react";
+import type { ScriptScene } from "../shared.ts";
+import type { CascadedStyles } from "../styles/cascade.ts";
+import { TextEffectsComponent } from "./text/TextEffectsComponent.js";
+import type { TextEffectConfig } from "../engines/text-effects.js";
+
+export type TitleProps = {
+  text?: string; // Explicit text
+  binding?: string; // e.g., "scene.title"
+  fontSize?: number;
+  fontWeight?: number | string;
+  color?: string;
+  textColor?: string;
+  textAlign?: "left" | "center" | "right";
+  position?: { x?: number | string; y?: number | string };
+  xFrom?: number;
+  xTo?: number;
+  yFrom?: number;
+  yTo?: number;
+  rotateDeg?: number;
+  rotate?: number;
+  centerY?: boolean;
+  textEffect?: TextEffectConfig;
+  // Injected by renderer
+  scene?: ScriptScene;
+  frame?: number;
+  fps?: number;
+  videoWidth?: number;
+  videoHeight?: number;
+  styles?: CascadedStyles;
+  transitionProgress?: number;
+};
+
+export function TitleComponent(props: TitleProps) {
+  const {
+    text,
+    binding,
+    fontSize,
+    fontWeight,
+    color,
+    textAlign,
+    position = { x: 48, y: 48 },
+    xFrom,
+    xTo,
+    yFrom,
+    yTo,
+    rotateDeg,
+    rotate,
+    centerY,
+    textEffect,
+    textColor,
+    scene,
+    frame,
+    fps,
+    videoWidth,
+    videoHeight,
+    styles = {} as CascadedStyles,
+    transitionProgress,
+  } = props;
+
+  // Resolve text from binding or explicit prop
+  const displayText = binding && scene ? resolveBinding(binding, { scene }) : text;
+
+  if (!displayText) return null;
+
+  const resolvedTextAlign = textAlign ?? styles.textAlign ?? "left";
+  const hasTransition = typeof transitionProgress === "number";
+  const resolvedX =
+    hasTransition && xFrom != null && xTo != null ? xFrom + (xTo - xFrom) * transitionProgress : position.x;
+  const resolvedY =
+    hasTransition && yFrom != null && yTo != null ? yFrom + (yTo - yFrom) * transitionProgress : position.y;
+  const resolvedRotate = rotateDeg ?? rotate;
+
+  // For center-aligned text, center the container and make content centered within
+  const containerStyle: React.CSSProperties = {
+    position: "absolute",
+    top: resolvedY,
+    opacity: styles._computedOpacity ?? 1,
+  };
+
+  const transforms: string[] = [];
+
+  if (resolvedTextAlign === "center") {
+    // For centered titles, use left:50% and translateX(-50%) on the container
+    containerStyle.left = resolvedX ?? "50%";
+    containerStyle.display = "inline-block";
+    containerStyle.textAlign = "center";
+    transforms.push("translateX(-50%)");
+  } else {
+    // For left-aligned titles, position at the specified x
+    containerStyle.left = resolvedX;
+    containerStyle.textAlign = resolvedTextAlign;
+  }
+
+  if (centerY) {
+    transforms.push("translateY(-50%)");
+  }
+
+  if (typeof resolvedRotate === "number" && !Number.isNaN(resolvedRotate)) {
+    transforms.push(`rotate(${resolvedRotate}deg)`);
+    containerStyle.transformOrigin = "center center";
+  }
+
+  if (transforms.length > 0) {
+    containerStyle.transform = transforms.join(" ");
+  }
+
+  if (textEffect) {
+    const pillStyle: React.CSSProperties = {
+      display: "inline-block",
+      padding: "0.18em 0.22em",
+      backgroundColor: color ?? styles.color ?? "#c7007e",
+    };
+
+    return (
+      <div style={containerStyle}>
+        <span style={pillStyle}>
+          <TextEffectsComponent
+            text={displayText}
+            effect={textEffect}
+            frame={frame}
+            fps={fps}
+            videoWidth={videoWidth}
+            videoHeight={videoHeight}
+            fontSize={fontSize ?? styles.fontSize ?? 48}
+            fontWeight={fontWeight ?? styles.fontWeight ?? 700}
+            color={textColor ?? "#ffffff"}
+            align={resolvedTextAlign}
+            fontFamily={styles.fontFamily ?? "ui-sans-serif, system-ui, sans-serif"}
+            style={{ display: "inline-block", width: "auto", height: "auto" }}
+          />
+        </span>
+      </div>
+    );
+  }
+
+  containerStyle.fontSize = fontSize ?? styles.fontSize ?? 48;
+  containerStyle.fontWeight = fontWeight ?? styles.fontWeight ?? 700;
+  containerStyle.fontFamily = styles.fontFamily ?? "ui-sans-serif, system-ui, sans-serif";
+
+  const spanStyle: React.CSSProperties = {
+    display: "inline-block",
+    padding: "0.18em 0.22em",
+    backgroundColor: color ?? styles.color ?? "#c7007e",
+    color: "#ffffff",
+    lineHeight: 1,
+    whiteSpace: "nowrap",
+  };
+
+  return (
+    <div style={containerStyle}>
+      <span style={spanStyle}>
+        {displayText}
+      </span>
+    </div>
+  );
+}
+
+function resolveBinding(binding: string, context: { scene?: ScriptScene }): string {
+  if (binding === "scene.title") return context.scene?.title || "";
+  if (binding === "scene.id") return context.scene?.id || "";
+  // Add more bindings as needed
+  return "";
+}

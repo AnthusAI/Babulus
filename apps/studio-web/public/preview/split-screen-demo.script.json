@@ -1,0 +1,183 @@
+{
+  "scenes": [
+    {
+      "id": "split-screen",
+      "title": "split-screen",
+      "startSec": 0,
+      "endSec": 6.45,
+      "layers": [
+        {
+          "id": "background",
+          "zIndex": 0,
+          "components": [
+            {
+              "id": "background-0",
+              "type": "Background",
+              "props": {
+                "variant": "linear",
+                "gradient": {
+                  "angle": 135,
+                  "colors": [
+                    "#101010",
+                    "#1f2a44"
+                  ]
+                },
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        },
+        {
+          "id": "content",
+          "zIndex": 10,
+          "components": [
+            {
+              "id": "layout-splitscreen-0",
+              "type": "SplitScreen",
+              "props": {
+                "direction": "horizontal",
+                "ratio": 0.5,
+                "divider": {
+                  "show": true,
+                  "color": "rgba(255,255,255,0.25)",
+                  "width": 2
+                },
+                "first": {
+                  "type": "div",
+                  "key": null,
+                  "ref": null,
+                  "props": {
+                    "style": {
+                      "height": "100%",
+                      "background": "rgba(255,255,255,0.08)",
+                      "borderRadius": 24,
+                      "margin": 24,
+                      "padding": 32,
+                      "color": "#f5f7fb"
+                    },
+                    "children": [
+                      {
+                        "type": "div",
+                        "key": null,
+                        "ref": null,
+                        "props": {
+                          "style": {
+                            "fontSize": 20,
+                            "letterSpacing": 2,
+                            "textTransform": "uppercase",
+                            "color": "rgba(255,255,255,0.65)"
+                          },
+                          "children": "Panel A"
+                        },
+                        "_owner": null,
+                        "_store": {}
+                      },
+                      {
+                        "type": "div",
+                        "key": null,
+                        "ref": null,
+                        "props": {
+                          "style": {
+                            "fontSize": 40,
+                            "fontWeight": 700,
+                            "marginTop": 12
+                          },
+                          "children": "Before"
+                        },
+                        "_owner": null,
+                        "_store": {}
+                      }
+                    ]
+                  },
+                  "_owner": null,
+                  "_store": {}
+                },
+                "second": {
+                  "type": "div",
+                  "key": null,
+                  "ref": null,
+                  "props": {
+                    "style": {
+                      "height": "100%",
+                      "background": "rgba(255,255,255,0.08)",
+                      "borderRadius": 24,
+                      "margin": 24,
+                      "padding": 32,
+                      "color": "#f5f7fb"
+                    },
+                    "children": [
+                      {
+                        "type": "div",
+                        "key": null,
+                        "ref": null,
+                        "props": {
+                          "style": {
+                            "fontSize": 20,
+                            "letterSpacing": 2,
+                            "textTransform": "uppercase",
+                            "color": "rgba(255,255,255,0.65)"
+                          },
+                          "children": "Panel B"
+                        },
+                        "_owner": null,
+                        "_store": {}
+                      },
+                      {
+                        "type": "div",
+                        "key": null,
+                        "ref": null,
+                        "props": {
+                          "style": {
+                            "fontSize": 40,
+                            "fontWeight": 700,
+                            "marginTop": 12
+                          },
+                          "children": "After"
+                        },
+                        "_owner": null,
+                        "_store": {}
+                      }
+                    ]
+                  },
+                  "_owner": null,
+                  "_store": {}
+                },
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "voice",
+          "label": "voice",
+          "startSec": 0,
+          "endSec": 6.45,
+          "text": "Split screens are ideal for comparisons and before and afters.",
+          "segments": [
+            {
+              "type": "tts",
+              "startSec": 0,
+              "endSec": 5.25,
+              "text": "Split screens are ideal for comparisons and before and afters."
+            },
+            {
+              "type": "pause",
+              "startSec": 5.25,
+              "endSec": 6.45,
+              "durationSec": 1.2
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    }
+  ],
+  "fps": 30,
+  "meta": {
+    "fps": 30,
+    "width": 1920,
+    "height": 1080
+  }
+}

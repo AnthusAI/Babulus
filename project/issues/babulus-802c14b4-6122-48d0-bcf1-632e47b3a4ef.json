@@ -1,0 +1,20 @@
+{
+  "id": "babulus-802c14b4-6122-48d0-bcf1-632e47b3a4ef",
+  "title": "Create the private Babulus marketing site repo",
+  "description": "Create a PRIVATE companion repo (e.g. AnthusAI/Babulus-web) following Papyrus-web, Kanbus-web, Cyclotron-web and Chattic.us-web: Markus content, projector, its own Kanbus board and wiki for private planning, consuming the public repo by pin where needed. Verify the repo is private before the first push. Decision for Ryan: static repo-edited site, or a Papyrus newsroom CMS with Google sign-in (only the CMS needs a Prospectus papyrus-sites registration).",
+  "type": "task",
+  "status": "open",
+  "priority": 2,
+  "assignee": null,
+  "creator": null,
+  "parent": "babulus-4f8c948f-3988-412c-bc60-1c059f71bc9b",
+  "labels": [],
+  "dependencies": [],
+  "comments": [],
+  "created_at": "2026-10-20T23:18:59.892175Z",
+  "updated_at": "2026-10-20T23:18:59.892535Z",
+  "closed_at": null,
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {}
+}

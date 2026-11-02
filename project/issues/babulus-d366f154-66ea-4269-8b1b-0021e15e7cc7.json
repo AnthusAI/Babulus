@@ -1,0 +1,35 @@
+{
+  "id": "babulus-d366f154-66ea-4269-8b1b-0021e15e7cc7",
+  "title": "Use shared VideoML animation demos without duplicate implementations",
+  "description": "## Behavior and canonical plan\nBabulus consumes the seven shared VideoML animation demos without a second implementation. Canonical packet VideoML/toolchain videoml-ca79a1 (P06), initiative videoml-dbc2b1 D03. Migrate AnimeHarnessDemo, ThreeOrbit, LottieBadge, D3BarChart, P5Particles, TextEffects and MixAndMatchDemo; retain old Babulus names as documented aliases for one minor release.\n\n```gherkin\nFeature: Shared portable animation demos\n  Scenario: Existing Babulus demo renders through the shared library\n    Given an existing animation demo using its established component name\n    When Babulus renders requested frames with the packed VideoML standard library\n    Then the shared implementation produces the demo visuals\n    And no private Babulus implementation or paid service is required\n  Scenario: VideoML uses the same demo independently\n    Given the shared demo and its declared local assets\n    When a standalone VideoML consumer renders repeated and backward frames\n    Then the output is deterministic in the pinned environment\n```\n\n## Implementation acceptance\nRead AGENTS and CONTRIBUTING_AGENT before editing. Gherkin first; preserve existing animation behavior scenarios. Seven real browser captures, package-consumer smoke, provenance and required quality gates. Primary reviews evidence. Do not commit Babulus changes without the separately required user approval; leave the concrete tested diff reviewable. No cloud resources or full Studio build installs without resource-slot coordination.\n",
+  "type": "story",
+  "status": "in_progress",
+  "priority": 1,
+  "assignee": null,
+  "creator": null,
+  "parent": "babulus-48bc4e27-b336-4500-9e65-a7fdfe42698e",
+  "labels": [],
+  "dependencies": [],
+  "comments": [
+    {
+      "id": "1e74a962-7fea-47a7-9f7a-2c1a6bab6d3a",
+      "author": "home",
+      "text": "P06 source migration now covers seven shared demos and legacy aliases; no commit or deployment. Static tests and targeted pure timing/cancellation checks passed. Locks, browser rendering, existing animation behavior suite and packed consumer remain unverified because shared disk is below8GiB floor. VideoML packet videoml-ca79a1 records the capacity blocker. Preserve changes for review; do not claim migration complete or commit without required approval.",
+      "created_at": "2026-10-30T21:29:29.996311Z",
+      "comment_type": "default"
+    },
+    {
+      "id": "9e38b522-b062-49dd-bf21-202712a5efd6",
+      "author": "home",
+      "text": "P06 browser and scoped behavior checks pass; required Studio build initially failed because local amplify_outputs.json was absent. Primary verified existing Babulus app <amplify-app-id>/main in AWS account869507387405 using chatticus-staging profile and generated real gitignored outputs with installed ampx. This was read-only AWS configuration retrieval, not deployment. CI mirror is being rerun; no Babulus commit authorized yet.",
+      "created_at": "2026-10-30T22:09:00.640097Z",
+      "comment_type": "default"
+    }
+  ],
+  "created_at": "2026-10-30T21:16:40.861460Z",
+  "updated_at": "2026-10-30T22:09:00.640793Z",
+  "closed_at": null,
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {}
+}

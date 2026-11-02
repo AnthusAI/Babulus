@@ -1,0 +1,55 @@
+{
+  "scenes": [
+    {
+      "id": "quote-demo",
+      "title": "quote-demo",
+      "startSec": 0,
+      "endSec": 6,
+      "styles": {
+        "background": "var(--color-bg)"
+      },
+      "layers": [
+        {
+          "id": "quote",
+          "zIndex": 10,
+          "components": [
+            {
+              "id": "quote-card-0",
+              "type": "QuoteCard",
+              "props": {
+                "quote": "The frame is the clock.",
+                "attribution": "Babulus",
+                "accentColor": "var(--color-accent)",
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "hold",
+          "label": "hold",
+          "startSec": 0,
+          "endSec": 6,
+          "text": "",
+          "segments": [
+            {
+              "type": "pause",
+              "startSec": 0,
+              "endSec": 6,
+              "durationSec": 6
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    }
+  ],
+  "fps": 30,
+  "meta": {
+    "fps": 30,
+    "width": 1920,
+    "height": 1080
+  }
+}

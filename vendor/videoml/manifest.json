@@ -1,0 +1,12 @@
+{
+  "package": "@videoml/stdlib",
+  "version": "0.0.0",
+  "archive": "videoml-stdlib-0.0.0.tgz",
+  "archiveSha256": "4c095b94ae04ea7a6b441066b671070c0970a8a8c53de0b1185e31b43db1beda",
+  "sourceState": "committed",
+  "packedFileTreeSha256": "ffb936565fb89e1241eda097122849069e18f6681d8684ddd33703609a86171d",
+  "treeDigestMethod": "SHA-256 of sorted archive file path, NUL, file SHA-256 hex, newline; excludes tar metadata",
+  "license": "MIT",
+  "notice": "NOTICE and LICENSE included in archive",
+  "sourceCommit": "4fb36e9a994f1c382efffa3fdabd0d51c63dc623"
+}

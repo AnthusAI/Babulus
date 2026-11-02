@@ -1,0 +1,20 @@
+{
+  "id": "babulus-4f8c948f-3988-412c-bc60-1c059f71bc9b",
+  "title": "Split Babulus into a public open-core app and a private Papyrus marketing site",
+  "description": "Separate the public open-core Babulus app (this repo) from a private companion repo and Papyrus-powered marketing site for babul.us, following Papyrus-web, Kanbus-web, Cyclotron-web and Chattic.us-web. Target: babul.us = marketing site, app.babul.us = product app. Private planning lives in the private repo, not on this public board.",
+  "type": "epic",
+  "status": "open",
+  "priority": 2,
+  "assignee": null,
+  "creator": null,
+  "parent": null,
+  "labels": [],
+  "dependencies": [],
+  "comments": [],
+  "created_at": "2026-10-20T23:18:30.475344Z",
+  "updated_at": "2026-10-20T23:18:30.475661Z",
+  "closed_at": null,
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {}
+}

@@ -1,0 +1,20 @@
+{
+  "id": "babulus-553a0db3-ec5b-428c-87e3-5ace99c71050",
+  "title": "M3: Shared control plane and one local worker",
+  "description": "",
+  "type": "task",
+  "status": "open",
+  "priority": 2,
+  "assignee": null,
+  "creator": null,
+  "parent": "babulus-d22d6854-6464-40b8-a446-b0a8265efdde",
+  "labels": [],
+  "dependencies": [],
+  "comments": [],
+  "created_at": "2026-11-02T05:41:58.496769Z",
+  "updated_at": "2026-11-02T05:41:58.496790Z",
+  "closed_at": null,
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {}
+}

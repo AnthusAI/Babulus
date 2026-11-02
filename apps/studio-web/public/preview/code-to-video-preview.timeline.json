@@ -1,0 +1,133 @@
+{
+  "items": [
+    {
+      "type": "tts",
+      "sceneId": "intro",
+      "cueId": "intro-vo",
+      "startSec": 0,
+      "endSec": 2.6,
+      "segments": [
+        {
+          "type": "tts",
+          "startSec": 0,
+          "endSec": 2.6,
+          "text": "This video was made from code.",
+          "segmentPath": "Babulus/.babulus/out/code-to-video-preview/env/development/segments/intro--intro-vo--tts--718f7a0f93c2--1.wav",
+          "durationSec": 2.6,
+          "rawDurationSec": 2.6,
+          "trimEndSec": 0
+        }
+      ]
+    },
+    {
+      "type": "tts",
+      "sceneId": "transition",
+      "cueId": "transition-vo",
+      "startSec": 2.6,
+      "endSec": 5.300000000000001,
+      "segments": [
+        {
+          "type": "tts",
+          "startSec": 2.6,
+          "endSec": 5.300000000000001,
+          "text": "This transition was made from code.",
+          "segmentPath": "Babulus/.babulus/out/code-to-video-preview/env/development/segments/transition--transition-vo--tts--239d15c255a9--1.wav",
+          "durationSec": 2.7,
+          "rawDurationSec": 2.7,
+          "trimEndSec": 0
+        }
+      ]
+    },
+    {
+      "type": "tts",
+      "sceneId": "animation",
+      "cueId": "animation-vo",
+      "startSec": 5.300000000000001,
+      "endSec": 8.3,
+      "segments": [
+        {
+          "type": "tts",
+          "startSec": 5.300000000000001,
+          "endSec": 8.3,
+          "text": "This animation was made from code.",
+          "segmentPath": "Babulus/.babulus/out/code-to-video-preview/env/development/segments/animation--animation-vo--tts--388b1c443795--1.wav",
+          "durationSec": 3,
+          "rawDurationSec": 3,
+          "trimEndSec": 0
+        }
+      ]
+    },
+    {
+      "type": "tts",
+      "sceneId": "sfx",
+      "cueId": "sfx-vo",
+      "startSec": 8.3,
+      "endSec": 11.100000000000001,
+      "segments": [
+        {
+          "type": "tts",
+          "startSec": 8.3,
+          "endSec": 11.100000000000001,
+          "text": "This sound effect was made from code.",
+          "segmentPath": "Babulus/.babulus/out/code-to-video-preview/env/development/segments/sfx--sfx-vo--tts--65d6dd8ca3cc--1.wav",
+          "durationSec": 2.8,
+          "rawDurationSec": 2.8,
+          "trimEndSec": 0
+        }
+      ]
+    },
+    {
+      "type": "tts",
+      "sceneId": "close",
+      "cueId": "close-vo",
+      "startSec": 11.100000000000001,
+      "endSec": 13.700000000000001,
+      "segments": [
+        {
+          "type": "tts",
+          "startSec": 11.100000000000001,
+          "endSec": 13.700000000000001,
+          "text": "Make videos with code.",
+          "segmentPath": "Babulus/.babulus/out/code-to-video-preview/env/development/segments/close--close-vo--tts--aa5f975097a8--1.wav",
+          "durationSec": 2.6,
+          "rawDurationSec": 2.6,
+          "trimEndSec": 0
+        }
+      ]
+    }
+  ],
+  "audio": {
+    "tracks": [
+      {
+        "id": "sfx",
+        "kind": "sfx",
+        "clips": [
+          {
+            "id": "transition-hit",
+            "kind": "sfx",
+            "startSec": 7.833333333333335,
+            "volume": 1,
+            "prompt": "short impact",
+            "pick": 0,
+            "selectionPath": "Babulus/.babulus/out/code-to-video-preview/env/development/selections.json",
+            "variants": [
+              {
+                "variant": 0,
+                "seed": 42727098,
+                "path": "Babulus/.babulus/out/code-to-video-preview/env/development/sfx/transition-hit--v1--028bf6ba250c.wav",
+                "durationSec": 0.4666666666666659
+              }
+            ],
+            "chosen": {
+              "variant": 0,
+              "seed": 42727098,
+              "path": "Babulus/.babulus/out/code-to-video-preview/env/development/sfx/transition-hit--v1--028bf6ba250c.wav",
+              "durationSec": 0.4666666666666659
+            },
+            "src": null
+          }
+        ]
+      }
+    ]
+  }
+}

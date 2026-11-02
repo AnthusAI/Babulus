@@ -1,0 +1,729 @@
+{
+  "scenes": [
+    {
+      "id": "intro",
+      "title": "intro",
+      "startSec": 0,
+      "endSec": 7,
+      "layers": [
+        {
+          "id": "background",
+          "zIndex": 0,
+          "components": [
+            {
+              "id": "background-0",
+              "type": "Background",
+              "props": {
+                "variant": "linear",
+                "gradient": {
+                  "angle": 135,
+                  "colors": [
+                    "#101010",
+                    "#1f2a44"
+                  ]
+                },
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        },
+        {
+          "id": "content",
+          "zIndex": 10,
+          "components": [
+            {
+              "id": "layout-titleslide-0",
+              "type": "TitleSlide",
+              "props": {
+                "title": "Babulus Component Library",
+                "subtitle": "Layouts, Motion Graphics & Animation",
+                "entrance": {
+                  "title": {
+                    "type": "spring",
+                    "durationFrames": 30,
+                    "mass": 0.5,
+                    "stiffness": 200,
+                    "damping": 100
+                  },
+                  "subtitle": {
+                    "type": "fade",
+                    "durationFrames": 20,
+                    "delayFrames": 15
+                  }
+                },
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "welcome",
+          "label": "welcome",
+          "startSec": 0,
+          "endSec": 7,
+          "text": "Welcome to the Babulus component library. A comprehensive set of tools for creating professional videos.",
+          "segments": [
+            {
+              "type": "tts",
+              "startSec": 0,
+              "endSec": 2.45,
+              "text": "Welcome to the Babulus component library."
+            },
+            {
+              "type": "pause",
+              "startSec": 2.45,
+              "endSec": 2.75,
+              "durationSec": 0.3
+            },
+            {
+              "type": "tts",
+              "startSec": 2.75,
+              "endSec": 7,
+              "text": "A comprehensive set of tools for creating professional videos."
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "bullet-list-demo",
+      "title": "bullet-list-demo",
+      "startSec": 7,
+      "endSec": 19.05,
+      "layers": [
+        {
+          "id": "background",
+          "zIndex": 0,
+          "components": [
+            {
+              "id": "background-0",
+              "type": "Background",
+              "props": {
+                "variant": "linear",
+                "gradient": {
+                  "angle": 135,
+                  "colors": [
+                    "#101010",
+                    "#1f2a44"
+                  ]
+                },
+                "sceneStartSec": 7
+              }
+            }
+          ]
+        },
+        {
+          "id": "title",
+          "zIndex": 10,
+          "components": [
+            {
+              "id": "layout-titleslide-0",
+              "type": "TitleSlide",
+              "props": {
+                "title": "Key Features",
+                "verticalAlign": "top",
+                "padding": 60,
+                "sceneStartSec": 7
+              }
+            }
+          ]
+        },
+        {
+          "id": "bullets",
+          "timing": {
+            "startSec": 1
+          },
+          "zIndex": 5,
+          "components": [
+            {
+              "id": "bullet-list-0",
+              "type": "BulletList",
+              "props": {
+                "items": [
+                  "PowerPoint-style layout templates",
+                  "Broadcast-quality motion graphics",
+                  "Frame-based animation system",
+                  "Smooth transitions and effects"
+                ],
+                "revealStyle": "spring",
+                "staggerDelayFrames": 20,
+                "position": {
+                  "y": 300
+                },
+                "sceneStartSec": 7
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "features",
+          "label": "features",
+          "startSec": 7,
+          "endSec": 19.05,
+          "text": "The library includes PowerPoint-style layouts. Broadcast-quality motion graphics. A frame-based animation system. And smooth transitions throughout.",
+          "segments": [
+            {
+              "type": "tts",
+              "startSec": 7,
+              "endSec": 10.45,
+              "text": "The library includes PowerPoint-style layouts."
+            },
+            {
+              "type": "pause",
+              "startSec": 10.45,
+              "endSec": 10.85,
+              "durationSec": 0.4
+            },
+            {
+              "type": "tts",
+              "startSec": 10.85,
+              "endSec": 13.2,
+              "text": "Broadcast-quality motion graphics."
+            },
+            {
+              "type": "pause",
+              "startSec": 13.2,
+              "endSec": 13.6,
+              "durationSec": 0.4
+            },
+            {
+              "type": "tts",
+              "startSec": 13.6,
+              "endSec": 16.35,
+              "text": "A frame-based animation system."
+            },
+            {
+              "type": "pause",
+              "startSec": 16.35,
+              "endSec": 16.75,
+              "durationSec": 0.4
+            },
+            {
+              "type": "tts",
+              "startSec": 16.75,
+              "endSec": 19.05,
+              "text": "And smooth transitions throughout."
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "lower-third-demo",
+      "title": "lower-third-demo",
+      "startSec": 19.05,
+      "endSec": 27.700000000000003,
+      "layers": [
+        {
+          "id": "background",
+          "zIndex": 0,
+          "components": [
+            {
+              "id": "background-0",
+              "type": "Background",
+              "props": {
+                "variant": "linear",
+                "gradient": {
+                  "angle": 135,
+                  "colors": [
+                    "#101010",
+                    "#1f2a44"
+                  ]
+                },
+                "sceneStartSec": 19.05
+              }
+            }
+          ]
+        },
+        {
+          "id": "lower-third",
+          "timing": {
+            "startSec": 1,
+            "endSec": 5
+          },
+          "zIndex": 10,
+          "components": [
+            {
+              "id": "lower-third-0",
+              "type": "LowerThird",
+              "props": {
+                "name": "John Doe",
+                "title": "Product Designer",
+                "organization": "Acme Corporation",
+                "style": "modern",
+                "primaryColor": "#0066cc",
+                "entranceFrames": 20,
+                "holdFrames": 90,
+                "exitFrames": 15,
+                "sceneStartSec": 19.05
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "lower-third",
+          "label": "lower-third",
+          "startSec": 19.05,
+          "endSec": 27.700000000000003,
+          "text": "Lower thirds identify speakers with smooth animations. Multiple styles are available to match your brand.",
+          "segments": [
+            {
+              "type": "tts",
+              "startSec": 19.05,
+              "endSec": 23.700000000000003,
+              "text": "Lower thirds identify speakers with smooth animations."
+            },
+            {
+              "type": "pause",
+              "startSec": 23.700000000000003,
+              "endSec": 24.200000000000003,
+              "durationSec": 0.5
+            },
+            {
+              "type": "tts",
+              "startSec": 24.200000000000003,
+              "endSec": 27.700000000000003,
+              "text": "Multiple styles are available to match your brand."
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "chyron-demo",
+      "title": "chyron-demo",
+      "startSec": 27.700000000000003,
+      "endSec": 36.75,
+      "layers": [
+        {
+          "id": "background",
+          "zIndex": 0,
+          "components": [
+            {
+              "id": "background-0",
+              "type": "Background",
+              "props": {
+                "variant": "linear",
+                "gradient": {
+                  "angle": 135,
+                  "colors": [
+                    "#101010",
+                    "#1f2a44"
+                  ]
+                },
+                "sceneStartSec": 27.700000000000003
+              }
+            }
+          ]
+        },
+        {
+          "id": "content",
+          "zIndex": 5,
+          "components": [
+            {
+              "id": "layout-titleslide-0",
+              "type": "TitleSlide",
+              "props": {
+                "title": "Chyron Component",
+                "subtitle": "Scrolling and paged ticker displays",
+                "sceneStartSec": 27.700000000000003
+              }
+            }
+          ]
+        },
+        {
+          "id": "chyron",
+          "timing": {
+            "startSec": 1.5
+          },
+          "zIndex": 10,
+          "components": [
+            {
+              "id": "chyron-0",
+              "type": "Chyron",
+              "props": {
+                "items": [
+                  {
+                    "text": "Breaking: New components released",
+                    "icon": "🎉"
+                  },
+                  {
+                    "text": "Animation system is frame-perfect",
+                    "highlight": true
+                  },
+                  {
+                    "text": "Easy to use with builder API"
+                  }
+                ],
+                "mode": "page",
+                "pageDurationFrames": 60,
+                "pageTransition": {
+                  "type": "slide",
+                  "direction": "up",
+                  "durationFrames": 15
+                },
+                "sceneStartSec": 27.700000000000003
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "chyron",
+          "label": "chyron",
+          "startSec": 27.700000000000003,
+          "endSec": 36.75,
+          "text": "The chyron component provides scrolling tickers and paged displays. Perfect for news-style content or key points.",
+          "segments": [
+            {
+              "type": "tts",
+              "startSec": 27.700000000000003,
+              "endSec": 32.45,
+              "text": "The chyron component provides scrolling tickers and paged displays."
+            },
+            {
+              "type": "pause",
+              "startSec": 32.45,
+              "endSec": 32.85,
+              "durationSec": 0.4
+            },
+            {
+              "type": "tts",
+              "startSec": 32.85,
+              "endSec": 36.75,
+              "text": "Perfect for news-style content or key points."
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "two-column-demo",
+      "title": "two-column-demo",
+      "startSec": 36.75,
+      "endSec": 43.74999999999999,
+      "layers": [
+        {
+          "id": "background",
+          "zIndex": 0,
+          "components": [
+            {
+              "id": "background-0",
+              "type": "Background",
+              "props": {
+                "variant": "linear",
+                "gradient": {
+                  "angle": 135,
+                  "colors": [
+                    "#101010",
+                    "#1f2a44"
+                  ]
+                },
+                "sceneStartSec": 36.75
+              }
+            }
+          ]
+        },
+        {
+          "id": "content",
+          "zIndex": 10,
+          "components": [
+            {
+              "id": "layout-twocolumn-0",
+              "type": "TwoColumn",
+              "props": {
+                "ratio": "50-50",
+                "left": {
+                  "type": "div",
+                  "key": null,
+                  "ref": null,
+                  "props": {
+                    "style": {
+                      "padding": "40px",
+                      "color": "#fff"
+                    },
+                    "children": [
+                      {
+                        "type": "h2",
+                        "key": null,
+                        "ref": null,
+                        "props": {
+                          "style": {
+                            "fontSize": 48,
+                            "marginBottom": 24
+                          },
+                          "children": "Two Column Layout"
+                        },
+                        "_owner": null,
+                        "_store": {}
+                      },
+                      {
+                        "type": "p",
+                        "key": null,
+                        "ref": null,
+                        "props": {
+                          "style": {
+                            "fontSize": 24,
+                            "lineHeight": 1.6
+                          },
+                          "children": "Perfect for side-by-side comparisons, before and after, or content with supporting visuals."
+                        },
+                        "_owner": null,
+                        "_store": {}
+                      }
+                    ]
+                  },
+                  "_owner": null,
+                  "_store": {}
+                },
+                "right": {
+                  "type": "div",
+                  "key": null,
+                  "ref": null,
+                  "props": {
+                    "style": {
+                      "padding": "40px",
+                      "background": "rgba(255, 255, 255, 0.1)",
+                      "borderRadius": 16,
+                      "height": "100%",
+                      "display": "flex",
+                      "alignItems": "center",
+                      "justifyContent": "center",
+                      "color": "#fff",
+                      "fontSize": 32
+                    },
+                    "children": "Supporting Content"
+                  },
+                  "_owner": null,
+                  "_store": {}
+                },
+                "staggerDelayFrames": 15,
+                "sceneStartSec": 36.75
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "two-column",
+          "label": "two-column",
+          "startSec": 36.75,
+          "endSec": 43.74999999999999,
+          "text": "Layout components make it easy to structure your content. Choose from several PowerPoint-inspired layouts.",
+          "segments": [
+            {
+              "type": "tts",
+              "startSec": 36.75,
+              "endSec": 40.3,
+              "text": "Layout components make it easy to structure your content."
+            },
+            {
+              "type": "pause",
+              "startSec": 40.3,
+              "endSec": 40.599999999999994,
+              "durationSec": 0.3
+            },
+            {
+              "type": "tts",
+              "startSec": 40.599999999999994,
+              "endSec": 43.74999999999999,
+              "text": "Choose from several PowerPoint-inspired layouts."
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "code-demo",
+      "title": "code-demo",
+      "startSec": 43.74999999999999,
+      "endSec": 51.34999999999999,
+      "layers": [
+        {
+          "id": "background",
+          "zIndex": 0,
+          "components": [
+            {
+              "id": "background-0",
+              "type": "Background",
+              "props": {
+                "variant": "linear",
+                "gradient": {
+                  "angle": 135,
+                  "colors": [
+                    "#101010",
+                    "#1f2a44"
+                  ]
+                },
+                "sceneStartSec": 43.74999999999999
+              }
+            }
+          ]
+        },
+        {
+          "id": "title",
+          "zIndex": 10,
+          "components": [
+            {
+              "id": "layout-titleslide-0",
+              "type": "TitleSlide",
+              "props": {
+                "title": "Code Highlighting",
+                "verticalAlign": "top",
+                "padding": 60,
+                "sceneStartSec": 43.74999999999999
+              }
+            }
+          ]
+        },
+        {
+          "id": "code",
+          "timing": {
+            "startSec": 1
+          },
+          "zIndex": 5,
+          "components": [
+            {
+              "id": "code-block-0",
+              "type": "CodeBlock",
+              "props": {
+                "code": "const video = defineVideo(\"My Video\", { fps: 30 }, (c) => {\n  c.scene(\"intro\", (s) => {\n    s.layer(\"content\", {}, (l) => {\n      l.layout(\"TitleSlide\", {\n        title: \"Hello World\"\n      });\n    });\n  });\n});",
+                "language": "typescript",
+                "theme": "dracula",
+                "revealStyle": "line-by-line",
+                "lineDelayFrames": 15,
+                "position": {
+                  "y": 250
+                },
+                "sceneStartSec": 43.74999999999999
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "code",
+          "label": "code",
+          "startSec": 43.74999999999999,
+          "endSec": 51.34999999999999,
+          "text": "The code block component supports syntax highlighting. With multiple themes and reveal animations.",
+          "segments": [
+            {
+              "type": "tts",
+              "startSec": 43.74999999999999,
+              "endSec": 47.24999999999999,
+              "text": "The code block component supports syntax highlighting."
+            },
+            {
+              "type": "pause",
+              "startSec": 47.24999999999999,
+              "endSec": 47.54999999999999,
+              "durationSec": 0.3
+            },
+            {
+              "type": "tts",
+              "startSec": 47.54999999999999,
+              "endSec": 51.34999999999999,
+              "text": "With multiple themes and reveal animations."
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "conclusion",
+      "title": "conclusion",
+      "startSec": 51.34999999999999,
+      "endSec": 59.69999999999999,
+      "layers": [
+        {
+          "id": "background",
+          "zIndex": 0,
+          "components": [
+            {
+              "id": "background-0",
+              "type": "Background",
+              "props": {
+                "variant": "linear",
+                "gradient": {
+                  "angle": 135,
+                  "colors": [
+                    "#101010",
+                    "#1f2a44"
+                  ]
+                },
+                "sceneStartSec": 51.34999999999999
+              }
+            }
+          ]
+        },
+        {
+          "id": "content",
+          "zIndex": 10,
+          "components": [
+            {
+              "id": "layout-titleslide-0",
+              "type": "TitleSlide",
+              "props": {
+                "title": "Start Creating",
+                "subtitle": "Professional videos made easy",
+                "sceneStartSec": 51.34999999999999
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "outro",
+          "label": "outro",
+          "startSec": 51.34999999999999,
+          "endSec": 59.69999999999999,
+          "text": "Start creating professional videos with the Babulus component library. Everything you need in one powerful package.",
+          "segments": [
+            {
+              "type": "tts",
+              "startSec": 51.34999999999999,
+              "endSec": 56.19999999999999,
+              "text": "Start creating professional videos with the Babulus component library."
+            },
+            {
+              "type": "pause",
+              "startSec": 56.19999999999999,
+              "endSec": 56.499999999999986,
+              "durationSec": 0.3
+            },
+            {
+              "type": "tts",
+              "startSec": 56.499999999999986,
+              "endSec": 59.69999999999999,
+              "text": "Everything you need in one powerful package."
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    }
+  ],
+  "fps": 30,
+  "meta": {
+    "fps": 30,
+    "width": 1920,
+    "height": 1080
+  }
+}

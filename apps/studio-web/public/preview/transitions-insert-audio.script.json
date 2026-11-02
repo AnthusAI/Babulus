@@ -1,0 +1,194 @@
+{
+  "scenes": [
+    {
+      "id": "insert-a",
+      "title": "Scene A",
+      "startSec": 0,
+      "endSec": 2,
+      "styles": {
+        "background": "#7a1f1f"
+      },
+      "layers": [
+        {
+          "id": "bg",
+          "zIndex": 0,
+          "components": [
+            {
+              "id": "video-background-0",
+              "type": "VideoBackground",
+              "props": {
+                "color": "#7a1f1f",
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        },
+        {
+          "id": "title",
+          "zIndex": 10,
+          "components": [
+            {
+              "id": "video-title-0",
+              "type": "VideoTitle",
+              "props": {
+                "text": "Scene A",
+                "color": "var(--color-primary)",
+                "textColor": "var(--color-text)",
+                "position": {
+                  "y": 540
+                },
+                "textAlign": "center",
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "hold-a",
+          "label": "hold-a",
+          "startSec": 0,
+          "endSec": 2,
+          "text": "",
+          "segments": [
+            {
+              "type": "pause",
+              "startSec": 0,
+              "endSec": 2,
+              "durationSec": 2
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "insert-b",
+      "title": "Scene B",
+      "startSec": 3.5,
+      "endSec": 5.5,
+      "styles": {
+        "background": "#1f7a3a"
+      },
+      "layers": [
+        {
+          "id": "bg",
+          "zIndex": 0,
+          "components": [
+            {
+              "id": "video-background-0",
+              "type": "VideoBackground",
+              "props": {
+                "color": "#1f7a3a",
+                "sceneStartSec": 2
+              }
+            }
+          ]
+        },
+        {
+          "id": "title",
+          "zIndex": 10,
+          "components": [
+            {
+              "id": "video-title-0",
+              "type": "VideoTitle",
+              "props": {
+                "text": "Scene B",
+                "color": "var(--color-primary)",
+                "textColor": "var(--color-text)",
+                "position": {
+                  "y": 540
+                },
+                "textAlign": "center",
+                "sceneStartSec": 2
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "hold-b",
+          "label": "hold-b",
+          "startSec": 3.5,
+          "endSec": 5.5,
+          "text": "",
+          "segments": [
+            {
+              "type": "pause",
+              "startSec": 3.5,
+              "endSec": 5.5,
+              "durationSec": 2
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    }
+  ],
+  "timeline": [
+    {
+      "kind": "scene",
+      "sceneId": "insert-a",
+      "startSec": 0,
+      "endSec": 2
+    },
+    {
+      "kind": "transition",
+      "id": "insert-gap",
+      "startSec": 2,
+      "endSec": 3.5,
+      "effect": "fade",
+      "ease": "power2.out",
+      "mode": "insert",
+      "overflowAudio": "clip",
+      "fromSceneId": "insert-a",
+      "toSceneId": "insert-b",
+      "layers": [
+        {
+          "id": "gap-card",
+          "zIndex": 20,
+          "components": [
+            {
+              "id": "video-rectangle-0",
+              "type": "VideoRectangle",
+              "props": {
+                "color": "#0f1117",
+                "x": 0,
+                "y": 0,
+                "width": "100%",
+                "height": "100%"
+              }
+            },
+            {
+              "id": "video-title-1",
+              "type": "VideoTitle",
+              "props": {
+                "text": "Gap",
+                "color": "#e8eaf0",
+                "textColor": "#e8eaf0",
+                "position": {
+                  "y": 540
+                },
+                "textAlign": "center"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "scene",
+      "sceneId": "insert-b",
+      "startSec": 3.5,
+      "endSec": 5.5
+    }
+  ],
+  "fps": 30,
+  "meta": {
+    "fps": 30,
+    "width": 1920,
+    "height": 1080
+  }
+}

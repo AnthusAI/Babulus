@@ -1,0 +1,20 @@
+{
+  "id": "babulus-5bd46c93-85eb-4111-b152-138074a99309",
+  "title": "M2: Prospectus registration, new AWS account, Google project, quota backend",
+  "description": "",
+  "type": "task",
+  "status": "open",
+  "priority": 2,
+  "assignee": null,
+  "creator": null,
+  "parent": "babulus-d22d6854-6464-40b8-a446-b0a8265efdde",
+  "labels": [],
+  "dependencies": [],
+  "comments": [],
+  "created_at": "2026-11-02T05:41:58.373939Z",
+  "updated_at": "2026-11-02T05:41:58.373969Z",
+  "closed_at": null,
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {}
+}

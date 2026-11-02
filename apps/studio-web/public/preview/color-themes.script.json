@@ -1,0 +1,466 @@
+{
+  "scenes": [
+    {
+      "id": "color-cool-dark",
+      "title": "color-cool-dark",
+      "startSec": 0,
+      "endSec": 0,
+      "styles": {
+        "background": "#0b0f1f",
+        "color": "#eef1ff",
+        "vars": {
+          "--color-bg": "#0b0f1f",
+          "--color-text": "#eef1ff",
+          "--color-text-muted": "#c8cff6",
+          "--color-primary": "#ff5ec4",
+          "--color-secondary": "#6a7dff",
+          "--color-muted": "#9aa6d6",
+          "--color-muted-more": "#7d86b5"
+        }
+      },
+      "layers": [
+        {
+          "id": "content",
+          "timing": {
+            "startSec": 0,
+            "endSec": 3
+          },
+          "components": [
+            {
+              "id": "layout-flexpage-0",
+              "type": "FlexPage",
+              "props": {
+                "headerAlign": "center",
+                "label": "Dark Mode",
+                "eyebrow": "Color Scheme",
+                "title": "Cool Dark",
+                "subtitle": "Indigo + magenta accents for studio control rooms and tech explainers.",
+                "background": "#0b0f1f",
+                "padding": 96,
+                "gap": 36,
+                "children": [
+                  {
+                    "type": "ColorThemeDemo",
+                    "id": "cool-dark-swatches",
+                    "flex": 1,
+                    "props": {
+                      "palette": {
+                        "bg": "#0b0f1f",
+                        "surface": "#151b32",
+                        "surfaceStrong": "#1e2645",
+                        "text": "#eef1ff",
+                        "textMuted": "#c8cff6",
+                        "primary": "#ff5ec4",
+                        "secondary": "#6a7dff",
+                        "muted": "#9aa6d6",
+                        "mutedMore": "#7d86b5"
+                      }
+                    }
+                  }
+                ],
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "preview-0",
+          "label": "preview-0",
+          "startSec": 0,
+          "endSec": 0,
+          "text": "",
+          "segments": [],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "color-warm-dark",
+      "title": "color-warm-dark",
+      "startSec": 0,
+      "endSec": 0,
+      "styles": {
+        "background": "#1b1207",
+        "color": "#ffe7c4",
+        "vars": {
+          "--color-bg": "#1b1207",
+          "--color-text": "#ffe7c4",
+          "--color-text-muted": "#f2c89a",
+          "--color-primary": "#ff5ec4",
+          "--color-secondary": "#5b8cff",
+          "--color-muted": "#b59473",
+          "--color-muted-more": "#947a5f"
+        }
+      },
+      "layers": [
+        {
+          "id": "content",
+          "timing": {
+            "startSec": 3,
+            "endSec": 6
+          },
+          "components": [
+            {
+              "id": "layout-flexpage-0",
+              "type": "FlexPage",
+              "props": {
+                "headerAlign": "center",
+                "label": "Dark Mode",
+                "eyebrow": "Color Scheme",
+                "title": "Warm Dark",
+                "subtitle": "Warm neutrals with pink-blue accents for cinematic stories.",
+                "background": "#1b1207",
+                "padding": 96,
+                "gap": 36,
+                "children": [
+                  {
+                    "type": "ColorThemeDemo",
+                    "id": "warm-dark-swatches",
+                    "flex": 1,
+                    "props": {
+                      "palette": {
+                        "bg": "#1b1207",
+                        "surface": "#24180b",
+                        "surfaceStrong": "#2f210f",
+                        "text": "#ffe7c4",
+                        "textMuted": "#f2c89a",
+                        "primary": "#ff5ec4",
+                        "secondary": "#5b8cff",
+                        "muted": "#b59473",
+                        "mutedMore": "#947a5f"
+                      }
+                    }
+                  }
+                ],
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "preview-1",
+          "label": "preview-1",
+          "startSec": 0,
+          "endSec": 0,
+          "text": "",
+          "segments": [],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "color-neutral-dark",
+      "title": "color-neutral-dark",
+      "startSec": 0,
+      "endSec": 0,
+      "styles": {
+        "background": "#0f0f0e",
+        "color": "#f5f5f4",
+        "vars": {
+          "--color-bg": "#0f0f0e",
+          "--color-text": "#f5f5f4",
+          "--color-text-muted": "#c7c2bc",
+          "--color-primary": "#ff5ec4",
+          "--color-secondary": "#5f7bff",
+          "--color-muted": "#9b948d",
+          "--color-muted-more": "#7c756f"
+        }
+      },
+      "layers": [
+        {
+          "id": "content",
+          "timing": {
+            "startSec": 6,
+            "endSec": 9
+          },
+          "components": [
+            {
+              "id": "layout-flexpage-0",
+              "type": "FlexPage",
+              "props": {
+                "headerAlign": "center",
+                "label": "Dark Mode",
+                "eyebrow": "Color Scheme",
+                "title": "Neutral Dark",
+                "subtitle": "Balanced charcoal palette that keeps contrast gentle.",
+                "background": "#0f0f0e",
+                "padding": 96,
+                "gap": 36,
+                "children": [
+                  {
+                    "type": "ColorThemeDemo",
+                    "id": "neutral-dark-swatches",
+                    "flex": 1,
+                    "props": {
+                      "palette": {
+                        "bg": "#0f0f0e",
+                        "surface": "#171615",
+                        "surfaceStrong": "#211f1e",
+                        "text": "#f5f5f4",
+                        "textMuted": "#c7c2bc",
+                        "primary": "#ff5ec4",
+                        "secondary": "#5f7bff",
+                        "muted": "#9b948d",
+                        "mutedMore": "#7c756f"
+                      }
+                    }
+                  }
+                ],
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "preview-2",
+          "label": "preview-2",
+          "startSec": 0,
+          "endSec": 0,
+          "text": "",
+          "segments": [],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "color-cool-light",
+      "title": "color-cool-light",
+      "startSec": 0,
+      "endSec": 0,
+      "styles": {
+        "background": "#f5f7ff",
+        "color": "#1f2d5c",
+        "vars": {
+          "--color-bg": "#f5f7ff",
+          "--color-text": "#1f2d5c",
+          "--color-text-muted": "#4f5d88",
+          "--color-primary": "#d948b8",
+          "--color-secondary": "#4d6bff",
+          "--color-muted": "#8a97c0",
+          "--color-muted-more": "#b5bee0"
+        }
+      },
+      "layers": [
+        {
+          "id": "content",
+          "timing": {
+            "startSec": 9,
+            "endSec": 12
+          },
+          "components": [
+            {
+              "id": "layout-flexpage-0",
+              "type": "FlexPage",
+              "props": {
+                "headerAlign": "center",
+                "label": "Light Mode",
+                "eyebrow": "Color Scheme",
+                "title": "Cool Light",
+                "subtitle": "Indigo base with magenta-blue accents for clean broadcast layouts.",
+                "background": "#f5f7ff",
+                "padding": 96,
+                "gap": 36,
+                "children": [
+                  {
+                    "type": "ColorThemeDemo",
+                    "id": "cool-light-swatches",
+                    "flex": 1,
+                    "props": {
+                      "palette": {
+                        "bg": "#f5f7ff",
+                        "surface": "#e9edff",
+                        "surfaceStrong": "#dfe4ff",
+                        "text": "#1f2d5c",
+                        "textMuted": "#4f5d88",
+                        "primary": "#d948b8",
+                        "secondary": "#4d6bff",
+                        "muted": "#8a97c0",
+                        "mutedMore": "#b5bee0"
+                      }
+                    }
+                  }
+                ],
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "preview-3",
+          "label": "preview-3",
+          "startSec": 0,
+          "endSec": 0,
+          "text": "",
+          "segments": [],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "color-warm-light",
+      "title": "color-warm-light",
+      "startSec": 0,
+      "endSec": 0,
+      "styles": {
+        "background": "#fff5ee",
+        "color": "#5a2f13",
+        "vars": {
+          "--color-bg": "#fff5ee",
+          "--color-text": "#5a2f13",
+          "--color-text-muted": "#84533b",
+          "--color-primary": "#d948b8",
+          "--color-secondary": "#5177ff",
+          "--color-muted": "#c6a18c",
+          "--color-muted-more": "#e1c7b8"
+        }
+      },
+      "layers": [
+        {
+          "id": "content",
+          "timing": {
+            "startSec": 12,
+            "endSec": 15
+          },
+          "components": [
+            {
+              "id": "layout-flexpage-0",
+              "type": "FlexPage",
+              "props": {
+                "headerAlign": "center",
+                "label": "Light Mode",
+                "eyebrow": "Color Scheme",
+                "title": "Warm Light",
+                "subtitle": "Warm base with pink-blue accents for promos and human stories.",
+                "background": "#fff5ee",
+                "padding": 96,
+                "gap": 36,
+                "children": [
+                  {
+                    "type": "ColorThemeDemo",
+                    "id": "warm-light-swatches",
+                    "flex": 1,
+                    "props": {
+                      "palette": {
+                        "bg": "#fff5ee",
+                        "surface": "#ffe9db",
+                        "surfaceStrong": "#f9dcc6",
+                        "text": "#5a2f13",
+                        "textMuted": "#84533b",
+                        "primary": "#d948b8",
+                        "secondary": "#5177ff",
+                        "muted": "#c6a18c",
+                        "mutedMore": "#e1c7b8"
+                      }
+                    }
+                  }
+                ],
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "preview-4",
+          "label": "preview-4",
+          "startSec": 0,
+          "endSec": 0,
+          "text": "",
+          "segments": [],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "color-neutral-light",
+      "title": "color-neutral-light",
+      "startSec": 0,
+      "endSec": 0,
+      "styles": {
+        "background": "#f4f3f1",
+        "color": "#2a2623",
+        "vars": {
+          "--color-bg": "#f4f3f1",
+          "--color-text": "#2a2623",
+          "--color-text-muted": "#5a534d",
+          "--color-primary": "#d948b8",
+          "--color-secondary": "#556eff",
+          "--color-muted": "#9b948d",
+          "--color-muted-more": "#c9c3bd"
+        }
+      },
+      "layers": [
+        {
+          "id": "content",
+          "timing": {
+            "startSec": 15,
+            "endSec": 18
+          },
+          "components": [
+            {
+              "id": "layout-flexpage-0",
+              "type": "FlexPage",
+              "props": {
+                "headerAlign": "center",
+                "label": "Light Mode",
+                "eyebrow": "Color Scheme",
+                "title": "Neutral Light",
+                "subtitle": "Clean slate palette for general-purpose layouts.",
+                "background": "#f4f3f1",
+                "padding": 96,
+                "gap": 36,
+                "children": [
+                  {
+                    "type": "ColorThemeDemo",
+                    "id": "neutral-light-swatches",
+                    "flex": 1,
+                    "props": {
+                      "palette": {
+                        "bg": "#f4f3f1",
+                        "surface": "#e9e7e4",
+                        "surfaceStrong": "#dedbd7",
+                        "text": "#2a2623",
+                        "textMuted": "#5a534d",
+                        "primary": "#d948b8",
+                        "secondary": "#556eff",
+                        "muted": "#9b948d",
+                        "mutedMore": "#c9c3bd"
+                      }
+                    }
+                  }
+                ],
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "preview-5",
+          "label": "preview-5",
+          "startSec": 0,
+          "endSec": 0,
+          "text": "",
+          "segments": [],
+          "bullets": []
+        }
+      ]
+    }
+  ],
+  "fps": 30,
+  "meta": {
+    "fps": 30,
+    "width": 1920,
+    "height": 1080
+  }
+}

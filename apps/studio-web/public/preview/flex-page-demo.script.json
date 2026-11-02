@@ -1,0 +1,107 @@
+{
+  "scenes": [
+    {
+      "id": "flex-page",
+      "title": "flex-page",
+      "startSec": 0,
+      "endSec": 5.1,
+      "layers": [
+        {
+          "id": "background",
+          "zIndex": 0,
+          "components": [
+            {
+              "id": "background-0",
+              "type": "Background",
+              "props": {
+                "variant": "linear",
+                "gradient": {
+                  "angle": 135,
+                  "colors": [
+                    "#101010",
+                    "#1f2a44"
+                  ]
+                },
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        },
+        {
+          "id": "content",
+          "zIndex": 10,
+          "components": [
+            {
+              "id": "layout-flexpage-0",
+              "type": "FlexPage",
+              "props": {
+                "label": "Flex",
+                "eyebrow": "Base Layout",
+                "title": "FlexPage Shell",
+                "subtitle": "Header + content flex area",
+                "headerAlign": "left",
+                "contentDirection": "row",
+                "contentGap": 24,
+                "children": [
+                  {
+                    "type": "Rectangle",
+                    "id": "flex-card-1",
+                    "flex": 1,
+                    "props": {
+                      "color": "rgba(255,255,255,0.08)",
+                      "width": "100%",
+                      "height": "100%",
+                      "radius": 24
+                    }
+                  },
+                  {
+                    "type": "Rectangle",
+                    "id": "flex-card-2",
+                    "flex": 1,
+                    "props": {
+                      "color": "rgba(255,255,255,0.08)",
+                      "width": "100%",
+                      "height": "100%",
+                      "radius": 24
+                    }
+                  }
+                ],
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "voice",
+          "label": "voice",
+          "startSec": 0,
+          "endSec": 5.1,
+          "text": "FlexPage is the base shell for custom layouts.",
+          "segments": [
+            {
+              "type": "tts",
+              "startSec": 0,
+              "endSec": 3.9,
+              "text": "FlexPage is the base shell for custom layouts."
+            },
+            {
+              "type": "pause",
+              "startSec": 3.9,
+              "endSec": 5.1,
+              "durationSec": 1.2
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    }
+  ],
+  "fps": 30,
+  "meta": {
+    "fps": 30,
+    "width": 1920,
+    "height": 1080
+  }
+}

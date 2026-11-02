@@ -1,0 +1,37 @@
+{
+  "items": [
+    {
+      "type": "tts",
+      "sceneId": "wipe-a",
+      "cueId": "hold-a",
+      "startSec": 0,
+      "endSec": 2,
+      "segments": [
+        {
+          "type": "pause",
+          "startSec": 0,
+          "endSec": 2,
+          "seconds": 2
+        }
+      ]
+    },
+    {
+      "type": "tts",
+      "sceneId": "wipe-b",
+      "cueId": "hold-b",
+      "startSec": 2,
+      "endSec": 4,
+      "segments": [
+        {
+          "type": "pause",
+          "startSec": 2,
+          "endSec": 4,
+          "seconds": 2
+        }
+      ]
+    }
+  ],
+  "audio": {
+    "tracks": []
+  }
+}

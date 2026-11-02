@@ -1,0 +1,35 @@
+{
+  "id": "babulus-d87059f9-7809-42f9-88d2-6712d3721e7c",
+  "title": "P18 Implement render authority transitions and transaction contract",
+  "description": "Implement VideoML packet videoml-e97334 under canonical initiative videoml-dbc2b1 D09/D09a/D09b. New dedicated server-owned RenderJobs/RenderLedger/RenderOutbox authority, separate from shared Amplify Job. Add executable Gherkin first and observe failure, then pure transition decisions and conditional transaction interface using server-owned time, generation/owner/status/lease predicates, attempt-scoped publication and exact ledger/outbox effects. Preserve original 300s grace, 15s heartbeat, 60s lease, 1200s attempt bound, two total and one cloud attempt. Cover all table edges, prohibited edges, races, cancellation orderings, crash/replay and unknown-submit reservation retention. Preserve generation/non-render paths; do not deploy/migrate/enable cloud or silently refactor legacy writers. Document explicit future cutover inventory and migration command contract. No commits without user approval. Primary owns Kanbus updates and acceptance; return source/tests/evidence.",
+  "type": "task",
+  "status": "in_progress",
+  "priority": 1,
+  "assignee": null,
+  "creator": null,
+  "parent": "babulus-48bc4e27-b336-4500-9e65-a7fdfe42698e",
+  "labels": [],
+  "dependencies": [],
+  "comments": [
+    {
+      "id": "d0a57b64-3f1c-4a1d-ad99-4f9750cc806c",
+      "author": "home",
+      "text": "Terra began executable Gherkin before production code: initial missing-module red evidence /tmp/p18-red.log, initial five scenarios green /tmp/p18-green.log; these are starter checks, not acceptance. Primary early review requires commit-time owner/lease/absolute-deadline predicates (revision CAS alone cannot reject a delayed completion), typed attempt-scoped artifact digest/manifest, Batch-bounded cloud deadline, and customer refunds independent of operator reservation/slot retention. Full transition/prohibited-edge and crash/replay coverage remains required. No commit or deployment.",
+      "created_at": "2026-10-31T03:09:34.630820Z",
+      "comment_type": "default"
+    },
+    {
+      "id": "fd2e88b1-627e-4e8b-99ed-57d5889f061f",
+      "author": "home",
+      "text": "Sequencing decision recorded in canonical VideoML P18 and P22: P18 delivers pure authority/transaction contract plus read-only legacy inventory and migration apply contract. Actual explicit idempotent apply command is now mandatory P22 cutover work, blocked on new authority and disabled legacy writers; final P28 remains gated. This preserves the migration requirement without inventing a premature cross-account apply path. D09c authoritative API admission time and all observed CAS predicates replace impossible database commit-time clock. Independent Terra source review dispatched; heavy gates await portability slot.",
+      "created_at": "2026-10-31T03:13:45.742669Z",
+      "comment_type": "default"
+    }
+  ],
+  "created_at": "2026-10-31T03:07:49.456644Z",
+  "updated_at": "2026-10-31T03:13:45.742858Z",
+  "closed_at": null,
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {}
+}

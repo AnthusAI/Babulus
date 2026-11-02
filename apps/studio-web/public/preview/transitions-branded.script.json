@@ -1,0 +1,205 @@
+{
+  "scenes": [
+    {
+      "id": "brand-a",
+      "title": "Scene A",
+      "startSec": 0,
+      "endSec": 2,
+      "styles": {
+        "background": "#7a1f1f"
+      },
+      "layers": [
+        {
+          "id": "bg",
+          "zIndex": 0,
+          "components": [
+            {
+              "id": "video-background-0",
+              "type": "VideoBackground",
+              "props": {
+                "color": "#7a1f1f",
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        },
+        {
+          "id": "title",
+          "zIndex": 10,
+          "components": [
+            {
+              "id": "video-title-0",
+              "type": "VideoTitle",
+              "props": {
+                "text": "Scene A",
+                "color": "var(--color-primary)",
+                "textColor": "var(--color-text)",
+                "position": {
+                  "y": 540
+                },
+                "textAlign": "center",
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "hold-a",
+          "label": "hold-a",
+          "startSec": 0,
+          "endSec": 2,
+          "text": "",
+          "segments": [
+            {
+              "type": "pause",
+              "startSec": 0,
+              "endSec": 2,
+              "durationSec": 2
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "brand-b",
+      "title": "Scene B",
+      "startSec": 0,
+      "endSec": 4,
+      "styles": {
+        "background": "#1f3a7a"
+      },
+      "layers": [
+        {
+          "id": "bg",
+          "zIndex": 0,
+          "components": [
+            {
+              "id": "video-background-0",
+              "type": "VideoBackground",
+              "props": {
+                "color": "#1f3a7a",
+                "sceneStartSec": 2
+              }
+            }
+          ]
+        },
+        {
+          "id": "title",
+          "zIndex": 10,
+          "components": [
+            {
+              "id": "video-title-0",
+              "type": "VideoTitle",
+              "props": {
+                "text": "Scene B",
+                "color": "var(--color-primary)",
+                "textColor": "var(--color-text)",
+                "position": {
+                  "y": 540
+                },
+                "textAlign": "center",
+                "sceneStartSec": 2
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "hold-b",
+          "label": "hold-b",
+          "startSec": 2,
+          "endSec": 4,
+          "text": "",
+          "segments": [
+            {
+              "type": "pause",
+              "startSec": 2,
+              "endSec": 4,
+              "durationSec": 2
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    }
+  ],
+  "timeline": [
+    {
+      "kind": "scene",
+      "sceneId": "brand-a",
+      "startSec": 0,
+      "endSec": 2
+    },
+    {
+      "kind": "transition",
+      "id": "brand-overlay",
+      "startSec": 0,
+      "endSec": 4,
+      "effect": "wipe",
+      "ease": "power2.inOut",
+      "props": {
+        "direction": "right"
+      },
+      "mode": "overlap",
+      "fromSceneId": "brand-a",
+      "toSceneId": "brand-b",
+      "layers": [
+        {
+          "id": "overlay",
+          "styles": {
+            "opacity": 0.95
+          },
+          "zIndex": 20,
+          "components": [
+            {
+              "id": "video-rectangle-0",
+              "type": "VideoRectangle",
+              "props": {
+                "color": "#1f7a3a",
+                "xFrom": 1920,
+                "xTo": -260,
+                "y": 0,
+                "width": 260,
+                "height": 1080
+              }
+            },
+            {
+              "id": "video-title-1",
+              "type": "VideoTitle",
+              "props": {
+                "text": "Company Name",
+                "color": "#0b0f1a",
+                "textColor": "#0b0f1a",
+                "fontSize": 64,
+                "fontWeight": 700,
+                "xFrom": 2050,
+                "xTo": -130,
+                "yFrom": 540,
+                "yTo": 540,
+                "textAlign": "center",
+                "rotateDeg": 90,
+                "centerY": true
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "scene",
+      "sceneId": "brand-b",
+      "startSec": 0,
+      "endSec": 4
+    }
+  ],
+  "fps": 30,
+  "meta": {
+    "fps": 30,
+    "width": 1920,
+    "height": 1080
+  }
+}

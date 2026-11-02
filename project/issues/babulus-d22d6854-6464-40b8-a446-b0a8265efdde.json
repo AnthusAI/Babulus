@@ -1,0 +1,28 @@
+{
+  "id": "babulus-d22d6854-6464-40b8-a446-b0a8265efdde",
+  "title": "Combine Auritus and Babulus into one product, Babulus",
+  "description": "Approved by Ryan 2026-11-02. One product and repo. Video with voiceover plus text to speech, using TTS APIs or local models. Cloud compute runs only when no local worker claimed the job and a spending check passed. Real Prospectus integration with a new Google project and quota backend. Milestones M0 to M7 are child tasks.",
+  "type": "epic",
+  "status": "open",
+  "priority": 0,
+  "assignee": null,
+  "creator": null,
+  "parent": null,
+  "labels": [],
+  "dependencies": [],
+  "comments": [
+    {
+      "id": "f8b03205-cfa6-40bd-a3ef-f767fee96234",
+      "author": "home",
+      "text": "Ryan 2026-11-02: video rendering uses the same AWS Batch system as Auritus because it is simple, cheap and works. Extend the Auritus control plane rather than port it to TypeScript.",
+      "created_at": "2026-11-02T05:53:33.634285Z",
+      "comment_type": "default"
+    }
+  ],
+  "created_at": "2026-11-02T05:41:58.180103Z",
+  "updated_at": "2026-11-02T05:53:50.009749Z",
+  "closed_at": null,
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {}
+}

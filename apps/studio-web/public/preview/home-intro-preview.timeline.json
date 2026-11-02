@@ -1,0 +1,122 @@
+{
+  "items": [
+    {
+      "type": "tts",
+      "sceneId": "intro-hero",
+      "cueId": "intro-hero-cue",
+      "startSec": 0,
+      "endSec": 13.7,
+      "segments": [
+        {
+          "type": "tts",
+          "startSec": 0,
+          "endSec": 13.7,
+          "text": "Babulus is an agent-driven video broadcaster. It writes scene-by-scene scripts, generates voiceover with ElevenLabs or OpenAI, and renders on-brand motion graphics.",
+          "segmentPath": "Babulus/.babulus/out/home-intro-preview/env/development/segments/intro-hero--intro-hero-cue--tts--6628f3921c73--1.wav",
+          "durationSec": 13.7,
+          "rawDurationSec": 13.7,
+          "trimEndSec": 0
+        }
+      ]
+    },
+    {
+      "type": "tts",
+      "sceneId": "intro-flow",
+      "cueId": "intro-flow-cue",
+      "startSec": 14.1,
+      "endSec": 21.6,
+      "segments": [
+        {
+          "type": "tts",
+          "startSec": 14.1,
+          "endSec": 21.6,
+          "text": "It can personalize videos per contact and context, so your message fits the person, the moment, and your brand.",
+          "segmentPath": "Babulus/.babulus/out/home-intro-preview/env/development/segments/intro-flow--intro-flow-cue--tts--fa1a7d42b5b4--1.wav",
+          "durationSec": 7.5,
+          "rawDurationSec": 7.5,
+          "trimEndSec": 0
+        }
+      ]
+    },
+    {
+      "type": "tts",
+      "sceneId": "intro-loop",
+      "cueId": "intro-loop-cue",
+      "startSec": 22,
+      "endSec": 29.4,
+      "segments": [
+        {
+          "type": "tts",
+          "startSec": 22,
+          "endSec": 29.4,
+          "text": "And it's not a locked platform. You export portable VideoML projects you can run anywhere with the reference renderer.",
+          "segmentPath": "Babulus/.babulus/out/home-intro-preview/env/development/segments/intro-loop--intro-loop-cue--tts--08b9b3b397ea--1.wav",
+          "durationSec": 7.4,
+          "rawDurationSec": 7.4,
+          "trimEndSec": 0
+        }
+      ]
+    },
+    {
+      "type": "tts",
+      "sceneId": "intro-cta",
+      "cueId": "intro-cta-cue",
+      "startSec": 29.799999999999997,
+      "endSec": 39.15,
+      "segments": [
+        {
+          "type": "tts",
+          "startSec": 29.799999999999997,
+          "endSec": 39.15,
+          "text": "Explore the demos and the VideoML docs, and join the waitlist for early access. We'll send progress updates and new videos as we build.",
+          "segmentPath": "Babulus/.babulus/out/home-intro-preview/env/development/segments/intro-cta--intro-cta-cue--tts--9ea0618c6668--1.wav",
+          "durationSec": 9.35,
+          "rawDurationSec": 9.35,
+          "trimEndSec": 0
+        }
+      ]
+    }
+  ],
+  "audio": {
+    "tracks": [
+      {
+        "id": "narration",
+        "kind": "narration",
+        "clips": [
+          {
+            "id": "intro-hero--intro-hero-cue--tts--6628f3921c73--1",
+            "kind": "file",
+            "startSec": 0,
+            "durationSec": 13.7,
+            "src": "/preview/home-intro-preview/env/development/segments/intro-hero--intro-hero-cue--tts--6628f3921c73--1.wav",
+            "volume": 1
+          },
+          {
+            "id": "intro-flow--intro-flow-cue--tts--fa1a7d42b5b4--1",
+            "kind": "file",
+            "startSec": 14.1,
+            "durationSec": 7.5,
+            "src": "/preview/home-intro-preview/env/development/segments/intro-flow--intro-flow-cue--tts--fa1a7d42b5b4--1.wav",
+            "volume": 1
+          },
+          {
+            "id": "intro-loop--intro-loop-cue--tts--08b9b3b397ea--1",
+            "kind": "file",
+            "startSec": 22,
+            "durationSec": 7.4,
+            "src": "/preview/home-intro-preview/env/development/segments/intro-loop--intro-loop-cue--tts--08b9b3b397ea--1.wav",
+            "volume": 1
+          },
+          {
+            "id": "intro-cta--intro-cta-cue--tts--9ea0618c6668--1",
+            "kind": "file",
+            "startSec": 29.799999999999997,
+            "durationSec": 9.35,
+            "src": "/preview/home-intro-preview/env/development/segments/intro-cta--intro-cta-cue--tts--9ea0618c6668--1.wav",
+            "volume": 1
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,28 @@
+# LeftBlock overrides: each entry approves one reviewed value (one rule
+# matching one exact value in one file). Changing the matched value re-blocks
+# it; unrelated edits to the line do not. `kind` is the rule's category,
+# shown for reviewers; it is not part of matching.
+version: 1
+allow:
+  - id: "1e3f0a6256bbe0dd"
+    rule: "leftblock-personal-email"
+    file: "apps/studio-web/app/(public)/privacy/page.tsx"
+    reason: "Company role address for privacy requests, required on the public privacy notice Ryan approved 2026-10-20"
+    added: 2026-10-20
+  - id: "f52a80672f3964a0"
+    rule: "leftblock-personal-email"
+    file: "apps/studio-web/app/(public)/privacy/page.tsx"
+    reason: "Company role address for privacy requests, required on the public privacy notice Ryan approved 2026-10-20"
+    added: 2026-10-20
+  - id: "70e5722e548404f1"
+    rule: "leftblock-personal-email"
+    file: "apps/studio-web/amplify/backend.ts"
+    kind: "Personal email address"
+    reason: "Cognito username of the render-worker service account on the non-routable .internal domain; not a personal or deliverable address, and already in backend.ts on main"
+    added: 2026-10-28
+  - id: "ddd8efdb42efe1fc"
+    rule: "generic-api-key"
+    file: "packages/shared/src/records.ts"
+    kind: "Detected a Generic API Key, potentially exposing access to various services and "
+    reason: "False positive: the line assigns the mp4ArtifactKey field from other variables and holds no credential; Ryan approved 2026-11-02"
+    added: 2026-11-02

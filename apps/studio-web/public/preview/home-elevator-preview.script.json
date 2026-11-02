@@ -1,0 +1,1298 @@
+{
+  "scenes": [
+    {
+      "id": "open-standard",
+      "title": "open-standard",
+      "startSec": 0,
+      "endSec": 6.2,
+      "styles": {
+        "background": "#0f1117",
+        "color": "#e8eaf0",
+        "vars": {
+          "--color-bg": "#0f1117",
+          "--color-bg-subtle": "#151a27",
+          "--color-surface": "#151a27",
+          "--color-surface-strong": "#1c2333",
+          "--color-surface-2": "#1c2333",
+          "--color-text": "#e8eaf0",
+          "--color-text-muted": "#c4c8d6",
+          "--color-primary": "#5f7bff",
+          "--color-secondary": "#ff6ac1",
+          "--color-accent": "#5f7bff",
+          "--color-accent-2": "#ff6ac1",
+          "--color-muted": "#c4c8d6",
+          "--color-muted-more": "#c4c8d6",
+          "--font-eyebrow": "var(--font-preview-humanist), sans-serif",
+          "--font-headline": "var(--font-preview-sans), sans-serif",
+          "--font-subhead": "var(--font-preview-humanist), sans-serif"
+        }
+      },
+      "layers": [
+        {
+          "id": "processing",
+          "zIndex": 10,
+          "components": [
+            {
+              "id": "p5-particles-0",
+              "type": "P5Particles",
+              "props": {
+                "particleCount": 30,
+                "overscanX": 320,
+                "focusX": 0.5,
+                "backgroundDarken": 0.45,
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        },
+        {
+          "id": "code",
+          "zIndex": 20,
+          "components": [
+            {
+              "id": "code-block-0",
+              "type": "CodeBlock",
+              "props": {
+                "language": "html",
+                "code": "<vml id=\"demo\" fps=\"30\" width=\"1920\" height=\"1080\">\n  <scene id=\"intro\">\n    <title-slide title=\"Hello\" subtitle=\"From code\" />\n    <cue id=\"line-1\"><voice>Hello world.</voice></cue>\n  </scene>\n</vml>",
+                "theme": "nord",
+                "showLineNumbers": false,
+                "width": 760,
+                "height": 420,
+                "xFrom": 2100,
+                "xTo": 1040,
+                "yFrom": 140,
+                "yTo": 140,
+                "slideDurationFrames": 18,
+                "slideEase": "power2.out",
+                "revealStyle": "typewriter",
+                "typewriterSpeed": 2,
+                "startFrame": 6,
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "open-standard-cue",
+          "label": "open-standard-cue",
+          "startSec": 0,
+          "endSec": 6.2,
+          "text": "Babulus uses the open VideoML standard, where code defines every scene and cue.",
+          "segments": [
+            {
+              "type": "tts",
+              "startSec": 0,
+              "endSec": 6.2,
+              "text": "Babulus uses the open VideoML standard, where code defines every scene and cue."
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "ai-agents",
+      "title": "ai-agents",
+      "startSec": 6.6000000000000005,
+      "endSec": 13.9,
+      "styles": {
+        "background": "#0f1117",
+        "color": "#e8eaf0",
+        "vars": {
+          "--color-bg": "#0f1117",
+          "--color-bg-subtle": "#151a27",
+          "--color-surface": "#151a27",
+          "--color-surface-strong": "#1c2333",
+          "--color-surface-2": "#1c2333",
+          "--color-text": "#e8eaf0",
+          "--color-text-muted": "#c4c8d6",
+          "--color-primary": "#5f7bff",
+          "--color-secondary": "#ff6ac1",
+          "--color-accent": "#5f7bff",
+          "--color-accent-2": "#ff6ac1",
+          "--color-muted": "#c4c8d6",
+          "--color-muted-more": "#c4c8d6",
+          "--font-eyebrow": "var(--font-preview-humanist), sans-serif",
+          "--font-headline": "var(--font-preview-sans), sans-serif",
+          "--font-subhead": "var(--font-preview-humanist), sans-serif"
+        }
+      },
+      "layers": [
+        {
+          "id": "bot",
+          "zIndex": 10,
+          "components": [
+            {
+              "id": "icon-0",
+              "type": "Icon",
+              "props": {
+                "kind": "lucide",
+                "name": "bot",
+                "size": 96,
+                "strokeWidth": 2.5,
+                "color": "var(--color-text)",
+                "position": {
+                  "x": 912,
+                  "y": 140
+                },
+                "sceneStartSec": 6.2
+              }
+            }
+          ]
+        },
+        {
+          "id": "code",
+          "zIndex": 20,
+          "components": [
+            {
+              "id": "code-block-0",
+              "type": "CodeBlock",
+              "props": {
+                "language": "typescript",
+                "code": "const scene = video.scene(\"intro\");\nscene.title(\"Launch\");\nscene.cue(\"line\", \"Ship today.\");",
+                "theme": "nord",
+                "showLineNumbers": false,
+                "width": 860,
+                "height": 320,
+                "position": {
+                  "x": 530,
+                  "y": 280
+                },
+                "revealStyle": "typewriter",
+                "typewriterSpeed": 2,
+                "startFrame": 6,
+                "sceneStartSec": 6.2
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "ai-agents-cue",
+          "label": "ai-agents-cue",
+          "startSec": 6.6000000000000005,
+          "endSec": 13.9,
+          "text": "AI agents are great at writing code, which means they can now produce videos through VideoML.",
+          "segments": [
+            {
+              "type": "tts",
+              "startSec": 6.6000000000000005,
+              "endSec": 13.9,
+              "text": "AI agents are great at writing code, which means they can now produce videos through VideoML."
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "layout-one",
+      "title": "layout-one",
+      "startSec": 14.3,
+      "endSec": 22.150000000000002,
+      "styles": {
+        "background": "#0f1117",
+        "color": "#e8eaf0",
+        "vars": {
+          "--color-bg": "#0f1117",
+          "--color-bg-subtle": "#151a27",
+          "--color-surface": "#151a27",
+          "--color-surface-strong": "#1c2333",
+          "--color-surface-2": "#1c2333",
+          "--color-text": "#e8eaf0",
+          "--color-text-muted": "#c4c8d6",
+          "--color-primary": "#5f7bff",
+          "--color-secondary": "#ff6ac1",
+          "--color-accent": "#5f7bff",
+          "--color-accent-2": "#ff6ac1",
+          "--color-muted": "#c4c8d6",
+          "--color-muted-more": "#c4c8d6",
+          "--font-eyebrow": "var(--font-preview-humanist), sans-serif",
+          "--font-headline": "var(--font-preview-sans), sans-serif",
+          "--font-subhead": "var(--font-preview-humanist), sans-serif"
+        }
+      },
+      "layers": [
+        {
+          "id": "content",
+          "components": [
+            {
+              "id": "title-slide-layout-demo-0",
+              "type": "TitleSlideLayoutDemo",
+              "props": {
+                "sceneStartSec": 13.5
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "library-voice-1",
+          "label": "library-voice-1",
+          "startSec": 14.3,
+          "endSec": 22.150000000000002,
+          "text": "Babulus adds a library of off-the-shelf components on top of VideoML: layouts, transitions, motion, and more.",
+          "segments": [
+            {
+              "type": "tts",
+              "startSec": 14.3,
+              "endSec": 22.150000000000002,
+              "text": "Babulus adds a library of off-the-shelf components on top of VideoML: layouts, transitions, motion, and more."
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "layout-two",
+      "title": "layout-two",
+      "startSec": 22.483333333333334,
+      "endSec": 23.383333333333333,
+      "styles": {
+        "background": "#0f1117",
+        "color": "#e8eaf0",
+        "vars": {
+          "--color-bg": "#0f1117",
+          "--color-bg-subtle": "#151a27",
+          "--color-surface": "#151a27",
+          "--color-surface-strong": "#1c2333",
+          "--color-surface-2": "#1c2333",
+          "--color-text": "#e8eaf0",
+          "--color-text-muted": "#c4c8d6",
+          "--color-primary": "#5f7bff",
+          "--color-secondary": "#ff6ac1",
+          "--color-accent": "#5f7bff",
+          "--color-accent-2": "#ff6ac1",
+          "--color-muted": "#c4c8d6",
+          "--color-muted-more": "#c4c8d6",
+          "--font-eyebrow": "var(--font-preview-humanist), sans-serif",
+          "--font-headline": "var(--font-preview-sans), sans-serif",
+          "--font-subhead": "var(--font-preview-humanist), sans-serif"
+        }
+      },
+      "layers": [
+        {
+          "id": "content",
+          "components": [
+            {
+              "id": "two-column-layout-demo-0",
+              "type": "TwoColumnLayoutDemo",
+              "props": {
+                "sceneStartSec": 21.35
+              }
+            }
+          ]
+        }
+      ],
+      "cues": []
+    },
+    {
+      "id": "layout-three",
+      "title": "layout-three",
+      "startSec": 23.716666666666665,
+      "endSec": 24.616666666666664,
+      "styles": {
+        "background": "#0f1117",
+        "color": "#e8eaf0",
+        "vars": {
+          "--color-bg": "#0f1117",
+          "--color-bg-subtle": "#151a27",
+          "--color-surface": "#151a27",
+          "--color-surface-strong": "#1c2333",
+          "--color-surface-2": "#1c2333",
+          "--color-text": "#e8eaf0",
+          "--color-text-muted": "#c4c8d6",
+          "--color-primary": "#5f7bff",
+          "--color-secondary": "#ff6ac1",
+          "--color-accent": "#5f7bff",
+          "--color-accent-2": "#ff6ac1",
+          "--color-muted": "#c4c8d6",
+          "--color-muted-more": "#c4c8d6",
+          "--font-eyebrow": "var(--font-preview-humanist), sans-serif",
+          "--font-headline": "var(--font-preview-sans), sans-serif",
+          "--font-subhead": "var(--font-preview-humanist), sans-serif"
+        }
+      },
+      "layers": [
+        {
+          "id": "content",
+          "components": [
+            {
+              "id": "three-column-screen-0",
+              "type": "ThreeColumnScreen",
+              "props": {
+                "eyebrow": "Three Column",
+                "title": "Three Column Screen",
+                "subtitle": "Three panels, one layout",
+                "columns": [
+                  {
+                    "type": "PlaceholderPanel",
+                    "props": {
+                      "label": "Column A",
+                      "text": "Left"
+                    }
+                  },
+                  {
+                    "type": "PlaceholderPanel",
+                    "props": {
+                      "label": "Column B",
+                      "text": "Middle",
+                      "tone": "secondary"
+                    }
+                  },
+                  {
+                    "type": "PlaceholderPanel",
+                    "props": {
+                      "label": "Column C",
+                      "text": "Right"
+                    }
+                  }
+                ],
+                "sceneStartSec": 22.25
+              }
+            }
+          ]
+        }
+      ],
+      "cues": []
+    },
+    {
+      "id": "layout-grid",
+      "title": "layout-grid",
+      "startSec": 24.949999999999996,
+      "endSec": 25.849999999999994,
+      "styles": {
+        "background": "#0f1117",
+        "color": "#e8eaf0",
+        "vars": {
+          "--color-bg": "#0f1117",
+          "--color-bg-subtle": "#151a27",
+          "--color-surface": "#151a27",
+          "--color-surface-strong": "#1c2333",
+          "--color-surface-2": "#1c2333",
+          "--color-text": "#e8eaf0",
+          "--color-text-muted": "#c4c8d6",
+          "--color-primary": "#5f7bff",
+          "--color-secondary": "#ff6ac1",
+          "--color-accent": "#5f7bff",
+          "--color-accent-2": "#ff6ac1",
+          "--color-muted": "#c4c8d6",
+          "--color-muted-more": "#c4c8d6",
+          "--font-eyebrow": "var(--font-preview-humanist), sans-serif",
+          "--font-headline": "var(--font-preview-sans), sans-serif",
+          "--font-subhead": "var(--font-preview-humanist), sans-serif"
+        }
+      },
+      "layers": [
+        {
+          "id": "content",
+          "components": [
+            {
+              "id": "grid-screen-0",
+              "type": "GridScreen",
+              "props": {
+                "eyebrow": "Grid Layout",
+                "title": "Grid Screen",
+                "subtitle": "Header + multi-tile content area",
+                "grid": {
+                  "columns": 4,
+                  "items": [
+                    "Tile 1",
+                    "Tile 2",
+                    "Tile 3",
+                    "Tile 4",
+                    "Tile 5",
+                    "Tile 6",
+                    "Tile 7",
+                    "Tile 8"
+                  ],
+                  "gap": 20,
+                  "entranceStartFrame": -999
+                },
+                "sceneStartSec": 23.15
+              }
+            }
+          ]
+        }
+      ],
+      "cues": []
+    },
+    {
+      "id": "brand-a",
+      "title": "Scene A",
+      "startSec": 26.249999999999993,
+      "endSec": 29.999999999999993,
+      "styles": {
+        "background": "#7a1f1f"
+      },
+      "layers": [
+        {
+          "id": "bg",
+          "zIndex": 0,
+          "components": [
+            {
+              "id": "video-background-0",
+              "type": "VideoBackground",
+              "props": {
+                "color": "#7a1f1f",
+                "sceneStartSec": 24.049999999999997
+              }
+            }
+          ]
+        },
+        {
+          "id": "title",
+          "zIndex": 10,
+          "components": [
+            {
+              "id": "video-title-0",
+              "type": "VideoTitle",
+              "props": {
+                "text": "Scene A",
+                "color": "var(--color-primary)",
+                "textColor": "var(--color-text)",
+                "position": {
+                  "y": 540
+                },
+                "textAlign": "center",
+                "sceneStartSec": 24.049999999999997
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "transitions-voice-1",
+          "label": "transitions-voice-1",
+          "startSec": 26.249999999999993,
+          "endSec": 29.999999999999993,
+          "text": "Use common transitions, or build branded ones.",
+          "segments": [
+            {
+              "type": "tts",
+              "startSec": 26.249999999999993,
+              "endSec": 29.999999999999993,
+              "text": "Use common transitions, or build branded ones."
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "brand-b",
+      "title": "Scene B",
+      "startSec": 27.999999999999993,
+      "endSec": 30.599999999999994,
+      "styles": {
+        "background": "#1f3a7a"
+      },
+      "layers": [
+        {
+          "id": "bg",
+          "zIndex": 0,
+          "components": [
+            {
+              "id": "video-background-0",
+              "type": "VideoBackground",
+              "props": {
+                "color": "#1f3a7a",
+                "sceneStartSec": 27.799999999999997
+              }
+            }
+          ]
+        },
+        {
+          "id": "title",
+          "zIndex": 10,
+          "components": [
+            {
+              "id": "video-title-0",
+              "type": "VideoTitle",
+              "props": {
+                "text": "Scene B",
+                "color": "var(--color-primary)",
+                "textColor": "var(--color-text)",
+                "position": {
+                  "y": 540
+                },
+                "textAlign": "center",
+                "sceneStartSec": 27.799999999999997
+              }
+            }
+          ]
+        }
+      ],
+      "cues": []
+    },
+    {
+      "id": "animations-framer",
+      "title": "animations-framer",
+      "startSec": 30.999999999999993,
+      "endSec": 34.79999999999999,
+      "styles": {
+        "background": "#0f1117",
+        "color": "#e8eaf0",
+        "vars": {
+          "--color-bg": "#0f1117",
+          "--color-bg-subtle": "#151a27",
+          "--color-surface": "#151a27",
+          "--color-surface-strong": "#1c2333",
+          "--color-surface-2": "#1c2333",
+          "--color-text": "#e8eaf0",
+          "--color-text-muted": "#c4c8d6",
+          "--color-primary": "#5f7bff",
+          "--color-secondary": "#ff6ac1",
+          "--color-accent": "#5f7bff",
+          "--color-accent-2": "#ff6ac1",
+          "--color-muted": "#c4c8d6",
+          "--color-muted-more": "#c4c8d6",
+          "--font-eyebrow": "var(--font-preview-humanist), sans-serif",
+          "--font-headline": "var(--font-preview-sans), sans-serif",
+          "--font-subhead": "var(--font-preview-humanist), sans-serif"
+        }
+      },
+      "layers": [
+        {
+          "id": "engine",
+          "zIndex": 10,
+          "components": [
+            {
+              "id": "framer-motion-demo-0",
+              "type": "FramerMotionDemo",
+              "props": {
+                "size": 260,
+                "sceneStartSec": 28.4
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "animations-voice-1",
+          "label": "animations-voice-1",
+          "startSec": 30.999999999999993,
+          "endSec": 34.79999999999999,
+          "text": "Any animation you can do on a web page can be part of your video.",
+          "segments": [
+            {
+              "type": "tts",
+              "startSec": 30.999999999999993,
+              "endSec": 34.79999999999999,
+              "text": "Any animation you can do on a web page can be part of your video."
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "animations-d3",
+      "title": "animations-d3",
+      "startSec": 35.133333333333326,
+      "endSec": 36.033333333333324,
+      "styles": {
+        "background": "#0f1117",
+        "color": "#e8eaf0",
+        "vars": {
+          "--color-bg": "#0f1117",
+          "--color-bg-subtle": "#151a27",
+          "--color-surface": "#151a27",
+          "--color-surface-strong": "#1c2333",
+          "--color-surface-2": "#1c2333",
+          "--color-text": "#e8eaf0",
+          "--color-text-muted": "#c4c8d6",
+          "--color-primary": "#5f7bff",
+          "--color-secondary": "#ff6ac1",
+          "--color-accent": "#5f7bff",
+          "--color-accent-2": "#ff6ac1",
+          "--color-muted": "#c4c8d6",
+          "--color-muted-more": "#c4c8d6",
+          "--font-eyebrow": "var(--font-preview-humanist), sans-serif",
+          "--font-headline": "var(--font-preview-sans), sans-serif",
+          "--font-subhead": "var(--font-preview-humanist), sans-serif"
+        }
+      },
+      "layers": [
+        {
+          "id": "engine",
+          "zIndex": 10,
+          "components": [
+            {
+              "id": "d3-bar-chart-0",
+              "type": "D3BarChart",
+              "props": {
+                "sceneStartSec": 32.199999999999996
+              }
+            }
+          ]
+        }
+      ],
+      "cues": []
+    },
+    {
+      "id": "animations-processing",
+      "title": "animations-processing",
+      "startSec": 36.36666666666666,
+      "endSec": 37.26666666666666,
+      "styles": {
+        "background": "#0f1117",
+        "color": "#e8eaf0",
+        "vars": {
+          "--color-bg": "#0f1117",
+          "--color-bg-subtle": "#151a27",
+          "--color-surface": "#151a27",
+          "--color-surface-strong": "#1c2333",
+          "--color-surface-2": "#1c2333",
+          "--color-text": "#e8eaf0",
+          "--color-text-muted": "#c4c8d6",
+          "--color-primary": "#5f7bff",
+          "--color-secondary": "#ff6ac1",
+          "--color-accent": "#5f7bff",
+          "--color-accent-2": "#ff6ac1",
+          "--color-muted": "#c4c8d6",
+          "--color-muted-more": "#c4c8d6",
+          "--font-eyebrow": "var(--font-preview-humanist), sans-serif",
+          "--font-headline": "var(--font-preview-sans), sans-serif",
+          "--font-subhead": "var(--font-preview-humanist), sans-serif"
+        }
+      },
+      "layers": [
+        {
+          "id": "engine",
+          "zIndex": 10,
+          "components": [
+            {
+              "id": "p5-particles-0",
+              "type": "P5Particles",
+              "props": {
+                "particleCount": 30,
+                "overscanX": 320,
+                "focusX": 0.5,
+                "backgroundDarken": 0.35,
+                "sceneStartSec": 33.099999999999994
+              }
+            }
+          ]
+        }
+      ],
+      "cues": []
+    },
+    {
+      "id": "animations-three",
+      "title": "animations-three",
+      "startSec": 37.599999999999994,
+      "endSec": 38.49999999999999,
+      "styles": {
+        "background": "#0f1117",
+        "color": "#e8eaf0",
+        "vars": {
+          "--color-bg": "#0f1117",
+          "--color-bg-subtle": "#151a27",
+          "--color-surface": "#151a27",
+          "--color-surface-strong": "#1c2333",
+          "--color-surface-2": "#1c2333",
+          "--color-text": "#e8eaf0",
+          "--color-text-muted": "#c4c8d6",
+          "--color-primary": "#5f7bff",
+          "--color-secondary": "#ff6ac1",
+          "--color-accent": "#5f7bff",
+          "--color-accent-2": "#ff6ac1",
+          "--color-muted": "#c4c8d6",
+          "--color-muted-more": "#c4c8d6",
+          "--font-eyebrow": "var(--font-preview-humanist), sans-serif",
+          "--font-headline": "var(--font-preview-sans), sans-serif",
+          "--font-subhead": "var(--font-preview-humanist), sans-serif"
+        }
+      },
+      "layers": [
+        {
+          "id": "engine",
+          "zIndex": 10,
+          "components": [
+            {
+              "id": "three-orbit-0",
+              "type": "ThreeOrbit",
+              "props": {
+                "cubeSize": 160,
+                "overscanX": 320,
+                "focusX": 0.5,
+                "sceneStartSec": 33.99999999999999
+              }
+            }
+          ]
+        }
+      ],
+      "cues": []
+    },
+    {
+      "id": "animations-lottie",
+      "title": "animations-lottie",
+      "startSec": 38.83333333333333,
+      "endSec": 39.73333333333333,
+      "styles": {
+        "background": "#0f1117",
+        "color": "#e8eaf0",
+        "vars": {
+          "--color-bg": "#0f1117",
+          "--color-bg-subtle": "#151a27",
+          "--color-surface": "#151a27",
+          "--color-surface-strong": "#1c2333",
+          "--color-surface-2": "#1c2333",
+          "--color-text": "#e8eaf0",
+          "--color-text-muted": "#c4c8d6",
+          "--color-primary": "#5f7bff",
+          "--color-secondary": "#ff6ac1",
+          "--color-accent": "#5f7bff",
+          "--color-accent-2": "#ff6ac1",
+          "--color-muted": "#c4c8d6",
+          "--color-muted-more": "#c4c8d6",
+          "--font-eyebrow": "var(--font-preview-humanist), sans-serif",
+          "--font-headline": "var(--font-preview-sans), sans-serif",
+          "--font-subhead": "var(--font-preview-humanist), sans-serif"
+        }
+      },
+      "layers": [
+        {
+          "id": "engine",
+          "zIndex": 10,
+          "components": [
+            {
+              "id": "lottie-badge-0",
+              "type": "LottieBadge",
+              "props": {
+                "size": 980,
+                "sceneStartSec": 34.89999999999999
+              }
+            }
+          ]
+        }
+      ],
+      "cues": []
+    },
+    {
+      "id": "animations-text",
+      "title": "animations-text",
+      "startSec": 40.06666666666666,
+      "endSec": 40.96666666666666,
+      "styles": {
+        "background": "#0f1117",
+        "color": "#e8eaf0",
+        "vars": {
+          "--color-bg": "#0f1117",
+          "--color-bg-subtle": "#151a27",
+          "--color-surface": "#151a27",
+          "--color-surface-strong": "#1c2333",
+          "--color-surface-2": "#1c2333",
+          "--color-text": "#e8eaf0",
+          "--color-text-muted": "#c4c8d6",
+          "--color-primary": "#5f7bff",
+          "--color-secondary": "#ff6ac1",
+          "--color-accent": "#5f7bff",
+          "--color-accent-2": "#ff6ac1",
+          "--color-muted": "#c4c8d6",
+          "--color-muted-more": "#c4c8d6",
+          "--font-eyebrow": "var(--font-preview-humanist), sans-serif",
+          "--font-headline": "var(--font-preview-sans), sans-serif",
+          "--font-subhead": "var(--font-preview-humanist), sans-serif"
+        }
+      },
+      "layers": [
+        {
+          "id": "engine",
+          "zIndex": 10,
+          "components": [
+            {
+              "id": "text-effects-demo-0",
+              "type": "TextEffectsDemo",
+              "props": {
+                "sceneStartSec": 35.79999999999999
+              }
+            }
+          ]
+        }
+      ],
+      "cues": []
+    },
+    {
+      "id": "typefaces",
+      "title": "typefaces",
+      "startSec": 41.36666666666666,
+      "endSec": 45.11666666666666,
+      "styles": {
+        "background": "#0f1117",
+        "color": "#e8eaf0",
+        "vars": {
+          "--color-bg": "#0f1117",
+          "--color-bg-subtle": "#151a27",
+          "--color-surface": "#151a27",
+          "--color-surface-strong": "#1c2333",
+          "--color-surface-2": "#1c2333",
+          "--color-text": "#e8eaf0",
+          "--color-text-muted": "#c4c8d6",
+          "--color-primary": "#5f7bff",
+          "--color-secondary": "#ff6ac1",
+          "--color-accent": "#5f7bff",
+          "--color-accent-2": "#ff6ac1",
+          "--color-muted": "#c4c8d6",
+          "--color-muted-more": "#c4c8d6",
+          "--font-eyebrow": "var(--font-preview-humanist), sans-serif",
+          "--font-headline": "var(--font-preview-sans), sans-serif",
+          "--font-subhead": "var(--font-preview-humanist), sans-serif"
+        }
+      },
+      "layers": [
+        {
+          "id": "content",
+          "components": [
+            {
+              "id": "typeface-color-demo-0",
+              "type": "TypefaceColorDemo",
+              "props": {
+                "sceneStartSec": 36.69999999999999
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "typefaces-cue",
+          "label": "typefaces-cue",
+          "startSec": 41.36666666666666,
+          "endSec": 45.11666666666666,
+          "text": "Style everything with typefaces and color themes.",
+          "segments": [
+            {
+              "type": "tts",
+              "startSec": 41.36666666666666,
+              "endSec": 45.11666666666666,
+              "text": "Style everything with typefaces and color themes."
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "id": "cta",
+      "title": "cta",
+      "startSec": 45.51666666666666,
+      "endSec": 54.316666666666656,
+      "styles": {
+        "background": "#0f1117",
+        "color": "#e8eaf0",
+        "vars": {
+          "--color-bg": "#0f1117",
+          "--color-bg-subtle": "#151a27",
+          "--color-surface": "#151a27",
+          "--color-surface-strong": "#1c2333",
+          "--color-surface-2": "#1c2333",
+          "--color-text": "#e8eaf0",
+          "--color-text-muted": "#c4c8d6",
+          "--color-primary": "#5f7bff",
+          "--color-secondary": "#ff6ac1",
+          "--color-accent": "#5f7bff",
+          "--color-accent-2": "#ff6ac1",
+          "--color-muted": "#c4c8d6",
+          "--color-muted-more": "#c4c8d6",
+          "--font-eyebrow": "var(--font-preview-humanist), sans-serif",
+          "--font-headline": "var(--font-preview-sans), sans-serif",
+          "--font-subhead": "var(--font-preview-humanist), sans-serif"
+        }
+      },
+      "layers": [
+        {
+          "id": "content",
+          "components": [
+            {
+              "id": "cta-slide-0",
+              "type": "CtaSlide",
+              "props": {
+                "sceneStartSec": 40.44999999999999
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "cta-cue",
+          "label": "cta-cue",
+          "startSec": 45.51666666666666,
+          "endSec": 54.316666666666656,
+          "text": "Dive into the demo videos and code to learn more, and join the waitlist to keep up with Babulus as we launch it. We'll send you videos.",
+          "segments": [
+            {
+              "type": "tts",
+              "startSec": 45.51666666666666,
+              "endSec": 54.316666666666656,
+              "text": "Dive into the demo videos and code to learn more, and join the waitlist to keep up with Babulus as we launch it. We'll send you videos."
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    }
+  ],
+  "timeline": [
+    {
+      "kind": "scene",
+      "sceneId": "open-standard",
+      "startSec": 0,
+      "endSec": 6.2
+    },
+    {
+      "kind": "transition",
+      "id": "home-push-0",
+      "startSec": 6.2,
+      "endSec": 6.6000000000000005,
+      "effect": "push",
+      "ease": "power2.inOut",
+      "props": {
+        "direction": "left"
+      },
+      "mode": "insert",
+      "fromSceneId": "open-standard",
+      "toSceneId": "ai-agents"
+    },
+    {
+      "kind": "scene",
+      "sceneId": "ai-agents",
+      "startSec": 6.6000000000000005,
+      "endSec": 13.9
+    },
+    {
+      "kind": "transition",
+      "id": "home-push-1",
+      "startSec": 13.9,
+      "endSec": 14.3,
+      "effect": "push",
+      "ease": "power2.inOut",
+      "props": {
+        "direction": "left"
+      },
+      "mode": "insert",
+      "fromSceneId": "ai-agents",
+      "toSceneId": "layout-one"
+    },
+    {
+      "kind": "scene",
+      "sceneId": "layout-one",
+      "startSec": 14.3,
+      "endSec": 22.150000000000002
+    },
+    {
+      "kind": "transition",
+      "id": "home-push-2",
+      "startSec": 22.150000000000002,
+      "endSec": 22.483333333333334,
+      "effect": "push",
+      "ease": "power2.inOut",
+      "props": {
+        "direction": "left"
+      },
+      "mode": "insert",
+      "fromSceneId": "layout-one",
+      "toSceneId": "layout-two"
+    },
+    {
+      "kind": "scene",
+      "sceneId": "layout-two",
+      "startSec": 22.483333333333334,
+      "endSec": 23.383333333333333
+    },
+    {
+      "kind": "transition",
+      "id": "home-push-3",
+      "startSec": 23.383333333333333,
+      "endSec": 23.716666666666665,
+      "effect": "push",
+      "ease": "power2.inOut",
+      "props": {
+        "direction": "left"
+      },
+      "mode": "insert",
+      "fromSceneId": "layout-two",
+      "toSceneId": "layout-three"
+    },
+    {
+      "kind": "scene",
+      "sceneId": "layout-three",
+      "startSec": 23.716666666666665,
+      "endSec": 24.616666666666664
+    },
+    {
+      "kind": "transition",
+      "id": "home-push-4",
+      "startSec": 24.616666666666664,
+      "endSec": 24.949999999999996,
+      "effect": "push",
+      "ease": "power2.inOut",
+      "props": {
+        "direction": "left"
+      },
+      "mode": "insert",
+      "fromSceneId": "layout-three",
+      "toSceneId": "layout-grid"
+    },
+    {
+      "kind": "scene",
+      "sceneId": "layout-grid",
+      "startSec": 24.949999999999996,
+      "endSec": 25.849999999999994
+    },
+    {
+      "kind": "transition",
+      "id": "home-fade-1",
+      "startSec": 25.849999999999994,
+      "endSec": 26.249999999999993,
+      "effect": "crossfade",
+      "ease": "power2.inOut",
+      "mode": "insert",
+      "fromSceneId": "layout-grid",
+      "toSceneId": "brand-a"
+    },
+    {
+      "kind": "scene",
+      "sceneId": "brand-a",
+      "startSec": 26.249999999999993,
+      "endSec": 29.999999999999993
+    },
+    {
+      "kind": "transition",
+      "id": "brand-overlay",
+      "startSec": 27.999999999999993,
+      "endSec": 29.999999999999993,
+      "effect": "wipe",
+      "ease": "power2.inOut",
+      "props": {
+        "direction": "right"
+      },
+      "mode": "overlap",
+      "fromSceneId": "brand-a",
+      "toSceneId": "brand-b",
+      "layers": [
+        {
+          "id": "overlay",
+          "styles": {
+            "opacity": 0.95
+          },
+          "zIndex": 20,
+          "components": [
+            {
+              "id": "video-rectangle-0",
+              "type": "VideoRectangle",
+              "props": {
+                "color": "#1f7a3a",
+                "xFrom": 1920,
+                "xTo": -260,
+                "y": 0,
+                "width": 260,
+                "height": 1080
+              }
+            },
+            {
+              "id": "video-title-1",
+              "type": "VideoTitle",
+              "props": {
+                "text": "Company Name",
+                "color": "#0b0f1a",
+                "textColor": "#0b0f1a",
+                "fontSize": 64,
+                "fontWeight": 700,
+                "xFrom": 2050,
+                "xTo": -130,
+                "yFrom": 540,
+                "yTo": 540,
+                "textAlign": "center",
+                "rotateDeg": 90,
+                "centerY": true
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "scene",
+      "sceneId": "brand-b",
+      "startSec": 27.999999999999993,
+      "endSec": 30.599999999999994
+    },
+    {
+      "kind": "transition",
+      "id": "home-push-5",
+      "startSec": 30.599999999999994,
+      "endSec": 30.999999999999993,
+      "effect": "push",
+      "ease": "power2.inOut",
+      "props": {
+        "direction": "left"
+      },
+      "mode": "insert",
+      "fromSceneId": "brand-b",
+      "toSceneId": "animations-framer"
+    },
+    {
+      "kind": "scene",
+      "sceneId": "animations-framer",
+      "startSec": 30.999999999999993,
+      "endSec": 34.79999999999999
+    },
+    {
+      "kind": "transition",
+      "id": "home-anim-1",
+      "startSec": 34.79999999999999,
+      "endSec": 35.133333333333326,
+      "effect": "push",
+      "ease": "power2.inOut",
+      "props": {
+        "direction": "left"
+      },
+      "mode": "insert",
+      "fromSceneId": "animations-framer",
+      "toSceneId": "animations-d3"
+    },
+    {
+      "kind": "scene",
+      "sceneId": "animations-d3",
+      "startSec": 35.133333333333326,
+      "endSec": 36.033333333333324
+    },
+    {
+      "kind": "transition",
+      "id": "home-anim-2",
+      "startSec": 36.033333333333324,
+      "endSec": 36.36666666666666,
+      "effect": "push",
+      "ease": "power2.inOut",
+      "props": {
+        "direction": "left"
+      },
+      "mode": "insert",
+      "fromSceneId": "animations-d3",
+      "toSceneId": "animations-processing"
+    },
+    {
+      "kind": "scene",
+      "sceneId": "animations-processing",
+      "startSec": 36.36666666666666,
+      "endSec": 37.26666666666666
+    },
+    {
+      "kind": "transition",
+      "id": "home-anim-3",
+      "startSec": 37.26666666666666,
+      "endSec": 37.599999999999994,
+      "effect": "push",
+      "ease": "power2.inOut",
+      "props": {
+        "direction": "left"
+      },
+      "mode": "insert",
+      "fromSceneId": "animations-processing",
+      "toSceneId": "animations-three"
+    },
+    {
+      "kind": "scene",
+      "sceneId": "animations-three",
+      "startSec": 37.599999999999994,
+      "endSec": 38.49999999999999
+    },
+    {
+      "kind": "transition",
+      "id": "home-anim-4",
+      "startSec": 38.49999999999999,
+      "endSec": 38.83333333333333,
+      "effect": "push",
+      "ease": "power2.inOut",
+      "props": {
+        "direction": "left"
+      },
+      "mode": "insert",
+      "fromSceneId": "animations-three",
+      "toSceneId": "animations-lottie"
+    },
+    {
+      "kind": "scene",
+      "sceneId": "animations-lottie",
+      "startSec": 38.83333333333333,
+      "endSec": 39.73333333333333
+    },
+    {
+      "kind": "transition",
+      "id": "home-anim-5",
+      "startSec": 39.73333333333333,
+      "endSec": 40.06666666666666,
+      "effect": "push",
+      "ease": "power2.inOut",
+      "props": {
+        "direction": "left"
+      },
+      "mode": "insert",
+      "fromSceneId": "animations-lottie",
+      "toSceneId": "animations-text"
+    },
+    {
+      "kind": "scene",
+      "sceneId": "animations-text",
+      "startSec": 40.06666666666666,
+      "endSec": 40.96666666666666
+    },
+    {
+      "kind": "transition",
+      "id": "home-push-6",
+      "startSec": 40.96666666666666,
+      "endSec": 41.36666666666666,
+      "effect": "push",
+      "ease": "power2.inOut",
+      "props": {
+        "direction": "left"
+      },
+      "mode": "insert",
+      "fromSceneId": "animations-text",
+      "toSceneId": "typefaces"
+    },
+    {
+      "kind": "scene",
+      "sceneId": "typefaces",
+      "startSec": 41.36666666666666,
+      "endSec": 45.11666666666666
+    },
+    {
+      "kind": "transition",
+      "id": "home-push-7",
+      "startSec": 45.11666666666666,
+      "endSec": 45.51666666666666,
+      "effect": "push",
+      "ease": "power2.inOut",
+      "props": {
+        "direction": "left"
+      },
+      "mode": "insert",
+      "fromSceneId": "typefaces",
+      "toSceneId": "cta"
+    },
+    {
+      "kind": "scene",
+      "sceneId": "cta",
+      "startSec": 45.51666666666666,
+      "endSec": 54.316666666666656
+    }
+  ],
+  "fps": 30,
+  "meta": {
+    "fps": 30,
+    "width": 1920,
+    "height": 1080
+  }
+}

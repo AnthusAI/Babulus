@@ -1,0 +1,30 @@
+{
+  "id": "babulus-b4a899dc-e8dc-4442-b8dd-6eeeb3536153",
+  "title": "Prove a fail-closed renderer process sandbox",
+  "description": "Linked VideoML P20a videoml-32d662. Build a source prototype and adversarial local probes for the credentialed-supervisor versus networkless renderer boundary. Read canonical initiative D08/D10/D11 and P20a primary decision. Required: closed inherited descriptors, credential-free environment, dedicated UID/GID, dropped groups/capabilities, no_new_privs, architecture-checked inherited seccomp and mandatory Landlock capability policy. Unsupported kernel/control is terminal ISOLATION_UNAVAILABLE before executing renderer. Probe network protocols/metadata/localhost/Unix IPC, process inspection and descriptor theft, supervisor files and outside writes, child inheritance and cleanup. Use existing local Docker images only after primary heavy-slot grant; no cloud writes, downloads, production enablement or claims of Fargate proof. Actual exact Batch Fargate proof remains a later dedicated-account bounded gate. Keep files isolated under infra/render-isolation and behavior fixtures; preserve pending demo migration. No commit without separate user approval required by AGENTS.md.",
+  "type": "task",
+  "status": "in_progress",
+  "priority": 1,
+  "assignee": null,
+  "creator": null,
+  "parent": "babulus-48bc4e27-b336-4500-9e65-a7fdfe42698e",
+  "labels": [
+    "videoml-integration"
+  ],
+  "dependencies": [],
+  "comments": [
+    {
+      "id": "49833f89-f2f8-4e23-aa2b-d80a4072f143",
+      "author": "home",
+      "text": "Primary review follow-up: output-reader and callback exceptions now propagate as ISOLATION_UNAVAILABLE after attempted cleanup, and startup/cleanup errors retain fencing. Five source tests passed under primary execution. Real local ARM Linux rerun passed six scenarios / eighteen steps, including callback failure and read failure after child READY (log /private/tmp/p20a-linux/gherkin-reader-final.log). This verifies local process-group handling only; no cloud slot/reservation release proof. Chromium/FFmpeg compatibility experiment is being prepared with bounded Debian dependency preflight, no cloud write or production enablement. No commit performed.",
+      "created_at": "2026-10-30T23:30:04.677405Z",
+      "comment_type": "default"
+    }
+  ],
+  "created_at": "2026-10-30T23:12:55.481534Z",
+  "updated_at": "2026-10-30T23:30:04.677868Z",
+  "closed_at": null,
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {}
+}

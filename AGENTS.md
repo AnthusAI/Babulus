@@ -1,0 +1,353 @@
+# Babulus - XML DSL for Remotion Audio + Timing
+
+
+## Project management with Kanbus
+
+Use Kanbus for task management.
+Why: Kanbus task management is MANDATORY here; every task must live in Kanbus.
+When: Create/update the Kanbus task before coding; close it only after the change lands.
+How: See CONTRIBUTING_AGENT.md for the Kanbus workflow, hierarchy, status rules, priorities, command examples, and the sins to avoid. Never inspect project/ or issue JSON directly (including with cat or jq); use Kanbus commands only.
+Performance: Prefer kanbusr (Rust) when available; kanbus (Python) is equivalent but slower.
+Warning: Editing project/ directly is a sin against The Way. Do not read or write anything in project/; work only through Kanbus.
+
+## CRITICAL PROTOCOL: GIT COMMITS
+**NEVER** commit changes without explicit user approval.
+- Always show the user what you have done and ask for confirmation before running `git commit`.
+- If the user asks you to "do X", implementing X is your job. Committing X is a separate step that requires separate approval.
+- Exception: If the user explicitly says "fix X and commit", you may commit. Otherwise, assume you are in a "review pending" state.
+
+## Brand Theme & Visual Design Policies
+
+*   **Flat Design Only**:
+    *   No gradients.
+    *   No drop-shadows (unless totally flat/hard).
+    *   No borders/outlines on containers or regions.
+*   **Contrast & Separation**:
+    *   Avoid thin lines (hrules, borders) for separating regions.
+    *   Use **varying background colors** on flat rectangles with rounded corners to indicate regions and groupings.
+    *   Use contrast carefully; avoid high contrast.
+        *   Background black should not be fully black (e.g., use dark gray).
+        *   Foreground white should not be fully white.
+        *   Use a limited set of official colors: "not-black", "not-white", and 2-3 "muted" colors.
+*   **Color System**:
+    *   Themes use **Radix Colors** (Cool, Neutral, Warm).
+    *   Support both Light and Dark modes.
+*   **Typography & Layout**:
+    *   Refined elegance, modern Bauhaus-inspired, Apple's modern minimalist Art Deco.
+*   **Animations**:
+    *   Subtle animation effects are encouraged.
+    *   **NO CSS animations** (like Framer Motion) for components that feature in Babulus videos.
+    *   Use **frame-parameterized animations**: Animations must be driven by a `frame` parameter so they can be rendered deterministically in videos.
+*   **Development Workflow**:
+    *   Refer to **Shadcn UI** for default UX design patterns.
+    *   Provide examples of basic visual elements in **Storybook stories**.
+    *   Do research into best practices for specific tasks.
+
+## Standard Building Blocks (quick links for agents)
+- Layouts: see `LAYOUTS.md` (standard screen layouts, required props, debug-frame flag)
+- Typography themes: see `TYPEFACES.md` (named font sets, when to use them)
+- Color themes: see `COLORS.md` (Radix-based light/dark theme tokens)
+
+## Designers Documentation (cookbook index)
+- Layouts: `/docs/components/layouts`
+- Color Schemes: `/docs/components/colors`
+- Typefaces: `/docs/components/typography`
+- Animation: `/docs/animation`
+- Components: `/docs/components`
+
+## Text Effects Cookbook (curated names)
+- Effects: `fade`, `fade_up`, `fade_down`, `slide_left`, `slide_right`, `pop`, `scale_in`
+- Default timing: if a cue exists, `start: { kind: "cue" }` is the default
+- Example (Title + Subtitle):
+  - `titleEffect: { effect: "fade_up", unit: "words", durationFrames: 24, staggerFrames: 4 }`
+  - `subtitleEffect: { effect: "slide_left", unit: "chars", durationFrames: 20, staggerFrames: 2 }`
+
+## Preview generation (docs mounts)
+```bash
+npm run studio:preview -- examples/animation-demos.video.tsx examples/components-cookbook.video.tsx
+```
+
+## Agent autonomy (behavior)
+- Proceed independently without stopping to ask permission after each change.
+- Keep moving through the plan and report only when there is meaningful progress or a true blocker.
+- Only pause for explicit approval when required (e.g., commits or destructive operations).
+
+## What this is
+
+Node/TypeScript CLI tool that compiles `.babulus.xml` DSL files into JSON timing for Remotion, plus generated TTS/SFX/music with environment-aware caching.
+
+## How to run
+
+```bash
+# Install (from this repo)
+npm install
+
+# Generate audio + timing JSON
+npm run babulus -- generate content/<video>.babulus.xml
+
+# Watch mode (auto-regenerate on DSL changes)
+npm run babulus -- generate --watch content/<video>.babulus.xml
+
+# Watch all videos in content/ directory
+npm run babulus -- generate --watch content/
+
+# Environment-specific generation
+BABULUS_ENV=development npm run babulus -- generate content/<video>.babulus.xml
+BABULUS_ENV=production npm run babulus -- generate content/<video>.babulus.xml
+```
+
+## Key files
+
+- `src/cli.ts` - CLI entry point
+- `src/generate.ts` - Core generation logic (TTS/SFX/music)
+- `src/dsl/builder.ts` - DSL builders (composition/scene/cue/voice)
+- `src/dsl/load.ts` - DSL loader (dynamic import)
+- `src/cache-resolver.ts` - Environment-aware cache fallback
+- `src/sfx-workflow.ts` - SFX variant selection/archiving
+- `.babulus/config.yml` - API keys (ElevenLabs, OpenAI, AWS, Azure)
+
+## VideoML Project Split (Important For Refactors)
+
+Babulus is in the process of factoring VideoML (VML) out into a separate set of public projects.
+
+### Source of truth for VideoML code
+
+If you need to change the VML language, player, standard library, or toolchain/CLI, those live in the **VideoML**
+projects (typically checked out next to Babulus at `~/Projects/VideoML/*`), not in this repo.
+
+Expected repos/folders:
+- `~/Projects/VideoML/player` - `@videoml/player` (web preview/player runtime + XML parser)
+- `~/Projects/VideoML/stdlib` - `@videoml/stdlib` (design system: DOM components + tokens)
+- `~/Projects/VideoML/toolchain` - `@videoml/toolchain` (core compilation/generation/render primitives)
+- `~/Projects/VideoML/cli` - `@videoml/cli` (`vml` CLI wrapper around toolchain)
+- `~/Projects/VideoML/videoml-org` - docs site
+- `~/Projects/VideoML/specification` - RFCs/spec texts
+
+### How Studio Web consumes VideoML during local development
+
+`apps/studio-web` currently depends on local checkouts via `file:` deps and TS/webpack aliasing:
+- `apps/studio-web/package.json` uses `file:../../../VideoML/player` and `file:../../../VideoML/stdlib`
+- `apps/studio-web/next.config.mjs` aliases `@videoml/*` to `../../../VideoML/*`
+- `apps/studio-web/tsconfig.json` + `apps/studio-web/jest.config.js` map `@videoml/*` to the local `~/Projects/VideoML/*/src` entrypoints
+
+So: if something about web previewing "doesn't play", the bug may be in `~/Projects/VideoML/player` or
+`~/Projects/VideoML/stdlib`, even if the symptom appears in Babulus Studio Web.
+
+## Official documentation (HTML source of truth)
+
+The documentation source of truth lives in the Studio Web app (branded HTML, served at `/docs`).
+
+- Docs landing page route: `apps/studio-web/app/(public)/docs/page.tsx`
+- Docs router + link rewrite: `apps/studio-web/app/(public)/docs/[...slug]/page.tsx`
+- Docs registry (slugs, categories): `apps/studio-web/lib/docs-registry.ts`
+- Docs content (HTML strings): `apps/studio-web/lib/docs-content`
+- “What is Babulus?” overview: `/docs/introduction` (`apps/studio-web/lib/docs-content/introduction.ts`)
+- Technical overview: `/docs/technical` (`apps/studio-web/lib/docs-content/technical.ts`)
+- Roadmap: `/docs/roadmap` (`apps/studio-web/lib/docs-content/roadmap.ts`)
+
+## Inputs/Outputs
+
+**Inputs**:
+- DSL: `content/<video>.babulus.xml` (scenes, cues, narration, audio clips)
+- Config: `.babulus/config.yml` (API credentials)
+
+**Outputs**:
+- Script JSON: `src/videos/<video>/<video>.script.json` (timing data for Remotion)
+- Timeline JSON: `src/videos/<video>/<video>.timeline.json` (audio tracks)
+- Audio: `public/babulus/<video>.wav` (concatenated voiceover)
+- Cache: `.babulus/out/<video>/env/<environment>/` (TTS segments, SFX, music)
+
+## Environment-aware caching
+
+Cache structure: `.babulus/out/<video>/env/<environment>/`
+
+Environments: `development`, `aws`, `azure`, `production`, `static`
+
+Fallback chain: development -> aws -> azure -> production -> static
+
+**Why**: Prevents burning through API quotas when switching environments or making DSL edits. Only regenerates changed segments.
+
+## Common tasks
+
+```bash
+# Watch mode (all videos)
+BABULUS_ENV=development npm run babulus -- generate --watch content/
+
+# Force regenerate everything
+npm run babulus -- generate --fresh content/intro.babulus.xml
+
+# Audition SFX variants
+npm run babulus -- sfx next --clip whoosh --variants 8
+npm run babulus -- sfx prev --clip whoosh --variants 8
+npm run babulus -- sfx set --clip whoosh --pick 3
+
+# Clean generated files (environment-aware)
+npm run babulus -- clean --yes                          # Current env only
+npm run babulus -- clean --env production --yes         # Specific env
+npm run babulus -- clean --only-voice --yes            # Only voice
+npm run babulus -- clean --only-sfx --only-music --yes # Multiple types
+```
+
+---
+
+# Babulus Studio Web (AWS Amplify Gen2)
+
+## Getting amplify_outputs.json
+
+**CRITICAL:** After deploying the Amplify backend, you must download `amplify_outputs.json` to connect your local dev environment to the backend.
+
+### Method 1: Using the Script (Easiest)
+
+```bash
+# From repository root
+./scripts/get-amplify-outputs.sh <app-id> main
+```
+
+**Finding your App ID:**
+1. Go to [AWS Amplify Console](https://console.aws.amazon.com/amplify/home?region=us-east-1)
+2. Click on your app (Babulus)
+3. Copy the App ID from the URL (looks like `d3abc123xyz`)
+
+**Example:**
+```bash
+./scripts/get-amplify-outputs.sh d3abc123xyz main
+```
+
+The file will be saved to `apps/studio-web/amplify_outputs.json`.
+
+### Method 2: Manual Download from Console
+
+1. Go to [AWS Amplify Console](https://console.aws.amazon.com/amplify/home?region=us-east-1)
+2. Select your app (Babulus)
+3. Select the branch (main)
+4. Click "Hosting" → "Download outputs"
+5. Save as `apps/studio-web/amplify_outputs.json`
+
+### Method 3: Using CLI Directly
+
+```bash
+cd apps/studio-web
+AWS_PROFILE=anthus npx @aws-amplify/backend-cli@latest generate outputs \
+  --branch main \
+  --app-id <app-id> \
+  --profile anthus
+```
+
+### Verifying the File
+
+```bash
+# Check that it exists and is valid JSON
+cat apps/studio-web/amplify_outputs.json | jq .
+
+# Should contain auth, data, and storage config
+jq 'keys' apps/studio-web/amplify_outputs.json
+# Expected output: ["auth", "data", "storage", "version"]
+```
+
+## Studio Development
+
+```bash
+# Install dependencies
+cd apps/studio-web
+npm install
+
+# Start dev server
+npm run dev
+
+# Build for production
+npm run build
+
+# Run integration tests (requires amplify_outputs.json)
+npm run test:integration
+```
+
+## Amplify Deployment
+
+### Automatic (Recommended)
+
+Push to `main` branch triggers automatic deployment:
+
+```bash
+git push origin main
+```
+
+Check status at: [AWS Amplify Console](https://console.aws.amazon.com/amplify/home?region=us-east-1)
+
+### Manual
+
+```bash
+cd apps/studio-web
+npm run amplify:deploy
+```
+
+## AWS Account Info
+
+- **Region:** us-east-1
+- **Amplify App:** Babulus
+
+## Amplify Build Failure Troubleshooting
+
+If the build fails, check these common issues:
+
+1. **Missing amplify_outputs.json during build**
+   - The build should handle this gracefully with a try/catch in `lib/amplify-config.ts`
+   - If it doesn't, check that the try/catch wrapper exists
+
+2. **TypeScript errors**
+   - Check build logs in Amplify Console
+   - Run `npm run build` locally to reproduce
+
+3. **Module resolution issues**
+   - Ensure ESM imports use `.js` extensions (even for `.ts` files)
+   - Check `next.config.mjs` has correct `transpilePackages` config
+
+4. **Missing dependencies**
+   - Check that all required packages are in `dependencies` (not devDependencies)
+   - Backend packages must be in dependencies for Amplify to install them
+
+## Pre-deployment CI Mirror (Required)
+
+Run the same checks Amplify runs locally **before** committing or pushing:
+
+```bash
+cd apps/studio-web
+./scripts/ci-predeploy.sh
+```
+
+This mirrors the Amplify build steps that catch TypeScript/Next build failures
+without touching AWS or creating a sandbox. The backend pipeline deploy step
+cannot be run locally without AWS access; this script covers the local build
+portion that has been failing in CI.
+
+## Studio Architecture
+
+- **Backend:** Amplify Gen2 (Cognito + AppSync + DynamoDB + S3)
+- **Frontend:** Next.js 14 with App Router
+- **Data Layer:** GraphQL via `lib/control-plane-graphql.ts`
+- **Storage:** S3 with org-scoped paths via `lib/storage-client.ts`
+- **Auth:** Cognito with `lib/use-auth.ts` hook
+
+See [apps/studio-web/README.md](apps/studio-web/README.md) for detailed documentation.
+
+## Waitlist signups
+
+Signups from the public waitlist form go straight from the browser to **Prospectus** (form `babulus-waitlist-v1`);
+Babulus keeps no local waitlist backend. The form stays disabled until `NEXT_PUBLIC_PROSPECTUS_INTAKE_BASE_URL` is set.
+View signups in the Prospectus CRM (labels `waitlist` + `app-babulus`). See [docs/waitlist.md](docs/waitlist.md).
+
+## Landing the Plane (Session Completion)
+
+When ending a work session, complete these steps. Task tracking is Kanbus only (see "Project management with Kanbus" at the top); commits follow the git-commit protocol above.
+
+1. **Track remaining work in Kanbus** - Create Kanbus tasks for anything that needs follow-up.
+2. **Run quality gates** (if code changed) - Tests, linters, builds.
+3. **Update Kanbus status** - Close finished work, update in-progress items (via `kanbus` commands only; see CONTRIBUTING_AGENT.md).
+4. **Commit and push only with user approval** - Show the user what changed and get explicit approval before `git commit`. Once approved (or when the user said "fix X and commit"):
+   ```bash
+   git pull --rebase
+   git push
+   git status  # should show "up to date with origin"
+   ```
+   If push fails, resolve and retry. Without commit approval, leave the work in a "review pending" state and say so.
+5. **Clean up** - Drop only stash entries you created (find them by your own message tag; never `git stash clear` or a bare `git stash pop`), and remove worktrees/branches you created that are merged or abandoned.
+6. **Hand off** - Provide context for the next session.

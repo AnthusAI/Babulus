@@ -1,0 +1,14 @@
+{
+  "name": "@videoml/cli",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "vml": "src/cli.ts"
+  },
+  "dependencies": {
+    "chokidar": "^3.6.0",
+    "commander": "^12.1.0",
+    "tsx": "^4.19.0"
+  }
+}

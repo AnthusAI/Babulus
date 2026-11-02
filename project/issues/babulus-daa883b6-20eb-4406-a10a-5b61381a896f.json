@@ -1,0 +1,20 @@
+{
+  "id": "babulus-daa883b6-20eb-4406-a10a-5b61381a896f",
+  "title": "Fenced local-first render lifecycle",
+  "description": "As a render customer, I want one authoritative attempt owner so that stale workers cannot publish output or double-charge me.\n\nFeature: Fenced local-first rendering\nScenario: Competing local claim and cloud reservation\n Given an eligible queued job at its original grace deadline\n When a local claim and cloud reservation race\n Then only one conditional transaction succeeds and the loser cannot own the job\nScenario: Stale completion\n Given an expired or superseded generation\n When its worker publishes completion\n Then no authoritative artifact or settlement changes\nScenario: Cancellation ordering\n Given an active render\n When cancellation commits before completion\n Then old tokens cannot complete and uncertain remote work retains its slot\nScenario: Completed job cancellation\n Given completion already committed\n When cancellation arrives\n Then the job remains succeeded\nScenario: Bounded leases and retries\n Given authoritative server time and two total attempts or one cloud attempt\n When heartbeats or failures occur\n Then no lease exceeds the absolute deadline and exhausted attempts never requeue\nScenario: Unknown cloud submission\n Given a reserved attempt with uncertain paid submission\n When failure or cancellation is finalized\n Then operator reservation and slot remain held until required proof while customer refund is exactly once\n\nCanonical VideoML initiative D09/D09a/D09b is binding for every edge, prohibited edge, field and transaction predicate. P18 defines pure decisions and persistence contract; cloud execution and deployed cutover are later packets.",
+  "type": "story",
+  "status": "in_progress",
+  "priority": 1,
+  "assignee": null,
+  "creator": null,
+  "parent": "babulus-48bc4e27-b336-4500-9e65-a7fdfe42698e",
+  "labels": [],
+  "dependencies": [],
+  "comments": [],
+  "created_at": "2026-10-31T03:07:49.441548Z",
+  "updated_at": "2026-10-31T03:07:53.677709Z",
+  "closed_at": null,
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {}
+}

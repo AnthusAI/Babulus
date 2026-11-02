@@ -1,0 +1,60 @@
+{
+  "scenes": [
+    {
+      "id": "code-demo",
+      "title": "code-demo",
+      "startSec": 0,
+      "endSec": 6,
+      "styles": {
+        "background": "var(--color-bg)"
+      },
+      "layers": [
+        {
+          "id": "code",
+          "zIndex": 10,
+          "components": [
+            {
+              "id": "code-block-0",
+              "type": "CodeBlock",
+              "props": {
+                "language": "typescript",
+                "code": "const frame = i => i * 2;\nconst motion = frame => Math.sin(frame / 8);",
+                "theme": "nord",
+                "position": {
+                  "y": 260
+                },
+                "width": 1200,
+                "height": 380,
+                "sceneStartSec": 0
+              }
+            }
+          ]
+        }
+      ],
+      "cues": [
+        {
+          "id": "hold",
+          "label": "hold",
+          "startSec": 0,
+          "endSec": 6,
+          "text": "",
+          "segments": [
+            {
+              "type": "pause",
+              "startSec": 0,
+              "endSec": 6,
+              "durationSec": 6
+            }
+          ],
+          "bullets": []
+        }
+      ]
+    }
+  ],
+  "fps": 30,
+  "meta": {
+    "fps": 30,
+    "width": 1920,
+    "height": 1080
+  }
+}

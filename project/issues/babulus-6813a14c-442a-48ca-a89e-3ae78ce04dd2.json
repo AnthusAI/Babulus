@@ -1,0 +1,20 @@
+{
+  "id": "babulus-6813a14c-442a-48ca-a89e-3ae78ce04dd2",
+  "title": "M4: Capped cloud fallback with all spending guards",
+  "description": "",
+  "type": "task",
+  "status": "open",
+  "priority": 2,
+  "assignee": null,
+  "creator": null,
+  "parent": "babulus-d22d6854-6464-40b8-a446-b0a8265efdde",
+  "labels": [],
+  "dependencies": [],
+  "comments": [],
+  "created_at": "2026-11-02T05:41:58.513501Z",
+  "updated_at": "2026-11-02T05:41:58.513523Z",
+  "closed_at": null,
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {}
+}

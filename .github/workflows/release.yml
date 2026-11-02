@@ -1,0 +1,28 @@
+# This workflow is disabled because:
+# 1. Babulus is a Node.js/TypeScript project, not Python
+# 2. Deployment is handled by AWS Amplify Gen 2 CI/CD (see amplify.yml)
+# 3. Amplify automatically deploys when code is pushed to main branch
+#
+# To re-enable semantic releases for Node.js, use semantic-release/semantic-release
+# and configure for npm/GitHub releases instead of PyPI.
+
+name: Release (Disabled)
+
+on:
+  push:
+    branches:
+      - disabled # Change to 'main' to re-enable
+
+permissions:
+  contents: read
+
+jobs:
+  placeholder:
+    name: Deployment handled by Amplify
+    runs-on: ubuntu-latest
+    steps:
+      - name: Info
+        run: |
+          echo "Deployment is handled by AWS Amplify Gen 2 CI/CD"
+          echo "See amplify.yml for build configuration"
+          echo "Monitor builds at: AWS Amplify Console"

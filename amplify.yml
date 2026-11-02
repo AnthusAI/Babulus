@@ -1,0 +1,58 @@
+version: 1
+applications:
+  - backend:
+      phases:
+        build:
+          commands:
+            - cd ../..
+            - npm install --no-audit --no-fund --cache .npm --prefer-offline
+            - cd apps/studio-web
+            - cd amplify/functions/render-trigger && npm ci && cd -
+            - cd ../..
+            - |
+              ROOT_GRAPHQL="$(pwd)/node_modules/graphql"
+              find node_modules -path '*/node_modules/graphql' -type d ! -path 'node_modules/graphql' 2>/dev/null | while read d; do
+                rm -rf "$d" && ln -s "$ROOT_GRAPHQL" "$d"
+              done
+            - cd apps/studio-web
+            - npx ampx pipeline-deploy --branch $AWS_BRANCH --app-id $AWS_APP_ID
+    frontend:
+      phases:
+        preBuild:
+          commands:
+            - npm install --no-audit --no-fund --cache .npm --prefer-offline
+            - npm install anthus-footer@github:AnthusAI/anthus-footer#main --no-audit --no-fund
+            - npx @aws-amplify/backend-cli@latest generate outputs --branch $AWS_BRANCH --app-id $AWS_APP_ID
+        build:
+          commands:
+            - npm run build
+      artifacts:
+        baseDirectory: .next
+        files:
+          - '**/*'
+      cache:
+        paths:
+          - .next/cache/**/*
+          - .npm/**/*
+    appRoot: apps/studio-web
+    platform: WEB_COMPUTE
+  - frontend:
+      phases:
+        preBuild:
+          commands:
+            - cd $CODEBUILD_SRC_DIR/Babulus
+            - npm install --no-audit --no-fund
+        build:
+          commands:
+            - cd $CODEBUILD_SRC_DIR/Babulus
+            - npm run build --workspace=videoml-org
+      artifacts:
+        baseDirectory: public
+        files:
+          - '**/*'
+      cache:
+        paths:
+          - node_modules/**/*
+          - .cache/**/*
+    appRoot: apps/videoml-org
+    platform: WEB

@@ -1,0 +1,28 @@
+{
+  "id": "babulus-622c9b3e-a477-4715-b060-4f787d002305",
+  "title": "Default BDD to isolated mock providers",
+  "description": "Ordinary npm run bdd currently selects real provider paths outside CI, risking unintended paid synthesis during local validation. The first P18 full run failed ten provider/worker cases and its overwritten log cannot establish whether external requests completed. Add a dedicated test launcher that always selects repository CI mocks and strips provider credentials/SDK metadata credential sources for ordinary BDD; explicit real model/cloud acceptance remains separate. Preserve Node20 compatibility and coverage invocation. Add executable tests proving caller CI=false and supplied credential env cannot enable real providers through this launcher; then rerun complete BDD with retained unique logs. No deployment or live provider test. Follow Babulus commit approval gate.",
+  "type": "bug",
+  "status": "in_progress",
+  "priority": 1,
+  "assignee": null,
+  "creator": null,
+  "parent": "babulus-48bc4e27-b336-4500-9e65-a7fdfe42698e",
+  "labels": [],
+  "dependencies": [],
+  "comments": [
+    {
+      "id": "4e273f14-7838-4f0f-bb07-0d00290c769d",
+      "author": "home",
+      "text": "Implemented isolated ordinary BDD launcher: CI mocks forced, provider credential environment and AWS metadata/config sources removed. Full default launcher suite passed 418 scenarios/2119 steps with caller CI=false and fake credentials; retained /tmp/babulus-622c9b-full-bdd.log. Targeted provider/isolation checks passed on Node20 and26 (13 scenarios/78 steps each); dedicated render authority tests passed 28 each. Root lint and Studio predeploy mirror passed. Independent Terra review cleared launcher scope. This is mock-path isolation, not a general OS network sandbox. Initial overwritten failed run cannot establish whether an external provider request completed. Commit approval requested from user; no commits or deployment yet.",
+      "created_at": "2026-10-31T03:49:13.715318Z",
+      "comment_type": "default"
+    }
+  ],
+  "created_at": "2026-10-31T03:38:21.296789Z",
+  "updated_at": "2026-10-31T03:49:13.715480Z",
+  "closed_at": null,
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {}
+}

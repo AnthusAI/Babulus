@@ -1,0 +1,49 @@
+{
+  "id": "babulus-bb919415-5a2f-41da-8772-a8401347a8e3",
+  "title": "M0: Contain cloud rendering",
+  "description": "",
+  "type": "task",
+  "status": "open",
+  "priority": 2,
+  "assignee": null,
+  "creator": null,
+  "parent": "babulus-d22d6854-6464-40b8-a446-b0a8265efdde",
+  "labels": [],
+  "dependencies": [],
+  "comments": [
+    {
+      "id": "f4e53470-6c70-4e98-80e1-185677a14e7e",
+      "author": "home",
+      "text": "2026-11-02: Cloud render trigger disabled and kept disabled in the backend definition. Public API key removed from Job.",
+      "created_at": "2026-11-02T05:53:33.607258Z",
+      "comment_type": "default"
+    },
+    {
+      "id": "87100960-2cbb-4d1d-9ce5-7ad90265c042",
+      "author": "home",
+      "text": "2026-11-02: Verified in production: trigger disabled, no API keys, /share returns 404, home returns 200.",
+      "created_at": "2026-11-02T06:27:45.711363Z",
+      "comment_type": "default"
+    },
+    {
+      "id": "02b39ccc-bca4-4b04-b587-776f5542b4c2",
+      "author": "home",
+      "text": "2026-11-02: Budget alerts reach the operator through the alert topic; delivery tested with a test message.",
+      "created_at": "2026-11-02T07:04:01.804138Z",
+      "comment_type": "default"
+    },
+    {
+      "id": "118e5741-1429-4378-a791-9c37ae9c4b4f",
+      "author": "home",
+      "text": "Board restarted in a new repository; earlier event history is not carried over.",
+      "created_at": "2026-11-02T16:50:35.181036Z",
+      "comment_type": "default"
+    }
+  ],
+  "created_at": "2026-11-02T05:41:58.223234Z",
+  "updated_at": "2026-11-02T16:50:51.054849Z",
+  "closed_at": null,
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {}
+}

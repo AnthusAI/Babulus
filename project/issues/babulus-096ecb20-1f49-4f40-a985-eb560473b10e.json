@@ -1,0 +1,20 @@
+{
+  "id": "babulus-096ecb20-1f49-4f40-a985-eb560473b10e",
+  "title": "Scope all Babulus data by Prospectus account and authorize every action",
+  "description": "Security gap today: every model in apps/studio-web/amplify/data/resource.ts is allow.authenticated() and tenancy is enforced only in app code via a string orgId. Use the Prospectus account UUID as orgId everywhere, call accounts.authorize(account, op) before every server action and query (console:read / console:write / members:*), and keep packages/shared rbac as Babulus's own permissions capped by the Prospectus role. Replace getOrgsForUser/OrgMember reads with accounts.list(). Remove the Org, OrgMember and UserProfile models; keep BillingAccount and UsageEvent re-keyed by account until Prospectus has billing. Depends on the sign-in task.",
+  "type": "task",
+  "status": "open",
+  "priority": 2,
+  "assignee": null,
+  "creator": null,
+  "parent": "babulus-be70f999-3808-4fb1-987b-f7cd306e16e1",
+  "labels": [],
+  "dependencies": [],
+  "comments": [],
+  "created_at": "2026-10-20T23:18:40.284054Z",
+  "updated_at": "2026-10-20T23:18:40.284349Z",
+  "closed_at": null,
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {}
+}

@@ -1,0 +1,11 @@
+{
+  "name": "@babulus/studio-desktop",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "dist/main.js",
+  "scripts": {
+    "dev": "electron .",
+    "build": "echo \"TODO: add build\""
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "baseUrl": ".",
+    "paths": {
+      "babulus": ["src/index.ts"],
+      "babulus/dsl": ["src/dsl/index.ts"],
+      "babulus/*": ["src/*"],
+      "@/*": ["apps/studio-web/*"],
+      "@babulus/shared": ["packages/shared/src/index.ts"],
+      "@babulus/renderer": ["packages/renderer/src/index.ts"]
+    },
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "allowImportingTsExtensions": true,
+    "jsx": "react-jsx",
+    "noEmit": true
+  },
+  "include": [
+    "src/**/*.ts",
+    "packages/dsl/**/*.ts",
+    "packages/renderer/**/*.ts",
+    "packages/renderer/**/*.tsx",
+    "packages/shared/**/*.ts",
+    "packages/shared/**/*.tsx",
+    "packages/telemetry/**/*.ts",
+    "packages/ui/**/*.ts",
+    "packages/ui/**/*.tsx",
+    "scripts/**/*.ts"
+  ],
+  "exclude": ["node_modules"]
+}

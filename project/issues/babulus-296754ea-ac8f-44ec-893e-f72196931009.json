@@ -1,0 +1,20 @@
+{
+  "id": "babulus-296754ea-ac8f-44ec-893e-f72196931009",
+  "title": "M1: Import Auritus into the Babulus repo and rename packages",
+  "description": "",
+  "type": "task",
+  "status": "open",
+  "priority": 2,
+  "assignee": null,
+  "creator": null,
+  "parent": "babulus-d22d6854-6464-40b8-a446-b0a8265efdde",
+  "labels": [],
+  "dependencies": [],
+  "comments": [],
+  "created_at": "2026-11-02T05:41:58.294737Z",
+  "updated_at": "2026-11-02T05:41:58.294771Z",
+  "closed_at": null,
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {}
+}

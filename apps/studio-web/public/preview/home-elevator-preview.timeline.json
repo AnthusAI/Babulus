@@ -1,0 +1,203 @@
+{
+  "items": [
+    {
+      "type": "tts",
+      "sceneId": "open-standard",
+      "cueId": "open-standard-cue",
+      "startSec": 0,
+      "endSec": 6.2,
+      "segments": [
+        {
+          "type": "tts",
+          "startSec": 0,
+          "endSec": 6.2,
+          "text": "Babulus uses the open VideoML standard, where code defines every scene and cue.",
+          "segmentPath": "Babulus/.babulus/out/home-elevator-preview/env/development/segments/open-standard--open-standard-cue--tts--4173f4e7e2ba--1.wav",
+          "durationSec": 6.2,
+          "rawDurationSec": 6.2,
+          "trimEndSec": 0
+        }
+      ]
+    },
+    {
+      "type": "tts",
+      "sceneId": "ai-agents",
+      "cueId": "ai-agents-cue",
+      "startSec": 6.6000000000000005,
+      "endSec": 13.9,
+      "segments": [
+        {
+          "type": "tts",
+          "startSec": 6.6000000000000005,
+          "endSec": 13.9,
+          "text": "AI agents are great at writing code, which means they can now produce videos through VideoML.",
+          "segmentPath": "Babulus/.babulus/out/home-elevator-preview/env/development/segments/ai-agents--ai-agents-cue--tts--68d3af63cb49--1.wav",
+          "durationSec": 7.3,
+          "rawDurationSec": 7.3,
+          "trimEndSec": 0
+        }
+      ]
+    },
+    {
+      "type": "tts",
+      "sceneId": "layout-one",
+      "cueId": "library-voice-1",
+      "startSec": 14.3,
+      "endSec": 22.150000000000002,
+      "segments": [
+        {
+          "type": "tts",
+          "startSec": 14.3,
+          "endSec": 22.150000000000002,
+          "text": "Babulus adds a library of off-the-shelf components on top of VideoML: layouts, transitions, motion, and more.",
+          "segmentPath": "Babulus/.babulus/out/home-elevator-preview/env/development/segments/layout-one--library-voice-1--tts--5919b8f7a903--1.wav",
+          "durationSec": 7.85,
+          "rawDurationSec": 7.85,
+          "trimEndSec": 0
+        }
+      ]
+    },
+    {
+      "type": "tts",
+      "sceneId": "brand-a",
+      "cueId": "transitions-voice-1",
+      "startSec": 26.249999999999993,
+      "endSec": 29.999999999999993,
+      "segments": [
+        {
+          "type": "tts",
+          "startSec": 26.249999999999993,
+          "endSec": 29.999999999999993,
+          "text": "Use common transitions, or build branded ones.",
+          "segmentPath": "Babulus/.babulus/out/home-elevator-preview/env/development/segments/brand-a--transitions-voice-1--tts--626fd44c3078--1.wav",
+          "durationSec": 3.75,
+          "rawDurationSec": 3.75,
+          "trimEndSec": 0
+        }
+      ]
+    },
+    {
+      "type": "tts",
+      "sceneId": "animations-framer",
+      "cueId": "animations-voice-1",
+      "startSec": 30.999999999999993,
+      "endSec": 34.79999999999999,
+      "segments": [
+        {
+          "type": "tts",
+          "startSec": 30.999999999999993,
+          "endSec": 34.79999999999999,
+          "text": "Any animation you can do on a web page can be part of your video.",
+          "segmentPath": "Babulus/.babulus/out/home-elevator-preview/env/development/segments/animations-framer--animations-voice-1--tts--66b5ed9ee086--1.wav",
+          "durationSec": 3.8,
+          "rawDurationSec": 3.8,
+          "trimEndSec": 0
+        }
+      ]
+    },
+    {
+      "type": "tts",
+      "sceneId": "typefaces",
+      "cueId": "typefaces-cue",
+      "startSec": 41.36666666666666,
+      "endSec": 45.11666666666666,
+      "segments": [
+        {
+          "type": "tts",
+          "startSec": 41.36666666666666,
+          "endSec": 45.11666666666666,
+          "text": "Style everything with typefaces and color themes.",
+          "segmentPath": "Babulus/.babulus/out/home-elevator-preview/env/development/segments/typefaces--typefaces-cue--tts--dd0029277e01--1.wav",
+          "durationSec": 3.75,
+          "rawDurationSec": 3.75,
+          "trimEndSec": 0
+        }
+      ]
+    },
+    {
+      "type": "tts",
+      "sceneId": "cta",
+      "cueId": "cta-cue",
+      "startSec": 45.51666666666666,
+      "endSec": 54.316666666666656,
+      "segments": [
+        {
+          "type": "tts",
+          "startSec": 45.51666666666666,
+          "endSec": 54.316666666666656,
+          "text": "Dive into the demo videos and code to learn more, and join the waitlist to keep up with Babulus as we launch it. We'll send you videos.",
+          "segmentPath": "Babulus/.babulus/out/home-elevator-preview/env/development/segments/cta--cta-cue--tts--f9ffed27e2f3--1.wav",
+          "durationSec": 8.8,
+          "rawDurationSec": 8.8,
+          "trimEndSec": 0
+        }
+      ]
+    }
+  ],
+  "audio": {
+    "tracks": [
+      {
+        "id": "narration",
+        "kind": "narration",
+        "clips": [
+          {
+            "id": "open-standard--open-standard-cue--tts--4173f4e7e2ba--1",
+            "kind": "file",
+            "startSec": 0,
+            "durationSec": 6.2,
+            "src": "/preview/home-elevator-preview/env/development/segments/open-standard--open-standard-cue--tts--4173f4e7e2ba--1.wav",
+            "volume": 1
+          },
+          {
+            "id": "ai-agents--ai-agents-cue--tts--68d3af63cb49--1",
+            "kind": "file",
+            "startSec": 6.6000000000000005,
+            "durationSec": 7.3,
+            "src": "/preview/home-elevator-preview/env/development/segments/ai-agents--ai-agents-cue--tts--68d3af63cb49--1.wav",
+            "volume": 1
+          },
+          {
+            "id": "layout-one--library-voice-1--tts--5919b8f7a903--1",
+            "kind": "file",
+            "startSec": 14.3,
+            "durationSec": 7.85,
+            "src": "/preview/home-elevator-preview/env/development/segments/layout-one--library-voice-1--tts--5919b8f7a903--1.wav",
+            "volume": 1
+          },
+          {
+            "id": "brand-a--transitions-voice-1--tts--626fd44c3078--1",
+            "kind": "file",
+            "startSec": 26.249999999999993,
+            "durationSec": 3.75,
+            "src": "/preview/home-elevator-preview/env/development/segments/brand-a--transitions-voice-1--tts--626fd44c3078--1.wav",
+            "volume": 1
+          },
+          {
+            "id": "animations-framer--animations-voice-1--tts--66b5ed9ee086--1",
+            "kind": "file",
+            "startSec": 30.999999999999993,
+            "durationSec": 3.8,
+            "src": "/preview/home-elevator-preview/env/development/segments/animations-framer--animations-voice-1--tts--66b5ed9ee086--1.wav",
+            "volume": 1
+          },
+          {
+            "id": "typefaces--typefaces-cue--tts--dd0029277e01--1",
+            "kind": "file",
+            "startSec": 41.36666666666666,
+            "durationSec": 3.75,
+            "src": "/preview/home-elevator-preview/env/development/segments/typefaces--typefaces-cue--tts--dd0029277e01--1.wav",
+            "volume": 1
+          },
+          {
+            "id": "cta--cta-cue--tts--f9ffed27e2f3--1",
+            "kind": "file",
+            "startSec": 45.51666666666666,
+            "durationSec": 8.8,
+            "src": "/preview/home-elevator-preview/env/development/segments/cta--cta-cue--tts--f9ffed27e2f3--1.wav",
+            "volume": 1
+          }
+        ]
+      }
+    ]
+  }
+}

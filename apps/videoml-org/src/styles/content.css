@@ -1,0 +1,197 @@
+.page {
+  margin-block: var(--space-2xl);
+  padding-inline: var(--space-lg);
+}
+
+.container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
+
+.section {
+  --card-bg: var(--bg-surface-2);
+  --card-bg-alt: var(--bg-surface-3);
+  padding: var(--space-2xl);
+  background: var(--bg-surface);
+  border-radius: var(--radius-lg);
+  display: block;
+}
+
+.section.alt {
+  --card-bg: var(--bg-surface-3);
+  --card-bg-alt: var(--bg-surface-4);
+  background: var(--bg-surface-2);
+}
+
+/* Normalize default typography so spacing feels deliberate. */
+.section > :first-child {
+  margin-top: 0;
+}
+
+.section > :last-child {
+  margin-bottom: 0;
+}
+
+.section h2 {
+  margin: 0 0 var(--space-md);
+}
+
+.section p {
+  margin: 0 0 var(--space-md);
+}
+
+.section ul {
+  margin: 0 0 var(--space-md);
+  padding-left: 1.2em;
+}
+
+.section pre {
+  margin: 0 0 var(--space-md);
+}
+
+.section-title {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-size: 20px;
+  margin: 0 0 var(--space-sm);
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: var(--card-bg);
+  color: var(--text-primary);
+}
+
+.section-subtitle {
+  margin: 0 0 var(--space-lg);
+  color: var(--text-secondary);
+  max-width: 720px;
+}
+
+.eyebrow {
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.hero-title {
+  font-size: clamp(32px, 4vw, 52px);
+  margin: var(--space-sm) 0 var(--space-md);
+}
+
+.hero-subtitle {
+  font-size: 18px;
+  color: var(--text-secondary);
+  max-width: 700px;
+}
+
+.hero-links {
+  display: flex;
+  gap: var(--space-md);
+  flex-wrap: wrap;
+  margin-top: var(--space-md);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.hero-links a {
+  color: var(--text-secondary);
+  text-decoration: none;
+}
+
+.hero-links a:hover {
+  text-decoration: underline;
+}
+
+.grid {
+  display: grid;
+  gap: var(--space-lg);
+}
+
+.grid.two {
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+.card-grid {
+  margin-top: var(--space-lg);
+}
+
+.card {
+  padding: var(--space-lg);
+  background: var(--card-bg);
+  border-radius: var(--radius-md);
+  display: block;
+}
+
+.card.alt {
+  background: var(--card-bg-alt);
+}
+
+.card h3 {
+  margin: 0 0 var(--space-sm);
+  color: var(--text-primary);
+}
+
+.card p {
+  margin: 0;
+  color: var(--text-secondary);
+}
+
+.pill {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: var(--color-muted-2);
+  color: var(--text-primary);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.callout {
+  padding: var(--space-lg);
+  border-radius: var(--radius-md);
+  background: var(--color-muted-1);
+}
+
+.callout.info {
+  background: var(--callout-info);
+}
+
+.callout.warn {
+  background: var(--callout-warn);
+}
+
+.callout.success {
+  background: var(--callout-success);
+}
+
+.meta-links {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.meta-links a {
+  color: inherit;
+}
+
+.footer {
+  padding: var(--space-2xl) var(--space-lg);
+  color: var(--text-secondary);
+}
+
+.code-block {
+  background: var(--color-not-black);
+  color: var(--color-not-white);
+  padding: var(--space-lg);
+  border-radius: var(--radius-md);
+  overflow-x: auto;
+}
+
+@media (prefers-color-scheme: dark) {
+  .code-block {
+    background: var(--slate-2);
+  }
+}
+

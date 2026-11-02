@@ -1,0 +1,20 @@
+{
+  "id": "babulus-59b6d649-2074-4a41-8cfb-0ee4228bcb24",
+  "title": "Grant Babulus access to accounts and list it in Anthus One",
+  "description": "Depends on Prospectus work: the operator entitlement route is merged but unreachable and no operator holds the grant (Prospectus kanbus-592fbb activation), the product registry with launch links (kanbus-bf45cb), and the Anthus One portal at one.anth.us (Prospectus PR 56, not yet hosted). Babulus side: check the `babulus` entitlement on sign-in and show a clear no-access state. Invitations, access requests and billing follow later in Prospectus.",
+  "type": "task",
+  "status": "open",
+  "priority": 2,
+  "assignee": null,
+  "creator": null,
+  "parent": "babulus-be70f999-3808-4fb1-987b-f7cd306e16e1",
+  "labels": [],
+  "dependencies": [],
+  "comments": [],
+  "created_at": "2026-10-20T23:18:44.026410Z",
+  "updated_at": "2026-10-20T23:18:44.026768Z",
+  "closed_at": null,
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {}
+}

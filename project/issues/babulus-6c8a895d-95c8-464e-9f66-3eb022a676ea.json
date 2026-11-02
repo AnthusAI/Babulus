@@ -1,0 +1,20 @@
+{
+  "id": "babulus-6c8a895d-95c8-464e-9f66-3eb022a676ea",
+  "title": "Decide Babulus's Prospectus integration choices",
+  "description": "Decisions needed from Ryan before building:\n1. Sign-in: an app client in the shared Prospectus Cognito pool (the Cyclotron Lab pattern, recommended by the Prospectus session: one Google login across Anthus products) vs a Babulus pool with a Google-only client (the Papyrus pattern).\n2. Product shape: a single product named `babulus`?\n3. Can a signed-in person create their own organization account, or only operators?\n4. Role mapping: Babulus's `editor` role has no Prospectus equivalent; map it to `member`?\nRecord the answers here; they shape every other task in this epic.",
+  "type": "task",
+  "status": "open",
+  "priority": 2,
+  "assignee": null,
+  "creator": null,
+  "parent": "babulus-be70f999-3808-4fb1-987b-f7cd306e16e1",
+  "labels": [],
+  "dependencies": [],
+  "comments": [],
+  "created_at": "2026-10-20T23:18:35.228495Z",
+  "updated_at": "2026-10-20T23:18:35.228817Z",
+  "closed_at": null,
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {}
+}
