@@ -1,0 +1,56 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: >
+  Lets GitHub Actions start Amplify builds of Babulus after CI passes, through
+  OIDC with no stored keys. Trusted only for main of AnthusAI/Babulus, and
+  allowed only to start and read jobs on that app's main branch.
+
+Parameters:
+  AmplifyAppId:
+    Type: String
+    Description: Amplify app to deploy
+  GitHubOwnerId:
+    Type: String
+    Description: Numeric id of the GitHub owner, part of the immutable OIDC subject
+  GitHubRepoId:
+    Type: String
+    Description: Numeric id of the GitHub repository, part of the immutable OIDC subject
+
+Resources:
+  GitHubOidcProvider:
+    Type: AWS::IAM::OIDCProvider
+    Properties:
+      Url: https://token.actions.githubusercontent.com
+      ClientIdList:
+        - sts.amazonaws.com
+
+  GitHubDeployRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: babulus-github-deploy
+      Description: Starts Amplify builds of Babulus from GitHub Actions on main
+      MaxSessionDuration: 7200
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Federated: !GetAtt GitHubOidcProvider.Arn
+            Action: sts:AssumeRoleWithWebIdentity
+            Condition:
+              StringEquals:
+                token.actions.githubusercontent.com:aud: sts.amazonaws.com
+                token.actions.githubusercontent.com:sub: !Sub repo:AnthusAI@${GitHubOwnerId}/Babulus@${GitHubRepoId}:ref:refs/heads/main
+      Policies:
+        - PolicyName: start-amplify-builds
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - amplify:StartJob
+                  - amplify:GetJob
+                Resource: !Sub arn:${AWS::Partition}:amplify:${AWS::Region}:${AWS::AccountId}:apps/${AmplifyAppId}/branches/main/jobs/*
+
+Outputs:
+  RoleArn:
+    Value: !GetAtt GitHubDeployRole.Arn
