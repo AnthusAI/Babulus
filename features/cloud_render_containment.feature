@@ -53,8 +53,8 @@ Feature: Cloud render containment
     Given the Studio data schema
     Then no model allows a public API key
     And the data API does not create an API key
-    And the "Job" model allows signed-in users
-    And the "PublishedVideo" model allows signed-in users
+    And the "Job" model allows only members of the Account named by the row
+    And the "PublishedVideo" model allows only members of the Account named by the row
 
   Scenario: Nothing in the app signs requests with an API key
     Given the Studio application source

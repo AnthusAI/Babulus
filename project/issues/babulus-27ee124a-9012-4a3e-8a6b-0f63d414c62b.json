@@ -10,9 +10,24 @@
   "parent": "babulus-be70f999-3808-4fb1-987b-f7cd306e16e1",
   "labels": [],
   "dependencies": [],
-  "comments": [],
+  "comments": [
+    {
+      "id": "cab07902-48fd-4825-a37f-b9f9d1ff58c9",
+      "author": "home",
+      "text": "PR B opened: https://github.com/AnthusAI/Babulus/pull/12 (data and storage scoped by Prospectus Account; not merged).",
+      "created_at": "2026-11-03T00:07:31.111013Z",
+      "comment_type": "default"
+    },
+    {
+      "id": "84f6d152-0d63-4325-aff5-6987875ce79d",
+      "author": "home",
+      "text": "PR B opened: https://github.com/AnthusAI/Babulus/pull/12 (data and storage scoped by Prospectus Account; not merged).",
+      "created_at": "2026-11-03T00:07:39.164459Z",
+      "comment_type": "default"
+    }
+  ],
   "created_at": "2026-10-20T23:18:42.061634Z",
-  "updated_at": "2026-10-20T23:18:42.061933Z",
+  "updated_at": "2026-11-03T00:07:39.164631Z",
   "closed_at": null,
   "right_now_summary": null,
   "right_now_updated_at": null,

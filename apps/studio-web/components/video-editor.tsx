@@ -1,7 +1,7 @@
 "use client";
 
 // @ts-ignore
-import { getUrl } from "aws-amplify/storage";
+import { fetchAccountMediaUrl } from "@/lib/account-media-client";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { PointerEvent as ReactPointerEvent } from "react";
 import bcrypt from "bcryptjs";
@@ -375,18 +375,12 @@ export function VideoEditor({ orgId, projectId, videoId }: VideoEditorProps) {
     }
 
     try {
-      // Get signed URL for the MP4
-      const result = await getUrl({
-        path: latestRenderRun.mp4ArtifactKey,
-        options: {
-          validateObjectExistence: true,
-          expiresIn: 3600, // 1 hour
-        },
-      });
+      // Ask the server for a short-lived signed URL (it checks the Account)
+      const url = await fetchAccountMediaUrl(orgId, latestRenderRun.mp4ArtifactKey);
 
       // Trigger browser download
       const link = document.createElement('a');
-      link.href = result.url.toString();
+      link.href = url;
       link.download = `${video?.title || 'video'}.mp4`;
       document.body.appendChild(link);
       link.click();

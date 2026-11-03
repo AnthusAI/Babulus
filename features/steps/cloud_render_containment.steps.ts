@@ -165,8 +165,10 @@ Then("no code creates a job of kind {string}", (_kind: string) => {
   assert.equal(source.trim(), "");
 });
 
-Then("the {string} model allows signed-in users", (model: string) => {
-  assert.match(modelAuthorization(source, model), /allow\.authenticated\(\)/);
+Then("the {string} model allows only members of the Account named by the row", (model: string) => {
+  const rules = modelAuthorization(source, model);
+  assert.match(rules, /allow\.groupDefinedIn\("orgId"\)/);
+  assert.doesNotMatch(rules, /allow\.authenticated\(\)|allow\.guest|publicApiKey/);
 });
 
 Then("no model allows a public API key", () => {
