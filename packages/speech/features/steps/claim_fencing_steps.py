@@ -474,6 +474,21 @@ def step_site_future(context) -> None:
 @when("the site creates {count:d} different jobs at the same time")
 def step_concurrent(context, count: int) -> None:
     from concurrent.futures import ThreadPoolExecutor
+    from threading import Lock
+
+    # Real DynamoDB applies each conditional write to one item atomically. The
+    # in-memory fake doesn't when called from threads, so serialize the calls
+    # to the sites table to give it the same guarantee.
+    sites = context.fencing_router.router._sites
+    update_item = sites.update_item
+    lock = Lock()
+
+    def serialized_update_item(**kwargs):
+        with lock:
+            return update_item(**kwargs)
+
+    sites.update_item = serialized_update_item
+    context.add_cleanup(setattr, sites, "update_item", update_item)
 
     with ThreadPoolExecutor(max_workers=count) as pool:
         context.concurrent = list(
