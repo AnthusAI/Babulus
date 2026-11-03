@@ -24,6 +24,7 @@ applications:
             - npx @aws-amplify/backend-cli@latest generate outputs --branch $AWS_BRANCH --app-id $AWS_APP_ID
         build:
           commands:
+            - env | grep -e '^BABULUS_APP_ORIGIN=' -e '^BABULUS_PROSPECTUS_ACCOUNTS_ENDPOINT=' >> .env.production
             - npm run build
       artifacts:
         baseDirectory: .next
