@@ -29,7 +29,7 @@ const config = () => {
     if (!bucket || !region) {
       throw new Error("Storage is not configured.");
     }
-    // No explicit credentials: the default chain picks up the Studio server's own role.
+    // No explicit credentials: the default chain picks up the Studio server role (infra/studio-server-role/template.yml).
     client = new S3Client({ region });
   }
   return { client, bucket };
