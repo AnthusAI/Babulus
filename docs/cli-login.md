@@ -73,7 +73,7 @@ environment, never from the repository:
 | `BABULUS_APP_ORIGIN` | The Studio's public https origin. |
 | `BABULUS_JOBS_API_ENDPOINT` | The jobs API's https URL. The broker serves only this target and the command sends its token only there. |
 | `BABULUS_ENABLE_CLI_REMOTE_LOGIN` | `true` to create the broker and pages. |
-| `BABULUS_CLI_INVOKER_ROLE_ARN` | The Studio's Amplify compute role: the only principal that may invoke the pages function. |
+| `BABULUS_CLI_INVOKER_ROLE_ARN` | The ARN of the Studio server role (`babulus-studio-server`, the `RoleArn` output of `infra/studio-server-role/template.yml`): the only principal that may invoke the pages function. |
 | `BABULUS_ALARM_TOPIC_ARN` | Optional SNS topic the two alarms notify. Without it nobody is notified and synthesis warns. |
 
 The Studio's Cognito app client must also be configured with the jobs API's

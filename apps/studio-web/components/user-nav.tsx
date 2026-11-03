@@ -7,16 +7,16 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useAuthenticator } from "@aws-amplify/ui-react";
+import { useAuth } from "@/lib/use-auth";
 import { useSettings } from "@/lib/settings-context";
 import { BookOpen, ChevronDown, Settings } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export function UserNav() {
-  const { user, signOut } = useAuthenticator((context) => [context.user]);
+  const { user, signOut } = useAuth();
   const { setOpen } = useSettings();
   const router = useRouter();
-  const loginId = user?.signInDetails?.loginId || "Account";
+  const loginId = user?.email || "Account";
 
   return (
     <DropdownMenu>

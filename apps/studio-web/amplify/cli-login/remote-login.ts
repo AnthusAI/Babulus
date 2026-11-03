@@ -13,7 +13,7 @@ export type CliRemoteLoginPlan = {
   origin: string;
   approvalUrl: string;
   callbackUri: string;
-  /** The Amplify compute role the Studio's Next.js app runs as; it alone may invoke the pages function. */
+  /** The Studio server role (`babulus-studio-server`, infra/studio-server-role/template.yml) the Next.js app runs as; it alone may invoke the pages function. */
   invokerRoleArn: string;
 };
 
@@ -31,7 +31,7 @@ export function planCliRemoteLogin(enabled: boolean, environment: Record<string,
   }
   const invokerRoleArn = (environment.BABULUS_CLI_INVOKER_ROLE_ARN ?? "").trim();
   if (!/^arn:aws[a-z-]*:iam::\d{12}:role\/.+$/.test(invokerRoleArn)) {
-    throw new Error("Remote CLI login needs BABULUS_CLI_INVOKER_ROLE_ARN, the ARN of the Studio's Amplify compute role.");
+    throw new Error("Remote CLI login needs BABULUS_CLI_INVOKER_ROLE_ARN, the ARN of the Studio server role (the RoleArn output of infra/studio-server-role/template.yml).");
   }
   return {
     origin,
@@ -104,7 +104,7 @@ export type CliRemoteLogin = {
  * - the private operations (describe, bind, complete, deny) may be invoked only by the pages function's role;
  * - the broker may read and write only its own table, and its concurrency is reserved;
  * - a start-ceiling metric filter feeds an alarm, and so does throttling.
- * Plus the approval pages function, run from the same pinned cli-login release, that only the Studio's compute role may invoke.
+ * Plus the approval pages function, run from the same pinned cli-login release, that only the Studio server role may invoke.
  */
 export function addCliRemoteLogin(stack: Stack, props: CliRemoteLoginProps): CliRemoteLogin {
   const transactions = new Table(stack, "Transactions", {

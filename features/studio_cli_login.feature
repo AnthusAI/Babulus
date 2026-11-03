@@ -59,18 +59,18 @@ Feature: Signing the babulus command in to the Studio
     When the backend plan is made with remote sign-in switched off
     Then there is no remote sign-in plan
 
-  Scenario: Remote sign-in needs a plain https Studio origin and the compute role
+  Scenario: Remote sign-in needs a plain https Studio origin and the Studio server role
     When the backend plan is made with remote sign-in on but the Studio origin is "http://studio.example.test"
     Then planning fails and says the origin must be a plain https origin
-    When the backend plan is made with remote sign-in on but no compute role
-    Then planning fails and says the compute role is needed
+    When the backend plan is made with remote sign-in on but no Studio server role
+    Then planning fails and says the Studio server role is needed
 
   Scenario: The broker stack keeps cli-login's security properties
     Given a synthesized remote sign-in stack
     Then the broker's function URL takes no credentials
     And the public permissions cover only calls through that URL
     And the broker may be invoked directly only by the pages function's role
-    And the pages function may be invoked only by the Studio's compute role
+    And the pages function may be invoked only by the Studio server role
     And the broker may touch only its own table and has reserved concurrency
     And the broker serves only the jobs API as its target
     And two alarms watch the start ceiling and throttling

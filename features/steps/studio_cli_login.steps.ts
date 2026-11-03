@@ -178,10 +178,10 @@ When("the backend plan is made with remote sign-in on but the Studio origin is {
   planError = failure(() => planCliRemoteLogin(true, { BABULUS_APP_ORIGIN: value, BABULUS_CLI_INVOKER_ROLE_ARN: invokerRoleArn }));
 });
 Then("planning fails and says the origin must be a plain https origin", () => { assert.match(planError, /plain https origin/); });
-When("the backend plan is made with remote sign-in on but no compute role", () => {
+When("the backend plan is made with remote sign-in on but no Studio server role", () => {
   planError = failure(() => planCliRemoteLogin(true, { BABULUS_APP_ORIGIN: origin }));
 });
-Then("planning fails and says the compute role is needed", () => { assert.match(planError, /BABULUS_CLI_INVOKER_ROLE_ARN/); });
+Then("planning fails and says the Studio server role is needed", () => { assert.match(planError, /BABULUS_CLI_INVOKER_ROLE_ARN/); });
 When("the jobs API endpoint is {string}", (value: string) => {
   planError = failure(() => planCliApiEndpoint({ BABULUS_JOBS_API_ENDPOINT: value }));
 });
@@ -221,7 +221,7 @@ Then("the broker may be invoked directly only by the pages function's role", () 
   assert.ok(principals.some((text) => text.includes("PagesServiceRole")), "the pages function's role may invoke the broker");
   assert.ok(principals.every((text) => text.includes("PagesServiceRole") || text.includes(invokerRoleArn)));
 });
-Then("the pages function may be invoked only by the Studio's compute role", () => {
+Then("the pages function may be invoked only by the Studio server role", () => {
   template!.hasResourceProperties("AWS::Lambda::Permission", { Action: "lambda:InvokeFunction", Principal: invokerRoleArn });
 });
 Then("the broker may touch only its own table and has reserved concurrency", () => {
