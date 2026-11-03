@@ -107,6 +107,12 @@ Then("the user pool has a Google identity provider", () => {
   assert.equal(providers[0].Properties.ProviderType, "Google");
 });
 
+Then("the Google identity provider's client id and secret are not literal values", () => {
+  const details = resourcesOfType("AWS::Cognito::UserPoolIdentityProvider")[0].Properties.ProviderDetails;
+  assert.equal(typeof details.client_id, "object");
+  assert.equal(typeof details.client_secret, "object");
+});
+
 Then("the Prospectus client is named {string}", (name: string) => {
   assert.ok(clientNamed(name));
 });

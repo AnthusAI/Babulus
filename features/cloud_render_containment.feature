@@ -34,6 +34,14 @@ Feature: Cloud render containment
     Given a backend definition that only closes self sign-up on the user pool
     Then the worker credential guard accepts it
 
+  Scenario: A worker user hidden in the sealing folder is still rejected
+    Given a backend definition whose sealing folder also makes a worker user
+    Then the worker credential guard rejects it
+
+  Scenario: A custom resource outside the sealing folder is still rejected
+    Given a backend definition with a custom resource outside the sealing folder
+    Then the worker credential guard rejects it
+
   Scenario: The old cloud render path is gone from the repository
     Then none of the old render path files exist
 

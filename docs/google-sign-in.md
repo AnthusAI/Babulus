@@ -32,8 +32,27 @@ People cannot create Accounts in the Studio. Operators create them in Prospectus
 | `BABULUS_OAUTH_REDIRECT_URLS` | Amplify environment, optional | Comma-separated sign-in return URLs (https, or http on localhost); default `https://babul.us/` and localhost |
 | `BABULUS_COGNITO_DOMAIN_PREFIX` | Amplify environment, optional | `babulus` or `babulus-dev`; default by branch (`main` is `babulus`) |
 | `BABULUS_PROSPECTUS_ACCOUNTS_ENDPOINT` | Amplify environment | Prospectus accounts API base, including the stage |
-| `BABULUS_PROSPECTUS_SESSION_SECRET_PARAMETER` | Amplify environment | Name of the SecureString parameter holding the cookie sealing secret (at least 32 characters) |
+| `BABULUS_PROSPECTUS_SESSION_SECRET_PARAMETER` | optional override | Normally unset: the server reads the parameter name from the deployed backend's outputs (`custom.prospectusSignIn.sessionSecretParameter`) |
 
-The Studio's compute role needs `execute-api:Invoke` on the Prospectus accounts API, `ssm:GetParameter` on the sealing
-secret, and `cognito-idp:CreateGroup`, `AdminAddUserToGroup`, `AdminRemoveUserFromGroup` and `AdminListGroupsForUser` on
+The Studio's compute role needs `execute-api:Invoke` on the Prospectus accounts API, `ssm:GetParameter` on the one sealing
+parameter (its ARN is the output `sessionSecretParameterArn`), and `cognito-idp:CreateGroup`, `AdminAddUserToGroup`, `AdminRemoveUserFromGroup` and `AdminListGroupsForUser` on
 the Studio's user pool.
+
+## The cookie sealing secret
+
+Infrastructure generates it; nobody creates it by hand. The `ProspectusSession` stack runs a small custom resource that
+puts a random 64-character SSM SecureString (AWS-managed key) named `/babulus/studio/<branch>/prospectus-session-sealing`
+(`sandbox` outside Amplify branches). It is create-only: an update never regenerates or overwrites it, and delete retains
+it, so a redeploy or teardown cannot sign anyone out. The value is in no template, output or log; the backend outputs
+publish only the parameter's name and ARN. To rotate it, `aws ssm put-parameter --overwrite` (this signs everyone out).
+Code is in `apps/studio-web/amplify/session-secret/`; it is not Secrets Manager.
+
+## If the Google secrets are missing
+
+`secret("GOOGLE_CLIENT_ID")` and `secret("GOOGLE_CLIENT_SECRET")` are not checked when the backend is synthesized, so a
+build with them unset still gets through synth and fails later, during the CloudFormation deploy of the auth stack. A
+function Amplify deploys with the auth stack looks each secret up under the branch and then the app, and when neither
+exists it fails with `Failed to retrieve backend secret 'GOOGLE_CLIENT_ID' for '<app id>'` followed by the SSM error. The
+auth stack update then rolls back, so the user pool and everything in it stay as they were, and the Amplify build's
+backend phase fails. The fix is to set both secrets for that branch (or the sandbox) and redeploy; there is no partial
+state to clean up.

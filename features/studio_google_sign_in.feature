@@ -21,6 +21,10 @@ Feature: Studio sign-in is Google only, through Prospectus Accounts
       Then the user pool has no schema override that would replace it
       And the hosted UI domain is a new resource named "babulus"
 
+    Scenario: The Google client id and secret come from Amplify secrets, not from the repository
+      Given the Studio auth stack is synthesized for the "main" branch
+      Then the Google identity provider's client id and secret are not literal values
+
     Scenario: The Prospectus client is Google only with no secret and no password flow
       Given the Studio auth stack is synthesized for the "main" branch
       Then the Prospectus client is named "prospectus-google-only"

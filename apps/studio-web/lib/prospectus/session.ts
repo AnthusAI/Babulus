@@ -184,7 +184,7 @@ export interface ProspectusSignInRuntime {
 
 export interface AmplifyOutputsForProspectusSignIn {
   auth?: { user_pool_id?: string; oauth?: { domain?: string } };
-  custom?: { prospectusSignIn?: { clientId?: string; callbackPath?: string } | null };
+  custom?: { prospectusSignIn?: { clientId?: string; callbackPath?: string; sessionSecretParameter?: string } | null };
 }
 
 /** Reads the deployed backend's public values from `amplify_outputs.json`; null when the file is absent or unreadable. */
@@ -230,7 +230,12 @@ export async function resolveProspectusSignInRuntime(
   const outputs = options.amplifyOutputs !== undefined ? options.amplifyOutputs : readAmplifyOutputs();
   const cognitoClient = googleOnlyCognitoClientFromOutputs(outputs, siteOrigin);
   if (!cognitoClient) return null;
-  const sealingSecret = await loadProspectusSessionSealingSecret({ environment, readSecret: options.readSecret });
+  // The parameter name comes from the deployed backend's outputs; the environment variable only overrides it.
+  const parameterName = environment[PROSPECTUS_SESSION_SECRET_PARAMETER_ENV]?.trim() || outputs?.custom?.prospectusSignIn?.sessionSecretParameter;
+  const sealingSecret = await loadProspectusSessionSealingSecret({
+    environment: { ...environment, [PROSPECTUS_SESSION_SECRET_PARAMETER_ENV]: parameterName },
+    readSecret: options.readSecret,
+  });
   if (!sealingSecret) return null;
   const transport = options.transport ?? signedProspectusTransport({ endpoint, region: regionOfProspectusAccountsEndpoint(endpoint) });
   return { accounts: new ProspectusStudioAccounts(transport), cognitoClient, sealingSecret };
