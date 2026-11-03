@@ -4,12 +4,11 @@ import { useRouter } from "next/navigation";
 import { useOrgs } from "@/lib/use-org-data";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { Building2 } from "lucide-react";
-import { CreateOrgDialog } from "./create-org-dialog";
 import { UserNav } from "./user-nav";
 
 export function StudioDashboard() {
   const router = useRouter();
-  const { orgs, loading: orgsLoading, refetch: refetchOrgs } = useOrgs();
+  const { orgs, loading: orgsLoading } = useOrgs();
 
   return (
     <div className="flex h-full flex-col">
@@ -24,21 +23,20 @@ export function StudioDashboard() {
       <div className="flex-1 overflow-auto p-0 bg-muted/10">
         {orgsLoading ? (
           <div className="p-8 flex justify-center text-muted-foreground">
-            Loading organizations...
+            Loading Accounts...
           </div>
         ) : orgs.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full gap-4 p-8">
             <h2 className="text-xl font-semibold">Welcome to Babulus Studio</h2>
             <p className="text-muted-foreground text-center max-w-md">
-              To get started, create your first organization. This will be the home for your projects and videos.
+              You are signed in, but Babulus is not turned on for any Account you belong to. Ask an owner of your
+              Account to grant access to Babulus.
             </p>
-            <CreateOrgDialog onOrgCreated={refetchOrgs} />
           </div>
         ) : (
           <div className="space-y-2 p-3">
             <div className="flex items-center justify-between h-8">
-              <h3 className="text-xs uppercase tracking-wider text-muted-foreground font-medium">Organizations</h3>
-              <CreateOrgDialog onOrgCreated={refetchOrgs} />
+              <h3 className="text-xs uppercase tracking-wider text-muted-foreground font-medium">Accounts</h3>
             </div>
 
             <div className="grid gap-2">

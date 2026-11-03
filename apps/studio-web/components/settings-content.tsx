@@ -11,7 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { DialogFooter } from "@/components/ui/dialog";
 
-import { createBillingAccountAction, setBillingVisibilityAction, updateOrgDomainAction } from "@/app/actions";
+import { createBillingAccountAction, setBillingVisibilityAction } from "@/app/actions";
 import { useBillingAccount } from "@/lib/use-org-data";
 import { useOrgs } from "@/lib/use-org-data";
 import { Input } from "@/components/ui/input";
@@ -21,8 +21,7 @@ export function SettingsContent({ onClose }: { onClose?: () => void }) {
   const { color, setColor } = useThemeConfig();
   const { layout, updateLayout } = useSettings();
   const { orgs } = useOrgs();
-  const activeOrgId = orgs[0]?.id; // Simplification: assuming first org for settings
-  const activeOrg = orgs[0];
+  const activeOrgId = orgs[0]?.id; // Simplification: the first Account the person belongs to
   const { account, refetch: refetchBilling } = useBillingAccount(activeOrgId);
   const [mounted, setMounted] = useState(false);
 
@@ -31,7 +30,6 @@ export function SettingsContent({ onClose }: { onClose?: () => void }) {
   const [localTheme, setLocalTheme] = useState<string>(theme || "system");
   const [localColor, setLocalColor] = useState<ThemeColor>(color);
   const [localVisibility, setLocalVisibility] = useState<"full" | "redacted">(account?.usageVisibilityMode ?? "full");
-  const [localDomain, setLocalDomain] = useState<string>(activeOrg?.customDomain || "");
 
   // Avoid hydration mismatch
   useEffect(() => {
@@ -40,8 +38,7 @@ export function SettingsContent({ onClose }: { onClose?: () => void }) {
     setLocalTheme(theme || "system");
     setLocalColor(color);
     setLocalVisibility(account?.usageVisibilityMode ?? "full");
-    setLocalDomain(activeOrg?.customDomain || "");
-  }, [layout, theme, color, account, activeOrg]);
+  }, [layout, theme, color, account]);
 
   if (!mounted) return null;
 
@@ -62,11 +59,6 @@ export function SettingsContent({ onClose }: { onClose?: () => void }) {
             await setBillingVisibilityAction(account.id, localVisibility, activeOrgId);
         }
         refetchBilling();
-
-        // Save custom domain
-        if (localDomain !== (activeOrg?.customDomain || "")) {
-           await updateOrgDomainAction(activeOrgId, localDomain || null);
-        }
     }
 
     onClose?.();
@@ -91,11 +83,10 @@ export function SettingsContent({ onClose }: { onClose?: () => void }) {
     <div className="flex flex-col h-full">
       <div className="flex-1 p-6">
         <Tabs defaultValue="theme" className="w-full">
-          <TabsList className="grid w-full grid-cols-4 mb-8">
+          <TabsList className="grid w-full grid-cols-3 mb-8">
             <TabsTrigger value="theme">Appearance</TabsTrigger>
             <TabsTrigger value="layout">Layout</TabsTrigger>
             <TabsTrigger value="billing">Billing</TabsTrigger>
-            <TabsTrigger value="domains">Domains</TabsTrigger>
           </TabsList>
 
           {/* THEME TAB */}
@@ -300,29 +291,6 @@ export function SettingsContent({ onClose }: { onClose?: () => void }) {
                 "Transparent" is for users who bring their own keys or want detailed cost breakdown. 
                 "Managed" is for users on flat-rate or credit-based plans.
               </p>
-            </div>
-          </TabsContent>
-
-          {/* DOMAINS TAB */}
-          <TabsContent value="domains" className="flex flex-col gap-8">
-            <div className="space-y-4">
-              <Label className="text-muted-foreground uppercase tracking-wider text-xs">Custom Domain</Label>
-              <div className="flex gap-2">
-                 <Input 
-                   placeholder="e.g. video.mycompany.com" 
-                   value={localDomain}
-                   onChange={(e) => setLocalDomain(e.target.value)}
-                 />
-              </div>
-              <p className="text-xs text-muted-foreground">
-                Set a custom domain for your published videos. You will need to configure a CNAME record pointing to <code>share.babulus.dev</code>.
-              </p>
-              {activeOrg?.customDomain && (
-                 <div className="flex items-center gap-2 text-sm">
-                    <div className={cn("w-2 h-2 rounded-full", activeOrg.customDomainVerified ? "bg-green-500" : "bg-yellow-500")} />
-                    <span>{activeOrg.customDomainVerified ? "Verified" : "Pending Verification (mock)"}</span>
-                 </div>
-              )}
             </div>
           </TabsContent>
         </Tabs>

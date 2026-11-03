@@ -9,7 +9,6 @@
     "start": "next start",
     "lint": "next lint",
     "test": "jest",
-    "test:integration": "jest tests/control-plane-graphql.test.ts",
     "amplify:sandbox": "npx ampx sandbox",
     "amplify:deploy": "npx ampx deploy"
   },
@@ -26,6 +25,7 @@
     "@aws-sdk/client-s3": "^3.975.0",
     "@aws-sdk/client-ssm": "^3.1159.0",
     "@aws-sdk/credential-providers": "^3.975.0",
+    "@aws-sdk/s3-request-presigner": "^3.985.0",
     "@babulus/renderer": "file:../../packages/renderer",
     "@babulus/shared": "file:../../packages/shared",
     "@monaco-editor/react": "^4.7.0",
@@ -48,6 +48,7 @@
     "anthus-footer": "github:AnthusAI/anthus-footer#main",
     "aws-amplify": "^6.16.0",
     "aws-cdk-lib": "^2.236.0",
+    "aws-jwt-verify": "^4.0.1",
     "bcryptjs": "^3.0.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",

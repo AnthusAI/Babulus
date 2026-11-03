@@ -2,8 +2,6 @@ import { generateServerClientUsingCookies } from "@aws-amplify/adapter-nextjs/da
 import { cookies } from "next/headers";
 import outputs from "../amplify_outputs.json";
 import type {
-  Org,
-  OrgMember,
   Project,
   Video,
   StoryboardVersion,
@@ -19,9 +17,6 @@ import type {
   UsageEvent,
   RenderAgent,
   BillingAccount,
-  UserProfile,
-  CreateOrgInput,
-  CreateOrgMemberInput,
   CreateProjectInput,
   CreateVideoInput,
   CreateStoryboardVersionInput,
@@ -36,13 +31,10 @@ import type {
   CreateUsageEventInput,
   CreateRenderAgentInput,
   CreateBillingAccountInput,
-  CreateUserProfileInput,
   CreatePublishedVideoInput,
   PublishedVideo,
 } from "@babulus/shared";
 import {
-  buildOrgRecord,
-  buildOrgMemberRecord,
   buildProjectRecord,
   buildVideoRecord,
   buildStoryboardVersionRecord,
@@ -58,10 +50,8 @@ import {
   buildUsageEventRecord,
   buildRenderAgentRecord,
   buildBillingAccountRecord,
-  buildUserProfileRecord,
   buildPublishedVideoRecord,
 } from "@babulus/shared";
-import { updateVideoStatus, type VideoStatus } from "@babulus/shared";
 
 // Create typed GraphQL client lazily to ensure request context
 const getClient = () => {
@@ -129,34 +119,6 @@ export const updatePublishedVideo = async (
   return data as any;
 };
 
-export const createOrg = async (input: CreateOrgInput): Promise<Org> => {
-  const record = buildOrgRecord(input);
-  const { data, errors } = await getClient().models.Org.create({
-    name: record.name,
-    planTier: record.planTier,
-  });
-  if (errors || !data) {
-    throw new Error(`Failed to create org: ${errors?.map((e) => e.message).join(", ")}`);
-  }
-  return data as any;
-};
-
-export const createOrgMember = async (
-  input: CreateOrgMemberInput,
-  activeOrgId: string,
-): Promise<OrgMember> => {
-  const record = buildOrgMemberRecord(input, activeOrgId);
-  const { data, errors } = await getClient().models.OrgMember.create({
-    orgId: record.orgId,
-    userId: record.userId,
-    role: record.role,
-  });
-  if (errors || !data) {
-    throw new Error(`Failed to create org member: ${errors?.map((e) => e.message).join(", ")}`);
-  }
-  return data as any;
-};
-
 export const createProject = async (
   input: CreateProjectInput,
   activeOrgId: string,
@@ -179,7 +141,6 @@ export const createVideo = async (input: CreateVideoInput, activeOrgId: string):
     orgId: record.orgId,
     projectId: record.projectId,
     title: record.title,
-    status: record.status,
     activeStoryboardVersionId: record.activeStoryboardVersionId,
   });
   if (errors || !data) {
@@ -295,8 +256,6 @@ export const createJob = async (input: CreateJobInput, activeOrgId: string): Pro
   const { data, errors } = await getClient().models.Job.create({
     orgId: record.orgId,
     kind: record.kind,
-    status: record.status,
-    claimedByAgentId: record.claimedByAgentId,
     executionMode: record.executionMode,
     inputJson: record.inputJson,
   });
@@ -431,36 +390,6 @@ export const createBillingAccount = async (
   return data as any;
 };
 
-export const createUserProfile = async (input: CreateUserProfileInput): Promise<UserProfile> => {
-  const record = buildUserProfileRecord(input);
-  const { data, errors } = await getClient().models.UserProfile.create({
-    userId: record.id,
-    email: record.email,
-    displayName: record.displayName,
-  });
-  if (errors || !data) {
-    throw new Error(`Failed to create user profile: ${errors?.map((e) => e.message).join(", ")}`);
-  }
-  return data as any;
-};
-
-// List operations
-export const listOrgs = async (userId: string): Promise<Org[]> => {
-  // First get all org memberships for this user
-  const { data: memberships } = await getClient().models.OrgMember.list({
-    filter: { userId: { eq: userId } },
-  });
-  if (!memberships?.length) {
-    return [];
-  }
-
-  const orgIds = new Set(memberships.map((m) => m.orgId));
-  const { data: orgs } = await getClient().models.Org.list({});
-
-  return ((orgs ?? [])
-    .filter((org) => orgIds.has(org.id))) as any;
-};
-
 export const listProjects = async (activeOrgId: string): Promise<Project[]> => {
   const { data } = await getClient().models.Project.list({
     filter: { orgId: { eq: activeOrgId } },
@@ -572,13 +501,6 @@ export const listJobEvents = async (activeOrgId: string, jobId?: string | null):
   return (data ?? [])as any;
 };
 
-export const listOrgMembers = async (activeOrgId: string): Promise<OrgMember[]> => {
-  const { data } = await getClient().models.OrgMember.list({
-    filter: { orgId: { eq: activeOrgId } },
-  });
-  return (data ?? [])as any;
-};
-
 export const listConversations = async (
   activeOrgId: string,
   videoId?: string | null,
@@ -653,51 +575,6 @@ export const listBillingAccounts = async (activeOrgId: string): Promise<BillingA
   return (data ?? [])as any;
 };
 
-export const updateOrgDomain = async (
-  orgId: string,
-  customDomain: string | null,
-): Promise<Org> => {
-  const { data: org } = await getClient().models.Org.get({ id: orgId });
-  if (!org) {
-    throw new Error(`Org not found: ${orgId}`);
-  }
-
-  const { data, errors } = await getClient().models.Org.update({
-    id: orgId,
-    customDomain,
-    customDomainVerified: false, // Reset verification when domain changes
-  });
-  if (errors || !data) {
-    throw new Error(`Failed to update org domain: ${errors?.map((e) => e.message).join(", ")}`);
-  }
-  return data as any;
-};
-
-// Update operations
-export const setVideoStatus = async (
-  videoId: string,
-  status: VideoStatus,
-  activeOrgId: string,
-): Promise<Video> => {
-  const { data: current } = await getClient().models.Video.get({ id: videoId });
-  if (!current) {
-    throw new Error(`Video not found: ${videoId}`);
-  }
-  if ((current as any).orgId !== activeOrgId) {
-    throw new Error(`Video ${videoId} does not belong to org ${activeOrgId}`);
-  }
-
-  const updated = updateVideoStatus(current as any, status);
-  const { data, errors } = await getClient().models.Video.update({
-    id: videoId,
-    status: (updated as any).status,
-  });
-  if (errors || !data) {
-    throw new Error(`Failed to update video status: ${errors?.map((e) => e.message).join(", ")}`);
-  }
-  return data as any;
-};
-
 export const setActiveStoryboardVersion = async (
   videoId: string,
   storyboardVersionId: string,
@@ -725,56 +602,6 @@ export const setActiveStoryboardVersion = async (
   });
   if (errors || !data) {
     throw new Error(`Failed to set active storyboard version: ${errors?.map((e) => e.message).join(", ")}`);
-  }
-  return data as any;
-};
-
-export const setJobStatus = async (
-  jobId: string,
-  status: JobStatus,
-  activeOrgId: string,
-): Promise<Job> => {
-  const { data: job } = await getClient().models.Job.get({ id: jobId });
-  if (!job) {
-    throw new Error(`Job not found: ${jobId}`);
-  }
-  if ((job as any).orgId !== activeOrgId) {
-    throw new Error(`Job ${jobId} does not belong to org ${activeOrgId}`);
-  }
-
-  const { data, errors } = await getClient().models.Job.update({
-    id: jobId,
-    status,
-  });
-  if (errors || !data) {
-    throw new Error(`Failed to update job status: ${errors?.map((e) => e.message).join(", ")}`);
-  }
-  return data as any;
-};
-
-export const claimJob = async (
-  jobId: string,
-  agentId: string,
-  activeOrgId: string,
-): Promise<Job> => {
-  const { data: job } = await getClient().models.Job.get({ id: jobId });
-  if (!job) {
-    throw new Error(`Job not found: ${jobId}`);
-  }
-  if ((job as any).orgId !== activeOrgId) {
-    throw new Error(`Job ${jobId} does not belong to org ${activeOrgId}`);
-  }
-  if ((job as any).status !== "queued") {
-    throw new Error(`Job not available: ${jobId}`);
-  }
-
-  const { data, errors } = await getClient().models.Job.update({
-    id: jobId,
-    status: "claimed",
-    claimedByAgentId: agentId,
-  });
-  if (errors || !data) {
-    throw new Error(`Failed to claim job: ${errors?.map((e) => e.message).join(", ")}`);
   }
   return data as any;
 };
@@ -827,32 +654,6 @@ export const setRenderAgentStatus = async (
   });
   if (errors || !data) {
     throw new Error(`Failed to update render agent status: ${errors?.map((e) => e.message).join(", ")}`);
-  }
-  return data as any;
-};
-
-export const setOrgMemberRole = async (
-  userId: string,
-  role: OrgMember["role"],
-  activeOrgId: string,
-): Promise<OrgMember> => {
-  const { data: members } = await getClient().models.OrgMember.list({
-    filter: {
-      orgId: { eq: activeOrgId },
-      userId: { eq: userId },
-    },
-  });
-  const member = members?.[0];
-  if (!member) {
-    throw new Error(`Org member not found: ${userId}`);
-  }
-
-  const { data, errors } = await getClient().models.OrgMember.update({
-    id: member.id,
-    role,
-  });
-  if (errors || !data) {
-    throw new Error(`Failed to update org member role: ${errors?.map((e) => e.message).join(", ")}`);
   }
   return data as any;
 };

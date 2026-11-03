@@ -15,6 +15,7 @@ import type {
   JobStatus,
 } from "@babulus/shared";
 import { configureAmplify } from "./amplify-config";
+import { fetchAccounts } from "./accounts-client";
 
 // Ensure Amplify is configured before creating client
 configureAmplify();
@@ -32,27 +33,20 @@ function getClient() {
 }
 
 /**
- * Fetch all orgs for the current user
+ * The Accounts the signed-in person may use Babulus in. The list comes from the sign-in service's session route
+ * (never from a table the browser can write), and each Account is also one of the Cognito groups in the ID token,
+ * which is what AppSync checks on every row.
  */
 export async function fetchOrgs(): Promise<Org[]> {
-  const { data, errors } = await getClient().models.Org.list({});
-  if (errors) {
-    console.error("Error fetching orgs:", errors);
-    throw new Error("Failed to fetch organizations");
-  }
-  return (data || []) as any[];
+  const accounts = await fetchAccounts();
+  return accounts.map((account) => ({ id: account.id, name: account.name, createdAt: "" }));
 }
 
 /**
- * Fetch a single org by ID
+ * Fetch a single Account the person belongs to
  */
 export async function fetchOrg(orgId: string): Promise<Org | null> {
-  const { data, errors } = await getClient().models.Org.get({ id: orgId });
-  if (errors) {
-    console.error("Error fetching org:", errors);
-    return null;
-  }
-  return data as any;
+  return (await fetchOrgs()).find((org) => org.id === orgId) ?? null;
 }
 
 /**

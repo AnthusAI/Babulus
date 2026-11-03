@@ -1,44 +1,33 @@
 import { a as schema, defineData } from "@aws-amplify/backend";
 
-const studioSchema = schema.schema({
-  UserProfile: schema
-    .model({
-      userId: schema.string().required(),
-      email: schema.string().required(),
-      displayName: schema.string(),
-    })
-    .authorization((allow) => [allow.authenticated()]),
-  Org: schema
-    .model({
-      name: schema.string().required(),
-      slug: schema.string(),
-      planTier: schema.string(),
-      customDomain: schema.string(),
-      customDomainVerified: schema.boolean(),
-    })
-    .authorization((allow) => [allow.authenticated()]),
-  OrgMember: schema
-    .model({
-      orgId: schema.string().required(),
-      userId: schema.string().required(),
-      role: schema.enum(["owner", "admin", "editor", "viewer"]),
-    })
-    .authorization((allow) => [allow.authenticated()]),
+// Every model is scoped to one Prospectus Account. `orgId` holds the Account ID, and the
+// only rule on any model is `groupDefinedIn("orgId")`: AppSync lets a caller touch a row
+// only when the Cognito group claim in their verified ID token names the row's Account.
+// The sign-in service sets those groups (one per Account the person may use Babulus in),
+// so the browser can neither choose nor forge an Account. There is no authenticated-user,
+// guest or API-key rule on any model.
+//
+// Fields the server owns (a job's status and retry counters, a video's status) are
+// readable by the Account's members but not writable by them: see `serverOwned`.
+const serverOwned = (field: any) =>
+  field.authorization((allow: any) => [allow.groupDefinedIn("orgId").to(["read"])]);
+
+export const studioSchema = schema.schema({
   Project: schema
     .model({
       orgId: schema.string().required(),
       name: schema.string().required(),
       templateId: schema.string(),
     })
-    .authorization((allow) => [allow.authenticated()]),
+    .authorization((allow) => [allow.groupDefinedIn("orgId")]),
   Video: schema
     .model({
       orgId: schema.string().required(),
       projectId: schema.string().required(),
       title: schema.string().required(),
-      status: schema.string(),
+      status: serverOwned(schema.string()),
     })
-    .authorization((allow) => [allow.authenticated()]),
+    .authorization((allow) => [allow.groupDefinedIn("orgId")]),
   GenerationRun: schema
     .model({
       orgId: schema.string().required(),
@@ -49,7 +38,7 @@ const studioSchema = schema.schema({
       audioArtifactKey: schema.string(),
       logsArtifactKey: schema.string(),
     })
-    .authorization((allow) => [allow.authenticated()]),
+    .authorization((allow) => [allow.groupDefinedIn("orgId")]),
   RenderRun: schema
     .model({
       orgId: schema.string().required(),
@@ -60,7 +49,7 @@ const studioSchema = schema.schema({
       stillsArtifactPrefix: schema.string(),
       logsArtifactKey: schema.string(),
     })
-    .authorization((allow) => [allow.authenticated()]),
+    .authorization((allow) => [allow.groupDefinedIn("orgId")]),
   Asset: schema
     .model({
       orgId: schema.string().required(),
@@ -70,7 +59,7 @@ const studioSchema = schema.schema({
       storageKey: schema.string().required(),
       metadataJson: schema.json(),
     })
-    .authorization((allow) => [allow.authenticated()]),
+    .authorization((allow) => [allow.groupDefinedIn("orgId")]),
   ProjectFile: schema
     .model({
       orgId: schema.string().required(),
@@ -82,13 +71,13 @@ const studioSchema = schema.schema({
       sizeBytes: schema.integer(),
       sha256: schema.string(),
     })
-    .authorization((allow) => [allow.authenticated()]),
+    .authorization((allow) => [allow.groupDefinedIn("orgId")]),
   Conversation: schema
     .model({
       orgId: schema.string().required(),
       videoId: schema.string(),
     })
-    .authorization((allow) => [allow.authenticated()]),
+    .authorization((allow) => [allow.groupDefinedIn("orgId")]),
   Message: schema
     .model({
       orgId: schema.string().required(),
@@ -96,7 +85,7 @@ const studioSchema = schema.schema({
       role: schema.enum(["system", "assistant", "user"]),
       content: schema.string().required(),
     })
-    .authorization((allow) => [allow.authenticated()]),
+    .authorization((allow) => [allow.groupDefinedIn("orgId")]),
   Approval: schema
     .model({
       orgId: schema.string().required(),
@@ -107,7 +96,7 @@ const studioSchema = schema.schema({
       decidedBy: schema.string(),
       decidedAt: schema.string(),
     })
-    .authorization((allow) => [allow.authenticated()]),
+    .authorization((allow) => [allow.groupDefinedIn("orgId")]),
   RenderAgent: schema
     .model({
       orgId: schema.string().required(),
@@ -115,20 +104,22 @@ const studioSchema = schema.schema({
       status: schema.enum(["online", "offline", "busy"]),
       lastSeenAt: schema.string(),
     })
-    .authorization((allow) => [allow.authenticated()]),
+    .authorization((allow) => [allow.groupDefinedIn("orgId")]),
   Job: schema
     .model({
       orgId: schema.string().required(),
       kind: schema.enum(["resolve", "generate", "render", "publish"]),
-      status: schema.enum(["queued", "claimed", "running", "succeeded", "failed", "canceled"]),
-      claimedByAgentId: schema.string(),
+      // A string, not an enum: Amplify cannot put a field rule on an enum. The values are
+      // queued, claimed, running, succeeded, failed, canceled, and only the server sets them.
+      status: serverOwned(schema.string().default("queued")),
+      claimedByAgentId: serverOwned(schema.string()),
       executionMode: schema.enum(["cloud", "local"]),
       inputJson: schema.json(),
-      retryCount: schema.integer().default(0),
-      maxRetries: schema.integer().default(3),
+      retryCount: serverOwned(schema.integer().default(0)),
+      maxRetries: serverOwned(schema.integer().default(3)),
       failureReason: schema.string(),
     })
-    .authorization((allow) => [allow.authenticated()]),
+    .authorization((allow) => [allow.groupDefinedIn("orgId")]),
 
   PublishedVideo: schema
     .model({
@@ -144,9 +135,7 @@ const studioSchema = schema.schema({
     .secondaryIndexes((index) => [
         index("slug"),
     ])
-    .authorization((allow) => [
-        allow.authenticated(),
-    ]),
+    .authorization((allow) => [allow.groupDefinedIn("orgId")]),
   JobEvent: schema
     .model({
       orgId: schema.string().required(),
@@ -155,7 +144,7 @@ const studioSchema = schema.schema({
       message: schema.string(),
       progress: schema.float(),
     })
-    .authorization((allow) => [allow.authenticated()]),
+    .authorization((allow) => [allow.groupDefinedIn("orgId")]),
   UsageEvent: schema
     .model({
       orgId: schema.string().required(),
@@ -167,7 +156,7 @@ const studioSchema = schema.schema({
       estimatedCost: schema.float(),
       actualCost: schema.float(),
     })
-    .authorization((allow) => [allow.authenticated()]),
+    .authorization((allow) => [allow.groupDefinedIn("orgId")]),
   BillingAccount: schema
     .model({
       orgId: schema.string().required(),
@@ -175,7 +164,7 @@ const studioSchema = schema.schema({
       billingMode: schema.enum(["byok", "markup", "flat", "credits"]),
       usageVisibilityMode: schema.enum(["full", "redacted"]),
     })
-    .authorization((allow) => [allow.authenticated()]),
+    .authorization((allow) => [allow.groupDefinedIn("orgId")]),
 });
 
 export const data = defineData({

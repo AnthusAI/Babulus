@@ -1,8 +1,7 @@
 'use server';
 
 import { cookies } from 'next/headers';
-import { runWithAmplifyServerContext } from '@/lib/amplify-server';
-import { getCurrentUser } from 'aws-amplify/auth/server';
+import { requireAccountForRequest } from '@/lib/account-session';
 import { generateServerClientUsingCookies } from '@aws-amplify/adapter-nextjs/data';
 // @ts-ignore - Schema type is generated after backend deployment
 import type { Schema } from '../amplify/data/resource.js';
@@ -30,41 +29,25 @@ const getClient = () => {
   });
 };
 
-async function getAuthenticatedUserId(): Promise<string> {
-  try {
-    const currentUser = await runWithAmplifyServerContext({
-      nextServerContext: { cookies },
-      operation: (contextSpec) => getCurrentUser(contextSpec),
-    });
-    return currentUser.userId;
-  } catch (error) {
-    throw new Error('User not authenticated');
-  }
-}
-
-async function verifyOrgAccess(userId: string, orgId: string): Promise<void> {
+/**
+ * Load a project the caller may use. The project row comes back through AppSync under the caller's own token
+ * (so it is already limited to the caller's Accounts), and its Account is checked again against the verified
+ * ID token before any storage is touched.
+ */
+async function authorizedProject(projectId: string) {
   const client = getClient();
-  const { data: memberships } = await client.models.OrgMember.list({
-    filter: { userId: { eq: userId }, orgId: { eq: orgId } }
-  });
-  if (!memberships || memberships.length === 0) {
-    throw new Error('Unauthorized: Not a member of this organization');
-  }
-}
-
-export async function listProjectFilesAction(projectId: string) {
-  const userId = await getAuthenticatedUserId();
-  const client = getClient();
-
-  // Get project to find orgId
   const { data: projects } = await client.models.Project.list({
     filter: { id: { eq: projectId } }
   });
   const project = projects?.[0];
   if (!project) throw new Error('Project not found');
+  await requireAccountForRequest(null, project.orgId);
+  return project;
+}
 
-  // Verify access
-  await verifyOrgAccess(userId, project.orgId);
+export async function listProjectFilesAction(projectId: string) {
+  const project = await authorizedProject(projectId);
+  const client = getClient();
 
   // List files from database
   const { data: files } = await client.models.ProjectFile.list({
@@ -74,7 +57,8 @@ export async function listProjectFilesAction(projectId: string) {
   // Generate URLs for each file
   const filesWithUrls = (files || []).map((file) => ({
     ...file,
-    url: storage.getProjectFileUrl(project.orgId, projectId, file.relativePath)
+    // Not a public URL: the browser asks /api/account-media for a short-lived signed one.
+    key: storage.getProjectFileKey(project.orgId, projectId, file.relativePath)
   }));
 
   return filesWithUrls;
@@ -87,16 +71,8 @@ export async function uploadProjectFileAction(
   fileType: 'video' | 'utility' | 'asset',
   contentType?: string
 ) {
-  const userId = await getAuthenticatedUserId();
+  const project = await authorizedProject(projectId);
   const client = getClient();
-
-  const { data: projects } = await client.models.Project.list({
-    filter: { id: { eq: projectId } }
-  });
-  const project = projects?.[0];
-  if (!project) throw new Error('Project not found');
-
-  await verifyOrgAccess(userId, project.orgId);
 
   // Upload to S3
   const storageKey = await storage.uploadProjectFile(
@@ -130,16 +106,8 @@ export async function uploadProjectFileAction(
 }
 
 export async function readProjectFileAction(projectId: string, relativePath: string) {
-  const userId = await getAuthenticatedUserId();
+  const project = await authorizedProject(projectId);
   const client = getClient();
-
-  const { data: projects } = await client.models.Project.list({
-    filter: { id: { eq: projectId } }
-  });
-  const project = projects?.[0];
-  if (!project) throw new Error('Project not found');
-
-  await verifyOrgAccess(userId, project.orgId);
 
   // Read from S3
   const content = await storage.readProjectFile(project.orgId, projectId, relativePath);
@@ -147,16 +115,8 @@ export async function readProjectFileAction(projectId: string, relativePath: str
 }
 
 export async function deleteProjectFileAction(projectId: string, relativePath: string) {
-  const userId = await getAuthenticatedUserId();
+  const project = await authorizedProject(projectId);
   const client = getClient();
-
-  const { data: projects } = await client.models.Project.list({
-    filter: { id: { eq: projectId } }
-  });
-  const project = projects?.[0];
-  if (!project) throw new Error('Project not found');
-
-  await verifyOrgAccess(userId, project.orgId);
 
   // Delete from S3
   await storage.deleteProjectFile(project.orgId, projectId, relativePath);

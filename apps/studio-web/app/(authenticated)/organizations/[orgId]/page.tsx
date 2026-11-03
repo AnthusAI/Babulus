@@ -47,9 +47,9 @@ export default function OrganizationPage() {
             </div>
           ) : !org ? (
             <div className="p-8 flex flex-col items-center gap-4">
-              <h2 className="text-xl font-semibold">Organization not found</h2>
+              <h2 className="text-xl font-semibold">Account not found</h2>
               <p className="text-muted-foreground">
-                The organization with ID {orgId} does not exist or you don't have access to it.
+                The Account with ID {orgId} does not exist or you don't have access to it.
               </p>
             </div>
           ) : (
