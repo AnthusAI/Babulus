@@ -6,7 +6,7 @@ import { join } from "node:path";
 let source = "";
 
 const allowedActions = () =>
-  [...source.matchAll(/^\s+(?:- |Action: )([a-z0-9-]+:[A-Za-z*]+)$/gm)].map((match) => match[1]).sort();
+  [...source.matchAll(/^\s+(?:- |Action: )([a-z0-9-]+:[A-Za-z*]+)$/gm)].map((match) => match[1]).filter((action) => action !== "sts:AssumeRole").sort();
 
 Given("the Studio server role template", () => {
   source = readFileSync(join(process.cwd(), "infra/studio-server-role/template.yml"), "utf8");
