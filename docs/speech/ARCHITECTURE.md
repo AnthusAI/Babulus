@@ -36,7 +36,7 @@ the worker that wins the conditional claim may complete the job.
 | DynamoDB | Job mutex state, site registry |
 | Local worker (`auritus worker`) | Claim, synthesize, upload audio |
 | Step Functions + Batch | Wait for local claim window, then GPU fallback |
-| Cognito | Operator CLI authentication (password auth; optional Google IdP) |
+| Cognito | Operator CLI authentication (Google sign-in through `cli-login`) |
 | S3 + CloudFront | Private audio objects, short-lived signed playback URLs |
 
 ## Request flow
@@ -169,21 +169,14 @@ read their own voices folder.
 
 ![Operator identity choices: native Cognito users, Google Workspace OAuth, and AWS IAM Identity Center SAML federation.](diagrams/rendered/operator-identity-options.svg)
 
-- **Native Cognito user — supported (built-in):** CDK provisions a user pool and app
-  client. `auritus login --username <email>` uses the native pool's
-  `USER_PASSWORD_AUTH` flow. Ideal when you want to keep everything self-contained
-  inside your AWS account.
-- **Google Workspace via Cognito — supported (SSO):** the stack configures Google
-  OIDC federation on the user pool. Operators authenticate via Google single sign-on
-  in the web console or via `auritus login --sso google`.
-- **AWS IAM Identity Center (AWS SSO) — supported (SAML 2.0 / SSO):** the user pool
-  supports SAML 2.0 federation with AWS IAM Identity Center or corporate identity
-  providers (Okta, Entra ID, Ping). Operators sign in via single sign-on in the web
-  console or via `auritus login --sso aws-sso`.
+- **Google via Cognito (the command line):** `babulus login <studio>` and
+  `babulus login --remote <studio>` sign in with Google through the Studio's
+  own web app client, using the shared `cli-login` library. The renewable
+  session lives in the machine's secure store; there is no password
+  sign-in and no plaintext file. See [CLI sign-in](../cli-login.md).
 
-For the supported CLI path, short-lived JWTs are stored locally under
-`~/.auritus/credentials` with mode `0600`. The CLI and the web console send the
-Cognito **access** token as `Authorization: Bearer <token>`.
+The CLI and the web console send the Cognito **access** token as
+`Authorization: Bearer <token>`.
 
 Operator tokens are verified in two places with the same shared module
 (`auritus_operator_auth`, shipped as a Lambda layer with PyJWT and
@@ -235,8 +228,9 @@ each control's threat, owner, implementation evidence, and review status.
 | Identities and authorization | Operator, site-key, worker, and deployment permissions. |
 | Data handling | Text, audio, metadata, retention, and deletion behavior. |
 | Control evidence | CDK, tests, logging, and review evidence for each claim. |
-- `auritus login --username <email>` calls Cognito `USER_PASSWORD_AUTH` and
-  stores short-lived JWTs in `~/.auritus/credentials` (mode 0600).
+- `babulus login` signs in with Google through `cli-login` and keeps the
+  session in the OS secure store; only short-lived access tokens exist, in
+  memory.
 - Operator routes (`/sites`, `/admin/*`, claimable listing) require a Cognito
   access token whose signature, issuer, expiry, `token_use`, and `client_id`
   are verified by the Lambda authorizer and again by the router.

@@ -1,0 +1,28 @@
+{
+  "id": "babulus-a6c511c9-e318-43e6-9d82-43e5d1b55eae",
+  "title": "babulus login through cli-login: secure-store session, remote login broker, WorkerAuth",
+  "description": "PR C of M2. Replaces the Cognito-password CLI path with cli-login 0.4.0 (login, login --remote, whoami, logout), a per-deployment broker and approval pages in the Studio Amplify backend (off until BABULUS_ENABLE_CLI_REMOTE_LOGIN), /.well-known/babulus-cli.json, and a WorkerAuth that uses the stored session. Cloud workers keep the job token.",
+  "type": "task",
+  "status": "open",
+  "priority": 2,
+  "assignee": null,
+  "creator": null,
+  "parent": "babulus-be70f999-3808-4fb1-987b-f7cd306e16e1",
+  "labels": [],
+  "dependencies": [],
+  "comments": [
+    {
+      "id": "798921c7-5d2f-4df9-b59c-b8c49ca892bd",
+      "author": "home",
+      "text": "PR C opened: https://github.com/AnthusAI/Babulus/pull/10 (not merged; merge after PR A).",
+      "created_at": "2026-11-02T23:53:38.184103Z",
+      "comment_type": "default"
+    }
+  ],
+  "created_at": "2026-11-02T23:52:40.551623Z",
+  "updated_at": "2026-11-02T23:53:38.184315Z",
+  "closed_at": null,
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {}
+}

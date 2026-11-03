@@ -186,7 +186,6 @@ def _run(context, *, video=None, json_output=False):
         patch.object(daemon, "load_config", return_value=_config(context)),
         patch.object(daemon, "AuritusClient", return_value=client),
         patch.object(daemon, "get_backend", return_value=backend),
-        patch.object(daemon, "maybe_warn_near_expiry", return_value=False),
         patch.object(daemon.httpx, "put", side_effect=record_put),
         patch.object(daemon.time, "sleep", return_value=None),
         patch.object(video_mod, "render_job", side_effect=render),

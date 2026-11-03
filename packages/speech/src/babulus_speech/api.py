@@ -6,11 +6,11 @@ from typing import Any, Protocol
 
 import httpx
 
-from babulus_speech.auth import (
+from babulus_speech.cli_session import (
     AuthError,
-    RefreshExpiredError,
-    get_access_token,
-    refresh_tokens,
+    OAuthError,
+    StudioSession,
+    load_login,
 )
 from babulus_speech.config import load_config
 
@@ -28,13 +28,12 @@ class AuritusSessionExpiredError(AuritusApiError):
 
 
 class WorkerAuth(Protocol):
-    """How the CLI and worker authenticate to the jobs API.
+    """How the CLI and a local worker authenticate to the jobs API.
 
-    This is the one seam for credentials. Today's implementation is
-    :class:`OperatorSessionAuth`; milestone M2 replaces it with a
-    ``cli-login`` session (and a job-scoped token for cloud workers) by
-    passing a different object to :class:`AuritusClient`, with no other
-    change to the worker or the API calls.
+    This is the one seam for credentials. A person's command and a local worker
+    use :class:`StoredSessionAuth`, the ``cli-login`` session that
+    ``babulus login`` stored in the machine's secure store. A cloud worker never
+    uses it: it passes its single-use job token as ``AuritusClient(token=...)``.
     """
 
     def access_token(self) -> str:
@@ -50,30 +49,52 @@ class WorkerAuth(Protocol):
         ...
 
 
-class OperatorSessionAuth:
-    """The Cognito operator session cached by ``babulus login``."""
+class StoredSessionAuth:
+    """The ``cli-login`` session stored by ``babulus login``.
+
+    The token goes only to the jobs API the signed-in Studio published: a
+    client pointed at any other endpoint is refused before a request is made.
+    """
+
+    def __init__(self, session: StudioSession, endpoint: str | None = None) -> None:
+        self._session = session
+        self._endpoint = (endpoint or session.api_endpoint).rstrip("/")
+
+    def _expired(self, exc: Exception) -> AuritusSessionExpiredError:
+        return AuritusSessionExpiredError(
+            "Session expired or signed out. Run `babulus login`."
+        )
 
     def access_token(self) -> str:
-        """Return the cached access token, refreshing it when it is stale."""
+        """Return the access token, renewing it when it is stale."""
         try:
-            return get_access_token()
-        except RefreshExpiredError as exc:
-            raise AuritusSessionExpiredError(
-                "Session expired. Run `babulus login`."
-            ) from exc
+            return self._session.access_token(self._endpoint)
+        except OAuthError as exc:
+            if exc.transient:
+                raise AuritusApiError(str(exc)) from exc
+            raise self._expired(exc) from exc
         except AuthError as exc:
+            if not self._session.status().get("signed_in"):
+                raise self._expired(exc) from exc
             raise AuritusApiError(str(exc)) from exc
 
     def refresh(self) -> None:
-        """Force a token refresh."""
-        try:
-            refresh_tokens()
-        except RefreshExpiredError as exc:
-            raise AuritusSessionExpiredError(
-                "Session expired. Run `babulus login`."
-            ) from exc
-        except AuthError as exc:
-            raise AuritusApiError(str(exc)) from exc
+        """Force the next call to renew the token."""
+        self._session.refresh()
+
+
+def stored_session_auth(base_url: str | None = None) -> StoredSessionAuth:
+    """The signed-in Studio's session, for a client of ``base_url`` (default: that Studio's jobs API).
+
+    :raises AuritusApiError: If this machine has never signed in, or the secure store cannot be used.
+    """
+    try:
+        login = load_login()
+        if login is None:
+            raise AuritusSessionExpiredError("Not signed in. Run `babulus login`.")
+        return StoredSessionAuth(StudioSession(login), base_url)
+    except AuthError as exc:
+        raise AuritusApiError(str(exc)) from exc
 
 
 class AuritusClient:
@@ -93,19 +114,30 @@ class AuritusClient:
         """
         cfg = load_config()
         self.base_url = (base_url or cfg.get("api_endpoint") or "").rstrip("/")
+        if not self.base_url and token is None and auth is None:
+            login = load_login_quietly()
+            self.base_url = login.api_endpoint if login else ""
         if not self.base_url:
             raise AuritusApiError(
-                "api_endpoint is not set. Run `auritus deploy` or `auritus config set`."
+                "api_endpoint is not set. Run `babulus login <studio>` or `babulus config set`."
             )
         self._token = token
-        self._auth: WorkerAuth = auth or OperatorSessionAuth()
+        # A fixed token (a cloud worker's job token) never touches the stored session.
+        self._auth: WorkerAuth | None = auth
+        if self._auth is None and token is None:
+            self._auth = stored_session_auth(self.base_url)
+
+    def _auth_or_fail(self) -> WorkerAuth:
+        if self._auth is None:
+            raise AuritusApiError("No credentials for this client.")
+        return self._auth
 
     def _headers(self, site_key: str | None = None) -> dict[str, str]:
         headers = {"Accept": "application/json", "Content-Type": "application/json"}
         if site_key:
             headers["X-Auritus-Site-Key"] = site_key
         else:
-            token = self._token or self._auth.access_token()
+            token = self._token or self._auth_or_fail().access_token()
             headers["Authorization"] = f"Bearer {token}"
         return headers
 
@@ -137,13 +169,20 @@ class AuritusClient:
         response = self._send(
             method, url, headers=self._headers(site_key=site_key), json_body=json_body
         )
-        if response.status_code == 401 and not site_key:
-            self._auth.refresh()
+        if response.status_code == 401 and not site_key and self._auth is not None:
+            self._auth_or_fail().refresh()
             response = self._send(
                 method,
                 url,
                 headers=self._headers(site_key=site_key),
                 json_body=json_body,
+            )
+        if response.status_code == 403 and not site_key:
+            raise AuritusApiError(
+                f"{method} {path} refused (403): this sign-in has no Babulus access to "
+                "that Account. Ask an owner of the Account to give it Babulus access, then "
+                "run `babulus login` again.",
+                status_code=403,
             )
         if response.status_code >= 400:
             raise AuritusApiError(
@@ -489,3 +528,11 @@ class AuritusClient:
         if older_than_days is not None:
             body["older_than_days"] = older_than_days
         return self._request("POST", "/admin/jobs/bulk-delete", json_body=body)
+
+
+def load_login_quietly() -> Any:
+    """The remembered Studio, or None when there is none or its details cannot be read."""
+    try:
+        return load_login()
+    except AuthError:
+        return None

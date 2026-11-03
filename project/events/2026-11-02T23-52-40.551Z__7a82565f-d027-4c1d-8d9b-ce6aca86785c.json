@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "event_id": "7a82565f-d027-4c1d-8d9b-ce6aca86785c",
+  "issue_id": "babulus-a6c511c9-e318-43e6-9d82-43e5d1b55eae",
+  "event_type": "issue_created",
+  "occurred_at": "2026-11-02T23:52:40.551Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "babulus login through cli-login: secure-store session, remote login broker, WorkerAuth",
+    "description": "PR C of M2. Replaces the Cognito-password CLI path with cli-login 0.4.0 (login, login --remote, whoami, logout), a per-deployment broker and approval pages in the Studio Amplify backend (off until BABULUS_ENABLE_CLI_REMOTE_LOGIN), /.well-known/babulus-cli.json, and a WorkerAuth that uses the stored session. Cloud workers keep the job token.",
+    "issue_type": "task",
+    "status": "open",
+    "priority": 2,
+    "assignee": null,
+    "parent": "babulus-be70f999-3808-4fb1-987b-f7cd306e16e1",
+    "labels": []
+  }
+}

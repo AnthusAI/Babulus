@@ -21,7 +21,6 @@ from babulus_speech.api import (
     AuritusClient,
     AuritusSessionExpiredError,
 )
-from babulus_speech.auth import maybe_warn_near_expiry, notify_session_state
 from babulus_speech.config import load_config
 from babulus_speech.tts import get_backend
 from babulus_speech.worker import video as video_mod
@@ -287,7 +286,6 @@ def run_worker(
     toolchain = _resolve_video(video, worker_cfg, emit, video_check)
 
     while True:
-        maybe_warn_near_expiry(owner)
         try:
             jobs = client.list_claimable()
             emit({"event": "message", "text": f"Found {len(jobs)} claimable jobs"})
@@ -297,7 +295,6 @@ def run_worker(
                 fg=typer.colors.RED,
                 err=True,
             )
-            notify_session_state("expired", owner)
             raise SystemExit(2) from exc
         except AuritusApiError as exc:
             typer.secho(

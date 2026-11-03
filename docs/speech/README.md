@@ -44,14 +44,14 @@ git clone https://github.com/AnthusAI/Babulus.git
 cd Babulus
 pip install -e packages/speech/
 babulus deploy
-babulus login --username you@example.com
+babulus login studio.example.test
 babulus site create --origin https://example.com
 babulus worker
 ```
 
-`babulus deploy` writes Cognito pool and client ids into local config.
-`babulus login` then prompts for your Cognito password when `--password` is
-omitted.
+`babulus login <studio>` signs in with Google and keeps the session in your
+machine's secure store (see [CLI sign-in](../cli-login.md)). There is no
+password sign-in.
 
 Embed snippet (after `babulus site create`):
 

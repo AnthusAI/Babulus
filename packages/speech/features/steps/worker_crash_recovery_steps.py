@@ -67,7 +67,6 @@ def step_run_worker_once(context) -> None:
         patch.object(daemon, "load_config", return_value=mock_config),
         patch.object(daemon, "AuritusClient", return_value=context.mock_client),
         patch.object(daemon, "get_backend", return_value=context.mock_backend),
-        patch.object(daemon, "maybe_warn_near_expiry", return_value=False),
         patch.object(daemon.httpx, "put", return_value=mock_put_response),
     ):
         try:
