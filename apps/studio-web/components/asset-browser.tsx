@@ -1,7 +1,7 @@
 "use client";
 
 import { useProjectFiles } from "@/lib/use-org-data";
-import NextImage from "next/image";
+import { fetchAccountMediaUrl } from "@/lib/account-media-client";
 import { Image as ImageIcon, Music, Film, File as FileIcon, Trash2, Copy, Eye } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -75,32 +75,14 @@ export function AssetBrowser({ projectId }: AssetBrowserProps) {
       ) : (
         <div className="grid gap-2">
           {assetFiles.map((file: any) => {
-            const isImage = /\.(jpg|jpeg|png|gif|svg|webp)$/i.test(file.relativePath);
-
             return (
               <div
                 key={file.id}
                 className="flex items-start gap-2 rounded-md px-2 py-2 transition-colors hover:bg-accent/40 border"
               >
-                {isImage && file.url ? (
-                  <div className="w-12 h-12 rounded border flex-shrink-0 overflow-hidden bg-muted relative">
-                    <NextImage
-                      src={file.url}
-                      alt={file.relativePath}
-                      fill
-                      sizes="48px"
-                      className="object-cover"
-                      unoptimized
-                      onError={(event) => {
-                        event.currentTarget.style.display = 'none';
-                      }}
-                    />
-                  </div>
-                ) : (
-                  <div className="w-12 h-12 rounded border flex-shrink-0 flex items-center justify-center bg-muted">
-                    {getFileIcon(file.relativePath)}
-                  </div>
-                )}
+                <div className="w-12 h-12 rounded flex-shrink-0 flex items-center justify-center bg-muted">
+                  {getFileIcon(file.relativePath)}
+                </div>
                 <div className="flex-1 min-w-0">
                   <div className="text-sm font-medium leading-none truncate">
                     {file.relativePath.replace('assets/', '')}
@@ -110,12 +92,18 @@ export function AssetBrowser({ projectId }: AssetBrowserProps) {
                   </div>
                 </div>
                 <div className="flex items-center gap-1 flex-shrink-0">
-                  {file.url && (
+                  {file.key && (
                     <Button
                       variant="ghost"
                       size="icon"
                       className="h-7 w-7"
-                      onClick={() => window.open(file.url, '_blank')}
+                      onClick={async () => {
+                        try {
+                          window.open(await fetchAccountMediaUrl(file.orgId, file.key), '_blank');
+                        } catch (error) {
+                          console.error('Failed to open asset:', error);
+                        }
+                      }}
                       title="Open in new tab"
                     >
                       <Eye className="h-3.5 w-3.5" />

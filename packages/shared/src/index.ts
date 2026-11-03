@@ -207,3 +207,4 @@ export * from "./execution-plane.ts";
 export * from "./video-status.ts";
 export * from "./usage.ts";
 export * from "./jobs.ts";
+export * from "./account-scope.ts";

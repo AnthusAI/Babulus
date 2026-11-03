@@ -5,8 +5,11 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { generateClient } from 'aws-amplify/data';
-import { getUrl } from 'aws-amplify/storage';
+import { generateServerClientUsingCookies } from '@aws-amplify/adapter-nextjs/data';
+import { cookies } from 'next/headers';
+import { accountAccessResponse } from '@/lib/account-authorization';
+import { requireAccountForRequest } from '@/lib/account-session';
+import { presignAccountDownload } from '@/lib/account-media';
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -20,8 +23,10 @@ export async function GET(
     const searchParams = request.nextUrl.searchParams;
     const fileType = searchParams.get('type');
 
-    const client = generateClient<any>({
-      authMode: 'userPool',
+    // The server client carries the caller's own session, so AppSync returns only rows of the caller's Accounts.
+    const client = generateServerClientUsingCookies<any>({
+      config: require('../../../../amplify_outputs.json'),
+      cookies,
     });
 
     // Fetch video to verify access
@@ -33,6 +38,9 @@ export async function GET(
         { status: 404 }
       );
     }
+
+    // The video's Account must be one the verified ID token names.
+    const { accountId } = await requireAccountForRequest(request, (video as any).orgId);
 
     // Get render runs for this video
     const { data: renders } = await client.models.RenderRun.list({
@@ -70,14 +78,9 @@ export async function GET(
     // If specific file type requested, redirect to it
     if (fileType === 'mp4' && latestRender.mp4ArtifactKey) {
       try {
-        const urlResult = await getUrl({
-          path: latestRender.mp4ArtifactKey,
-          options: {
-            expiresIn: 3600, // 1 hour
-          },
-        });
+        const url = await presignAccountDownload(accountId, latestRender.mp4ArtifactKey);
 
-        return NextResponse.redirect(urlResult.url.toString());
+        return NextResponse.redirect(url);
       } catch (e) {
         console.error('Error generating signed URL:', e);
         return NextResponse.json(
@@ -115,6 +118,8 @@ export async function GET(
       })),
     });
   } catch (error) {
+    const refusal = accountAccessResponse(error);
+    if (refusal) return refusal;
     console.error('Files route error:', error);
     return NextResponse.json(
       {

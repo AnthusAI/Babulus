@@ -179,7 +179,7 @@ export function PublishModal({
                   <SelectContent>
                     <SelectItem value="public">Public - Anyone with the link</SelectItem>
                     <SelectItem value="password">Password Protected</SelectItem>
-                    <SelectItem value="org_only">Organization Only</SelectItem>
+                    <SelectItem value="org_only">Account Only</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -274,9 +274,9 @@ export function PublishModal({
 
               {accessPolicy === "org_only" && (
                 <div className="bg-muted p-3 rounded-lg">
-                  <p className="text-sm font-medium">Organization Access Only</p>
+                  <p className="text-sm font-medium">Account Access Only</p>
                   <p className="text-xs text-muted-foreground mt-1">
-                    Only members of your organization can access this video.
+                    Only members of your Account can access this video.
                   </p>
                 </div>
               )}
