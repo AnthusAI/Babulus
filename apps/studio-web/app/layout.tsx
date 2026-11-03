@@ -8,6 +8,7 @@ import { SettingsProvider } from "@/lib/settings-context";
 import { SettingsDialog } from "@/components/settings-dialog";
 
 // Fonts are self-hosted (latin subset, from Fontsource) so the build never fetches them from Google.
+// Russo One comes from the @fontsource/russo-one package, so its licence ships unedited.
 const fontHeading = localFont({
   src: [
     { path: "./fonts/bebas-neue/bebas-neue-latin-400-normal.woff2", weight: "400", style: "normal" },
@@ -108,7 +109,7 @@ const fontPreviewSciFi = localFont({
 
 const fontPreviewGaming = localFont({
   src: [
-    { path: "./fonts/russo-one/russo-one-latin-400-normal.woff2", weight: "400", style: "normal" },
+    { path: "../../../node_modules/@fontsource/russo-one/files/russo-one-latin-400-normal.woff2", weight: "400", style: "normal" },
   ],
   display: "swap",
   variable: "--font-preview-gaming",

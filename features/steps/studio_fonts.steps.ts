@@ -1,7 +1,7 @@
 import { Given, Then } from "@cucumber/cucumber";
 import assert from "node:assert/strict";
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
-import { join } from "node:path";
+import { dirname, join, resolve, sep } from "node:path";
 
 const studio = join(process.cwd(), "apps", "studio-web");
 const skipped = new Set(["node_modules", ".next", ".amplify", "amplify"]);
@@ -29,18 +29,24 @@ Then("none of them imports the Google font loader", () => {
   assert.deepEqual(offenders, []);
 });
 
-Then("each font file the layout loads is in the repository", () => {
+function layoutFontPaths(): string[] {
   const layout = readFileSync(join(studio, "app", "layout.tsx"), "utf8");
-  const paths = [...layout.matchAll(/"(\.\/fonts\/[^"]+)"/g)].map((match) => match[1]);
+  const paths = [...layout.matchAll(/"(\.\.?\/[^"]+\.woff2)"/g)].map((match) => match[1]);
   assert.ok(paths.length > 0, "the layout should load font files");
-  for (const path of paths) {
-    assert.ok(existsSync(join(studio, "app", path)), `${path} should exist`);
+  return paths;
+}
+
+Then("each font file the layout loads is in the repository or in an installed font package", () => {
+  for (const path of layoutFontPaths()) {
+    assert.ok(existsSync(resolve(studio, "app", path)), `${path} should exist`);
   }
 });
 
-Then("each font folder holds a licence file", () => {
-  const fonts = join(studio, "app", "fonts");
-  for (const family of readdirSync(fonts)) {
-    assert.ok(existsSync(join(fonts, family, "LICENSE")), `${family} should have a LICENSE`);
+Then("each font the layout loads comes with its licence file", () => {
+  for (const path of layoutFontPaths()) {
+    const file = resolve(studio, "app", path);
+    // Committed fonts sit in a folder of their own; package fonts sit in the package's files folder.
+    const family = dirname(file).endsWith(`${sep}files`) ? dirname(dirname(file)) : dirname(file);
+    assert.ok(existsSync(join(family, "LICENSE")), `${path} should have a LICENSE beside its family`);
   }
 });
