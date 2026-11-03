@@ -28,6 +28,67 @@ jobs:
       - name: BDD
         run: npm run bdd
 
+  studio-build:
+    name: Studio build
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+          cache: "npm"
+      - name: Install Studio dependencies
+        run: npm ci --workspace=apps/studio-web --include-workspace-root --ignore-scripts --no-audit --no-fund
+      - name: Write a stub amplify_outputs.json
+        # The real file comes from a deployed backend. The build only needs the
+        # shape, so no AWS access or deployed resource is involved.
+        working-directory: apps/studio-web
+        run: |
+          cat > amplify_outputs.json <<'JSON'
+          {
+            "version": "1.4",
+            "auth": {
+              "aws_region": "us-east-1",
+              "user_pool_id": "us-east-1_stub",
+              "user_pool_client_id": "stub-client",
+              "identity_pool_id": "us-east-1:stub",
+              "username_attributes": ["email"],
+              "standard_required_attributes": ["email"],
+              "user_verification_types": ["email"],
+              "unauthenticated_identities_enabled": false,
+              "password_policy": {
+                "min_length": 8,
+                "require_lowercase": true,
+                "require_numbers": true,
+                "require_symbols": true,
+                "require_uppercase": true
+              }
+            },
+            "data": {
+              "url": "https://stub.appsync-api.us-east-1.amazonaws.com/graphql",
+              "aws_region": "us-east-1",
+              "default_authorization_type": "AMAZON_COGNITO_USER_POOLS",
+              "authorization_types": [],
+              "model_introspection": { "version": 1, "models": {}, "enums": {}, "nonModels": {} }
+            },
+            "storage": { "aws_region": "us-east-1", "bucket_name": "stub-bucket", "buckets": [] }
+          }
+          JSON
+      - name: Cache Next.js build output
+        uses: actions/cache@v4
+        with:
+          path: apps/studio-web/.next/cache
+          key: studio-next-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-${{ hashFiles('apps/studio-web/**/*.ts', 'apps/studio-web/**/*.tsx') }}
+          restore-keys: |
+            studio-next-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-
+      - name: Build Studio
+        working-directory: apps/studio-web
+        env:
+          NEXT_TELEMETRY_DISABLED: "1"
+        run: npx next build
+
   speech:
     name: Speech and control plane checks
     runs-on: ubuntu-24.04
@@ -139,7 +200,7 @@ jobs:
 
   deploy:
     name: Deploy
-    needs: [node, speech, console]
+    needs: [node, speech, console, studio-build]
     if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
     permissions:
       id-token: write
