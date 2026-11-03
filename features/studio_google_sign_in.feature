@@ -25,6 +25,13 @@ Feature: Studio sign-in is Google only, through Prospectus Accounts
       Given the Studio auth stack is synthesized for the "main" branch
       Then the Google identity provider's client id and secret are not literal values
 
+    Scenario: Every client that lists Google waits for the Google identity provider
+      Given the Studio auth stack is synthesized for the "main" branch
+      Then the Google identity provider waits for the Amplify secret fetcher
+      And the web client waits for the Google identity provider
+      And the Prospectus client waits for the Google identity provider
+      And no client lists an identity provider it does not wait for
+
     Scenario: The Prospectus client is Google only with no secret and no password flow
       Given the Studio auth stack is synthesized for the "main" branch
       Then the Prospectus client is named "prospectus-google-only"
