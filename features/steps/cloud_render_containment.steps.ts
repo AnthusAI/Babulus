@@ -24,14 +24,26 @@ const amplifySources = (directory = ""): string[] => {
     if (entry.name === "node_modules") return [];
     const relative = join(directory, entry.name);
     if (entry.isDirectory()) return amplifySources(relative);
-    return /\.(ts|js|mjs)$/.test(entry.name) ? [relative] : [];
+    return /\.(ts|js|mjs|py)$/.test(entry.name) ? [relative] : [];
   });
 };
+
+// The CLI sign-in broker is the only compute the backend may hold: the cli-login
+// broker, its table and alarms, and the approval pages function. Nothing else.
+const isSignInBroker = (file: string) =>
+  file.startsWith("cli-login/") || file.startsWith("functions/cli-login-pages/");
 
 // The whole Amplify backend: backend.ts and every function, resource and
 // helper beside it, so compute cannot hide in a file backend.ts imports.
 Given("the Studio backend definition", () => {
   source = amplifySources().map((file) => amplifyFile(file)).join("\n");
+});
+
+Given("the Studio backend definition outside the CLI sign-in broker", () => {
+  source = amplifySources()
+    .filter((file) => !isSignInBroker(file))
+    .map((file) => amplifyFile(file))
+    .join("\n");
 });
 
 Given("the Studio data schema", () => {
@@ -67,6 +79,40 @@ Then("it defines no function and no schedule", () => {
   );
 });
 
+Then("every function file is part of the CLI sign-in broker", () => {
+  const offenders = amplifySources().filter(
+    (file) =>
+      !isSignInBroker(file) &&
+      (file.startsWith("functions/") ||
+        /defineFunction|NodejsFunction|lambda\.Function|aws-cdk-lib\/aws-lambda/.test(
+          withoutComments(amplifyFile(file)),
+        )),
+  );
+  assert.deepEqual(offenders, []);
+});
+
+const brokerSource = () =>
+  withoutComments(
+    amplifySources()
+      .filter(isSignInBroker)
+      .map((file) => amplifyFile(file))
+      .join("\n"),
+  );
+
+Then("the CLI sign-in broker has no schedule, no event rule and no table event source", () => {
+  assert.doesNotMatch(
+    brokerSource(),
+    /aws-events|events\.Rule|Schedule\.|DynamoEventSource|addEventSource|aws-lambda-event-sources|StreamViewType/,
+  );
+});
+
+Then("the CLI sign-in broker has no render worker and no container or batch compute", () => {
+  assert.doesNotMatch(
+    brokerSource(),
+    /aws-cdk-lib\/aws-(ecs|ec2|ecr|batch)|ecs:RunTask|batch:SubmitJob|iam:PassRole|render/i,
+  );
+});
+
 Then("it creates no worker user, no custom resource and no password parameter", () => {
   assert.doesNotMatch(
     withoutComments(source),
@@ -79,7 +125,6 @@ Then("none of the old render path files exist", () => {
     "src/worker-ecs.ts",
     "src/worker-cloud.ts",
     "src/worker-lib.ts",
-    "apps/studio-web/amplify/functions",
     "apps/studio-web/app/api/render",
     "apps/studio-web/components/studio-workspace.tsx",
     "Dockerfile",

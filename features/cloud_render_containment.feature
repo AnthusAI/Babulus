@@ -3,9 +3,12 @@ Feature: Cloud render containment
   I want rendering to run only on a worker the user starts, and job writes closed to the public
   So that a stuck job or an anonymous caller cannot start paid compute
 
-  The Studio backend has no cloud render path and runs no compute of its own:
-  no function, schedule, alarm or event source. The check reads every source
-  file under the Amplify folder, not only backend.ts. A video is rendered by a local
+  The Studio backend has no cloud render path and runs no render compute:
+  no render function, schedule or event source, and no ECS, Batch or Fargate. The
+  one exception is the CLI sign-in broker (`amplify/cli-login/**` and
+  `amplify/functions/cli-login-pages/**`), which holds no render code and never
+  starts compute. The check reads every source file under the Amplify folder,
+  not only backend.ts. A video is rendered by a local
   worker; a capped cloud fallback, if it ever returns, is added deliberately
   with its own spending guards.
 
@@ -18,9 +21,15 @@ Feature: Cloud render containment
     Given the Studio backend definition
     Then it attaches no event source to any table
 
-  Scenario: The Studio backend has no function and no schedule
-    Given the Studio backend definition
+  Scenario: Outside the CLI sign-in broker the backend has no function and no schedule
+    Given the Studio backend definition outside the CLI sign-in broker
     Then it defines no function and no schedule
+
+  Scenario: The only function in the backend is the CLI sign-in broker and its pages
+    Given the Studio backend definition
+    Then every function file is part of the CLI sign-in broker
+    And the CLI sign-in broker has no schedule, no event rule and no table event source
+    And the CLI sign-in broker has no render worker and no container or batch compute
 
   Scenario: There is no render worker credential
     Given the Studio backend definition
