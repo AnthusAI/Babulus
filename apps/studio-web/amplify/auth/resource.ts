@@ -56,3 +56,19 @@ export function restrictToGoogleSignIn(userPool: CfnUserPool, webClient: CfnUser
   webClient.explicitAuthFlows = ["ALLOW_REFRESH_TOKEN_AUTH"];
   webClient.supportedIdentityProviders = ["Google"];
 }
+
+/**
+ * Makes a user pool client wait for the Google identity provider. A client names its providers as plain strings
+ * (`SupportedIdentityProviders: ["Google"]`), which gives CloudFormation no ordering, so when the provider is created in
+ * the same update the client update fails with "The provider Google does not exist for User Pool". The explicit
+ * dependency is the only thing that orders them.
+ */
+export function dependOnGoogleProvider(authStack: Stack, client: CfnUserPoolClient): void {
+  const providers = authStack.node
+    .findAll()
+    .filter((construct): construct is CfnUserPoolIdentityProvider => construct instanceof CfnUserPoolIdentityProvider && construct.providerName === "Google");
+  if (providers.length !== 1) {
+    throw new Error(`Expected exactly one Google identity provider for a client to depend on, found ${providers.length}`);
+  }
+  client.addDependency(providers[0]);
+}
