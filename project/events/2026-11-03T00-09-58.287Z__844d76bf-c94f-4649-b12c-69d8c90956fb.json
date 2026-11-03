@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "event_id": "844d76bf-c94f-4649-b12c-69d8c90956fb",
+  "issue_id": "babulus-6fff1b3f-9365-430c-b670-1ed000d58fbb",
+  "event_type": "issue_created",
+  "occurred_at": "2026-11-03T00:09:58.287Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "CI job that builds the Studio before merge",
+    "description": "Add a studio-build CI job (next build against a stub amplify_outputs.json) so a Studio build that fails after merge is caught in the pull request. Not a required check yet; the owner adds that.",
+    "issue_type": "task",
+    "status": "open",
+    "priority": 2,
+    "assignee": null,
+    "parent": "babulus-be70f999-3808-4fb1-987b-f7cd306e16e1",
+    "labels": []
+  }
+}
