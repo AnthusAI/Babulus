@@ -3,7 +3,7 @@
   "title": "M3: Shared control plane and one local worker",
   "description": "",
   "type": "task",
-  "status": "open",
+  "status": "closed",
   "priority": 2,
   "assignee": null,
   "creator": null,
@@ -38,11 +38,18 @@
       "text": "PR 8 (remove the old render path and the generation worker) open; leftovers tracked in babulus-3504b2d4.",
       "created_at": "2026-11-02T22:46:08.829985Z",
       "comment_type": "default"
+    },
+    {
+      "id": "c2469f68-aaba-41b9-9b8b-108f9f8bb917",
+      "author": "home",
+      "text": "M3 is complete: its PRs (#5 claim correctness, #8 render path removal, #9 Studio build fix) are merged to main.",
+      "created_at": "2026-11-03T00:07:28.256537Z",
+      "comment_type": "default"
     }
   ],
   "created_at": "2026-11-02T05:41:58.496769Z",
-  "updated_at": "2026-11-02T22:46:08.830201Z",
-  "closed_at": null,
+  "updated_at": "2026-11-03T00:07:28.272857Z",
+  "closed_at": "2026-11-03T00:07:28.272826Z",
   "right_now_summary": null,
   "right_now_updated_at": null,
   "custom": {}

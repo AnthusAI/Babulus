@@ -1,0 +1,79 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: >
+  The role the Babulus Studio's server runs as on Amplify. It may ask Prospectus
+  who someone is, read the sign-in cookie secret, keep Cognito groups in step
+  with Accounts, and reach Account files. It can't start compute.
+
+Parameters:
+  ProspectusAccountsApiStageArn:
+    Type: String
+    Description: Execute-api ARN of the Prospectus accounts API stage
+  UserPoolArn:
+    Type: String
+    Description: The Studio's Cognito user pool
+  AssetsBucketName:
+    Type: String
+    Description: The Studio's assets bucket
+  BranchName:
+    Type: String
+    Default: main
+    Description: Amplify branch, part of the sealing secret's name
+
+Resources:
+  StudioServerRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: babulus-studio-server
+      Description: Runtime role of the Babulus Studio server on Amplify
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: amplify.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: prospectus-accounts
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action: execute-api:Invoke
+                Resource: !Sub ${ProspectusAccountsApiStageArn}/*
+        - PolicyName: sign-in-cookie-secret
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action: ssm:GetParameter
+                Resource: !Sub arn:${AWS::Partition}:ssm:${AWS::Region}:${AWS::AccountId}:parameter/babulus/studio/${BranchName}/prospectus-session-sealing
+        - PolicyName: account-groups
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - cognito-idp:CreateGroup
+                  - cognito-idp:AdminAddUserToGroup
+                  - cognito-idp:AdminRemoveUserFromGroup
+                  - cognito-idp:AdminListGroupsForUser
+                Resource: !Ref UserPoolArn
+        - PolicyName: account-files
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - s3:GetObject
+                  - s3:PutObject
+                  - s3:DeleteObject
+                Resource:
+                  - !Sub arn:${AWS::Partition}:s3:::${AssetsBucketName}/org/*
+                  - !Sub arn:${AWS::Partition}:s3:::${AssetsBucketName}/published/*
+              - Effect: Allow
+                Action: s3:ListBucket
+                Resource: !Sub arn:${AWS::Partition}:s3:::${AssetsBucketName}
+
+Outputs:
+  RoleArn:
+    Value: !GetAtt StudioServerRole.Arn

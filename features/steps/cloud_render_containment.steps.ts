@@ -17,6 +17,7 @@ const modelAuthorization = (schema: string, model: string) => {
 };
 
 let source = "";
+let files: Record<string, string> = {};
 
 const amplifySources = (directory = ""): string[] => {
   const root = join(process.cwd(), "apps/studio-web/amplify", directory);
@@ -31,7 +32,8 @@ const amplifySources = (directory = ""): string[] => {
 // The whole Amplify backend: backend.ts and every function, resource and
 // helper beside it, so compute cannot hide in a file backend.ts imports.
 Given("the Studio backend definition", () => {
-  source = amplifySources().map((file) => amplifyFile(file)).join("\n");
+  files = Object.fromEntries(amplifySources().map((file) => [file, amplifyFile(file)]));
+  source = Object.values(files).join("\n");
 });
 
 Given("the Studio data schema", () => {
@@ -60,18 +62,70 @@ Then("it attaches no event source to any table", () => {
   );
 });
 
+// The one function allowed is the sealing parameter's inline creator in `session-secret/`; schedules are rejected everywhere.
 Then("it defines no function and no schedule", () => {
+  const outsideSealing = Object.entries(files)
+    .filter(([file]) => !file.startsWith("session-secret/"))
+    .map(([, text]) => text)
+    .join("\n");
   assert.doesNotMatch(
-    withoutComments(source),
+    withoutComments(outsideSealing),
     /defineFunction|NodejsFunction|lambda\.Function|aws-events|events\.Rule|Schedule\.|aws-cdk-lib\/aws-lambda/,
   );
+  assert.doesNotMatch(withoutComments(source), /aws-events|events\.Rule|Schedule\.|defineFunction|NodejsFunction/);
 });
 
+
+
+// `AdminCreateUser` is the call that makes a worker user; the pool setting `allowAdminCreateUserOnly` (closing self
+// sign-up) is not, so `Only` is excluded. A worker user or password is rejected everywhere. The one custom resource the
+// backend may have is the generated cookie sealing parameter, so custom resources and SSM string parameters are
+// rejected everywhere except in `session-secret/`.
+const WORKER_CREDENTIAL_PATTERN = /AdminCreateUser(?!Only)|WORKER_PASSWORD|WORKER_EMAIL/;
+const INFRA_PATTERN = /CustomResource|custom-resources|StringParameter/;
+const SEALING_FOLDER = "session-secret/";
+
+const credentialViolations = (): string[] =>
+  Object.entries(files).flatMap(([file, text]) => {
+    const code = withoutComments(text);
+    const found: string[] = [];
+    if (WORKER_CREDENTIAL_PATTERN.test(code)) found.push(`${file}: worker user or password`);
+    if (!file.startsWith(SEALING_FOLDER) && INFRA_PATTERN.test(code)) found.push(`${file}: custom resource or parameter`);
+    return found;
+  });
+
 Then("it creates no worker user, no custom resource and no password parameter", () => {
-  assert.doesNotMatch(
-    withoutComments(source),
-    /CustomResource|custom-resources|AdminCreateUser|StringParameter|WORKER_PASSWORD|WORKER_EMAIL/,
-  );
+  assert.deepEqual(credentialViolations(), []);
+});
+
+Given("a backend definition that creates a worker user, a custom resource and a password parameter", () => {
+  files = {
+    "backend.ts": [
+      "new cr.AwsCustomResource(stack, 'MakeUser', { onCreate: { action: 'AdminCreateUser' } });",
+      "new ssm.StringParameter(stack, 'Pw', { parameterName: 'WORKER_PASSWORD' });",
+      "const email = process.env.WORKER_EMAIL;",
+    ].join("\n"),
+  };
+});
+
+Given("a backend definition that only closes self sign-up on the user pool", () => {
+  files = { "auth/resource.ts": "userPool.adminCreateUserConfig = { allowAdminCreateUserOnly: true };" };
+});
+
+Given("a backend definition whose sealing folder also makes a worker user", () => {
+  files = { "session-secret/handler.ts": "const params = { Action: 'AdminCreateUser' }; new CustomResource(this, 'R', {});" };
+});
+
+Given("a backend definition with a custom resource outside the sealing folder", () => {
+  files = { "other/thing.ts": "new CustomResource(this, 'R', {});" };
+});
+
+Then("the worker credential guard rejects it", () => {
+  assert.notDeepEqual(credentialViolations(), []);
+});
+
+Then("the worker credential guard accepts it", () => {
+  assert.deepEqual(credentialViolations(), []);
 });
 
 Then("none of the old render path files exist", () => {
