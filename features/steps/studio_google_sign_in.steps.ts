@@ -36,6 +36,7 @@ const studioWeb = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..
 
 type CfnResource = { Type: string; Properties: Record<string, any> };
 let synthesized: CfnResource[] = [];
+let synthesizedById: Record<string, CfnResource & { DependsOn?: string | string[] }> = {};
 
 function resourcesOfType(type: string): CfnResource[] {
   return synthesized.filter((resource) => resource.Type === type);
@@ -65,7 +66,8 @@ Given("the Studio auth stack is synthesized for the {string} branch", (branch: s
   assert.equal(run.status, 0, run.stderr.slice(-2000));
   const line = /^SYNTH=(.*)$/m.exec(run.stdout);
   assert.ok(line, `no synth output: ${run.stdout.slice(-500)}`);
-  synthesized = JSON.parse(line[1]) as CfnResource[];
+  synthesizedById = JSON.parse(line[1]);
+  synthesized = Object.values(synthesizedById).filter((resource) => resource.Type.startsWith("AWS::Cognito::"));
 });
 
 Then("the user pool lets only administrators create users", () => {
@@ -111,6 +113,45 @@ Then("the Google identity provider's client id and secret are not literal values
   const details = resourcesOfType("AWS::Cognito::UserPoolIdentityProvider")[0].Properties.ProviderDetails;
   assert.equal(typeof details.client_id, "object");
   assert.equal(typeof details.client_secret, "object");
+});
+
+const dependsOn = (resource: { DependsOn?: string | string[] }): string[] => [].concat((resource.DependsOn ?? []) as never);
+const idOf = (resource: CfnResource): string => Object.keys(synthesizedById).find((id) => synthesizedById[id] === resource)!;
+
+// CloudFormation updates resources in parallel unless one depends on another, and a client that lists a provider by its
+// name (a plain string, so no implicit dependency) fails with "The provider Google does not exist" when the provider is
+// created in the same update. An explicit DependsOn, or a reference, is the only thing that orders them.
+Then("the Google identity provider waits for the Amplify secret fetcher", () => {
+  const [providerId] = Object.keys(synthesizedById).filter((id) => synthesizedById[id].Type === "AWS::Cognito::UserPoolIdentityProvider");
+  const provider = synthesizedById[providerId];
+  const fetcherIds = Object.keys(synthesizedById).filter((id) => synthesizedById[id].Type === "Custom::AmplifySecretFetcherResource");
+  assert.equal(fetcherIds.length, 1);
+  const references = JSON.stringify(provider.Properties.ProviderDetails).includes(fetcherIds[0]);
+  assert.ok(references || dependsOn(provider).includes(fetcherIds[0]), "the provider must reference or depend on the secret fetcher");
+});
+
+Then("the web client waits for the Google identity provider", () => {
+  const [providerId] = Object.keys(synthesizedById).filter((id) => synthesizedById[id].Type === "AWS::Cognito::UserPoolIdentityProvider");
+  assert.ok(dependsOn(webClient() as never).includes(providerId));
+});
+
+Then("the Prospectus client waits for the Google identity provider", () => {
+  const [providerId] = Object.keys(synthesizedById).filter((id) => synthesizedById[id].Type === "AWS::Cognito::UserPoolIdentityProvider");
+  assert.ok(dependsOn(clientNamed("prospectus-google-only") as never).includes(providerId));
+});
+
+Then("no client lists an identity provider it does not wait for", () => {
+  const providers = Object.entries(synthesizedById).filter(([, resource]) => resource.Type === "AWS::Cognito::UserPoolIdentityProvider");
+  const clients = Object.entries(synthesizedById).filter(([, resource]) => resource.Type === "AWS::Cognito::UserPoolClient");
+  assert.ok(clients.length >= 2);
+  for (const [clientId, client] of clients) {
+    for (const name of (client.Properties.SupportedIdentityProviders ?? []) as string[]) {
+      if (name === "COGNITO") continue;
+      const matching = providers.filter(([, provider]) => provider.Properties.ProviderName === name);
+      assert.equal(matching.length, 1, `${clientId} lists ${name} but the stack creates no such provider`);
+      assert.ok(dependsOn(client as never).includes(matching[0][0]), `${clientId} lists ${name} without depending on its provider`);
+    }
+  }
 });
 
 Then("the Prospectus client is named {string}", (name: string) => {
