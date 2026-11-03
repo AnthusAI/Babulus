@@ -67,11 +67,33 @@ Then("it defines no function and no schedule", () => {
   );
 });
 
+// `AdminCreateUser` is the call that makes a worker user; the pool setting
+// `allowAdminCreateUserOnly` (closing self sign-up) is not, so `Only` is excluded.
+const WORKER_CREDENTIAL_PATTERN =
+  /CustomResource|custom-resources|AdminCreateUser(?!Only)|StringParameter|WORKER_PASSWORD|WORKER_EMAIL/;
+
 Then("it creates no worker user, no custom resource and no password parameter", () => {
-  assert.doesNotMatch(
-    withoutComments(source),
-    /CustomResource|custom-resources|AdminCreateUser|StringParameter|WORKER_PASSWORD|WORKER_EMAIL/,
-  );
+  assert.doesNotMatch(withoutComments(source), WORKER_CREDENTIAL_PATTERN);
+});
+
+Given("a backend definition that creates a worker user, a custom resource and a password parameter", () => {
+  source = [
+    "new cr.AwsCustomResource(stack, 'MakeUser', { onCreate: { action: 'AdminCreateUser' } });",
+    "new ssm.StringParameter(stack, 'Pw', { parameterName: 'WORKER_PASSWORD' });",
+    "const email = process.env.WORKER_EMAIL;",
+  ].join("\n");
+});
+
+Given("a backend definition that only closes self sign-up on the user pool", () => {
+  source = "userPool.adminCreateUserConfig = { allowAdminCreateUserOnly: true };";
+});
+
+Then("the worker credential guard rejects it", () => {
+  assert.match(withoutComments(source), WORKER_CREDENTIAL_PATTERN);
+});
+
+Then("the worker credential guard accepts it", () => {
+  assert.doesNotMatch(withoutComments(source), WORKER_CREDENTIAL_PATTERN);
 });
 
 Then("none of the old render path files exist", () => {
