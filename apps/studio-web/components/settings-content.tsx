@@ -14,7 +14,6 @@ import { DialogFooter } from "@/components/ui/dialog";
 import { createBillingAccountAction, setBillingVisibilityAction } from "@/app/actions";
 import { useBillingAccount } from "@/lib/use-org-data";
 import { useOrgs } from "@/lib/use-org-data";
-import { Input } from "@/components/ui/input";
 
 export function SettingsContent({ onClose }: { onClose?: () => void }) {
   const { theme, setTheme, systemTheme, resolvedTheme } = useTheme();
