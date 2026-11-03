@@ -10,9 +10,17 @@
   "parent": "babulus-be70f999-3808-4fb1-987b-f7cd306e16e1",
   "labels": [],
   "dependencies": [],
-  "comments": [],
+  "comments": [
+    {
+      "id": "fa126059-f75d-4eec-892d-e6fd1bda9893",
+      "author": "home",
+      "text": "PR A (https://github.com/AnthusAI/Babulus/pull/11) shows a no-access screen when no Account has the babulus entitlement and refuses to grant any Account group. Entitlement grant itself is still a Prospectus operator step.",
+      "created_at": "2026-11-03T00:07:22.390509Z",
+      "comment_type": "default"
+    }
+  ],
   "created_at": "2026-10-20T23:18:44.026410Z",
-  "updated_at": "2026-10-20T23:18:44.026768Z",
+  "updated_at": "2026-11-03T00:07:22.390692Z",
   "closed_at": null,
   "right_now_summary": null,
   "right_now_updated_at": null,
