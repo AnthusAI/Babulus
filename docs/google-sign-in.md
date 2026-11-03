@@ -34,6 +34,8 @@ People cannot create Accounts in the Studio. Operators create them in Prospectus
 | `BABULUS_PROSPECTUS_ACCOUNTS_ENDPOINT` | Amplify environment | Prospectus accounts API base, including the stage |
 | `BABULUS_PROSPECTUS_SESSION_SECRET_PARAMETER` | optional override | Normally unset: the server reads the parameter name from the deployed backend's outputs (`custom.prospectusSignIn.sessionSecretParameter`) |
 
+Amplify gives branch settings to the build, not to the running server, so `amplify.yml` copies `BABULUS_APP_ORIGIN` and `BABULUS_PROSPECTUS_ACCOUNTS_ENDPOINT` into `.env.production` by name. A new setting the server reads needs adding there too.
+
 The Studio's server runs as the role in `infra/studio-server-role/template.yml`, which is attached to the Amplify app's compute role setting. That role has `execute-api:Invoke` on the Prospectus accounts API, `ssm:GetParameter` on the one sealing
 parameter (its ARN is the output `sessionSecretParameterArn`), and `cognito-idp:CreateGroup`, `AdminAddUserToGroup`, `AdminRemoveUserFromGroup` and `AdminListGroupsForUser` on
 the Studio's user pool.
