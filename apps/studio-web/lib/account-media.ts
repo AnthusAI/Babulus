@@ -39,7 +39,8 @@ const config = () => {
 export const presignAccountDownload = async (accountId: string, key: string): Promise<string> => {
   const { client: s3, bucket: name } = config();
   assertKeyInAccount(key, accountId);
-  return getSignedUrl(s3, new GetObjectCommand({ Bucket: name, Key: key }), { expiresIn: PRESIGNED_URL_SECONDS });
+  // The presigner and the S3 client can resolve different copies of the smithy client types; the call is the same.
+  return getSignedUrl(s3 as never, new GetObjectCommand({ Bucket: name, Key: key }), { expiresIn: PRESIGNED_URL_SECONDS });
 };
 
 export const putAccountObject = async (
