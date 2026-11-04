@@ -28,3 +28,17 @@ Then("it creates only a CloudFront function and a distribution", () => {
   const types = [...source.matchAll(/^\s+Type: (AWS::\S+)$/gm)].map((match) => match[1]).sort();
   assert.deepEqual(types, ["AWS::CloudFront::Distribution", "AWS::CloudFront::Function"]);
 });
+
+Given("the Studio's Next.js configuration", () => {
+  source = readFileSync(join(process.cwd(), "apps/studio-web/next.config.mjs"), "utf8");
+});
+
+Then("a request for babulus.anth.us redirects to the same path on babul.us", () => {
+  assert.match(source, /source: "\/:path\*"/);
+  assert.match(source, /type: "host", value: "babulus\.anth\.us"/);
+  assert.match(source, /destination: "https:\/\/babul\.us\/:path\*"/);
+});
+
+Then("the redirect is temporary, so it can be changed later", () => {
+  assert.match(source, /permanent: false/);
+});

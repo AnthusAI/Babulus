@@ -9,6 +9,17 @@ const nextConfig = {
   },
   transpilePackages: ["@babulus/renderer", "@babulus/shared", "@videoml/player", "@videoml/stdlib"],
   output: "standalone",
+  // Amplify ignores host redirect rules for server-rendered apps, so the old address redirects here.
+  async redirects() {
+    return [
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "babulus.anth.us" }],
+        destination: "https://babul.us/:path*",
+        permanent: false,
+      },
+    ];
+  },
   webpack: (config) => {
     const rootNodeModules = path.resolve(__dirname, "..", "..", "node_modules");
     const rendererRoot = path.resolve(__dirname, "..", "..", "packages", "renderer");
