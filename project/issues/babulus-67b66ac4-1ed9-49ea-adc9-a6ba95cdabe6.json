@@ -1,0 +1,20 @@
+{
+  "id": "babulus-67b66ac4-1ed9-49ea-adc9-a6ba95cdabe6",
+  "title": "Rename control plane stack to Babulus names and drop password sign-in",
+  "description": "Stack BabulusControlPlane, ECR babulus-worker, Cognito domain/queue/job-name prefixes renamed; USER_PASSWORD_AUTH removed from app clients; Gherkin spec added. First deploy, so physical names may change.",
+  "type": "task",
+  "status": "open",
+  "priority": 2,
+  "assignee": null,
+  "creator": null,
+  "parent": "babulus-d22d6854-6464-40b8-a446-b0a8265efdde",
+  "labels": [],
+  "dependencies": [],
+  "comments": [],
+  "created_at": "2026-11-04T11:06:44.424928Z",
+  "updated_at": "2026-11-04T11:06:44.425245Z",
+  "closed_at": null,
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {}
+}
