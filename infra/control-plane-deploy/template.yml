@@ -218,21 +218,6 @@ Resources:
               - sns:Unsubscribe
               - sns:UntagResource
             Resource: !Sub arn:${AWS::Partition}:sns:${AWS::Region}:${AWS::AccountId}:BabulusControlPlane-*
-          - Sid: EventBridgeRules
-            Effect: Allow
-            Action:
-              - events:DeleteRule
-              - events:DescribeRule
-              - events:DisableRule
-              - events:EnableRule
-              - events:ListTagsForResource
-              - events:ListTargetsByRule
-              - events:PutRule
-              - events:PutTargets
-              - events:RemoveTargets
-              - events:TagResource
-              - events:UntagResource
-            Resource: !Sub arn:${AWS::Partition}:events:${AWS::Region}:${AWS::AccountId}:rule/BabulusControlPlane-*
           - Sid: BatchDescribe
             Effect: Allow
             Action:
@@ -508,6 +493,21 @@ Resources:
                     StringEquals:
                       kms:ViaService: !Sub s3.${AWS::Region}.amazonaws.com
                 - !Ref AWS::NoValue
+              - Sid: EventBridgeRules
+                Effect: Allow
+                Action:
+                  - events:DeleteRule
+                  - events:DescribeRule
+                  - events:DisableRule
+                  - events:EnableRule
+                  - events:ListTagsForResource
+                  - events:ListTargetsByRule
+                  - events:PutRule
+                  - events:PutTargets
+                  - events:RemoveTargets
+                  - events:TagResource
+                  - events:UntagResource
+                Resource: !Sub arn:${AWS::Partition}:events:${AWS::Region}:${AWS::AccountId}:rule/BabulusControlPlane-*
               - Sid: StepFunctionsStateMachines
                 Effect: Allow
                 Action:
