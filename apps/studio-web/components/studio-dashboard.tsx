@@ -29,8 +29,9 @@ export function StudioDashboard() {
           <div className="flex flex-col items-center justify-center h-full gap-4 p-8">
             <h2 className="text-xl font-semibold">Welcome to Babulus Studio</h2>
             <p className="text-muted-foreground text-center max-w-md">
-              You are signed in, but Babulus is not turned on for any Account you belong to. Ask an owner of your
-              Account to grant access to Babulus.
+              You are signed in, but Babulus is not turned on for any
+              of your Accounts. An Anthus operator has to turn it on, then
+              you can sign in again.
             </p>
           </div>
         ) : (
