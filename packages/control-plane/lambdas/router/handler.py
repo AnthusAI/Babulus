@@ -95,6 +95,48 @@ WAITING_REASONS = {
         "jobs, so this job runs when a worker started with `babulus worker` "
         "claims it."
     ),
+    # Why the cloud did not take a job. None of these says anything about
+    # money; the job waits for a local worker.
+    "cloud_off": (
+        "Waiting for a local worker. Cloud rendering is not turned on for "
+        "this account."
+    ),
+    "quota_exhausted": (
+        "Waiting for a local worker. This account has no quota left for "
+        "cloud rendering this week."
+    ),
+    "quota_forbidden": (
+        "Waiting for a local worker. This account is not set up for cloud "
+        "rendering quota."
+    ),
+    "quota_unavailable": (
+        "Waiting for a local worker. Cloud rendering is paused because the "
+        "quota service could not be reached."
+    ),
+    "ceiling_reached": (
+        "Waiting for a local worker. Cloud rendering is paused at its "
+        "platform limit."
+    ),
+    "ceiling_unavailable": (
+        "Waiting for a local worker. Cloud rendering is paused because its "
+        "limit could not be checked."
+    ),
+    "kill_switch": ("Waiting for a local worker. Cloud rendering is switched off."),
+    "guards_not_configured": (
+        "Waiting for a local worker. Cloud rendering is not fully set up."
+    ),
+    "guards_unavailable": (
+        "Waiting for a local worker. Cloud rendering is paused because a "
+        "safety check failed."
+    ),
+    "no_account": (
+        "Waiting for a local worker. This job's site has no account set up "
+        "for cloud rendering."
+    ),
+    "attempt_limit": (
+        "Waiting for a local worker. Cloud rendering has already been "
+        "tried the most times allowed for this job."
+    ),
 }
 VIDEO_WAITING_REASON = "waiting_for_local_worker"
 SHA256_HEX = re.compile(r"^[0-9a-f]{64}$")

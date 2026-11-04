@@ -78,7 +78,13 @@ def test_batch_gpu_job_fits_g4dn_xlarge() -> None:
     job_defs = template.find_resources("AWS::Batch::JobDefinition")
     assert len(job_defs) == 1
 
-    compute_envs = template.find_resources("AWS::Batch::ComputeEnvironment")
+    compute_envs = {
+        name: env
+        for name, env in template.find_resources(
+            "AWS::Batch::ComputeEnvironment"
+        ).items()
+        if env["Properties"]["ComputeResources"]["InstanceTypes"] == ["g4dn.xlarge"]
+    }
     assert len(compute_envs) == 1
 
     container = next(iter(job_defs.values()))["Properties"]["ContainerProperties"]

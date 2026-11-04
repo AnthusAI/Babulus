@@ -46,7 +46,11 @@ def test_authorizer_and_router_verify_tokens_with_the_operator_auth_layer() -> N
         env=Environment(account="123456789012", region="us-east-1"),
     )
     template = Template.from_stack(stack)
-    layers = template.find_resources("AWS::Lambda::LayerVersion")
+    layers = {
+        key: layer
+        for key, layer in template.find_resources("AWS::Lambda::LayerVersion").items()
+        if key.startswith("OperatorAuthLayer")
+    }
     assert len(layers) == 1
     layer_id = next(iter(layers))
     functions = template.find_resources("AWS::Lambda::Function")

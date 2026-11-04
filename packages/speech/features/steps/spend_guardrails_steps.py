@@ -162,7 +162,13 @@ def step_submit_refused(context) -> None:
         (catch for catch in catchers if "States.ALL" in catch["ErrorEquals"]), None
     )
     assert handler, "SubmitGpuJob has no catch-all error handler"
-    context.submit_failure_state = context.fallback_states[handler["Next"]]
+    first = context.fallback_states[handler["Next"]]
+    context.submit_release_state = None
+    if first["Parameters"].get("action") == "release":
+        # Nothing ran: the quota is given back, then the job is failed.
+        context.submit_release_state = first
+        first = context.fallback_states[first["Next"]]
+    context.submit_failure_state = first
 
 
 @then('the fallback marks the job failed with error "{error_message}"')
