@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from pathlib import Path
 
 from aws_cdk import aws_cloudwatch as cloudwatch
@@ -130,6 +131,40 @@ DEFAULT_RATE_CARD_VERSION = "v1"
 # keeping clips forever vs. the GPU cost of regenerating an expired one the
 # next time a reader visits that page (see docs for the full writeup).
 DEFAULT_RETENTION_DAYS = 0
+
+# Hard limits on cloud compute. Each can be set by CDK context, but only
+# inside the bounds below, so a deployment cannot switch a limit off.
+DEFAULT_ATTEMPT_TIMEOUT_SECONDS = 1800
+MIN_ATTEMPT_TIMEOUT_SECONDS = 60  # the smallest timeout AWS Batch accepts
+MAX_ATTEMPT_TIMEOUT_SECONDS = 7200
+DEFAULT_BATCH_RETRY_ATTEMPTS = 1
+MAX_BATCH_RETRY_ATTEMPTS = 3
+DEFAULT_MAX_CLOUD_ATTEMPTS = 3
+MAX_CLOUD_ATTEMPTS_LIMIT = 10
+DEFAULT_BATCH_MAX_VCPUS = 8
+MAX_BATCH_MAX_VCPUS = 64
+# The speech job definition asks Batch for this many vCPUs.
+GPU_JOB_VCPUS = 2
+# Everything that can cost money carries this tag, and the AWS Budget is
+# scoped to it. It must be activated as a cost allocation tag in billing.
+SPEND_TAG_KEY = "babulus:spend"
+SPEND_TAG_VALUE = "cloud"
+SPEND_BUDGET_TAG_FILTER = f"user:{SPEND_TAG_KEY}${SPEND_TAG_VALUE}"
+
+
+def bounded_int_context(
+    stack: Stack, name: str, default: int, minimum: int, maximum: int
+) -> int:
+    """Read an integer CDK context value that must stay inside its bounds.
+
+    :raises ValueError: when the configured value is outside ``minimum`` to
+        ``maximum``, so a deployment cannot disable a hard limit.
+    """
+    raw = stack.node.try_get_context(name)
+    value = default if raw in (None, "") else int(raw)
+    if not minimum <= value <= maximum:
+        raise ValueError(f"{name} must be between {minimum} and {maximum}")
+    return value
 
 
 class BackendStack(Stack):
@@ -699,6 +734,35 @@ class BackendStack(Stack):
         worker_image_tag = self.node.try_get_context("worker_image_tag") or "latest"
         worker_image_uri = f"{worker_repo.repository_uri}:{worker_image_tag}"
 
+        attempt_timeout_seconds = bounded_int_context(
+            self,
+            "batch_attempt_timeout_seconds",
+            DEFAULT_ATTEMPT_TIMEOUT_SECONDS,
+            MIN_ATTEMPT_TIMEOUT_SECONDS,
+            MAX_ATTEMPT_TIMEOUT_SECONDS,
+        )
+        batch_retry_attempts = bounded_int_context(
+            self,
+            "batch_retry_attempts",
+            DEFAULT_BATCH_RETRY_ATTEMPTS,
+            1,
+            MAX_BATCH_RETRY_ATTEMPTS,
+        )
+        max_cloud_attempts = bounded_int_context(
+            self,
+            "max_cloud_attempts",
+            DEFAULT_MAX_CLOUD_ATTEMPTS,
+            1,
+            MAX_CLOUD_ATTEMPTS_LIMIT,
+        )
+        gpu_max_vcpus = bounded_int_context(
+            self, "batch_gpu_max_vcpus", DEFAULT_BATCH_MAX_VCPUS, 1, MAX_BATCH_MAX_VCPUS
+        )
+        cpu_max_vcpus = bounded_int_context(
+            self, "batch_cpu_max_vcpus", DEFAULT_BATCH_MAX_VCPUS, 1, MAX_BATCH_MAX_VCPUS
+        )
+        spend_tags = {SPEND_TAG_KEY: SPEND_TAG_VALUE}
+
         vpc = ec2.Vpc(
             self,
             "AuritusVpc",
@@ -735,9 +799,10 @@ class BackendStack(Stack):
             type="MANAGED",
             compute_resources=batch.CfnComputeEnvironment.ComputeResourcesProperty(
                 type="EC2",
-                maxv_cpus=8,
+                maxv_cpus=gpu_max_vcpus,
                 minv_cpus=0,
                 desiredv_cpus=0,
+                tags=spend_tags,
                 instance_types=["g4dn.xlarge"],
                 allocation_strategy="BEST_FIT_PROGRESSIVE",
                 subnets=[subnet.subnet_id for subnet in vpc.public_subnets],
@@ -748,6 +813,49 @@ class BackendStack(Stack):
                     version="$Latest",
                 ),
             ),
+            tags=spend_tags,
+        )
+
+        # CPU capacity for video jobs, beside the GPU capacity for speech.
+        # Both scale to zero (minv_cpus=0) and are capped by maxv_cpus. No
+        # job definition targets this queue until the video worker image
+        # exists, so nothing can run on it yet.
+        cpu_compute_env = batch.CfnComputeEnvironment(
+            self,
+            "CpuComputeEnv",
+            type="MANAGED",
+            compute_resources=batch.CfnComputeEnvironment.ComputeResourcesProperty(
+                type="EC2",
+                maxv_cpus=cpu_max_vcpus,
+                minv_cpus=0,
+                desiredv_cpus=0,
+                tags=spend_tags,
+                instance_types=["c6i.xlarge"],
+                allocation_strategy="BEST_FIT_PROGRESSIVE",
+                subnets=[subnet.subnet_id for subnet in vpc.public_subnets],
+                security_group_ids=[batch_sg.security_group_id],
+                instance_role=instance_profile.attr_arn,
+                launch_template=batch.CfnComputeEnvironment.LaunchTemplateSpecificationProperty(
+                    launch_template_id=batch_launch_template.launch_template_id,
+                    version="$Latest",
+                ),
+            ),
+            tags=spend_tags,
+        )
+        cpu_job_queue_name = "babulus-cpu"
+        batch.CfnJobQueue(
+            self,
+            "BabulusCpuJobQueue",
+            job_queue_name=cpu_job_queue_name,
+            priority=1,
+            compute_environment_order=[
+                batch.CfnJobQueue.ComputeEnvironmentOrderProperty(
+                    order=1,
+                    compute_environment=cpu_compute_env.ref,
+                )
+            ],
+            state="ENABLED",
+            tags=spend_tags,
         )
 
         job_queue_name = "auritus-gpu"
@@ -763,6 +871,7 @@ class BackendStack(Stack):
                 )
             ],
             state="ENABLED",
+            tags=spend_tags,
         )
         job_queue_arn = Stack.of(self).format_arn(
             service="batch",
@@ -783,12 +892,21 @@ class BackendStack(Stack):
             "AuritusGpuJobDef",
             type="container",
             platform_capabilities=["EC2"],
+            # Every job definition carries an attempt timeout, so a hung job
+            # stops at it, and a bounded retry count.
+            timeout=batch.CfnJobDefinition.TimeoutProperty(
+                attempt_duration_seconds=attempt_timeout_seconds
+            ),
+            retry_strategy=batch.CfnJobDefinition.RetryStrategyProperty(
+                attempts=batch_retry_attempts
+            ),
+            tags=spend_tags,
             container_properties=batch.CfnJobDefinition.ContainerPropertiesProperty(
                 image=worker_image_uri,
                 resource_requirements=[
                     batch.CfnJobDefinition.ResourceRequirementProperty(
                         type="VCPU",
-                        value="2",
+                        value=str(GPU_JOB_VCPUS),
                     ),
                     batch.CfnJobDefinition.ResourceRequirementProperty(
                         type="MEMORY",
@@ -830,16 +948,171 @@ class BackendStack(Stack):
         # conditional write that succeeds only when no live claim exists and
         # this timer's attempt is still the job's current one; the state
         # machine submits to Batch only on its "submit" answer.
+        spend_guards_layer = lambda_.LayerVersion(
+            self,
+            "SpendGuardsLayer",
+            description="Prospectus quota client and the global spending ceiling",
+            compatible_runtimes=[lambda_.Runtime.PYTHON_3_11],
+            code=lambda_.Code.from_asset(str(LAMBDA_ROOT / "spend_guards_layer")),
+        )
+        # The global real-money ceiling lives in its own table, separate from
+        # Prospectus. Its amounts never appear on job records.
+        spend_ceiling = dynamodb.Table(
+            self,
+            "SpendCeiling",
+            partition_key=dynamodb.Attribute(
+                name="ledger_key", type=dynamodb.AttributeType.STRING
+            ),
+            billing_mode=dynamodb.BillingMode.PAY_PER_REQUEST,
+            removal_policy=RemovalPolicy.RETAIN,
+        )
+
+        # Deployment settings for the guards. Nothing here has a default in
+        # the repository: a setting left out leaves the guard unconfigured,
+        # and the gate then starts no compute.
+        guard_settings = {
+            "prospectus_quota_endpoint": "PROSPECTUS_QUOTA_ENDPOINT",
+            "spend_ceiling_per_attempt": "SPEND_CEILING_PER_ATTEMPT",
+            "spend_ceiling_per_day": "SPEND_CEILING_PER_DAY",
+            "spend_ceiling_per_month": "SPEND_CEILING_PER_MONTH",
+            "spend_estimate_rate_per_vcpu_second": (
+                "SPEND_ESTIMATE_RATE_PER_VCPU_SECOND"
+            ),
+        }
+        guard_env: dict[str, str] = {}
+        for context_key, env_name in guard_settings.items():
+            value = self.node.try_get_context(context_key)
+            if value not in (None, ""):
+                guard_env[env_name] = str(value)
+        budget_limit = self.node.try_get_context("spend_budget_daily_limit")
+        budget_alert_email = self.node.try_get_context("budget_alert_email")
+        budget_configured = bool(budget_limit) and bool(budget_alert_email)
+        if budget_configured:
+            guard_env["BUDGET_GUARD_CONFIGURED"] = "1"
+        guard_env.update(
+            {
+                "JOB_VCPUS": str(GPU_JOB_VCPUS),
+                "ATTEMPT_TIMEOUT_SECONDS": str(attempt_timeout_seconds),
+                "BATCH_RETRY_ATTEMPTS": str(batch_retry_attempts),
+                "MAX_CLOUD_ATTEMPTS": str(max_cloud_attempts),
+                "SPEND_CEILING_TABLE": spend_ceiling.table_name,
+            }
+        )
+
+        gate_role = iam.Role(
+            self,
+            "FallbackGateRole",
+            assumed_by=iam.ServicePrincipal("lambda.amazonaws.com"),
+            managed_policies=[
+                iam.ManagedPolicy.from_aws_managed_policy_name(
+                    "service-role/AWSLambdaBasicExecutionRole"
+                )
+            ],
+        )
+        finish_role = iam.Role(
+            self,
+            "QuotaFinishRole",
+            assumed_by=iam.ServicePrincipal("lambda.amazonaws.com"),
+            managed_policies=[
+                iam.ManagedPolicy.from_aws_managed_policy_name(
+                    "service-role/AWSLambdaBasicExecutionRole"
+                )
+            ],
+        )
+        # The one role registered with Prospectus. Only the gate and the
+        # finisher can assume it, and it can do nothing but POST to the quota
+        # routes of the configured Prospectus API.
+        quota_caller_role = iam.Role(
+            self,
+            "ProspectusQuotaCallerRole",
+            assumed_by=iam.CompositePrincipal(
+                iam.ArnPrincipal(gate_role.role_arn),
+                iam.ArnPrincipal(finish_role.role_arn),
+            ),
+            max_session_duration=Duration.hours(1),
+        )
+        quota_endpoint = guard_env.get("PROSPECTUS_QUOTA_ENDPOINT", "")
+        endpoint_match = re.match(
+            r"^https://([a-z0-9]+)\.execute-api\.([a-z0-9-]+)\.amazonaws\.com/"
+            r"([A-Za-z0-9_-]+)/?$",
+            quota_endpoint,
+        )
+        if endpoint_match:
+            api_id, api_region, api_stage = endpoint_match.groups()
+            quota_caller_role.add_to_policy(
+                iam.PolicyStatement(
+                    actions=["execute-api:Invoke"],
+                    resources=[
+                        f"arn:aws:execute-api:{api_region}:*:{api_id}/{api_stage}"
+                        "/POST/v1/quota/accounts/*"
+                    ],
+                )
+            )
+        for caller_role in (gate_role, finish_role):
+            caller_role.add_to_policy(
+                iam.PolicyStatement(
+                    actions=["sts:AssumeRole"],
+                    resources=[quota_caller_role.role_arn],
+                )
+            )
+        guard_env["PROSPECTUS_CALLER_ROLE_ARN"] = quota_caller_role.role_arn
+
         fallback_gate_fn = lambda_.Function(
             self,
             "FallbackGateFn",
             runtime=lambda_.Runtime.PYTHON_3_11,
             handler="handler.handler",
             code=lambda_.Code.from_asset(str(LAMBDA_ROOT / "fallback_gate")),
+            layers=[spend_guards_layer],
+            role=gate_role,
             timeout=Duration.seconds(30),
-            environment={"JOBS_TABLE": jobs.table_name},
+            environment={
+                **guard_env,
+                "JOBS_TABLE": jobs.table_name,
+                "SITES_TABLE": sites.table_name,
+                "BATCH_JOB_QUEUE_NAME": job_queue_name,
+            },
         )
         jobs.grant_read_write_data(fallback_gate_fn)
+        sites.grant_read_data(fallback_gate_fn)
+        spend_ceiling.grant_read_write_data(fallback_gate_fn)
+        gate_role.add_to_policy(
+            iam.PolicyStatement(
+                # DescribeJobQueues has no resource-level permissions.
+                actions=["batch:DescribeJobQueues"],
+                resources=["*"],
+            )
+        )
+
+        # Settles the reservation from what ran, or releases it when nothing
+        # did, and frees the ceiling slot. Runs when a cloud job ends and when
+        # the timer's Batch submission is refused.
+        quota_finish_fn = lambda_.Function(
+            self,
+            "QuotaFinishFn",
+            runtime=lambda_.Runtime.PYTHON_3_11,
+            handler="handler.handler",
+            code=lambda_.Code.from_asset(str(LAMBDA_ROOT / "quota_finish")),
+            layers=[spend_guards_layer],
+            role=finish_role,
+            timeout=Duration.seconds(60),
+            environment={**guard_env, "JOBS_TABLE": jobs.table_name},
+        )
+        jobs.grant_read_write_data(quota_finish_fn)
+        spend_ceiling.grant_read_write_data(quota_finish_fn)
+        events.Rule(
+            self,
+            "QuotaFinishRule",
+            event_pattern=events.EventPattern(
+                source=["aws.batch"],
+                detail_type=["Batch Job State Change"],
+                detail={
+                    "status": ["SUCCEEDED", "FAILED"],
+                    "jobQueue": [job_queue_arn],
+                },
+            ),
+            targets=[targets.LambdaFunction(quota_finish_fn)],
+        )
 
         reserve_fallback = sfn_tasks.LambdaInvoke(
             self,
@@ -931,8 +1204,32 @@ class BackendStack(Stack):
             batch_submit_failed, errors=["States.ALL"]
         )
         mark_job_failed_on_submit_error.next(batch_submit_failed)
-        submit_batch.add_catch(
+        # Nothing ran, so the reservation and the ceiling slot go back first
+        # (the fence below clears the claim token this step matches on). If
+        # giving them back fails, the job is still failed; the reservation
+        # then expires by itself.
+        release_quota = sfn_tasks.LambdaInvoke(
+            self,
+            "ReleaseQuotaOnSubmitError",
+            lambda_function=quota_finish_fn,
+            payload=sfn.TaskInput.from_object(
+                {
+                    "action": "release",
+                    "content_hash": sfn.JsonPath.string_at("$.content_hash"),
+                    "claim_token": sfn.JsonPath.string_at("$.gate.claim_token"),
+                }
+            ),
+            payload_response_only=True,
+            result_path=sfn.JsonPath.DISCARD,
+        )
+        release_quota.add_catch(
             mark_job_failed_on_submit_error,
+            errors=["States.ALL"],
+            result_path=sfn.JsonPath.DISCARD,
+        )
+        release_quota.next(mark_job_failed_on_submit_error)
+        submit_batch.add_catch(
+            release_quota,
             errors=["States.ALL"],
             result_path="$.submit_error",
         )
@@ -1014,6 +1311,7 @@ class BackendStack(Stack):
             environment={
                 "BATCH_JOB_QUEUE_ARN": job_queue_arn,
                 "BATCH_JOB_QUEUE_NAME": job_queue_name,
+                "BATCH_JOB_QUEUE_NAMES": f"{job_queue_name},{cpu_job_queue_name}",
             },
         )
         budget_guard_fn.add_to_role_policy(
@@ -1131,38 +1429,47 @@ class BackendStack(Stack):
             targets=[targets.LambdaFunction(cost_reconciliation_fn)],
         )
 
-        daily_budget_limit = float(
-            self.node.try_get_context("daily_budget_usd") or 50.0
-        )
-        budgets.CfnBudget(
-            self,
-            "DailyGpuBudget",
-            budget=budgets.CfnBudget.BudgetDataProperty(
-                budget_type="COST",
-                time_unit="DAILY",
-                budget_limit=budgets.CfnBudget.SpendProperty(
-                    amount=daily_budget_limit,
-                    unit="USD",
-                ),
-                budget_name="AuritusDailyGpuBudget",
-            ),
-            notifications_with_subscribers=[
-                budgets.CfnBudget.NotificationWithSubscribersProperty(
-                    notification=budgets.CfnBudget.NotificationProperty(
-                        comparison_operator="GREATER_THAN",
-                        notification_type="ACTUAL",
-                        threshold=100,
-                        threshold_type="PERCENTAGE",
+        # The budget covers only what carries the spend tag, so a breach
+        # here cannot be caused by, or stop, anything else in the account.
+        # It disables every Batch queue through the budget topic. It is
+        # created only when both its limit and its alert address are
+        # configured; without them the gate treats the budget guard as
+        # missing and starts no compute.
+        if budget_configured:
+            budgets.CfnBudget(
+                self,
+                "CloudSpendBudget",
+                budget=budgets.CfnBudget.BudgetDataProperty(
+                    budget_type="COST",
+                    time_unit="DAILY",
+                    budget_limit=budgets.CfnBudget.SpendProperty(
+                        amount=float(budget_limit),
+                        unit="USD",
                     ),
-                    subscribers=[
-                        budgets.CfnBudget.SubscriberProperty(
-                            address=budget_topic.topic_arn,
-                            subscription_type="SNS",
-                        )
-                    ],
-                )
-            ],
-        )
+                    budget_name="BabulusCloudSpendBudget",
+                    cost_filters={"TagKeyValue": [SPEND_BUDGET_TAG_FILTER]},
+                ),
+                notifications_with_subscribers=[
+                    budgets.CfnBudget.NotificationWithSubscribersProperty(
+                        notification=budgets.CfnBudget.NotificationProperty(
+                            comparison_operator="GREATER_THAN",
+                            notification_type="ACTUAL",
+                            threshold=100,
+                            threshold_type="PERCENTAGE",
+                        ),
+                        subscribers=[
+                            budgets.CfnBudget.SubscriberProperty(
+                                address=budget_topic.topic_arn,
+                                subscription_type="SNS",
+                            ),
+                            budgets.CfnBudget.SubscriberProperty(
+                                address=str(budget_alert_email),
+                                subscription_type="EMAIL",
+                            ),
+                        ],
+                    )
+                ],
+            )
 
         CfnOutput(self, "ApiUrl", value=http_api.api_endpoint or "")
         CfnOutput(self, "UserPoolId", value=user_pool.user_pool_id)
@@ -1175,6 +1482,12 @@ class BackendStack(Stack):
         CfnOutput(self, "AudioBucketName", value=audio_bucket.bucket_name)
         CfnOutput(self, "CloudFrontDomain", value=distribution.distribution_domain_name)
         CfnOutput(self, "BatchQueueArn", value=job_queue_arn)
+        CfnOutput(
+            self,
+            "ProspectusQuotaCallerRoleArn",
+            value=quota_caller_role.role_arn,
+            description="Register this role with Prospectus as the quota caller.",
+        )
         CfnOutput(self, "ClaimTimeoutSeconds", value=str(claim_timeout_seconds))
         CfnOutput(self, "WorkerEcrRepositoryUri", value=worker_repo.repository_uri)
         CfnOutput(self, "GoogleOAuthSecretArn", value=google_secret.secret_arn)

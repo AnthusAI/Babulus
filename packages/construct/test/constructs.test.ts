@@ -1,4 +1,4 @@
-import { App, Stack } from "aws-cdk-lib";
+import { App, Duration, Stack } from "aws-cdk-lib";
 import { Match, Template } from "aws-cdk-lib/assertions";
 import * as ec2 from "aws-cdk-lib/aws-ec2";
 import * as iam from "aws-cdk-lib/aws-iam";
@@ -29,6 +29,15 @@ describe("GpuRenderFleet", () => {
       }),
     });
     t.resourceCountIs("AWS::Batch::JobQueue", 1);
+  });
+
+  test("refuses a timeout or a vCPU cap outside the fixed bounds", () => {
+    for (const seconds of [0, 59, 7201, 100000]) {
+      expect(() => new GpuRenderFleet(stack(), "Fleet", { image: image(), name: "voice", jobTimeout: Duration.seconds(seconds) })).toThrow(/jobTimeout/);
+    }
+    for (const maxvCpus of [0, -1, 65, 2.5]) {
+      expect(() => new GpuRenderFleet(stack(), "Fleet", { image: image(), name: "voice", maxvCpus })).toThrow(/maxvCpus/);
+    }
   });
 
   test("gives each job one GPU, a timeout and one retry", () => {

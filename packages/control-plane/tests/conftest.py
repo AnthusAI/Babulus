@@ -23,6 +23,27 @@ if FEATURES_PATH not in sys.path:
     sys.path.insert(0, FEATURES_PATH)
 
 
+@pytest.fixture(autouse=True)
+def no_network(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Make any attempt to open a network connection fail the test.
+
+    Paid services are replaced by mocks everywhere in this suite; this makes
+    a test that forgot one fail instead of reaching the real service.
+    """
+
+    def refuse(*_args: Any, **_kwargs: Any) -> None:
+        raise AssertionError("tests must never open a network connection")
+
+    monkeypatch.setattr("socket.socket.connect", refuse)
+    # Never pick up a developer's real AWS profile or credentials.
+    for name in ("AWS_PROFILE", "AWS_SESSION_TOKEN"):
+        monkeypatch.delenv(name, raising=False)
+    monkeypatch.setenv("AWS_ACCESS_KEY_ID", "test-key")
+    monkeypatch.setenv("AWS_SECRET_ACCESS_KEY", "test-secret")
+    monkeypatch.setenv("AWS_CONFIG_FILE", os.devnull)
+    monkeypatch.setenv("AWS_SHARED_CREDENTIALS_FILE", os.devnull)
+
+
 @pytest.fixture
 def router_resources() -> dict[str, Any]:
     """Provide mocked AWS resources, environment, and API event builders."""

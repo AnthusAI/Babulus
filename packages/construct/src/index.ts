@@ -22,6 +22,12 @@ import { Construct } from "constructs";
 
 /** The EC2 tag every fleet instance carries: key `auritus:renderer`, value the fleet's name. */
 export const RENDERER_TAG_KEY = "auritus:renderer";
+/** The shortest attempt timeout AWS Batch accepts. */
+export const MIN_JOB_TIMEOUT_SECONDS = 60;
+/** The longest attempt timeout a fleet may be given. */
+export const MAX_JOB_TIMEOUT_SECONDS = 7200;
+/** The most vCPUs a fleet may be allowed to run at once. */
+export const MAX_FLEET_VCPUS = 64;
 
 /** Properties for {@link GpuRenderFleet}. */
 export interface GpuRenderFleetProps {
@@ -61,6 +67,19 @@ export class GpuRenderFleet extends Construct {
   constructor(scope: Construct, id: string, props: GpuRenderFleetProps) {
     super(scope, id);
 
+    // Hard limits cannot be switched off: a timeout is always set, and both
+    // it and the vCPU cap stay inside fixed bounds.
+    const timeoutSeconds = (props.jobTimeout ?? Duration.minutes(30)).toSeconds();
+    if (!Number.isInteger(timeoutSeconds) || timeoutSeconds < MIN_JOB_TIMEOUT_SECONDS || timeoutSeconds > MAX_JOB_TIMEOUT_SECONDS) {
+      throw new Error(
+        `jobTimeout must be between ${MIN_JOB_TIMEOUT_SECONDS} and ${MAX_JOB_TIMEOUT_SECONDS} seconds`,
+      );
+    }
+    const maxvCpus = props.maxvCpus ?? 8;
+    if (!Number.isInteger(maxvCpus) || maxvCpus < 1 || maxvCpus > MAX_FLEET_VCPUS) {
+      throw new Error(`maxvCpus must be a whole number from 1 to ${MAX_FLEET_VCPUS}`);
+    }
+
     this.vpc =
       props.vpc ??
       new ec2.Vpc(this, "Vpc", {
@@ -97,7 +116,7 @@ export class GpuRenderFleet extends Construct {
         type: "EC2",
         minvCpus: 0,
         desiredvCpus: 0,
-        maxvCpus: props.maxvCpus ?? 8,
+        maxvCpus,
         instanceTypes: props.instanceTypes ?? ["g4dn.xlarge"],
         allocationStrategy: "BEST_FIT_PROGRESSIVE",
         subnets: this.vpc.publicSubnets.map((s) => s.subnetId),
@@ -124,7 +143,7 @@ export class GpuRenderFleet extends Construct {
     const jobDefinition = new batch.CfnJobDefinition(this, "JobDefinition", {
       type: "container",
       platformCapabilities: ["EC2"],
-      timeout: { attemptDurationSeconds: (props.jobTimeout ?? Duration.minutes(30)).toSeconds() },
+      timeout: { attemptDurationSeconds: timeoutSeconds },
       // One retry, for transient trouble such as an instance failing to boot.
       retryStrategy: { attempts: 2 },
       containerProperties: {

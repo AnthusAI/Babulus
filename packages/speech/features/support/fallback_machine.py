@@ -126,6 +126,7 @@ def run_machine(
     submit: Callable[[dict[str, Any]], None],
     start_at: str | None = None,
     dynamo: Callable[[dict[str, Any]], None] | None = None,
+    finish: Callable[[dict[str, Any]], None] | None = None,
     max_steps: int = 500,
 ) -> Execution:
     """Interpret the fallback machine until it ends.
@@ -137,6 +138,8 @@ def run_machine(
     :param submit: Called with the Batch container environment on submit.
     :param dynamo: Runs a DynamoDB ``UpdateItem`` task with its resolved
         parameters; it may raise, which follows the state's ``Catch``.
+    :param finish: Runs the quota finisher with its resolved payload; it may
+        raise, which follows the state's ``Catch``.
     :param start_at: Begin at this state instead of the machine's first one
         (a timer that has already waited out its race window).
     :returns: The visited states and how the execution ended.
@@ -158,6 +161,7 @@ def run_machine(
             kind == "Task"
             and "JobDefinition" not in state["Parameters"]
             and "UpdateExpression" not in state["Parameters"]
+            and "action" not in state["Parameters"]
         ):
             payload = {
                 key.removesuffix(".$"): (
@@ -168,6 +172,19 @@ def run_machine(
             try:
                 execution.data["gate"] = gate(payload)
             except Exception:  # noqa: BLE001 - any gate error must stop the run
+                name = state["Catch"][0]["Next"]
+                continue
+        elif kind == "Task" and "action" in state["Parameters"]:
+            assert finish is not None, "no quota finisher stand-in given"
+            payload = {
+                key.removesuffix(".$"): (
+                    _resolve(value, execution.data) if key.endswith(".$") else value
+                )
+                for key, value in state["Parameters"].items()
+            }
+            try:
+                finish(payload)
+            except Exception:  # noqa: BLE001 - follows the state's Catch
                 name = state["Catch"][0]["Next"]
                 continue
         elif kind == "Task" and "UpdateExpression" in state["Parameters"]:

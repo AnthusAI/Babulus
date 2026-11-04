@@ -19,6 +19,7 @@ from support.fallback_machine import (
 )
 from support.operator_tokens import operator_headers
 from support.router_harness import RouterHarness, start_router
+from support.spend_guards import install_guards, load_gate
 
 GATE_PATH = (
     Path(__file__).resolve().parents[4]
@@ -66,10 +67,9 @@ def step_router(context) -> None:
     router: RouterHarness = start_router(context)
     clock = FakeClock()
     router.router.time = _fake_time(clock)
-    spec = importlib.util.spec_from_file_location("fallback_gate_handler", GATE_PATH)
-    gate = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(gate)
+    gate = load_gate()
     gate.time = _fake_time(clock)
+    context.guards = install_guards(context, gate, router)
     router.router.FALLBACK_STATE_MACHINE_ARN = (
         "arn:aws:states:us-east-1:111122223333:stateMachine:spec"
     )
@@ -206,6 +206,7 @@ def _run_timer(context, start_at: str | None = None) -> None:
         submit=lambda env: _submit(context, env),
         start_at=start_at,
         dynamo=lambda params: _dynamo_update(context, params),
+        finish=lambda payload: context.finisher.handler(payload, None),
     )
 
 
@@ -345,7 +346,10 @@ def step_no_batch(context) -> None:
 
 @then("exactly {count:d} Batch job is submitted")
 def step_batch_count(context, count: int) -> None:
-    assert len(context.batch_submissions) == count, context.batch_submissions
+    assert len(context.batch_submissions) == count, (
+        context.batch_submissions,
+        context.timer_result.data,
+    )
 
 
 @then('the timer ends with "{state}"')
