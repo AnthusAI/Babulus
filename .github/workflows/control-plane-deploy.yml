@@ -140,8 +140,8 @@ jobs:
               else:
                   text = json.dumps(value)
               for line in {text, *text.splitlines()}:
-                  if line.strip():
-                      print(f"::add-mask::{line}")
+                  if len(line.strip()) >= 4:
+                      print(f"::add-mask::{line}", flush=True)
               context_arguments += ["-c", f"{key}={text}"]
 
           command = [
@@ -152,5 +152,6 @@ jobs:
               "-c", "deploy_mode=narrowed",
               *context_arguments,
           ]
+          sys.stdout.flush()
           sys.exit(subprocess.run(command).returncode)
           PYTHON

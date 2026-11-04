@@ -23,12 +23,13 @@ defines:
   the name prefix `BabulusControlPlane-` and only with the boundary attached.
   It explicitly cannot remove the boundary, create users or access keys, edit
   the boundary policy or the deploy stack, launch EC2 instances, touch Amplify
-  or write to the protected user pool.
+  write to the protected user pools or change the protected CloudFront
+  distribution.
 - **`babulus-control-plane-deploy`**, the role GitHub Actions assumes through
   OIDC. Its trust allows only `refs/heads/main` of this repository, matched by
   the immutable owner and repository ids. It can manage change sets of the one
-  stack, pass only the execution role to CloudFormation, stage assets under one
-  prefix of the bootstrap bucket, read one SSM parameter, push to the worker
+  stack, pass only the execution role to CloudFormation, delete only a stack left in a failed-create state (and only through the
+  execution role), stage assets under one prefix of the bootstrap bucket, read one SSM parameter, push to the worker
   image repository, and it cannot assume the `cdk-*` bootstrap roles.
 
 With `-c deploy_mode=narrowed`, `packages/control-plane/app.py` switches the
@@ -47,12 +48,13 @@ fails or never reports. Runs are serialized and never cancelled midway.
 
 1. Review the template's permissions.
 2. Look up the numeric GitHub owner id and repository id, the ARN of the GitHub
-   OIDC provider that already exists in the account, the ARN of the Cognito user
-   pool that must stay untouched, and the CDK bootstrap assets bucket name (and
+   OIDC provider that already exists in the account, the ARNs of the Cognito user
+   pools and the CloudFront distribution that must stay untouched, and the CDK bootstrap assets bucket name (and
    its KMS key ARN if it uses a customer managed key).
 3. Create the deploy stack from `infra/control-plane-deploy/template.yml` with
    those values as parameters: `OidcProviderArn`, `GitHubOwnerId`,
-   `GitHubRepoId`, `ProtectedUserPoolArn`, `BootstrapBucketName`, and
+   `GitHubRepoId`, `ProtectedUserPoolArns` (comma separated),
+   `ProtectedDistributionArn`, `BootstrapBucketName`, and
    optionally `BootstrapBucketKmsKeyArn` and `GoogleOAuthSecretArn`. The
    template needs the IAM capability that names its roles. Do not give it a
    name that starts with `BabulusControlPlane`.
@@ -97,3 +99,6 @@ stack role carries the boundary, that no role has administrator access, that the
 boundary covers every action the stack roles use, that only main can assume the
 deploy role, that the bootstrap roles cannot be assumed, that role creation
 requires the boundary and that the explicit denials exist.
+
+Lambda layers the stack publishes are named `BabulusControlPlane-*`, and the
+execution role can reach only layers with that prefix.

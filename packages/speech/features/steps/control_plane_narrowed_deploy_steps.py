@@ -15,6 +15,9 @@ from behave import given, then
 from support.fallback_machine import CONTROL_PLANE
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[4]
+DEFAULT_DEPLOY_WORKFLOW = (
+    REPOSITORY_ROOT / ".github" / "workflows" / "control-plane-deploy.yml"
+)
 DEFAULT_DEPLOY_TEMPLATE = (
     REPOSITORY_ROOT / "infra" / "control-plane-deploy" / "template.yml"
 )
@@ -329,11 +332,11 @@ def step_exec_role_denies(context, action: str) -> None:
     assert _statements_with_action(_role_statements(role, "Deny"), action), action
 
 
-@then("the execution role explicitly denies every action on the protected user pool")
+@then("the execution role explicitly denies every action on the protected user pools")
 def step_exec_role_denies_protected_pool(context) -> None:
     role = _role(context, "ControlPlaneCfnExecRole")
     denials = _statements_with_action(_role_statements(role, "Deny"), "*")
-    assert any(d["Resource"] == {"Ref": "ProtectedUserPoolArn"} for d in denials)
+    assert any(d["Resource"] == {"Ref": "ProtectedUserPoolArns"} for d in denials)
 
 
 def _boundary_denials(context) -> list[dict]:
@@ -347,11 +350,11 @@ def step_boundary_denies(context, action: str) -> None:
 
 
 @then(
-    "the permissions boundary explicitly denies every action on the protected user pool"
+    "the permissions boundary explicitly denies every action on the protected user pools"
 )
 def step_boundary_denies_protected_pool(context) -> None:
     denials = _statements_with_action(_boundary_denials(context), "*")
-    assert any(d["Resource"] == {"Ref": "ProtectedUserPoolArn"} for d in denials)
+    assert any(d["Resource"] == {"Ref": "ProtectedUserPoolArns"} for d in denials)
 
 
 @then("the template text contains no twelve digit account id and no email address")
@@ -371,3 +374,86 @@ def step_no_template_role_allows_everything(context) -> None:
     for statement in _statements(boundary["Properties"]["PolicyDocument"], "Allow"):
         for action in _statement_actions(statement):
             assert not _granting_everything(action), action
+
+
+@then(
+    "the execution role explicitly denies every CloudFront action on the protected distribution"
+)
+def step_exec_role_denies_protected_distribution(context) -> None:
+    role = _role(context, "ControlPlaneCfnExecRole")
+    denials = _statements_with_action(_role_statements(role, "Deny"), "cloudfront:*")
+    assert any(d["Resource"] == {"Ref": "ProtectedDistributionArn"} for d in denials)
+
+
+@then('every Lambda layer in the stack is named with the prefix "{prefix}"')
+def step_layers_named_with_prefix(context, prefix: str) -> None:
+    resources = _synthesized_template(context)["Resources"]
+    layers = [r for r in resources.values() if r["Type"] == "AWS::Lambda::LayerVersion"]
+    assert layers
+    for layer in layers:
+        name = layer["Properties"].get("LayerName")
+        assert isinstance(name, str) and name.startswith(prefix), name
+
+
+@then(
+    "the execution role allows layer actions only on layers named BabulusControlPlane"
+)
+def step_exec_role_layers_scoped(context) -> None:
+    role = _role(context, "ControlPlaneCfnExecRole")
+    layer_statements = [
+        s
+        for s in _role_statements(role, "Allow")
+        if any(a.startswith("lambda:") and "Layer" in a for a in _statement_actions(s))
+    ]
+    assert layer_statements
+    for statement in layer_statements:
+        for resource in _as_list(statement["Resource"]):
+            assert ":layer:BabulusControlPlane-" in _text(resource), resource
+
+
+@then(
+    "the deploy role allows cloudformation:DeleteStack only on the BabulusControlPlane stack and only with the execution role"
+)
+def step_deploy_role_delete_stack(context) -> None:
+    role = _role(context, "ControlPlaneDeployRole")
+    deletes = _statements_with_action(
+        _role_statements(role, "Allow"), "cloudformation:DeleteStack"
+    )
+    assert len(deletes) == 1, deletes
+    assert _text(deletes[0]["Resource"]).endswith(":stack/BabulusControlPlane/*")
+    assert deletes[0]["Condition"]["StringEquals"] == {
+        "cloudformation:RoleArn": {"Fn::GetAtt": ["ControlPlaneCfnExecRole", "Arn"]}
+    }
+
+
+@given("the control plane deploy workflow is read")
+def step_read_workflow(context) -> None:
+    path = Path(
+        context.config.userdata.get("deploy_workflow", str(DEFAULT_DEPLOY_WORKFLOW))
+    )
+    context.deploy_workflow_text = path.read_text(encoding="utf-8")
+
+
+@then("every mask command is printed with an immediate flush")
+def step_masks_flushed(context) -> None:
+    text = context.deploy_workflow_text
+    mask_prints = [line for line in text.splitlines() if "::add-mask::" in line]
+    assert mask_prints
+    for line in mask_prints:
+        assert "flush=True" in line, line
+
+
+@then("the output is flushed before the CDK process starts")
+def step_flush_before_cdk(context) -> None:
+    text = context.deploy_workflow_text
+    flush_at = text.find("sys.stdout.flush()")
+    run_at = text.find("subprocess.run(command")
+    assert 0 <= flush_at < run_at, (flush_at, run_at)
+
+
+@then("only context values of at least 4 characters are masked")
+def step_minimum_mask_length(context) -> None:
+    text = context.deploy_workflow_text
+    guard = re.search(r"if len\(line\.strip\(\)\) >= 4:", text)
+    mask_at = text.find("::add-mask::")
+    assert guard and guard.start() < mask_at

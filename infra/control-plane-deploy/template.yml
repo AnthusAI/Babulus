@@ -18,9 +18,12 @@ Parameters:
   GitHubRepoId:
     Type: String
     Description: Numeric id of the GitHub repository, part of the immutable OIDC subject
-  ProtectedUserPoolArn:
+  ProtectedUserPoolArns:
+    Type: CommaDelimitedList
+    Description: Comma separated ARNs of the Cognito user pools that nothing in this path may touch
+  ProtectedDistributionArn:
     Type: String
-    Description: ARN of the Cognito user pool that nothing in this path may touch
+    Description: ARN of the CloudFront distribution (the public site front door) that nothing in this path may change
   BootstrapBucketName:
     Type: String
     Description: Name of the CDK bootstrap assets bucket, used only to stage template and Lambda assets under one prefix
@@ -190,7 +193,7 @@ Resources:
           - Sid: NeverTouchProtectedUserPool
             Effect: Deny
             Action: "*"
-            Resource: !Ref ProtectedUserPoolArn
+            Resource: !Ref ProtectedUserPoolArns
 
   ControlPlaneCfnExecRole:
     Type: AWS::IAM::Role
@@ -239,7 +242,9 @@ Resources:
                   - lambda:DeleteLayerVersion
                   - lambda:GetLayerVersion
                   - lambda:PublishLayerVersion
-                Resource: !Sub arn:${AWS::Partition}:lambda:${AWS::Region}:${AWS::AccountId}:layer:*
+                Resource:
+                  - !Sub arn:${AWS::Partition}:lambda:${AWS::Region}:${AWS::AccountId}:layer:BabulusControlPlane-*
+                  - !Sub arn:${AWS::Partition}:lambda:${AWS::Region}:${AWS::AccountId}:layer:BabulusControlPlane-*:*
               - Sid: DynamoDbTables
                 Effect: Allow
                 Action:
@@ -669,7 +674,11 @@ Resources:
               - Sid: NeverTouchProtectedUserPool
                 Effect: Deny
                 Action: "*"
-                Resource: !Ref ProtectedUserPoolArn
+                Resource: !Ref ProtectedUserPoolArns
+              - Sid: NeverTouchProtectedDistribution
+                Effect: Deny
+                Action: cloudfront:*
+                Resource: !Ref ProtectedDistributionArn
 
   ControlPlaneDeployRole:
     Type: AWS::IAM::Role
@@ -709,6 +718,13 @@ Resources:
               - Sid: CreateChangeSetOnlyThroughTheExecRole
                 Effect: Allow
                 Action: cloudformation:CreateChangeSet
+                Resource: !Sub arn:${AWS::Partition}:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/BabulusControlPlane/*
+                Condition:
+                  StringEquals:
+                    cloudformation:RoleArn: !GetAtt ControlPlaneCfnExecRole.Arn
+              - Sid: DeleteFailedFirstCreateOnlyWithTheExecRole
+                Effect: Allow
+                Action: cloudformation:DeleteStack
                 Resource: !Sub arn:${AWS::Partition}:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/BabulusControlPlane/*
                 Condition:
                   StringEquals:

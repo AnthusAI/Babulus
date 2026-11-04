@@ -78,6 +78,7 @@ def build_operator_auth_layer(scope: Construct) -> lambda_.LayerVersion:
     return lambda_.LayerVersion(
         scope,
         "OperatorAuthLayer",
+        layer_version_name="BabulusControlPlane-OperatorAuth",
         description="PyJWT, cryptography, and Auritus operator token verification",
         compatible_runtimes=[runtime],
         compatible_architectures=[lambda_.Architecture.X86_64],

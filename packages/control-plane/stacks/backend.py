@@ -950,6 +950,7 @@ class BackendStack(Stack):
         spend_guards_layer = lambda_.LayerVersion(
             self,
             "SpendGuardsLayer",
+            layer_version_name="BabulusControlPlane-SpendGuards",
             description="Prospectus quota client and the global spending ceiling",
             compatible_runtimes=[lambda_.Runtime.PYTHON_3_11],
             code=lambda_.Code.from_asset(str(LAMBDA_ROOT / "spend_guards_layer")),

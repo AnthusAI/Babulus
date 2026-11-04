@@ -55,11 +55,28 @@ Feature: The control plane deploys through narrowed roles that cannot act outsid
     And the execution role explicitly denies "iam:CreateAccessKey"
     And the execution role explicitly denies "ec2:RunInstances"
     And the execution role explicitly denies "amplify:*"
-    And the execution role explicitly denies every action on the protected user pool
+    And the execution role explicitly denies every action on the protected user pools
     And the permissions boundary explicitly denies "iam:*"
     And the permissions boundary explicitly denies "organizations:*"
     And the permissions boundary explicitly denies "account:*"
-    And the permissions boundary explicitly denies every action on the protected user pool
+    And the permissions boundary explicitly denies every action on the protected user pools
+    And the execution role explicitly denies every CloudFront action on the protected distribution
+
+  Scenario: Lambda layers are named under the stack prefix and the execution role reaches only those
+    Given the control plane app is synthesized in narrowed deploy mode
+    And the narrowed deploy template is parsed
+    Then every Lambda layer in the stack is named with the prefix "BabulusControlPlane-"
+    And the execution role allows layer actions only on layers named BabulusControlPlane
+
+  Scenario: The deploy role can delete only a stack left by a failed first create, and only through the execution role
+    Given the narrowed deploy template is parsed
+    Then the deploy role allows cloudformation:DeleteStack only on the BabulusControlPlane stack and only with the execution role
+
+  Scenario: The deploy workflow masks context values before CDK can print them
+    Given the control plane deploy workflow is read
+    Then every mask command is printed with an immediate flush
+    And the output is flushed before the CDK process starts
+    And only context values of at least 4 characters are masked
 
   Scenario: The deploy template holds no identifiers of its own
     Given the narrowed deploy template is parsed
