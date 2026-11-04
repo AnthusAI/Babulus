@@ -1,0 +1,28 @@
+{
+  "id": "babulus-2dd53db0-9049-48b9-93de-e5df5591e51a",
+  "title": "Narrowed GitHub Actions deploy for the control plane",
+  "description": "",
+  "type": "task",
+  "status": "open",
+  "priority": 2,
+  "assignee": null,
+  "creator": null,
+  "parent": "babulus-d22d6854-6464-40b8-a446-b0a8265efdde",
+  "labels": [],
+  "dependencies": [],
+  "comments": [
+    {
+      "id": "10af1ba5-4b69-4c39-bc4f-283b3c976223",
+      "author": "home",
+      "text": "Narrowed control plane deploy: boundary, CloudFormation execution role and OIDC deploy role template (infra/control-plane-deploy), narrowed mode in app.py, deploy workflow (skipped until CONTROL_PLANE_DEPLOY_ROLE_ARN is set), Gherkin specs, docs/control-plane-deploy.md. Nothing applied to AWS.",
+      "created_at": "2026-11-04T12:08:24.156282Z",
+      "comment_type": "default"
+    }
+  ],
+  "created_at": "2026-11-04T11:53:09.721448Z",
+  "updated_at": "2026-11-04T12:08:24.156965Z",
+  "closed_at": null,
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {}
+}

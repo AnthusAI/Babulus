@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "event_id": "c6be5c02-235c-401f-a02d-33a9ee9c04d6",
+  "issue_id": "babulus-2dd53db0-9049-48b9-93de-e5df5591e51a",
+  "event_type": "issue_created",
+  "occurred_at": "2026-11-04T11:53:09.721Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "Narrowed GitHub Actions deploy for the control plane",
+    "description": "",
+    "issue_type": "task",
+    "status": "open",
+    "priority": 2,
+    "assignee": null,
+    "parent": "babulus-d22d6854-6464-40b8-a446-b0a8265efdde",
+    "labels": []
+  }
+}

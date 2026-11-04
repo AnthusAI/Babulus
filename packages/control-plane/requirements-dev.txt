@@ -3,3 +3,4 @@ moto
 pytest
 ruff
 PyJWT[crypto]==2.13.0
+pyyaml

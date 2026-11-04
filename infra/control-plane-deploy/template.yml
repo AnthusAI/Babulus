@@ -1,0 +1,791 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: >
+  Narrowed GitHub Actions deploy path for the BabulusControlPlane stack. It
+  replaces the CDK bootstrap roles, whose CloudFormation execution role has
+  full administrator access, with three pieces: a permissions boundary that
+  caps every role the stack creates, a CloudFormation execution role that can
+  only manage the resource types in that stack, and an OIDC role that only
+  main of the Babulus repository can assume. Apply it once by hand; nothing
+  here is applied by the pipeline it enables.
+
+Parameters:
+  OidcProviderArn:
+    Type: String
+    Description: ARN of the existing GitHub OIDC identity provider in this account (not created here)
+  GitHubOwnerId:
+    Type: String
+    Description: Numeric id of the GitHub owner, part of the immutable OIDC subject
+  GitHubRepoId:
+    Type: String
+    Description: Numeric id of the GitHub repository, part of the immutable OIDC subject
+  ProtectedUserPoolArn:
+    Type: String
+    Description: ARN of the Cognito user pool that nothing in this path may touch
+  BootstrapBucketName:
+    Type: String
+    Description: Name of the CDK bootstrap assets bucket, used only to stage template and Lambda assets under one prefix
+  BootstrapBucketKmsKeyArn:
+    Type: String
+    Default: ""
+    Description: Optional ARN of the customer managed key that encrypts the bootstrap assets bucket
+  GoogleOAuthSecretArn:
+    Type: String
+    Default: ""
+    Description: Optional ARN of an existing Secrets Manager secret the stack reads through a dynamic reference
+
+Conditions:
+  HasGoogleOAuthSecret: !Not [!Equals [!Ref GoogleOAuthSecretArn, ""]]
+  HasBootstrapBucketKey: !Not [!Equals [!Ref BootstrapBucketKmsKeyArn, ""]]
+
+Resources:
+  ControlPlaneBoundary:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      ManagedPolicyName: babulus-control-plane-boundary
+      Description: Permissions boundary for every role the BabulusControlPlane stack creates
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Sid: DynamoDbDataOnStackTables
+            Effect: Allow
+            Action:
+              - dynamodb:BatchGetItem
+              - dynamodb:BatchWriteItem
+              - dynamodb:ConditionCheckItem
+              - dynamodb:DeleteItem
+              - dynamodb:DescribeTable
+              - dynamodb:GetItem
+              - dynamodb:GetRecords
+              - dynamodb:GetShardIterator
+              - dynamodb:PutItem
+              - dynamodb:Query
+              - dynamodb:Scan
+              - dynamodb:UpdateItem
+            Resource:
+              - !Sub arn:${AWS::Partition}:dynamodb:${AWS::Region}:${AWS::AccountId}:table/BabulusControlPlane-*
+              - !Sub arn:${AWS::Partition}:dynamodb:${AWS::Region}:${AWS::AccountId}:table/BabulusControlPlane-*/index/*
+          - Sid: S3ObjectsInStackBuckets
+            Effect: Allow
+            Action:
+              - s3:Abort*
+              - s3:DeleteObject*
+              - s3:GetBucket*
+              - s3:GetObject*
+              - s3:List*
+              - s3:PutObject
+              - s3:PutObjectLegalHold
+              - s3:PutObjectRetention
+              - s3:PutObjectTagging
+              - s3:PutObjectVersionTagging
+            Resource:
+              - !Sub arn:${AWS::Partition}:s3:::babuluscontrolplane-*
+              - !Sub arn:${AWS::Partition}:s3:::babuluscontrolplane-*/*
+          - Sid: CognitoReadUsers
+            Effect: Allow
+            Action: cognito-idp:AdminGetUser
+            Resource: !Sub arn:${AWS::Partition}:cognito-idp:${AWS::Region}:${AWS::AccountId}:userpool/*
+          - Sid: SesSend
+            Effect: Allow
+            Action:
+              - ses:SendEmail
+              - ses:SendRawEmail
+            Resource: "*"
+          - Sid: CostExplorerRead
+            Effect: Allow
+            Action: ce:GetCostAndUsage
+            Resource: "*"
+          - Sid: BatchDescribeQueues
+            Effect: Allow
+            Action: batch:DescribeJobQueues
+            Resource: "*"
+          - Sid: BatchQueuesAndJobs
+            Effect: Allow
+            Action:
+              - batch:SubmitJob
+              - batch:UpdateJobQueue
+            Resource:
+              - !Sub arn:${AWS::Partition}:batch:${AWS::Region}:${AWS::AccountId}:job-queue/babulus-*
+              - !Sub arn:${AWS::Partition}:batch:${AWS::Region}:${AWS::AccountId}:job-definition/*
+          - Sid: StartFallbackExecutions
+            Effect: Allow
+            Action: states:StartExecution
+            Resource:
+              - !Sub arn:${AWS::Partition}:states:${AWS::Region}:${AWS::AccountId}:stateMachine:BabulusControlPlane-*
+              - !Sub arn:${AWS::Partition}:states:${AWS::Region}:${AWS::AccountId}:stateMachine:BabulusFallback*
+          - Sid: StepFunctionsBatchEventRule
+            Effect: Allow
+            Action:
+              - events:DescribeRule
+              - events:PutRule
+              - events:PutTargets
+            Resource: !Sub arn:${AWS::Partition}:events:${AWS::Region}:${AWS::AccountId}:rule/StepFunctionsGetEventsForBatchJobsRule
+          - Sid: InvokeStackFunctions
+            Effect: Allow
+            Action: lambda:InvokeFunction
+            Resource: !Sub arn:${AWS::Partition}:lambda:${AWS::Region}:${AWS::AccountId}:function:BabulusControlPlane-*
+          - Sid: AssumeStackRoles
+            Effect: Allow
+            Action: sts:AssumeRole
+            Resource: !Sub arn:${AWS::Partition}:iam::${AWS::AccountId}:role/BabulusControlPlane-*
+          - Sid: LambdaBasicExecutionLogs
+            Effect: Allow
+            Action:
+              - logs:CreateLogGroup
+              - logs:CreateLogStream
+              - logs:PutLogEvents
+            Resource:
+              - !Sub arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/BabulusControlPlane-*
+              - !Sub arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/BabulusControlPlane-*:*
+          - Sid: StateMachineLogDelivery
+            Effect: Allow
+            Action:
+              - logs:CreateLogDelivery
+              - logs:DeleteLogDelivery
+              - logs:DescribeLogGroups
+              - logs:DescribeResourcePolicies
+              - logs:GetLogDelivery
+              - logs:ListLogDeliveries
+              - logs:PutResourcePolicy
+              - logs:UpdateLogDelivery
+            Resource: "*"
+          - Sid: BatchContainerInstanceLogs
+            Effect: Allow
+            Action:
+              - logs:CreateLogStream
+              - logs:PutLogEvents
+            Resource:
+              - !Sub arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/batch/*
+              - !Sub arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/batch/*:*
+          - Sid: ContainerInstanceEcsAgent
+            Effect: Allow
+            Action:
+              - ec2:DescribeTags
+              - ecs:CreateCluster
+              - ecs:DeregisterContainerInstance
+              - ecs:DiscoverPollEndpoint
+              - ecs:Poll
+              - ecs:RegisterContainerInstance
+              - ecs:StartTelemetrySession
+              - ecs:UpdateContainerInstancesState
+              - ecs:Submit*
+            Resource: "*"
+          - Sid: ContainerInstanceImagePull
+            Effect: Allow
+            Action:
+              - ecr:BatchCheckLayerAvailability
+              - ecr:BatchGetImage
+              - ecr:GetDownloadUrlForLayer
+            Resource: !Sub arn:${AWS::Partition}:ecr:${AWS::Region}:${AWS::AccountId}:repository/babulus-worker
+          - Sid: ContainerInstanceEcrLogin
+            Effect: Allow
+            Action: ecr:GetAuthorizationToken
+            Resource: "*"
+          - Sid: NeverChangeIdentityOrOrganization
+            Effect: Deny
+            Action:
+              - iam:*
+              - organizations:*
+              - account:*
+            Resource: "*"
+          - Sid: NeverTouchProtectedUserPool
+            Effect: Deny
+            Action: "*"
+            Resource: !Ref ProtectedUserPoolArn
+
+  ControlPlaneCfnExecRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: babulus-control-plane-cfn-exec
+      Description: CloudFormation execution role for BabulusControlPlane, used through cdk deploy --role-arn
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: cloudformation.amazonaws.com
+            Action: sts:AssumeRole
+            Condition:
+              StringEquals:
+                aws:SourceAccount: !Ref AWS::AccountId
+              ArnLike:
+                aws:SourceArn: !Sub arn:${AWS::Partition}:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/BabulusControlPlane/*
+      Policies:
+        - PolicyName: manage-control-plane-resources
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Sid: LambdaFunctions
+                Effect: Allow
+                Action:
+                  - lambda:AddPermission
+                  - lambda:CreateFunction
+                  - lambda:DeleteFunction
+                  - lambda:DeleteFunctionConcurrency
+                  - lambda:GetFunction
+                  - lambda:GetFunctionConfiguration
+                  - lambda:GetPolicy
+                  - lambda:ListTags
+                  - lambda:PublishVersion
+                  - lambda:PutFunctionConcurrency
+                  - lambda:RemovePermission
+                  - lambda:TagResource
+                  - lambda:UntagResource
+                  - lambda:UpdateFunctionCode
+                  - lambda:UpdateFunctionConfiguration
+                Resource: !Sub arn:${AWS::Partition}:lambda:${AWS::Region}:${AWS::AccountId}:function:BabulusControlPlane-*
+              - Sid: LambdaLayers
+                Effect: Allow
+                Action:
+                  - lambda:DeleteLayerVersion
+                  - lambda:GetLayerVersion
+                  - lambda:PublishLayerVersion
+                Resource: !Sub arn:${AWS::Partition}:lambda:${AWS::Region}:${AWS::AccountId}:layer:*
+              - Sid: DynamoDbTables
+                Effect: Allow
+                Action:
+                  - dynamodb:CreateTable
+                  - dynamodb:DeleteTable
+                  - dynamodb:DescribeContinuousBackups
+                  - dynamodb:DescribeTable
+                  - dynamodb:DescribeTimeToLive
+                  - dynamodb:ListTagsOfResource
+                  - dynamodb:TagResource
+                  - dynamodb:UntagResource
+                  - dynamodb:UpdateContinuousBackups
+                  - dynamodb:UpdateTable
+                  - dynamodb:UpdateTimeToLive
+                Resource:
+                  - !Sub arn:${AWS::Partition}:dynamodb:${AWS::Region}:${AWS::AccountId}:table/BabulusControlPlane-*
+                  - !Sub arn:${AWS::Partition}:dynamodb:${AWS::Region}:${AWS::AccountId}:table/BabulusControlPlane-*/index/*
+              - Sid: S3Buckets
+                Effect: Allow
+                Action:
+                  - s3:CreateBucket
+                  - s3:DeleteBucket
+                  - s3:DeleteBucketPolicy
+                  - s3:GetBucketCORS
+                  - s3:GetBucketLocation
+                  - s3:GetBucketOwnershipControls
+                  - s3:GetBucketPolicy
+                  - s3:GetBucketPublicAccessBlock
+                  - s3:GetBucketTagging
+                  - s3:GetBucketVersioning
+                  - s3:GetEncryptionConfiguration
+                  - s3:GetLifecycleConfiguration
+                  - s3:ListBucket
+                  - s3:PutBucketCORS
+                  - s3:PutBucketOwnershipControls
+                  - s3:PutBucketPolicy
+                  - s3:PutBucketPublicAccessBlock
+                  - s3:PutBucketTagging
+                  - s3:PutBucketVersioning
+                  - s3:PutEncryptionConfiguration
+                  - s3:PutLifecycleConfiguration
+                Resource: !Sub arn:${AWS::Partition}:s3:::babuluscontrolplane-*
+              - Sid: ReadStagedAssets
+                Effect: Allow
+                Action: s3:GetObject
+                Resource: !Sub arn:${AWS::Partition}:s3:::${BootstrapBucketName}/babulus-control-plane/*
+              - !If
+                - HasBootstrapBucketKey
+                - Sid: DecryptStagedAssets
+                  Effect: Allow
+                  Action: kms:Decrypt
+                  Resource: !Ref BootstrapBucketKmsKeyArn
+                  Condition:
+                    StringEquals:
+                      kms:ViaService: !Sub s3.${AWS::Region}.amazonaws.com
+                - !Ref AWS::NoValue
+              - Sid: SnsTopics
+                Effect: Allow
+                Action:
+                  - sns:CreateTopic
+                  - sns:DeleteTopic
+                  - sns:GetSubscriptionAttributes
+                  - sns:GetTopicAttributes
+                  - sns:ListTagsForResource
+                  - sns:SetSubscriptionAttributes
+                  - sns:SetTopicAttributes
+                  - sns:Subscribe
+                  - sns:TagResource
+                  - sns:Unsubscribe
+                  - sns:UntagResource
+                Resource: !Sub arn:${AWS::Partition}:sns:${AWS::Region}:${AWS::AccountId}:BabulusControlPlane-*
+              - Sid: EventBridgeRules
+                Effect: Allow
+                Action:
+                  - events:DeleteRule
+                  - events:DescribeRule
+                  - events:DisableRule
+                  - events:EnableRule
+                  - events:ListTagsForResource
+                  - events:ListTargetsByRule
+                  - events:PutRule
+                  - events:PutTargets
+                  - events:RemoveTargets
+                  - events:TagResource
+                  - events:UntagResource
+                Resource: !Sub arn:${AWS::Partition}:events:${AWS::Region}:${AWS::AccountId}:rule/BabulusControlPlane-*
+              - Sid: StepFunctionsStateMachines
+                Effect: Allow
+                Action:
+                  - states:CreateStateMachine
+                  - states:DeleteStateMachine
+                  - states:DescribeStateMachine
+                  - states:ListTagsForResource
+                  - states:TagResource
+                  - states:UntagResource
+                  - states:UpdateStateMachine
+                Resource:
+                  - !Sub arn:${AWS::Partition}:states:${AWS::Region}:${AWS::AccountId}:stateMachine:BabulusControlPlane-*
+                  - !Sub arn:${AWS::Partition}:states:${AWS::Region}:${AWS::AccountId}:stateMachine:BabulusFallback*
+              - Sid: StateMachineLogDelivery
+                Effect: Allow
+                Action:
+                  - logs:CreateLogDelivery
+                  - logs:DeleteLogDelivery
+                  - logs:DescribeLogGroups
+                  - logs:DescribeResourcePolicies
+                  - logs:GetLogDelivery
+                  - logs:ListLogDeliveries
+                  - logs:PutResourcePolicy
+                  - logs:UpdateLogDelivery
+                Resource: "*"
+              - Sid: HttpApis
+                Effect: Allow
+                Action:
+                  - apigateway:DELETE
+                  - apigateway:GET
+                  - apigateway:PATCH
+                  - apigateway:POST
+                  - apigateway:PUT
+                Resource:
+                  - !Sub arn:${AWS::Partition}:apigateway:${AWS::Region}::/apis
+                  - !Sub arn:${AWS::Partition}:apigateway:${AWS::Region}::/apis/*
+                  - !Sub arn:${AWS::Partition}:apigateway:${AWS::Region}::/tags/*
+              - Sid: CognitoCreateUserPool
+                Effect: Allow
+                Action:
+                  - cognito-idp:CreateUserPool
+                  - cognito-idp:DescribeUserPoolDomain
+                Resource: "*"
+              - Sid: CognitoUserPools
+                Effect: Allow
+                Action:
+                  - cognito-idp:CreateIdentityProvider
+                  - cognito-idp:CreateUserPoolClient
+                  - cognito-idp:CreateUserPoolDomain
+                  - cognito-idp:DeleteIdentityProvider
+                  - cognito-idp:DeleteUserPool
+                  - cognito-idp:DeleteUserPoolClient
+                  - cognito-idp:DeleteUserPoolDomain
+                  - cognito-idp:DescribeIdentityProvider
+                  - cognito-idp:DescribeUserPool
+                  - cognito-idp:DescribeUserPoolClient
+                  - cognito-idp:GetUserPoolMfaConfig
+                  - cognito-idp:ListTagsForResource
+                  - cognito-idp:SetUserPoolMfaConfig
+                  - cognito-idp:TagResource
+                  - cognito-idp:UntagResource
+                  - cognito-idp:UpdateIdentityProvider
+                  - cognito-idp:UpdateUserPool
+                  - cognito-idp:UpdateUserPoolClient
+                  - cognito-idp:UpdateUserPoolDomain
+                Resource: !Sub arn:${AWS::Partition}:cognito-idp:${AWS::Region}:${AWS::AccountId}:userpool/*
+              - Sid: BatchDescribe
+                Effect: Allow
+                Action:
+                  - batch:DescribeComputeEnvironments
+                  - batch:DescribeJobDefinitions
+                  - batch:DescribeJobQueues
+                Resource: "*"
+              - Sid: BatchResources
+                Effect: Allow
+                Action:
+                  - batch:CreateComputeEnvironment
+                  - batch:CreateJobQueue
+                  - batch:DeleteComputeEnvironment
+                  - batch:DeleteJobQueue
+                  - batch:DeregisterJobDefinition
+                  - batch:ListTagsForResource
+                  - batch:RegisterJobDefinition
+                  - batch:TagResource
+                  - batch:UntagResource
+                  - batch:UpdateComputeEnvironment
+                  - batch:UpdateJobQueue
+                Resource:
+                  - !Sub arn:${AWS::Partition}:batch:${AWS::Region}:${AWS::AccountId}:compute-environment/*
+                  - !Sub arn:${AWS::Partition}:batch:${AWS::Region}:${AWS::AccountId}:job-queue/babulus-*
+                  - !Sub arn:${AWS::Partition}:batch:${AWS::Region}:${AWS::AccountId}:job-definition/*
+              - Sid: WorkerImageRepository
+                Effect: Allow
+                Action:
+                  - ecr:CreateRepository
+                  - ecr:DeleteLifecyclePolicy
+                  - ecr:DeleteRepository
+                  - ecr:DeleteRepositoryPolicy
+                  - ecr:DescribeRepositories
+                  - ecr:GetLifecyclePolicy
+                  - ecr:GetRepositoryPolicy
+                  - ecr:ListTagsForResource
+                  - ecr:PutImageScanningConfiguration
+                  - ecr:PutImageTagMutability
+                  - ecr:PutLifecyclePolicy
+                  - ecr:SetRepositoryPolicy
+                  - ecr:TagResource
+                  - ecr:UntagResource
+                Resource: !Sub arn:${AWS::Partition}:ecr:${AWS::Region}:${AWS::AccountId}:repository/babulus-worker
+              - Sid: CloudFrontDistributions
+                Effect: Allow
+                Action:
+                  - cloudfront:CreateDistribution
+                  - cloudfront:CreateOriginAccessControl
+                  - cloudfront:DeleteDistribution
+                  - cloudfront:DeleteOriginAccessControl
+                  - cloudfront:GetDistribution
+                  - cloudfront:GetDistributionConfig
+                  - cloudfront:GetOriginAccessControl
+                  - cloudfront:GetOriginAccessControlConfig
+                  - cloudfront:ListTagsForResource
+                  - cloudfront:TagResource
+                  - cloudfront:UntagResource
+                  - cloudfront:UpdateDistribution
+                  - cloudfront:UpdateOriginAccessControl
+                Resource: "*"
+              - Sid: CloudWatchAlarmsDescribe
+                Effect: Allow
+                Action: cloudwatch:DescribeAlarms
+                Resource: "*"
+              - Sid: CloudWatchAlarms
+                Effect: Allow
+                Action:
+                  - cloudwatch:DeleteAlarms
+                  - cloudwatch:ListTagsForResource
+                  - cloudwatch:PutMetricAlarm
+                  - cloudwatch:TagResource
+                  - cloudwatch:UntagResource
+                Resource: !Sub arn:${AWS::Partition}:cloudwatch:${AWS::Region}:${AWS::AccountId}:alarm:BabulusControlPlane-*
+              - Sid: LogGroupsDescribe
+                Effect: Allow
+                Action: logs:DescribeLogGroups
+                Resource: "*"
+              - Sid: LogGroups
+                Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:DeleteLogGroup
+                  - logs:DeleteRetentionPolicy
+                  - logs:ListTagsForResource
+                  - logs:ListTagsLogGroup
+                  - logs:PutRetentionPolicy
+                  - logs:TagLogGroup
+                  - logs:TagResource
+                  - logs:UntagLogGroup
+                  - logs:UntagResource
+                Resource:
+                  - !Sub arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:BabulusControlPlane-*
+                  - !Sub arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:BabulusControlPlane-*:*
+                  - !Sub arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/BabulusControlPlane-*
+                  - !Sub arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/BabulusControlPlane-*:*
+              - Sid: Secrets
+                Effect: Allow
+                Action:
+                  - secretsmanager:CreateSecret
+                  - secretsmanager:DeleteSecret
+                  - secretsmanager:DescribeSecret
+                  - secretsmanager:GetResourcePolicy
+                  - secretsmanager:GetSecretValue
+                  - secretsmanager:PutSecretValue
+                  - secretsmanager:TagResource
+                  - secretsmanager:UntagResource
+                  - secretsmanager:UpdateSecret
+                Resource:
+                  - !Sub arn:${AWS::Partition}:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:BabulusControlPlane-*
+                  - !Sub arn:${AWS::Partition}:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:GoogleOAuthSecret*
+              - Sid: ReadExistingGoogleSecret
+                Effect: Allow
+                Action: secretsmanager:GetSecretValue
+                Resource: !If
+                  - HasGoogleOAuthSecret
+                  - !Ref GoogleOAuthSecretArn
+                  - !Sub arn:${AWS::Partition}:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:BabulusControlPlane-*
+              - Sid: SpendBudget
+                Effect: Allow
+                Action:
+                  - budgets:ModifyBudget
+                  - budgets:ViewBudget
+                Resource: !Sub arn:${AWS::Partition}:budgets::${AWS::AccountId}:budget/BabulusCloudSpendBudget
+              - Sid: NetworkAndLaunchTemplate
+                Effect: Allow
+                Action:
+                  - ec2:AssociateRouteTable
+                  - ec2:AttachInternetGateway
+                  - ec2:AuthorizeSecurityGroupEgress
+                  - ec2:AuthorizeSecurityGroupIngress
+                  - ec2:CreateInternetGateway
+                  - ec2:CreateLaunchTemplate
+                  - ec2:CreateLaunchTemplateVersion
+                  - ec2:CreateRoute
+                  - ec2:CreateRouteTable
+                  - ec2:CreateSecurityGroup
+                  - ec2:CreateSubnet
+                  - ec2:CreateTags
+                  - ec2:CreateVpc
+                  - ec2:DeleteInternetGateway
+                  - ec2:DeleteLaunchTemplate
+                  - ec2:DeleteLaunchTemplateVersions
+                  - ec2:DeleteRoute
+                  - ec2:DeleteRouteTable
+                  - ec2:DeleteSecurityGroup
+                  - ec2:DeleteSubnet
+                  - ec2:DeleteTags
+                  - ec2:DeleteVpc
+                  - ec2:DescribeAccountAttributes
+                  - ec2:DescribeAvailabilityZones
+                  - ec2:DescribeInternetGateways
+                  - ec2:DescribeLaunchTemplates
+                  - ec2:DescribeLaunchTemplateVersions
+                  - ec2:DescribeRouteTables
+                  - ec2:DescribeSecurityGroups
+                  - ec2:DescribeSubnets
+                  - ec2:DescribeVpcAttribute
+                  - ec2:DescribeVpcs
+                  - ec2:DetachInternetGateway
+                  - ec2:DisassociateRouteTable
+                  - ec2:ModifyLaunchTemplate
+                  - ec2:ModifySubnetAttribute
+                  - ec2:ModifyVpcAttribute
+                  - ec2:RevokeSecurityGroupEgress
+                  - ec2:RevokeSecurityGroupIngress
+                Resource: "*"
+              - Sid: StackRolesCreateWithBoundary
+                Effect: Allow
+                Action:
+                  - iam:CreateRole
+                  - iam:PutRolePermissionsBoundary
+                Resource: !Sub arn:${AWS::Partition}:iam::${AWS::AccountId}:role/BabulusControlPlane-*
+                Condition:
+                  StringEquals:
+                    iam:PermissionsBoundary: !Ref ControlPlaneBoundary
+              - Sid: StackRolesManage
+                Effect: Allow
+                Action:
+                  - iam:DeleteRole
+                  - iam:DeleteRolePolicy
+                  - iam:GetRole
+                  - iam:GetRolePolicy
+                  - iam:ListAttachedRolePolicies
+                  - iam:ListInstanceProfilesForRole
+                  - iam:ListRolePolicies
+                  - iam:PutRolePolicy
+                  - iam:TagRole
+                  - iam:UntagRole
+                  - iam:UpdateAssumeRolePolicy
+                  - iam:UpdateRole
+                Resource: !Sub arn:${AWS::Partition}:iam::${AWS::AccountId}:role/BabulusControlPlane-*
+              - Sid: StackRolesAttachOnlyServiceRolePolicies
+                Effect: Allow
+                Action:
+                  - iam:AttachRolePolicy
+                  - iam:DetachRolePolicy
+                Resource: !Sub arn:${AWS::Partition}:iam::${AWS::AccountId}:role/BabulusControlPlane-*
+                Condition:
+                  ArnEquals:
+                    iam:PolicyARN:
+                      - !Sub arn:${AWS::Partition}:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+                      - !Sub arn:${AWS::Partition}:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role
+              - Sid: StackInstanceProfiles
+                Effect: Allow
+                Action:
+                  - iam:AddRoleToInstanceProfile
+                  - iam:CreateInstanceProfile
+                  - iam:DeleteInstanceProfile
+                  - iam:GetInstanceProfile
+                  - iam:RemoveRoleFromInstanceProfile
+                  - iam:TagInstanceProfile
+                  - iam:UntagInstanceProfile
+                Resource:
+                  - !Sub arn:${AWS::Partition}:iam::${AWS::AccountId}:instance-profile/BabulusControlPlane-*
+                  - !Sub arn:${AWS::Partition}:iam::${AWS::AccountId}:role/BabulusControlPlane-*
+              - Sid: PassStackRolesToTheirServices
+                Effect: Allow
+                Action: iam:PassRole
+                Resource: !Sub arn:${AWS::Partition}:iam::${AWS::AccountId}:role/BabulusControlPlane-*
+                Condition:
+                  StringEquals:
+                    iam:PassedToService:
+                      - lambda.amazonaws.com
+                      - states.amazonaws.com
+                      - ecs-tasks.amazonaws.com
+                      - ec2.amazonaws.com
+              - Sid: BatchServiceLinkedRole
+                Effect: Allow
+                Action: iam:CreateServiceLinkedRole
+                Resource: !Sub arn:${AWS::Partition}:iam::${AWS::AccountId}:role/aws-service-role/batch.amazonaws.com/*
+                Condition:
+                  StringEquals:
+                    iam:AWSServiceName: batch.amazonaws.com
+              - Sid: NeverRemoveOrWeakenTheBoundary
+                Effect: Deny
+                Action:
+                  - iam:CreatePolicy
+                  - iam:CreatePolicyVersion
+                  - iam:DeletePolicy
+                  - iam:DeletePolicyVersion
+                  - iam:DeleteRolePermissionsBoundary
+                  - iam:SetDefaultPolicyVersion
+                Resource: "*"
+              - Sid: NeverPutAnyOtherBoundary
+                Effect: Deny
+                Action: iam:PutRolePermissionsBoundary
+                Resource: "*"
+                Condition:
+                  StringNotEquals:
+                    iam:PermissionsBoundary: !Ref ControlPlaneBoundary
+              - Sid: NeverCreateUsersOrKeys
+                Effect: Deny
+                Action:
+                  - iam:CreateAccessKey
+                  - iam:CreateUser
+                Resource: "*"
+              - Sid: NeverTouchTheDeployRoles
+                Effect: Deny
+                Action: iam:*
+                Resource:
+                  - !Sub arn:${AWS::Partition}:iam::${AWS::AccountId}:role/babulus-control-plane-*
+                  - !Sub arn:${AWS::Partition}:iam::${AWS::AccountId}:policy/babulus-control-plane-*
+              - Sid: NeverTouchThisDeployStack
+                Effect: Deny
+                Action: cloudformation:*
+                Resource: !Sub arn:${AWS::Partition}:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/${AWS::StackName}/*
+              - Sid: NeverLaunchInstances
+                Effect: Deny
+                Action: ec2:RunInstances
+                Resource: "*"
+              - Sid: NeverTouchAmplify
+                Effect: Deny
+                Action: amplify:*
+                Resource: "*"
+              - Sid: NeverTouchProtectedUserPool
+                Effect: Deny
+                Action: "*"
+                Resource: !Ref ProtectedUserPoolArn
+
+  ControlPlaneDeployRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: babulus-control-plane-deploy
+      Description: Deploys BabulusControlPlane from GitHub Actions on main, only through the narrowed execution role
+      MaxSessionDuration: 7200
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Federated: !Ref OidcProviderArn
+            Action: sts:AssumeRoleWithWebIdentity
+            Condition:
+              StringEquals:
+                token.actions.githubusercontent.com:aud: sts.amazonaws.com
+                token.actions.githubusercontent.com:sub: !Sub repo:AnthusAI@${GitHubOwnerId}/Babulus@${GitHubRepoId}:ref:refs/heads/main
+      Policies:
+        - PolicyName: deploy-control-plane-stack
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Sid: ControlPlaneStackChangeSets
+                Effect: Allow
+                Action:
+                  - cloudformation:DeleteChangeSet
+                  - cloudformation:DescribeChangeSet
+                  - cloudformation:DescribeStackEvents
+                  - cloudformation:DescribeStacks
+                  - cloudformation:ExecuteChangeSet
+                  - cloudformation:GetTemplate
+                  - cloudformation:GetTemplateSummary
+                Resource:
+                  - !Sub arn:${AWS::Partition}:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/BabulusControlPlane/*
+                  - !Sub arn:${AWS::Partition}:cloudformation:${AWS::Region}:${AWS::AccountId}:changeSet/cdk-deploy-change-set/*
+              - Sid: CreateChangeSetOnlyThroughTheExecRole
+                Effect: Allow
+                Action: cloudformation:CreateChangeSet
+                Resource: !Sub arn:${AWS::Partition}:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/BabulusControlPlane/*
+                Condition:
+                  StringEquals:
+                    cloudformation:RoleArn: !GetAtt ControlPlaneCfnExecRole.Arn
+              - Sid: PassOnlyTheExecRoleToCloudFormation
+                Effect: Allow
+                Action: iam:PassRole
+                Resource: !GetAtt ControlPlaneCfnExecRole.Arn
+                Condition:
+                  StringEquals:
+                    iam:PassedToService: cloudformation.amazonaws.com
+              - Sid: StageAssetsUnderOnePrefix
+                Effect: Allow
+                Action:
+                  - s3:GetObject
+                  - s3:PutObject
+                Resource: !Sub arn:${AWS::Partition}:s3:::${BootstrapBucketName}/babulus-control-plane/*
+              - Sid: ListStagingBucket
+                Effect: Allow
+                Action:
+                  - s3:GetBucketLocation
+                  - s3:ListBucket
+                Resource: !Sub arn:${AWS::Partition}:s3:::${BootstrapBucketName}
+              - !If
+                - HasBootstrapBucketKey
+                - Sid: EncryptStagedAssets
+                  Effect: Allow
+                  Action:
+                    - kms:Decrypt
+                    - kms:DescribeKey
+                    - kms:GenerateDataKey
+                  Resource: !Ref BootstrapBucketKmsKeyArn
+                  Condition:
+                    StringEquals:
+                      kms:ViaService: !Sub s3.${AWS::Region}.amazonaws.com
+                - !Ref AWS::NoValue
+              - Sid: ReadDeployContext
+                Effect: Allow
+                Action: ssm:GetParameter
+                Resource: !Sub arn:${AWS::Partition}:ssm:${AWS::Region}:${AWS::AccountId}:parameter/babulus/control-plane/deploy-context
+              - Sid: DecryptDeployContextThroughSsmOnly
+                Effect: Allow
+                Action: kms:Decrypt
+                Resource: "*"
+                Condition:
+                  StringEquals:
+                    kms:ViaService: !Sub ssm.${AWS::Region}.amazonaws.com
+              - Sid: AvailabilityZoneLookup
+                Effect: Allow
+                Action: ec2:DescribeAvailabilityZones
+                Resource: "*"
+              - Sid: WorkerImageLogin
+                Effect: Allow
+                Action: ecr:GetAuthorizationToken
+                Resource: "*"
+              - Sid: WorkerImagePush
+                Effect: Allow
+                Action:
+                  - ecr:BatchCheckLayerAvailability
+                  - ecr:BatchGetImage
+                  - ecr:CompleteLayerUpload
+                  - ecr:GetDownloadUrlForLayer
+                  - ecr:InitiateLayerUpload
+                  - ecr:PutImage
+                  - ecr:UploadLayerPart
+                Resource: !Sub arn:${AWS::Partition}:ecr:${AWS::Region}:${AWS::AccountId}:repository/babulus-worker
+              - Sid: NeverAssumeCdkBootstrapRoles
+                Effect: Deny
+                Action: sts:AssumeRole
+                Resource: !Sub arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-*
+
+Outputs:
+  DeployRoleArn:
+    Description: Set as the repository variable CONTROL_PLANE_DEPLOY_ROLE_ARN
+    Value: !GetAtt ControlPlaneDeployRole.Arn
+  CfnExecRoleArn:
+    Description: Passed to cdk deploy --role-arn
+    Value: !GetAtt ControlPlaneCfnExecRole.Arn
+  BoundaryArn:
+    Value: !Ref ControlPlaneBoundary

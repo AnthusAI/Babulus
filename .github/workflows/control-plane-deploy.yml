@@ -1,0 +1,156 @@
+name: Control plane deploy
+
+# Deploys the BabulusControlPlane stack through the narrowed roles defined in
+# infra/control-plane-deploy/template.yml. It never uses the CDK bootstrap
+# roles. Until the repository variable CONTROL_PLANE_DEPLOY_ROLE_ARN is set,
+# every job here is skipped, so merging this file changes nothing.
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "packages/control-plane/**"
+      - "infra/control-plane-deploy/**"
+      - ".github/workflows/control-plane-deploy.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: control-plane-deploy
+  cancel-in-progress: false
+
+env:
+  CI_CHECK_NAME: Speech and control plane checks
+  CDK_CLI_VERSION: "2.1147.0"
+  AWS_REGION: us-east-1
+
+jobs:
+  wait-for-ci:
+    name: Wait for CI on this commit
+    if: ${{ github.ref == 'refs/heads/main' && vars.CONTROL_PLANE_DEPLOY_ROLE_ARN != '' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      checks: read
+      contents: read
+    steps:
+      - name: Require a passing control plane check
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+          COMMIT_SHA: ${{ github.sha }}
+        run: |
+          deadline=$((SECONDS + 3000))
+          while true; do
+            states=$(gh api "repos/${REPOSITORY}/commits/${COMMIT_SHA}/check-runs?per_page=100" \
+              --jq "[.check_runs[] | select(.name == \"${CI_CHECK_NAME}\") | .status + \":\" + (.conclusion // \"none\")] | join(\",\")")
+            echo "State of '${CI_CHECK_NAME}' on ${COMMIT_SHA}: ${states:-no checks reported}"
+            case "${states}" in
+              completed:success)
+                exit 0
+                ;;
+              completed:*)
+                echo "CI did not pass; not deploying."
+                exit 1
+                ;;
+            esac
+            if [ "${SECONDS}" -ge "${deadline}" ]; then
+              echo "No passing '${CI_CHECK_NAME}' result appeared in time; not deploying."
+              exit 1
+            fi
+            sleep 30
+          done
+
+  deploy:
+    name: Deploy BabulusControlPlane
+    needs: wait-for-ci
+    if: ${{ github.ref == 'refs/heads/main' && vars.CONTROL_PLANE_DEPLOY_ROLE_ARN != '' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+      - name: Install control plane libraries
+        working-directory: packages/control-plane
+        run: python -m pip install -r requirements.txt
+      - name: Install the CDK command line
+        run: npm install --global "aws-cdk@${CDK_CLI_VERSION}"
+      - name: Sign in to AWS through OIDC as the narrowed deploy role
+        uses: aws-actions/configure-aws-credentials@v4.0.2
+        with:
+          role-to-assume: ${{ vars.CONTROL_PLANE_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+          role-duration-seconds: 7200
+      - name: Deploy through the narrowed execution role
+        env:
+          DEPLOY_ROLE_ARN: ${{ vars.CONTROL_PLANE_DEPLOY_ROLE_ARN }}
+        working-directory: packages/control-plane
+        run: |
+          python - <<'PYTHON'
+          import json
+          import os
+          import subprocess
+          import sys
+
+          role_arn = os.environ["DEPLOY_ROLE_ARN"]
+          exec_role_arn = role_arn.rsplit("/", 1)[0] + "/babulus-control-plane-cfn-exec"
+          fetched = subprocess.run(
+              [
+                  "aws", "ssm", "get-parameter",
+                  "--name", "/babulus/control-plane/deploy-context",
+                  "--with-decryption",
+                  "--query", "Parameter.Value",
+                  "--output", "text",
+              ],
+              capture_output=True,
+              text=True,
+          )
+          if fetched.returncode != 0:
+              print("Could not read the deploy context parameter.")
+              sys.exit(1)
+          try:
+              context_values = json.loads(fetched.stdout)
+          except ValueError:
+              print("The deploy context parameter is not valid JSON.")
+              sys.exit(1)
+          if not isinstance(context_values, dict):
+              print("The deploy context parameter must be a JSON object.")
+              sys.exit(1)
+
+          context_arguments = []
+          for key, value in context_values.items():
+              if isinstance(value, bool):
+                  text = "true" if value else "false"
+              elif isinstance(value, str):
+                  text = value
+              else:
+                  text = json.dumps(value)
+              for line in {text, *text.splitlines()}:
+                  if line.strip():
+                      print(f"::add-mask::{line}")
+              context_arguments += ["-c", f"{key}={text}"]
+
+          command = [
+              "cdk", "deploy", "BabulusControlPlane",
+              "--role-arn", exec_role_arn,
+              "--require-approval", "never",
+              "--output", os.path.join(os.environ["RUNNER_TEMP"], "control-plane-cdk-out"),
+              "-c", "deploy_mode=narrowed",
+              *context_arguments,
+          ]
+          sys.exit(subprocess.run(command).returncode)
+          PYTHON
