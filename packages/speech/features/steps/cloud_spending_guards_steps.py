@@ -201,7 +201,7 @@ def step_batch_end_unreachable(context) -> None:
 def _batch_event(context, status: str, started, stopped) -> dict:
     detail = {
         "status": status,
-        "jobName": f"auritus-{CONTENT_HASH}",
+        "jobName": f"babulus-{CONTENT_HASH}",
         "jobQueue": "arn:aws:batch:us-east-1:111122223333:job-queue/spec-queue",
     }
     if started is not None:

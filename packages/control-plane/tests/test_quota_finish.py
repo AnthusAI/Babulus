@@ -53,7 +53,7 @@ def test_every_attempt_of_a_retried_job_counts(finisher) -> None:
 
 
 def test_events_that_are_not_ours_or_not_final_are_ignored(finisher) -> None:
-    running = {"detail": {"status": "RUNNING", "jobName": "auritus-abc"}}
+    running = {"detail": {"status": "RUNNING", "jobName": "babulus-abc"}}
     other = {"detail": {"status": "FAILED", "jobName": "somebody-else-abc"}}
     assert finisher.handler(running, None) == {"result": "ignored"}
     assert finisher.handler(other, None) == {"result": "ignored"}

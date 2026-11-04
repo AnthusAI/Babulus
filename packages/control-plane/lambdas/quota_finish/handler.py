@@ -33,7 +33,7 @@ from babulus_spend_guards import (
 _jobs = boto3.resource("dynamodb").Table(os.environ["JOBS_TABLE"])
 
 QUOTA_ITEM_KIND = "aws.batch.vcpu_seconds"
-JOB_NAME_PREFIX = os.environ.get("BATCH_JOB_NAME_PREFIX", "auritus-")
+JOB_NAME_PREFIX = os.environ.get("BATCH_JOB_NAME_PREFIX", "babulus-")
 _NAMESPACE = uuid.uuid5(uuid.NAMESPACE_URL, "babulus:quota-operations")
 
 

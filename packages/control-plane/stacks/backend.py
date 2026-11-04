@@ -226,7 +226,7 @@ class BackendStack(Stack):
 
         jobs = dynamodb.Table(
             self,
-            "AuritusJobs",
+            "BabulusJobs",
             partition_key=dynamodb.Attribute(
                 name="content_hash",
                 type=dynamodb.AttributeType.STRING,
@@ -266,7 +266,7 @@ class BackendStack(Stack):
 
         sites = dynamodb.Table(
             self,
-            "AuritusSites",
+            "BabulusSites",
             partition_key=dynamodb.Attribute(
                 name="site_id",
                 type=dynamodb.AttributeType.STRING,
@@ -285,7 +285,7 @@ class BackendStack(Stack):
 
         alerts = dynamodb.Table(
             self,
-            "AuritusAlerts",
+            "BabulusAlerts",
             partition_key=dynamodb.Attribute(
                 name="alert_key",
                 type=dynamodb.AttributeType.STRING,
@@ -310,13 +310,13 @@ class BackendStack(Stack):
         # Deliberately NO time_to_live_attribute here, unlike every other
         # table in this stack: cost history must outlive the job records it
         # is derived from. A future job-retention story (auritus-e45264, not
-        # yet implemented) will expire AuritusJobs rows via TTL; if rollups
+        # yet implemented) will expire BabulusJobs rows via TTL; if rollups
         # also had a TTL, that retention pass would silently destroy the
         # accounting this story exists to provide. Rollups are retained
         # indefinitely by design.
         cost_rollups = dynamodb.Table(
             self,
-            "AuritusCostRollups",
+            "BabulusCostRollups",
             partition_key=dynamodb.Attribute(
                 name="site_id",
                 type=dynamodb.AttributeType.STRING,
@@ -346,7 +346,7 @@ class BackendStack(Stack):
         # job have cost if the Batch fallback had won the race instead".
         #
         # Partition key ONLY (tts_backend, a handful of distinct values
-        # forever) -- no sort key. This is NOT shaped like AuritusCostRollups
+        # forever) -- no sort key. This is NOT shaped like BabulusCostRollups
         # (site_id, date): that table aggregates a growing time series meant
         # to be queried by date range. This table holds one row per TTS
         # backend, updated forever, with no date dimension at all -- the
@@ -369,11 +369,11 @@ class BackendStack(Stack):
         # this trade-off is used and documented again in code.
         #
         # PAY_PER_REQUEST, RETAIN, no TTL: same reasoning as
-        # AuritusCostRollups above -- this is a permanent running statistic,
+        # BabulusCostRollups above -- this is a permanent running statistic,
         # not job-record-derived data subject to any future retention pass.
         backend_timing = dynamodb.Table(
             self,
-            "AuritusBackendTiming",
+            "BabulusBackendTiming",
             partition_key=dynamodb.Attribute(
                 name="tts_backend",
                 type=dynamodb.AttributeType.STRING,
@@ -402,7 +402,7 @@ class BackendStack(Stack):
         )
         audio_bucket = s3.Bucket(
             self,
-            "AuritusAudio",
+            "BabulusAudio",
             block_public_access=s3.BlockPublicAccess.BLOCK_ALL,
             encryption=s3.BucketEncryption.S3_MANAGED,
             enforce_ssl=True,
@@ -413,7 +413,7 @@ class BackendStack(Stack):
 
         distribution = cloudfront.Distribution(
             self,
-            "AuritusAudioCdn",
+            "BabulusAudioCdn",
             default_behavior=cloudfront.BehaviorOptions(
                 origin=origins.S3BucketOrigin(audio_bucket),
                 viewer_protocol_policy=cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
@@ -424,7 +424,7 @@ class BackendStack(Stack):
 
         user_pool = cognito.UserPool(
             self,
-            "AuritusUserPool",
+            "BabulusUserPool",
             self_sign_up_enabled=False,
             sign_in_aliases=cognito.SignInAliases(email=True),
             standard_attributes=cognito.StandardAttributes(
@@ -434,7 +434,8 @@ class BackendStack(Stack):
         )
 
         cognito_domain_prefix = (
-            self.node.try_get_context("cognito_domain_prefix") or "auritus-auth"
+            self.node.try_get_context("cognito_domain_prefix")
+            or "babulus-control-plane-auth"
         )
         user_pool.add_domain(
             "CognitoDomain",
@@ -484,7 +485,7 @@ class BackendStack(Stack):
 
         user_pool_client = cognito.UserPoolClient(
             self,
-            "AuritusCliClient",
+            "BabulusCliClient",
             user_pool=user_pool,
             generate_secret=False,
             access_token_validity=Duration.hours(1),
@@ -508,7 +509,6 @@ class BackendStack(Stack):
             ),
             supported_identity_providers=supported_idps,
             auth_flows=cognito.AuthFlow(
-                user_password=True,
                 user_srp=True,
             ),
         )
@@ -518,7 +518,7 @@ class BackendStack(Stack):
 
         web_console_client = cognito.UserPoolClient(
             self,
-            "AuritusWebConsoleClient",
+            "BabulusWebConsoleClient",
             user_pool=user_pool,
             generate_secret=False,
             access_token_validity=Duration.hours(1),
@@ -551,7 +551,6 @@ class BackendStack(Stack):
             ),
             supported_identity_providers=supported_idps,
             auth_flows=cognito.AuthFlow(
-                user_password=True,
                 user_srp=True,
             ),
         )
@@ -589,7 +588,7 @@ class BackendStack(Stack):
                 "ALLOWED_CLIENT_IDS": operator_client_ids,
                 "SES_FROM_ADDRESS": str(
                     self.node.try_get_context("alert_from_address")
-                    or "auritus@example.com"
+                    or "babulus@example.com"
                 ),
                 "ALERTS_TABLE": alerts.table_name,
                 "GPU_HOURLY_RATE_USD": str(gpu_hourly_rate_usd),
@@ -640,8 +639,8 @@ class BackendStack(Stack):
 
         http_api = apigwv2.HttpApi(
             self,
-            "AuritusApi",
-            api_name="auritus-api",
+            "BabulusApi",
+            api_name="babulus-api",
             cors_preflight=apigwv2.CorsPreflightOptions(
                 allow_headers=[
                     "Authorization",
@@ -669,7 +668,7 @@ class BackendStack(Stack):
         lambda_authorizer = apigwv2_auth.HttpLambdaAuthorizer(
             "OperatorAuthorizer",
             authorizer_fn,
-            authorizer_name="AuritusOperatorAuthorizer",
+            authorizer_name="BabulusOperatorAuthorizer",
             identity_source=["$request.header.Authorization"],
             response_types=[apigwv2_auth.HttpLambdaResponseType.SIMPLE],
         )
@@ -728,7 +727,7 @@ class BackendStack(Stack):
         worker_repo = ecr.Repository(
             self,
             "WorkerImageRepo",
-            repository_name="auritus-worker",
+            repository_name="babulus-worker",
             removal_policy=RemovalPolicy.RETAIN,
         )
         worker_image_tag = self.node.try_get_context("worker_image_tag") or "latest"
@@ -765,7 +764,7 @@ class BackendStack(Stack):
 
         vpc = ec2.Vpc(
             self,
-            "AuritusVpc",
+            "BabulusVpc",
             max_azs=2,
             nat_gateways=0,
             subnet_configuration=[
@@ -858,10 +857,10 @@ class BackendStack(Stack):
             tags=spend_tags,
         )
 
-        job_queue_name = "auritus-gpu"
+        job_queue_name = "babulus-gpu"
         batch.CfnJobQueue(
             self,
-            "AuritusJobQueueV2",
+            "BabulusJobQueueV2",
             job_queue_name=job_queue_name,
             priority=2,
             compute_environment_order=[
@@ -889,7 +888,7 @@ class BackendStack(Stack):
 
         job_def = batch.CfnJobDefinition(
             self,
-            "AuritusGpuJobDef",
+            "BabulusGpuJobDef",
             type="container",
             platform_capabilities=["EC2"],
             # Every job definition carries an attempt timeout, so a hung job
@@ -1139,7 +1138,7 @@ class BackendStack(Stack):
             self,
             "SubmitGpuJob",
             job_name=sfn.JsonPath.format(
-                "auritus-{}",
+                "babulus-{}",
                 sfn.JsonPath.string_at("$.content_hash"),
             ),
             job_definition_arn=job_def.ref,
@@ -1255,7 +1254,7 @@ class BackendStack(Stack):
 
         fallback = sfn.StateMachine(
             self,
-            "AuritusFallback",
+            "BabulusFallback",
             definition_body=sfn.DefinitionBody.from_chainable(definition),
             timeout=Duration.hours(2),
             logs=sfn.LogOptions(
@@ -1275,7 +1274,7 @@ class BackendStack(Stack):
         router_fn.add_environment("BATCH_JOB_QUEUE_NAME", job_queue_name)
         fallback.grant_start_execution(router_fn)
 
-        budget_topic = sns.Topic(self, "AuritusBudgetTopic")
+        budget_topic = sns.Topic(self, "BabulusBudgetTopic")
 
         # A fallback timer that fails or times out can strand a reserved job,
         # so either one raises an alarm that someone sees.

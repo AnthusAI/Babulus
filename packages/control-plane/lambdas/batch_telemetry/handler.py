@@ -34,12 +34,12 @@ This handler queries the ``claimed_by-index`` GSI on the jobs table for
 ``claimed_by = f"batch:{event['detail']['jobId']}"``.
 
 This handler also rolls up ``gpu_cost_usd`` and ``billed_seconds`` into the
-``AuritusCostRollups`` table (keyed by site/date), incrementing
+``BabulusCostRollups`` table (keyed by site/date), incrementing
 ``batch_job_count`` once per correlated Batch job. See ``_roll_up_gpu_cost``
 for the idempotency mechanism that keeps an at-least-once EventBridge
 redelivery from double-counting that cost.
 
-It also feeds ``billed_seconds`` into ``AuritusBackendTiming`` (keyed by
+It also feeds ``billed_seconds`` into ``BabulusBackendTiming`` (keyed by
 ``tts_backend``), a running AVERAGE -- not a true median -- of observed
 Batch billed seconds per backend. The router Lambda reads this average back
 to compute a local job's "avoided cost": what that job would have cost had
@@ -250,7 +250,7 @@ def _roll_up_backend_timing(
 ) -> None:
     """Idempotently fold this job's billed seconds into its backend average.
 
-    ``AuritusBackendTiming`` (partition key ``tts_backend``, no sort key)
+    ``BabulusBackendTiming`` (partition key ``tts_backend``, no sort key)
     holds one row per TTS backend, accumulating ``batch_billed_seconds_sum``
     and ``batch_sample_count`` forever via plain ``ADD``. The router Lambda
     divides them at read time to get an average -- deliberately an AVERAGE,
