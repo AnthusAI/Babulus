@@ -75,8 +75,8 @@ export function NoAccessScreen({ onSignOut }: { onSignOut: () => void }) {
         <ShieldOff className="h-6 w-6" aria-hidden="true" />
       </div>
       <Heading title="No access to Babulus">
-        You are signed in, but none of your Accounts has Babulus switched on for you. Ask an owner of your Account to turn
-        it on, then sign in again.
+        You are signed in, but none of your Accounts has Babulus switched on for you. An Anthus operator has to turn it on,
+        then you can sign in again.
       </Heading>
       <Button variant="secondary" className="w-full gap-2" onClick={onSignOut}>
         <LogOut className="h-4 w-4" aria-hidden="true" />
