@@ -500,16 +500,22 @@ def step_inline_policies_fit(context, limit: int) -> None:
             assert size <= limit, (key, size)
 
 
-@then("the execution role attaches its resource policy under the name the role cannot change")
+@then(
+    "the execution role attaches its resource policy under the name the role cannot change"
+)
 def step_exec_role_resource_policy(context) -> None:
     role = _role(context, "ControlPlaneCfnExecRole")
-    assert {"Ref": "ControlPlaneCfnExecResources"} in role["Properties"]["ManagedPolicyArns"]
+    assert {"Ref": "ControlPlaneCfnExecResources"} in role["Properties"][
+        "ManagedPolicyArns"
+    ]
     policy = _deploy_template(context)["ControlPlaneCfnExecResources"]
     name = policy["Properties"]["ManagedPolicyName"]
     assert name.startswith("babulus-control-plane-"), name
     denials = _statements_with_action(_role_statements(role, "Deny"), "iam:*")
     resources = [_text(r) for s in denials for r in _as_list(s["Resource"])]
-    assert any(r.endswith(":policy/babulus-control-plane-*") for r in resources), resources
+    assert any(
+        r.endswith(":policy/babulus-control-plane-*") for r in resources
+    ), resources
 
 
 @given("the deploy apply script is read")
@@ -537,7 +543,9 @@ def step_script_no_account_id(context) -> None:
     assert not ACCOUNT_ID_PATTERN.search(context.apply_script_text)
 
 
-@then("the script stops unless the signed in account is the one named on the command line")
+@then(
+    "the script stops unless the signed in account is the one named on the command line"
+)
 def step_script_checks_account(context) -> None:
     assert 'if [[ "${account}" != "${expected_account}" ]]' in context.apply_script_text
 
