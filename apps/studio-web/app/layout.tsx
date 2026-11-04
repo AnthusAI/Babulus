@@ -1,95 +1,116 @@
 import type { ReactNode } from "react";
 import "./globals.css";
-import {
-  Bebas_Neue,
-  Inter,
-  Montserrat,
-  Orbitron,
-  Oswald,
-  Playfair_Display,
-  Roboto_Slab,
-  Russo_One,
-  Source_Sans_3,
-  Varela_Round,
-} from "next/font/google";
+import localFont from "next/font/local";
 import { configureAmplify } from "../lib/amplify-config.js";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ThemeConfigProvider } from "@/lib/theme-config";
 import { SettingsProvider } from "@/lib/settings-context";
 import { SettingsDialog } from "@/components/settings-dialog";
 
-const fontHeading = Bebas_Neue({
-  subsets: ["latin"],
-  weight: "400",
+// Fonts are self-hosted (latin subset, from Fontsource) so the build never fetches them from Google.
+// Russo One comes from the @fontsource/russo-one package, so its licence ships unedited.
+const fontHeading = localFont({
+  src: [
+    { path: "./fonts/bebas-neue/bebas-neue-latin-400-normal.woff2", weight: "400", style: "normal" },
+  ],
   display: "swap",
   variable: "--font-heading",
 });
 
-const fontBody = Montserrat({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+const fontBody = localFont({
+  src: [
+    { path: "./fonts/montserrat/montserrat-latin-400-normal.woff2", weight: "400", style: "normal" },
+    { path: "./fonts/montserrat/montserrat-latin-500-normal.woff2", weight: "500", style: "normal" },
+    { path: "./fonts/montserrat/montserrat-latin-600-normal.woff2", weight: "600", style: "normal" },
+    { path: "./fonts/montserrat/montserrat-latin-700-normal.woff2", weight: "700", style: "normal" },
+  ],
   display: "swap",
   variable: "--font-body",
 });
 
-const fontPreviewSans = Inter({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
+const fontPreviewSans = localFont({
+  src: [
+    { path: "./fonts/inter/inter-latin-400-normal.woff2", weight: "400", style: "normal" },
+    { path: "./fonts/inter/inter-latin-500-normal.woff2", weight: "500", style: "normal" },
+    { path: "./fonts/inter/inter-latin-600-normal.woff2", weight: "600", style: "normal" },
+    { path: "./fonts/inter/inter-latin-700-normal.woff2", weight: "700", style: "normal" },
+    { path: "./fonts/inter/inter-latin-800-normal.woff2", weight: "800", style: "normal" },
+  ],
   display: "swap",
   variable: "--font-preview-sans",
 });
 
-const fontPreviewHumanist = Source_Sans_3({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
+const fontPreviewHumanist = localFont({
+  src: [
+    { path: "./fonts/source-sans-3/source-sans-3-latin-400-normal.woff2", weight: "400", style: "normal" },
+    { path: "./fonts/source-sans-3/source-sans-3-latin-500-normal.woff2", weight: "500", style: "normal" },
+    { path: "./fonts/source-sans-3/source-sans-3-latin-600-normal.woff2", weight: "600", style: "normal" },
+    { path: "./fonts/source-sans-3/source-sans-3-latin-700-normal.woff2", weight: "700", style: "normal" },
+    { path: "./fonts/source-sans-3/source-sans-3-latin-800-normal.woff2", weight: "800", style: "normal" },
+  ],
   display: "swap",
   variable: "--font-preview-humanist",
 });
 
-const fontPreviewCondensed = Oswald({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+const fontPreviewCondensed = localFont({
+  src: [
+    { path: "./fonts/oswald/oswald-latin-400-normal.woff2", weight: "400", style: "normal" },
+    { path: "./fonts/oswald/oswald-latin-500-normal.woff2", weight: "500", style: "normal" },
+    { path: "./fonts/oswald/oswald-latin-600-normal.woff2", weight: "600", style: "normal" },
+    { path: "./fonts/oswald/oswald-latin-700-normal.woff2", weight: "700", style: "normal" },
+  ],
   display: "swap",
   variable: "--font-preview-condensed",
 });
 
-const fontPreviewDisplay = Bebas_Neue({
-  subsets: ["latin"],
-  weight: "400",
+const fontPreviewDisplay = localFont({
+  src: [
+    { path: "./fonts/bebas-neue/bebas-neue-latin-400-normal.woff2", weight: "400", style: "normal" },
+  ],
   display: "swap",
   variable: "--font-preview-display",
 });
 
-// Variable: Google Fonts intermittently answers multi-weight requests for these two with extensionless font URLs, which fail the Next.js build.
-const fontPreviewSerif = Playfair_Display({
-  subsets: ["latin"],
+// Variable fonts: one file covers the whole weight range.
+const fontPreviewSerif = localFont({
+  src: "./fonts/playfair-display/playfair-display-latin-wght-normal.woff2",
+  weight: "400 900",
+  style: "normal",
   display: "swap",
   variable: "--font-preview-serif",
 });
 
-const fontPreviewSlab = Roboto_Slab({
-  subsets: ["latin"],
+const fontPreviewSlab = localFont({
+  src: "./fonts/roboto-slab/roboto-slab-latin-wght-normal.woff2",
+  weight: "100 900",
+  style: "normal",
   display: "swap",
   variable: "--font-preview-slab",
 });
 
-const fontPreviewRounded = Varela_Round({
-  subsets: ["latin"],
-  weight: "400",
+const fontPreviewRounded = localFont({
+  src: [
+    { path: "./fonts/varela-round/varela-round-latin-400-normal.woff2", weight: "400", style: "normal" },
+  ],
   display: "swap",
   variable: "--font-preview-rounded",
 });
 
-const fontPreviewSciFi = Orbitron({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+const fontPreviewSciFi = localFont({
+  src: [
+    { path: "./fonts/orbitron/orbitron-latin-400-normal.woff2", weight: "400", style: "normal" },
+    { path: "./fonts/orbitron/orbitron-latin-500-normal.woff2", weight: "500", style: "normal" },
+    { path: "./fonts/orbitron/orbitron-latin-600-normal.woff2", weight: "600", style: "normal" },
+    { path: "./fonts/orbitron/orbitron-latin-700-normal.woff2", weight: "700", style: "normal" },
+  ],
   display: "swap",
   variable: "--font-preview-scifi",
 });
 
-const fontPreviewGaming = Russo_One({
-  subsets: ["latin"],
-  weight: "400",
+const fontPreviewGaming = localFont({
+  src: [
+    { path: "../../../node_modules/@fontsource/russo-one/files/russo-one-latin-400-normal.woff2", weight: "400", style: "normal" },
+  ],
   display: "swap",
   variable: "--font-preview-gaming",
 });
