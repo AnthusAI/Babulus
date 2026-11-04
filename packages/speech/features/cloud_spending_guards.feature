@@ -162,6 +162,36 @@ Feature: Cloud compute starts only after every spending guard passes
     Then exactly 1 Batch job is submitted
     And Prospectus received 1 reservation request
 
+  Scenario: A second timer arriving while the first is between reserving and claiming takes nothing and doesn't release the first one's hold
+    Two timers for the same attempt derive the same reservation and ceiling
+    lease. The first gate has reserved but not yet claimed the job when the
+    second arrives, and the second would be refused by the kill switch. It
+    must not touch the shared reservation, or the first gate would submit
+    Batch work against a hold that no longer exists.
+
+    Given a pending job with a fallback timer
+    And a second timer will arrive while the first is between reserving and claiming
+    And a Batch job that renews its claim every 120 seconds for 600 seconds and then finishes
+    When the fallback timer runs
+    Then the second timer was told to wait and took nothing
+    And Prospectus received 1 reservation request
+    And the reservation is still held
+    And exactly 1 Batch job is submitted
+    And the gate lock is clear
+
+  Scenario: A gate that crashed holding the lock doesn't block the next gate once it expires
+    The lock outlives the gate's own time limit, so a crashed gate holds the
+    job up only briefly. Its hold at Prospectus is not touched; the next
+    gate reuses the same IDs.
+
+    Given a pending job with a fallback timer
+    And a gate crashed holding the lock, which expires in 60 seconds
+    And a Batch job that renews its claim every 120 seconds for 600 seconds and then finishes
+    When the fallback timer runs
+    Then exactly 1 Batch job is submitted
+    And Prospectus received 1 reservation request
+    And the gate lock is clear
+
   Scenario: A job that keeps coming back stops after its allowed cloud attempts
     The operator can requeue a job as often as they like, but each cloud
     attempt is counted on the job and the count survives a requeue.

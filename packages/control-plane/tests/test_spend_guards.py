@@ -13,6 +13,7 @@ import sys
 import uuid
 from decimal import Decimal
 from typing import Any
+from unittest.mock import Mock
 
 import boto3
 import pytest
@@ -299,6 +300,37 @@ def test_a_ceiling_that_cannot_be_checked_is_a_refusal() -> None:
         with pytest.raises(guards.GuardRefusal) as refusal:
             guards.SpendCeiling(table, low, limits).acquire("x", Decimal(1), NOW, 60)
     assert refusal.value.reason == "ceiling_unavailable"
+
+
+@pytest.mark.parametrize(
+    ("code", "reason"),
+    [
+        ("TransactionConflict", "ceiling_unavailable"),
+        ("ConditionalCheckFailed", "ceiling_reached"),
+    ],
+)
+def test_a_transaction_conflict_is_not_reported_as_no_room(
+    code: str, reason: str
+) -> None:
+    from botocore.exceptions import ClientError
+
+    low = Mock()
+    low.transact_write_items.side_effect = ClientError(
+        {
+            "Error": {"Code": "TransactionCanceledException", "Message": "x"},
+            "CancellationReasons": [{"Code": code}],
+        },
+        "TransactWriteItems",
+    )
+    table = Mock()
+    table.name = "ceiling"
+    table.get_item.return_value = {}
+    limits = guards.CeilingLimits(
+        Decimal(10), Decimal(25), Decimal(60), Decimal("0.001")
+    )
+    with pytest.raises(guards.GuardRefusal) as refusal:
+        guards.SpendCeiling(table, low, limits).acquire("x", Decimal(1), NOW, 60)
+    assert refusal.value.reason == reason
 
 
 def test_the_estimate_is_the_rate_times_the_most_the_job_can_run() -> None:

@@ -382,6 +382,11 @@ class SpendCeiling:
                 raise GuardRefusal("ceiling_unavailable") from exc
             if self._holds(lease_id):
                 return
+            reasons = exc.response.get("CancellationReasons") or []
+            if any(reason.get("Code") == "TransactionConflict" for reason in reasons):
+                # Another writer was mid-transaction: the ceiling could not be
+                # read, which is not the same as having no room.
+                raise GuardRefusal("ceiling_unavailable") from exc
             raise GuardRefusal("ceiling_reached") from exc
         except Exception as exc:  # noqa: BLE001
             raise GuardRefusal("ceiling_unavailable") from exc

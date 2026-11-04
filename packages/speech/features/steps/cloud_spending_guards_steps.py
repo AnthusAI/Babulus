@@ -128,6 +128,36 @@ def step_already_tried(context, count: int) -> None:
     )
 
 
+@given("a second timer will arrive while the first is between reserving and claiming")
+def step_second_timer_mid_flight(context) -> None:
+    # The second gate meets a kill switch that is on, the kind of refusal that
+    # used to make it release the reservation it shares with the first.
+    gate = context.guards.module
+    original = gate._kill_switch_off
+    queue = context.guards.batch.describe_job_queues
+
+    def wrapped(settings):
+        gate._kill_switch_off = original
+        queue.return_value = {"jobQueues": [{"state": "DISABLED"}]}
+        context.second_answer = gate.handler(dict(context.timer_input), None)
+        queue.return_value = {"jobQueues": [{"state": "ENABLED"}]}
+        return original(settings)
+
+    gate._kill_switch_off = wrapped
+
+
+@given("a gate crashed holding the lock, which expires in {seconds:d} seconds")
+def step_crashed_lock(context, seconds: int) -> None:
+    _jobs(context).update_item(
+        Key={"content_hash": CONTENT_HASH},
+        UpdateExpression="SET gate_lock_owner = :owner, gate_lock_expires = :expires",
+        ExpressionAttributeValues={
+            ":owner": "crashed-gate",
+            ":expires": Decimal(context.clock.now + seconds),
+        },
+    )
+
+
 @given("a pending video job with a fallback timer")
 def step_pending_video(context) -> None:
     _jobs(context).update_item(
@@ -268,6 +298,26 @@ def step_reservation_released(context) -> None:
     reservations = context.guards.prospectus.reservations
     assert reservations, "nothing was reserved"
     assert all(r["state"] == "released" for r in reservations.values()), reservations
+
+
+@then("the second timer was told to wait and took nothing")
+def step_second_waits(context) -> None:
+    answer = context.second_answer
+    assert answer["decision"] == "wait" and answer["reason"] == "contended", answer
+
+
+@then("the reservation is still held")
+def step_reservation_held(context) -> None:
+    reservations = context.guards.prospectus.reservations
+    assert [r["state"] for r in reservations.values()] == ["reserved"], reservations
+    assert context.guards.prospectus.routes("/release") == []
+
+
+@then("the gate lock is clear")
+def step_lock_clear(context) -> None:
+    item = _job(context)
+    assert "gate_lock_owner" not in item, item
+    assert "gate_lock_expires" not in item, item
 
 
 @then("the reservation was settled for {quantity:d} vCPU seconds")

@@ -57,6 +57,10 @@ QUOTA_ITEM_KIND = "aws.batch.vcpu_seconds"
 MAX_RESERVATION_SECONDS = 167 * 3600 - 1
 RESERVATION_MARGIN_SECONDS = 900
 SLOT_MARGIN_SECONDS = 1800
+# The per-attempt gate lock outlives the gate's own Lambda timeout (30
+# seconds in the stack), so a gate that crashed holding it cannot block the
+# next one for long, and a live gate never loses it mid-run.
+GATE_LOCK_SECONDS = 90
 _QUOTA_NAMESPACE = uuid.uuid5(uuid.NAMESPACE_URL, "babulus:quota-operations")
 
 
@@ -170,6 +174,12 @@ def handler(event: dict[str, Any], _context: Any) -> dict[str, Any]:
         return waiting
     assert item is not None
     attempt = int(item.get("cloud_attempts") or 0) + 1
+    # Two gates for one attempt derive the same reservation and lease IDs, so
+    # only one may work on it at a time. A gate that cannot take the lock
+    # takes nothing and releases nothing.
+    lock_owner = secrets.token_urlsafe(12)
+    if not _take_lock(content_hash, job_token, lock_owner, now):
+        return {"decision": "wait", "wait_seconds": 5, "reason": "contended"}
     taken: dict[str, Any] = {}
     try:
         settings = _Settings()
@@ -205,16 +215,20 @@ def handler(event: dict[str, Any], _context: Any) -> dict[str, Any]:
             account=account,
             reservation_id=reservation_id,
             lease_id=lease_id,
+            lock_owner=lock_owner,
         ):
             _give_back(taken, content_hash)
+            _release_lock(content_hash, lock_owner)
             return _explain_refusal(content_hash, job_token, now)
     except GuardRefusal as refusal:
         _give_back(taken, content_hash)
+        _release_lock(content_hash, lock_owner)
         _record_waiting_reason(content_hash, job_token, refusal.reason)
         return {"decision": "stop", "reason": refusal.reason}
     except Exception:  # noqa: BLE001 - anything unexpected means no compute
         _logger.exception("fallback gate guard check failed for %s", content_hash)
         _give_back(taken, content_hash)
+        _release_lock(content_hash, lock_owner)
         _record_waiting_reason(content_hash, job_token, "guards_unavailable")
         return {"decision": "stop", "reason": "guards_unavailable"}
     return {
@@ -236,8 +250,13 @@ def _claim(
     account: str,
     reservation_id: str,
     lease_id: str,
+    lock_owner: str,
 ) -> bool:
-    """The one conditional write that gives the job to the cloud."""
+    """The one conditional write that gives the job to the cloud.
+
+    It also clears the gate lock, and only succeeds while this gate still
+    holds it.
+    """
     try:
         _jobs.update_item(
             Key={"content_hash": content_hash},
@@ -249,13 +268,14 @@ def _claim(
                 "updated_at = :now_iso, cloud_attempts = :attempt, "
                 "quota_account = :account, quota_reservation_id = :reservation, "
                 "quota_state = :reserved, ceiling_lease = :lease "
-                "REMOVE waiting_reason ADD claim_generation :one"
+                "REMOVE waiting_reason, gate_lock_owner, gate_lock_expires "
+                "ADD claim_generation :one"
             ),
             # The whole guarantee: same attempt, and either nobody has the
             # job or the holder's claim has expired.
             ConditionExpression=(
                 "(attribute_not_exists(kind) OR kind = :speech) AND "
-                "job_token = :job_token AND "
+                "job_token = :job_token AND gate_lock_owner = :lock_owner AND "
                 "(attribute_not_exists(cloud_attempts) OR "
                 "cloud_attempts = :seen) AND "
                 "(#status = :pending OR "
@@ -280,6 +300,7 @@ def _claim(
                 ":reservation": reservation_id,
                 ":reserved": "reserved",
                 ":lease": lease_id,
+                ":lock_owner": lock_owner,
             },
         )
     except ClientError as exc:
@@ -287,6 +308,48 @@ def _claim(
             raise
         return False
     return True
+
+
+def _take_lock(content_hash: str, job_token: str, owner: str, now: int) -> bool:
+    """Take the per-attempt gate lock with one conditional write.
+
+    Succeeds only for the job's current attempt and only if nobody holds the
+    lock or the holder's lock has expired.
+    """
+    try:
+        _jobs.update_item(
+            Key={"content_hash": content_hash},
+            UpdateExpression="SET gate_lock_owner = :owner, gate_lock_expires = :expires",
+            ConditionExpression=(
+                "job_token = :job_token AND "
+                "(attribute_not_exists(gate_lock_expires) OR "
+                "gate_lock_expires < :now)"
+            ),
+            ExpressionAttributeValues={
+                ":owner": owner,
+                ":expires": Decimal(now + GATE_LOCK_SECONDS),
+                ":job_token": job_token,
+                ":now": Decimal(now),
+            },
+        )
+    except ClientError as exc:
+        if exc.response["Error"]["Code"] != "ConditionalCheckFailedException":
+            raise
+        return False
+    return True
+
+
+def _release_lock(content_hash: str, owner: str) -> None:
+    """Clear the gate lock if this gate still holds it."""
+    try:
+        _jobs.update_item(
+            Key={"content_hash": content_hash},
+            UpdateExpression="REMOVE gate_lock_owner, gate_lock_expires",
+            ConditionExpression="gate_lock_owner = :owner",
+            ExpressionAttributeValues={":owner": owner},
+        )
+    except ClientError:
+        pass  # lost or gone; it expires on its own
 
 
 def _give_back(taken: dict[str, Any], content_hash: str) -> None:
