@@ -92,7 +92,7 @@ def step_cpu_unused(context) -> None:
     assert "babulus-cpu" not in definition
     queues = context.template.find_resources("AWS::Batch::JobQueue")
     names = {q["Properties"]["JobQueueName"] for q in queues.values()}
-    assert names == {"auritus-gpu", "babulus-cpu"}, names
+    assert names == {"babulus-gpu", "babulus-cpu"}, names
 
 
 @then("the budget covers only resources with the spend tag")
@@ -122,7 +122,7 @@ def step_budget_queues(context) -> None:
     variables = _function(context.template, "BudgetGuardFn")["Properties"][
         "Environment"
     ]["Variables"]
-    assert variables["BATCH_JOB_QUEUE_NAMES"] == "auritus-gpu,babulus-cpu", variables
+    assert variables["BATCH_JOB_QUEUE_NAMES"] == "babulus-gpu,babulus-cpu", variables
 
 
 @then("there is no budget and the gate is not told the budget guard exists")

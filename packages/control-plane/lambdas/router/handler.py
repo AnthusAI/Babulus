@@ -501,7 +501,7 @@ def _compute_avoided_cost(
     A better basis: the running AVERAGE of real, observed Batch
     ``billed_seconds`` for the same ``tts_backend``, maintained by
     ``batch_telemetry``'s ``_roll_up_backend_timing`` in
-    ``AuritusBackendTiming``. This is deliberately an average, not a true
+    ``BabulusBackendTiming``. This is deliberately an average, not a true
     median -- see that function's docstring for the trade-off -- but it is
     still a far more defensible "typical Batch cost for this backend" than
     one local machine's own timing.
@@ -647,7 +647,7 @@ def _arm_fallback(
     try:
         _sfn.start_execution(
             stateMachineArn=FALLBACK_STATE_MACHINE_ARN,
-            name=f"auritus-{content_hash[:16]}-{token_digest}",
+            name=f"babulus-{content_hash[:16]}-{token_digest}",
             input=json.dumps(
                 {
                     "content_hash": content_hash,
@@ -1797,7 +1797,7 @@ def _alert_session(body: dict[str, Any]) -> dict[str, Any]:
             return _response(429, {"error": "rate_limited"})
         return _response(500, {"error": "rate_limit_failed"})
 
-    if not SES_FROM_ADDRESS or SES_FROM_ADDRESS == "auritus@example.com":
+    if not SES_FROM_ADDRESS or SES_FROM_ADDRESS == "babulus@example.com":
         return _response(200, {"sent": False, "reason": "ses_not_configured"})
     subject = (
         "Auritus worker session expiring soon"
@@ -1903,7 +1903,7 @@ def _get_admin_costs(
 ) -> dict[str, Any]:
     """Return daily cost rollups, optionally scoped to one site.
 
-    Reads only the pre-aggregated ``AuritusCostRollups`` table, written
+    Reads only the pre-aggregated ``BabulusCostRollups`` table, written
     incrementally by ``_mark_done``/``_mark_failed`` and by
     ``batch_telemetry`` on every job completion -- never the jobs table.
     See ``_get_admin_overview`` above for the defect class this
@@ -2338,7 +2338,7 @@ def _bulk_delete_admin_jobs(
     treated as "match everything".
 
     Matching strategy and its cost, spelled out because there is
-    deliberately NO index on ``site_id`` alone (see ``AuritusJobs`` in
+    deliberately NO index on ``site_id`` alone (see ``BabulusJobs`` in
     ``cdk/stacks/backend.py`` -- only ``status-created_at-index`` and
     ``claimed_by-index`` exist):
 

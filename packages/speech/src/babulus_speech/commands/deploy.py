@@ -22,7 +22,7 @@ def _repo_root() -> Path:
 
 @app.callback(invoke_without_command=True)
 def deploy(
-    stack: str = typer.Option("AuritusBackend", help="CDK stack name"),
+    stack: str = typer.Option("BabulusControlPlane", help="CDK stack name"),
     require_approval: str = typer.Option(
         "never", "--require-approval", help="CDK require-approval setting"
     ),

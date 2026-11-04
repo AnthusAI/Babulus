@@ -1,4 +1,4 @@
-"""Auritus CDK application entrypoint."""
+"""Babulus control plane CDK application entrypoint."""
 
 from __future__ import annotations
 
@@ -10,7 +10,7 @@ from stacks.backend import BackendStack
 app = cdk.App()
 BackendStack(
     app,
-    "AuritusBackend",
+    "BabulusControlPlane",
     env=cdk.Environment(
         account=app.node.try_get_context("account")
         or os.environ.get("CDK_DEFAULT_ACCOUNT"),

@@ -54,7 +54,7 @@ deploy), or run CDK directly instead of through the wrapper:
 
 ```bash
 cd cdk
-npx --yes aws-cdk@2 deploy AuritusBackend --context retention_days=90
+npx --yes aws-cdk@2 deploy BabulusControlPlane --context retention_days=90
 ```
 
 (`Makefile`'s `synth-cdk` target and `cli/src/auritus/commands/deploy.py` both

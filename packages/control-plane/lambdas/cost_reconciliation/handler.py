@@ -20,7 +20,7 @@ wrong would make every number this Lambda produces misleading:
    substantially larger effort than this story covers. This Lambda does
    NOT fabricate a per-site split of the actual cost. Instead, the
    account-wide actual cost and variance are written to one sentinel row
-   in the SAME ``AuritusCostRollups`` table used for real per-site rollups,
+   in the SAME ``BabulusCostRollups`` table used for real per-site rollups,
    keyed by the reserved ``site_id`` value ``"__account__"`` (real site ids
    are UUIDs minted by the router's ``_create_site``, so this string can
    never collide with a real site) and the real calendar ``date``.
@@ -32,7 +32,7 @@ wrong would make every number this Lambda produces misleading:
    CloudFront are all covered by the flat, already-modelled platform-cost
    estimate instead), not by a cost allocation tag scoped to this stack's
    resources specifically. That is correct ONLY if this AWS account runs
-   nothing but the Auritus ``AuritusBackend`` stack -- the single-dedicated-
+   nothing but the Auritus ``BabulusControlPlane`` stack -- the single-dedicated-
    account deployment model this project's own ``AGENTS.local.md``
    describes. Deployed into a shared/multi-tenant AWS account, this would
    silently attribute other workloads' Batch/EC2 spend to Auritus too. This
