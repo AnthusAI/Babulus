@@ -82,3 +82,18 @@ Feature: The control plane deploys through narrowed roles that cannot act outsid
     Given the narrowed deploy template is parsed
     Then the template text contains no twelve digit account id and no email address
     And no role in the template is allowed every action
+
+  Scenario: Every policy in the deploy template fits the limits IAM enforces
+    Given the narrowed deploy template is parsed
+    Then every managed policy in the template fits the 6144 character limit
+    And the inline policies of every role fit the 10240 character limit
+    And the execution role attaches its resource policy under the name the role cannot change
+
+  Scenario: The apply script builds well formed addresses and stops on the wrong account
+    Given the deploy apply script is read
+    Then the script runs under bash and has valid bash syntax
+    And no shell variable in the script is directly followed by a colon
+    And the script holds no twelve digit account id
+    And the script stops unless the signed in account is the one named on the command line
+    And the script selects the GitHub OIDC provider by name
+    And the script deletes the stack only from the ROLLBACK_COMPLETE state

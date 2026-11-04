@@ -47,17 +47,13 @@ fails or never reports. Runs are serialized and never cancelled midway.
 ## One-time apply order
 
 1. Review the template's permissions.
-2. Look up the numeric GitHub owner id and repository id, the ARN of the GitHub
-   OIDC provider that already exists in the account, the ARNs of the Cognito user
-   pools and the CloudFront distribution that must stay untouched, and the CDK bootstrap assets bucket name (and
-   its KMS key ARN if it uses a customer managed key).
-3. Create the deploy stack from `infra/control-plane-deploy/template.yml` with
-   those values as parameters: `OidcProviderArn`, `GitHubOwnerId`,
-   `GitHubRepoId`, `ProtectedUserPoolArns` (comma separated),
-   `ProtectedDistributionArn`, `BootstrapBucketName`, and
-   optionally `BootstrapBucketKmsKeyArn` and `GoogleOAuthSecretArn`. The
-   template needs the IAM capability that names its roles. Do not give it a
-   name that starts with `BabulusControlPlane`.
+2. Run `infra/control-plane-deploy/apply.sh <aws-profile> <account-id>` with an
+   administrator session. It stops unless that session is in the named account,
+   takes the template from `origin/main`, looks up the parameter values without
+   printing them, and applies the stack. It deletes the stack first only if a
+   failed create left it in `ROLLBACK_COMPLETE`. A later change to the template
+   needs the same run, because the pipeline cannot change its own roles.
+3. Check that the script ends by printing `CREATE_COMPLETE` or `UPDATE_COMPLETE`.
 4. Create the SecureString parameter `/babulus/control-plane/deploy-context`
    (see below).
 5. Set the repository variable `CONTROL_PLANE_DEPLOY_ROLE_ARN` to the
