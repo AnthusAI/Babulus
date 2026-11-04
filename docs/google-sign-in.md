@@ -36,6 +36,8 @@ People cannot create Accounts in the Studio. Operators create them in Prospectus
 
 Amplify gives branch settings to the build, not to the running server, so `amplify.yml` copies `BABULUS_APP_ORIGIN` and `BABULUS_PROSPECTUS_ACCOUNTS_ENDPOINT` into `.env.production` by name. A new setting the server reads needs adding there too.
 
+`babul.us` reaches the Studio through the CloudFront stack in `infra/babul-us-edge/template.yml`, because its DNS is in another AWS account and Amplify won't attach a domain across accounts without a manual approval. `BABULUS_APP_ORIGIN` is `https://babul.us`.
+
 The Studio's server runs as the role in `infra/studio-server-role/template.yml`, which is attached to the Amplify app's compute role setting. That role has `execute-api:Invoke` on the Prospectus accounts API, `ssm:GetParameter` on the one sealing
 parameter (its ARN is the output `sessionSecretParameterArn`), and `cognito-idp:CreateGroup`, `AdminAddUserToGroup`, `AdminRemoveUserFromGroup` and `AdminListGroupsForUser` on
 the Studio's user pool.

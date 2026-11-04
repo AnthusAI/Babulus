@@ -1,0 +1,81 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: >
+  The front door for babul.us: CloudFront in front of the Studio's Amplify
+  default domain. The domain and its DNS live in another AWS account, and Amplify
+  refuses to attach a domain across accounts without a manual approval.
+
+Parameters:
+  CertificateArn:
+    Type: String
+    Description: The babul.us certificate, in us-east-1, validated by DNS
+  AmplifyAppId:
+    Type: String
+    Description: The Studio's Amplify app
+  BranchName:
+    Type: String
+    Default: main
+    Description: Amplify branch the front door serves
+  PublicHost:
+    Type: String
+    Default: babul.us
+    Description: The public hostname
+  CachePolicyId:
+    Type: String
+    Description: ID of the AWS-managed CachingDisabled policy
+  OriginRequestPolicyId:
+    Type: String
+    Description: ID of the AWS-managed AllViewerExceptHostHeader policy
+
+Resources:
+  ForwardHostFunction:
+    Type: AWS::CloudFront::Function
+    Properties:
+      Name: !Sub "${AWS::StackName}-forward-host"
+      AutoPublish: true
+      FunctionConfig:
+        Comment: Tell the Studio which host the visitor used
+        Runtime: cloudfront-js-2.0
+      FunctionCode: |
+        function handler(event) {
+          var request = event.request;
+          request.headers['x-forwarded-host'] = { value: request.headers.host.value };
+          return request;
+        }
+
+  Distribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Enabled: true
+        Comment: !Sub "${PublicHost} front door"
+        Aliases:
+          - !Ref PublicHost
+        HttpVersion: http2and3
+        IPV6Enabled: true
+        ViewerCertificate:
+          AcmCertificateArn: !Ref CertificateArn
+          SslSupportMethod: sni-only
+          MinimumProtocolVersion: TLSv1.2_2021
+        Origins:
+          - Id: amplify
+            DomainName: !Sub "${BranchName}.${AmplifyAppId}.amplifyapp.com"
+            CustomOriginConfig:
+              OriginProtocolPolicy: https-only
+              OriginSSLProtocols:
+                - TLSv1.2
+        DefaultCacheBehavior:
+          TargetOriginId: amplify
+          ViewerProtocolPolicy: redirect-to-https
+          Compress: true
+          AllowedMethods: [GET, HEAD, OPTIONS, PUT, POST, PATCH, DELETE]
+          CachePolicyId: !Ref CachePolicyId
+          OriginRequestPolicyId: !Ref OriginRequestPolicyId
+          FunctionAssociations:
+            - EventType: viewer-request
+              FunctionARN: !GetAtt ForwardHostFunction.FunctionARN
+
+Outputs:
+  DistributionId:
+    Value: !Ref Distribution
+  DistributionDomainName:
+    Value: !GetAtt Distribution.DomainName
