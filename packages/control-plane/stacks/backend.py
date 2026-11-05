@@ -121,7 +121,7 @@ DEFAULT_RATE_CARD_VERSION = "v1"
 # job's full extracted narrated-page text is otherwise kept forever today
 # (a real cost and privacy liability). This codebase's existing posture is
 # conservative-by-default everywhere else: every DynamoDB table in this
-# stack uses RemovalPolicy.RETAIN, and audio_bucket is
+# stack uses RemovalPolicy.RETAIN_ON_UPDATE_OR_DELETE, and audio_bucket is
 # auto_delete_objects=False. Silently starting to delete operator data by
 # default on every existing deployment that upgrades to this change would
 # be a surprising and potentially harmful default, sprung on operators who
@@ -232,7 +232,7 @@ class BackendStack(Stack):
                 type=dynamodb.AttributeType.STRING,
             ),
             billing_mode=dynamodb.BillingMode.PAY_PER_REQUEST,
-            removal_policy=RemovalPolicy.RETAIN,
+            removal_policy=RemovalPolicy.RETAIN_ON_UPDATE_OR_DELETE,
             time_to_live_attribute="ttl",
         )
         jobs.add_global_secondary_index(
@@ -272,7 +272,7 @@ class BackendStack(Stack):
                 type=dynamodb.AttributeType.STRING,
             ),
             billing_mode=dynamodb.BillingMode.PAY_PER_REQUEST,
-            removal_policy=RemovalPolicy.RETAIN,
+            removal_policy=RemovalPolicy.RETAIN_ON_UPDATE_OR_DELETE,
         )
         sites.add_global_secondary_index(
             index_name="site_key-index",
@@ -291,7 +291,7 @@ class BackendStack(Stack):
                 type=dynamodb.AttributeType.STRING,
             ),
             billing_mode=dynamodb.BillingMode.PAY_PER_REQUEST,
-            removal_policy=RemovalPolicy.RETAIN,
+            removal_policy=RemovalPolicy.RETAIN_ON_UPDATE_OR_DELETE,
             time_to_live_attribute="ttl",
         )
 
@@ -326,7 +326,7 @@ class BackendStack(Stack):
                 type=dynamodb.AttributeType.STRING,
             ),
             billing_mode=dynamodb.BillingMode.PAY_PER_REQUEST,
-            removal_policy=RemovalPolicy.RETAIN,
+            removal_policy=RemovalPolicy.RETAIN_ON_UPDATE_OR_DELETE,
         )
         cost_rollups.add_global_secondary_index(
             index_name="date-site_id-index",
@@ -379,7 +379,7 @@ class BackendStack(Stack):
                 type=dynamodb.AttributeType.STRING,
             ),
             billing_mode=dynamodb.BillingMode.PAY_PER_REQUEST,
-            removal_policy=RemovalPolicy.RETAIN,
+            removal_policy=RemovalPolicy.RETAIN_ON_UPDATE_OR_DELETE,
         )
 
         # Lifecycle expiration mirrors the jobs table's ttl retention window
@@ -406,7 +406,7 @@ class BackendStack(Stack):
             block_public_access=s3.BlockPublicAccess.BLOCK_ALL,
             encryption=s3.BucketEncryption.S3_MANAGED,
             enforce_ssl=True,
-            removal_policy=RemovalPolicy.RETAIN,
+            removal_policy=RemovalPolicy.RETAIN_ON_UPDATE_OR_DELETE,
             auto_delete_objects=False,
             lifecycle_rules=lifecycle_rules,
         )
@@ -728,7 +728,7 @@ class BackendStack(Stack):
             self,
             "WorkerImageRepo",
             repository_name="babulus-worker",
-            removal_policy=RemovalPolicy.RETAIN,
+            removal_policy=RemovalPolicy.RETAIN_ON_UPDATE_OR_DELETE,
         )
         worker_image_tag = self.node.try_get_context("worker_image_tag") or "latest"
         worker_image_uri = f"{worker_repo.repository_uri}:{worker_image_tag}"
@@ -964,7 +964,7 @@ class BackendStack(Stack):
                 name="ledger_key", type=dynamodb.AttributeType.STRING
             ),
             billing_mode=dynamodb.BillingMode.PAY_PER_REQUEST,
-            removal_policy=RemovalPolicy.RETAIN,
+            removal_policy=RemovalPolicy.RETAIN_ON_UPDATE_OR_DELETE,
         )
 
         # Deployment settings for the guards. Nothing here has a default in
