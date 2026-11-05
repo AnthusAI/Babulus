@@ -105,6 +105,12 @@ Feature: The control plane deploys through narrowed roles that cannot act outsid
     Given the control plane deploy workflow is read
     Then a failed deploy names the bootstrap command and the setup guide
 
+  Scenario: A deploy warns when the roles are behind the template in the repository
+    Given the control plane deploy workflow is read
+    Then the workflow warns about out of date roles before it deploys and does not stop for it
+    Given the narrowed deploy template is parsed
+    Then the deploy role can do nothing to its own roles stack but read its template
+
   Scenario: No policy repeats a statement id
     Given the narrowed deploy template is parsed
     Then no policy in the template repeats a statement id

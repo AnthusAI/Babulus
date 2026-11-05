@@ -95,6 +95,32 @@ jobs:
           role-to-assume: ${{ vars.CONTROL_PLANE_DEPLOY_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION }}
           role-duration-seconds: 7200
+      - name: Warn if the deploy roles are out of date
+        run: |
+          python - <<'PYTHON'
+          import subprocess
+
+          deployed = subprocess.run(
+              [
+                  "aws", "cloudformation", "get-template",
+                  "--stack-name", "babulus-control-plane-deploy",
+                  "--template-stage", "Original",
+                  "--query", "TemplateBody", "--output", "text",
+              ],
+              capture_output=True,
+              text=True,
+          )
+          with open("infra/control-plane-deploy/template.yml", encoding="utf-8") as template:
+              current = template.read()
+          if deployed.returncode != 0:
+              print("::warning::Could not read the deployed roles template, so its age is unknown.")
+          elif deployed.stdout.strip() != current.strip():
+              print(
+                  "::warning::The deploy roles are out of date. A person runs "
+                  "infra/control-plane-deploy/bootstrap.sh. See docs/new-account-setup.md."
+              )
+          PYTHON
+
       - name: Deploy through the narrowed execution role
         env:
           DEPLOY_ROLE_ARN: ${{ vars.CONTROL_PLANE_DEPLOY_ROLE_ARN }}
