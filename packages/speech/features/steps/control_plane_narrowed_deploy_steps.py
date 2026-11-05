@@ -32,6 +32,9 @@ SYNTHESIZE_APP_SCRIPT = (
     "assembly = control_plane_app.app.synth()\n"
     "print(json.dumps(assembly.stacks[0].template))\n"
 )
+DEFAULT_APPLY_SCRIPT = REPOSITORY_ROOT / "infra" / "control-plane-deploy" / "apply.sh"
+MANAGED_POLICY_LIMIT = 6144
+INLINE_POLICY_LIMIT = 10240
 ACCOUNT_ID_PATTERN = re.compile(r"\b\d{12}\b")
 EMAIL_PATTERN = re.compile(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+\.[A-Za-z]{2,}")
 
@@ -93,6 +96,25 @@ def _role_statements(role: dict, effect: str) -> list[dict]:
     for document in _role_policy_documents(role):
         found.extend(_statements(document, effect))
     return found
+
+
+def _rendered(value: Any) -> Any:
+    """Stand in for intrinsics with values at least as long as the real ones."""
+    if isinstance(value, dict):
+        if "Ref" in value:
+            return "x" * 300
+        if "Fn::Sub" in value:
+            return re.sub(r"\$\{[^}]+\}", "x" * 20, value["Fn::Sub"])
+        if "Fn::If" in value:
+            return _rendered(value["Fn::If"][1])
+        return {key: _rendered(item) for key, item in value.items()}
+    if isinstance(value, list):
+        return [_rendered(item) for item in value]
+    return value
+
+
+def _policy_size(policy_document: dict) -> int:
+    return len(json.dumps(_rendered(policy_document), separators=(",", ":")))
 
 
 def _deploy_template(context) -> dict:
@@ -370,10 +392,11 @@ def step_no_template_role_allows_everything(context) -> None:
         for statement in _role_statements(_role(context, key), "Allow"):
             for action in _statement_actions(statement):
                 assert not _granting_everything(action), (key, action)
-    boundary = _deploy_template(context)["ControlPlaneBoundary"]
-    for statement in _statements(boundary["Properties"]["PolicyDocument"], "Allow"):
-        for action in _statement_actions(statement):
-            assert not _granting_everything(action), action
+    for key in ("ControlPlaneBoundary", "ControlPlaneCfnExecResources"):
+        policy = _deploy_template(context)[key]
+        for statement in _statements(policy["Properties"]["PolicyDocument"], "Allow"):
+            for action in _statement_actions(statement):
+                assert not _granting_everything(action), action
 
 
 @then(
@@ -457,3 +480,85 @@ def step_minimum_mask_length(context) -> None:
     guard = re.search(r"if len\(line\.strip\(\)\) >= 4:", text)
     mask_at = text.find("::add-mask::")
     assert guard and guard.start() < mask_at
+
+
+@then("every managed policy in the template fits the {limit:d} character limit")
+def step_managed_policies_fit(context, limit: int) -> None:
+    assert limit == MANAGED_POLICY_LIMIT
+    for key, resource in _deploy_template(context).items():
+        if resource["Type"] == "AWS::IAM::ManagedPolicy":
+            size = _policy_size(resource["Properties"]["PolicyDocument"])
+            assert size <= limit, (key, size)
+
+
+@then("the inline policies of every role fit the {limit:d} character limit")
+def step_inline_policies_fit(context, limit: int) -> None:
+    assert limit == INLINE_POLICY_LIMIT
+    for key, resource in _deploy_template(context).items():
+        if resource["Type"] == "AWS::IAM::Role":
+            size = sum(_policy_size(d) for d in _role_policy_documents(resource))
+            assert size <= limit, (key, size)
+
+
+@then(
+    "the execution role attaches its resource policy under the name the role cannot change"
+)
+def step_exec_role_resource_policy(context) -> None:
+    role = _role(context, "ControlPlaneCfnExecRole")
+    assert {"Ref": "ControlPlaneCfnExecResources"} in role["Properties"][
+        "ManagedPolicyArns"
+    ]
+    policy = _deploy_template(context)["ControlPlaneCfnExecResources"]
+    name = policy["Properties"]["ManagedPolicyName"]
+    assert name.startswith("babulus-control-plane-"), name
+    denials = _statements_with_action(_role_statements(role, "Deny"), "iam:*")
+    resources = [_text(r) for s in denials for r in _as_list(s["Resource"])]
+    assert any(
+        r.endswith(":policy/babulus-control-plane-*") for r in resources
+    ), resources
+
+
+@given("the deploy apply script is read")
+def step_read_apply_script(context) -> None:
+    context.apply_script_path = Path(
+        context.config.userdata.get("deploy_apply_script", str(DEFAULT_APPLY_SCRIPT))
+    )
+    context.apply_script_text = context.apply_script_path.read_text(encoding="utf-8")
+
+
+@then("the script runs under bash and has valid bash syntax")
+def step_script_is_bash(context) -> None:
+    assert context.apply_script_text.startswith("#!/usr/bin/env bash\n")
+    subprocess.run(["bash", "-n", str(context.apply_script_path)], check=True)
+
+
+@then("no shell variable in the script is directly followed by a colon")
+def step_script_no_variable_colon(context) -> None:
+    found = re.findall(r"\$[A-Za-z_][A-Za-z0-9_]*:", context.apply_script_text)
+    assert not found, found
+
+
+@then("the script holds no twelve digit account id")
+def step_script_no_account_id(context) -> None:
+    assert not ACCOUNT_ID_PATTERN.search(context.apply_script_text)
+
+
+@then(
+    "the script stops unless the signed in account is the one named on the command line"
+)
+def step_script_checks_account(context) -> None:
+    assert 'if [[ "${account}" != "${expected_account}" ]]' in context.apply_script_text
+
+
+@then("the script selects the GitHub OIDC provider by name")
+def step_script_selects_provider(context) -> None:
+    assert "token.actions.githubusercontent.com" in context.apply_script_text
+    assert "OpenIDConnectProviderList[0]" not in context.apply_script_text
+
+
+@then("the script deletes the stack only from the ROLLBACK_COMPLETE state")
+def step_script_delete_guard(context) -> None:
+    text = context.apply_script_text
+    guard = text.index('if [[ "${status}" == "ROLLBACK_COMPLETE" ]]')
+    assert text.count("delete-stack") == 1
+    assert guard < text.index("delete-stack") < text.index("\nfi", guard)
