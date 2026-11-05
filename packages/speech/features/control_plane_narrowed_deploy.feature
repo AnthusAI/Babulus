@@ -89,14 +89,25 @@ Feature: The control plane deploys through narrowed roles that cannot act outsid
     And the inline policies of every role fit the 10240 character limit
     And the execution role attaches its resource policy under the name the role cannot change
 
-  Scenario: The apply script builds well formed addresses and stops on the wrong account
-    Given the deploy apply script is read
+  Scenario: The bootstrap script builds well formed addresses and stops on the wrong account
+    Given the deploy bootstrap script is read
     Then the script runs under bash and has valid bash syntax
     And no shell variable in the script is directly followed by a colon
     And the script holds no twelve digit account id
     And the script stops unless the signed in account is the one named on the command line
     And the script selects the GitHub OIDC provider by name
     And the script deletes the stack only from the ROLLBACK_COMPLETE state
+    And the script shows the change set and asks before applying
+    And the script can show the change set without applying it
+    And the script checks that the deployed template matches main
+
+  Scenario: A refused deploy tells the reader which command to run
+    Given the control plane deploy workflow is read
+    Then a failed deploy names the bootstrap command and the setup guide
+
+  Scenario: No policy repeats a statement id
+    Given the narrowed deploy template is parsed
+    Then no policy in the template repeats a statement id
 
   Scenario: The private settings script refuses a values file it cannot trust
     Given the deploy context script is read
@@ -109,5 +120,5 @@ Feature: The control plane deploys through narrowed roles that cannot act outsid
   Scenario: Someone setting up a new account is told what to do and in what order
     Given the new account setup guide is read
     Then the guide names every stack under infra
-    And the guide names the deploy context script and the apply script
+    And the guide names the deploy context script and the bootstrap script
     And the README and AGENTS both link to the guide

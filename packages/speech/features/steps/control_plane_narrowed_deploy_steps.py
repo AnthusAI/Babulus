@@ -32,7 +32,9 @@ SYNTHESIZE_APP_SCRIPT = (
     "assembly = control_plane_app.app.synth()\n"
     "print(json.dumps(assembly.stacks[0].template))\n"
 )
-DEFAULT_APPLY_SCRIPT = REPOSITORY_ROOT / "infra" / "control-plane-deploy" / "apply.sh"
+DEFAULT_APPLY_SCRIPT = (
+    REPOSITORY_ROOT / "infra" / "control-plane-deploy" / "bootstrap.sh"
+)
 DEFAULT_CONTEXT_SCRIPT = (
     REPOSITORY_ROOT / "infra" / "control-plane-deploy" / "write-deploy-context.sh"
 )
@@ -525,7 +527,7 @@ def step_exec_role_resource_policy(context) -> None:
     ), resources
 
 
-@given("the deploy apply script is read")
+@given("the deploy bootstrap script is read")
 def step_read_apply_script(context) -> None:
     context.apply_script_path = Path(
         context.config.userdata.get("deploy_apply_script", str(DEFAULT_APPLY_SCRIPT))
@@ -606,10 +608,10 @@ def step_guide_names_stacks(context) -> None:
         assert f"infra/{template.parent.name}" in context.setup_guide_text, template
 
 
-@then("the guide names the deploy context script and the apply script")
+@then("the guide names the deploy context script and the bootstrap script")
 def step_guide_names_scripts(context) -> None:
     assert "write-deploy-context.sh" in context.setup_guide_text
-    assert "apply.sh" in context.setup_guide_text
+    assert "bootstrap.sh" in context.setup_guide_text
 
 
 @then("the README and AGENTS both link to the guide")
@@ -617,3 +619,45 @@ def step_readme_and_agents_link(context) -> None:
     for name in ("README.md", "AGENTS.md"):
         text = (REPOSITORY_ROOT / name).read_text(encoding="utf-8")
         assert "docs/new-account-setup.md" in text, name
+
+
+@then("the script shows the change set and asks before applying")
+def step_script_asks(context) -> None:
+    text = context.apply_script_text
+    assert text.index("create-change-set") < text.index("Type yes")
+    assert text.index("Type yes") < text.index("execute-change-set")
+
+
+@then("the script can show the change set without applying it")
+def step_script_plan_only(context) -> None:
+    text = context.apply_script_text
+    assert "--plan-only" in text
+    assert text.index(
+        'if [[ -n "${plan_only}" ]]; then\n    aws cloudformation delete-change-set'
+    ) < text.index("execute-change-set")
+
+
+@then("the script checks that the deployed template matches main")
+def step_script_verifies(context) -> None:
+    assert "--template-stage Original" in context.apply_script_text
+
+
+@then("a failed deploy names the bootstrap command and the setup guide")
+def step_workflow_failure_notice(context) -> None:
+    assert "if: failure()" in context.deploy_workflow_text
+    assert "infra/control-plane-deploy/bootstrap.sh" in context.deploy_workflow_text
+    assert "docs/new-account-setup.md" in context.deploy_workflow_text
+
+
+@then("no policy in the template repeats a statement id")
+def step_no_duplicate_sids(context) -> None:
+    for key, resource in _deploy_template(context).items():
+        properties = resource["Properties"]
+        documents = (
+            [properties["PolicyDocument"]] if "PolicyDocument" in properties else []
+        )
+        documents += _role_policy_documents(resource)
+        for document in documents:
+            ids = json.dumps(document)
+            found = re.findall(r'"Sid": "([^"]+)"', ids)
+            assert len(found) == len(set(found)), key

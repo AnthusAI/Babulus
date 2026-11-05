@@ -88,7 +88,7 @@ Dollar figures and email addresses never go in Git. [control-plane-deploy.md](co
 key.
 
 ```bash
-infra/control-plane-deploy/write-deploy-context.sh <profile> <account id> <values file>
+AWS_PROFILE=<profile> infra/control-plane-deploy/write-deploy-context.sh --account <account id> --values <file>
 ```
 
 The values end up in Parameter Store as a SecureString, which is the place to change them later.
@@ -98,11 +98,12 @@ The values end up in Parameter Store as a SecureString, which is the place to ch
 Review the permissions in the template first. Then:
 
 ```bash
-infra/control-plane-deploy/apply.sh <profile> <account id>
+AWS_PROFILE=<profile> infra/control-plane-deploy/bootstrap.sh --account <account id>
 ```
 
-It stops and names the step to go back to if something is missing, applies the stack, and sets the repository variable
-`CONTROL_PLANE_DEPLOY_ROLE_ARN`. Why this is by hand: the roles are what the pipeline deploys with, and it is denied
+It stops and names the step to go back to if something is missing. It shows the change set and asks before applying
+(`--plan-only` applies nothing), sets the repository variable `CONTROL_PLANE_DEPLOY_ROLE_ARN`, and checks that the
+deployed template matches `main`. It is safe to rerun. Why this is by hand: the roles are what the pipeline deploys with, and it is denied
 from changing them, so that merged code can't widen its own permissions.
 
 ## 9. Deploy the control plane
@@ -115,8 +116,8 @@ template and repeat from the rerun steps below; new permissions need approval.
 
 | When | Do this |
 |---|---|
-| `infra/control-plane-deploy/template.yml` changes | Merge, run `apply.sh`, rerun the workflow |
-| A Cognito user pool is added to the account | Run `apply.sh`, because the protected list is a snapshot |
+| `infra/control-plane-deploy/template.yml` changes | Merge, run `bootstrap.sh`, rerun the workflow |
+| A Cognito user pool is added to the account | Run `bootstrap.sh`, because the protected list is a snapshot |
 | Any other `infra/` template changes | Rerun that stack's command above |
 | A private setting changes | Edit your values file, run `write-deploy-context.sh`, rerun the workflow |
 

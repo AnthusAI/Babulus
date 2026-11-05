@@ -51,12 +51,14 @@ First-time order across every stack is in
 the control plane the pipeline cannot deploy, because they are what it deploys
 with and it is denied from changing them.
 
-Run `infra/control-plane-deploy/apply.sh <aws-profile> <account-id>` with an
-administrator session. It stops unless that session is in the named account,
-takes the template from `origin/main`, looks up the parameter values without
-printing them, applies the stack and sets the repository variable
-`CONTROL_PLANE_DEPLOY_ROLE_ARN`. It deletes the stack first only if a failed
-create left it in `ROLLBACK_COMPLETE`.
+Run `AWS_PROFILE=<profile> infra/control-plane-deploy/bootstrap.sh --account <id>`
+with an administrator session. It stops unless that session is in the named
+account, takes the template from `origin/main` and looks up the parameter values
+without printing them. It shows the change set and asks before applying (`--yes`
+skips the question, `--plan-only` applies nothing), sets the repository variable
+`CONTROL_PLANE_DEPLOY_ROLE_ARN` and checks that the deployed template matches
+main. It deletes the stack first only if a failed create left it in
+`ROLLBACK_COMPLETE`, which holds no resources.
 
 Run it again when:
 
@@ -68,8 +70,8 @@ Run it again when:
 
 ## The deploy-context parameter
 
-Write it with `infra/control-plane-deploy/write-deploy-context.sh <aws-profile>
-<account-id> <values-file>`, starting from `deploy-context.example.json`. The
+Write it with `AWS_PROFILE=<profile> infra/control-plane-deploy/write-deploy-context.sh
+--account <id> --values <file>`, starting from `deploy-context.example.json`. The
 values file stays outside the repository. The SSM parameter holds one JSON object of CDK context values. Its keys are the
 context names the stack reads. The workflow masks every value in the logs and
 never prints the object or uploads `cdk.out`.
