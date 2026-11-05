@@ -696,3 +696,33 @@ def step_workflow_clears_failed_create(context) -> None:
     delete = text.index('"delete-stack", *stack, "--role-arn", exec_role_arn')
     assert text.count("delete-stack") == 1
     assert guard < delete < text.index('"cdk", "deploy"')
+
+
+@then("no resource in the stack is kept when its first create fails")
+def step_no_resource_kept_on_failed_create(context) -> None:
+    resources = context.synthesized_stack_template["Resources"]
+    for key, resource in resources.items():
+        assert resource.get("DeletionPolicy") != "Retain", key
+
+
+@then(
+    "the tables, the audio bucket and the worker image repository are kept when the stack is deleted"
+)
+def step_data_kept_on_delete(context) -> None:
+    resources = context.synthesized_stack_template["Resources"].values()
+    for kind in ("AWS::DynamoDB::Table", "AWS::S3::Bucket", "AWS::ECR::Repository"):
+        found = [r for r in resources if r["Type"] == kind]
+        assert found, kind
+        for resource in found:
+            assert resource["DeletionPolicy"] == "RetainExceptOnCreate", kind
+
+
+@then("the execution role can delete what a failed first create made")
+def step_exec_role_can_clean_up(context) -> None:
+    text = json.dumps(_deploy_template(context))
+    for action in (
+        "dynamodb:DeleteTable",
+        "s3:DeleteBucket",
+        "ecr:DeleteRepository",
+    ):
+        assert f'"{action}"' in text, action
