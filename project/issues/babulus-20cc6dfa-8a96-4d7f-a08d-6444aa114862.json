@@ -1,0 +1,20 @@
+{
+  "id": "babulus-20cc6dfa-8a96-4d7f-a08d-6444aa114862",
+  "title": "Document first-time AWS account setup and off-golden-path steps",
+  "description": "",
+  "type": "task",
+  "status": "open",
+  "priority": 2,
+  "assignee": null,
+  "creator": null,
+  "parent": null,
+  "labels": [],
+  "dependencies": [],
+  "comments": [],
+  "created_at": "2026-11-05T12:36:06.023989Z",
+  "updated_at": "2026-11-05T12:36:06.024061Z",
+  "closed_at": null,
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {}
+}

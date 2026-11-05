@@ -185,6 +185,12 @@ providers:
     region: "..."
 ```
 
+## Setting up a new AWS account
+
+A merge to `main` deploys, but a new account needs some stacks and settings in place first, and a few of them are
+applied by a person rather than the pipeline. Follow [docs/new-account-setup.md](docs/new-account-setup.md) in order,
+before the first deploy. It also lists what must be rerun by hand later.
+
 ## Distribution
 
 This repo builds a Node-based CLI package. The generated JSON/audio are the build artifacts you commit or ship with your Remotion project.

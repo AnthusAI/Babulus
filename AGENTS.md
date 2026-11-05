@@ -279,6 +279,18 @@ A merge to `main` deploys. CI runs first; when it passes, the Deploy job starts 
 
 Never deploy from a laptop.
 
+## Steps outside the normal deploy
+
+Merging to `main` is the normal path. A few things it cannot do, and [docs/new-account-setup.md](docs/new-account-setup.md) is the ordered list of them. Read it before setting up an account or changing anything in `infra/`.
+
+- `infra/*` stacks are not deployed by the pipeline. A person with an administrator session applies them. Agents do not run these unless the person tells them to; give them the exact command from the guide.
+- A control plane deploy that fails with `AccessDenied` usually means the roles are out of date or lack a permission. The workflow says so and names the command.
+- After changing `infra/control-plane-deploy/template.yml`: merge, have a person run `bootstrap.sh`, then rerun the deploy workflow.
+- After a Cognito user pool is added to the account: have a person rerun `bootstrap.sh`, or the new pool is unprotected.
+- Private settings live in Parameter Store, never in the repository. Do not hand-edit them when `write-deploy-context.sh` covers them.
+- New IAM permissions need Ryan's approval, explained plainly. If a permission check blocks you from applying a stack, stop and hand over the command; do not work around it.
+- If you add a step the pipeline does not perform, add it to `docs/new-account-setup.md` in the same change. A spec fails if an `infra/` stack is missing from that document.
+
 ## AWS Account Info
 
 - **Region:** us-east-1

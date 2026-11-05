@@ -155,3 +155,8 @@ jobs:
           sys.stdout.flush()
           sys.exit(subprocess.run(command).returncode)
           PYTHON
+
+      - name: Say what to do about a refused deploy
+        if: failure()
+        run: |
+          echo "::error::If the log shows AccessDenied, the deploy roles are out of date or lack a permission. Add any missing permission to infra/control-plane-deploy/template.yml, then a person runs infra/control-plane-deploy/bootstrap.sh. See docs/new-account-setup.md."

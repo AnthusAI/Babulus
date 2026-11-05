@@ -1,0 +1,10 @@
+{
+  "bootstrap_bucket_name": "<CDK bootstrap assets bucket name>",
+  "prospectus_quota_endpoint": "<Prospectus accounts API base URL>",
+  "spend_ceiling_per_attempt": "<dollars>",
+  "spend_ceiling_per_day": "<dollars>",
+  "spend_ceiling_per_month": "<dollars>",
+  "spend_estimate_rate_per_vcpu_second": "<dollars>",
+  "spend_budget_daily_limit": "<dollars>",
+  "budget_alert_email": "<alert address>"
+}
