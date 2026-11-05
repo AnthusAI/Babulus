@@ -126,5 +126,5 @@ Adding a step the pipeline doesn't perform? Add it to this guide in the same cha
 ## Not yet proven
 
 This order comes from the templates and from setting up one existing account, not from a clean run in an empty account.
-That account's control plane has not finished its first deploy yet, and running a real job also needs a worker image in
-`babulus-worker`, which nothing builds yet.
+In that account the control plane deployed after several permission fixes, now in the template. Running a real job
+also needs a worker image in `babulus-worker`, which nothing builds yet.

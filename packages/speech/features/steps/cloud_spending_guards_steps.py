@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import base64
+import json
 import os
 from decimal import Decimal
 from unittest.mock import Mock
@@ -215,6 +217,34 @@ def step_unauth_create(context) -> None:
     context.create_response = context.fencing_router.call(
         "POST", "/jobs", body={"text": "Hello world.", "tts_backend": "kokoro"}
     )
+
+
+@when("a caller creates a speech job with a body that is not JSON")
+def step_create_with_bad_body(context) -> None:
+    context.create_response = context.fencing_router.call(
+        "POST",
+        "/jobs",
+        raw_body="e30=",
+        is_base64_encoded=False,
+    )
+
+
+@when("an unauthenticated caller creates a speech job with a base64 encoded body")
+def step_unauth_create_base64(context) -> None:
+    raw = '{"text": "Hello world.", "tts_backend": "kokoro"}'
+    context.create_response = context.fencing_router.call(
+        "POST",
+        "/jobs",
+        raw_body=base64.b64encode(raw.encode("utf-8")).decode("ascii"),
+        is_base64_encoded=True,
+    )
+
+
+@then('the request is refused as a bad request with "{error}"')
+def step_refused_bad_request(context, error: str) -> None:
+    body = json.loads(context.create_response["body"])
+    assert context.create_response["statusCode"] == 400, context.create_response
+    assert body["error"] == error, body
 
 
 @when("a caller with an unknown site key creates a speech job")
