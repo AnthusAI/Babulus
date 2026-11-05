@@ -38,12 +38,18 @@ distribution="$(aws cloudfront list-distributions "${aws_args[@]}" \
 bucket="$(aws cloudformation describe-stack-resource "${aws_args[@]}" --stack-name CDKToolkit \
   --logical-resource-id StagingBucket --query 'StackResourceDetail.PhysicalResourceId' --output text)"
 
-for value in "${oidc}" "${owner_id}" "${repo_id}" "${pools}" "${distribution}" "${bucket}"; do
-  if [[ -z "${value}" || "${value}" == "None" ]]; then
-    echo "A required value is missing; stopping." >&2
+require() {
+  if [[ -z "$2" || "$2" == "None" ]]; then
+    echo "Missing $1. See docs/new-account-setup.md for the step that creates it; stopping." >&2
     exit 1
   fi
-done
+}
+require "the GitHub OIDC provider (infra/github-deploy)" "${oidc}"
+require "the GitHub owner id" "${owner_id}"
+require "the GitHub repository id" "${repo_id}"
+require "the Studio's Cognito user pools (first Amplify build)" "${pools}"
+require "the babul.us front door (infra/babul-us-edge)" "${distribution}"
+require "the CDK bootstrap bucket (cdk bootstrap)" "${bucket}"
 
 status="$(aws cloudformation describe-stacks "${aws_args[@]}" --stack-name "${stack}" \
   --query 'Stacks[0].StackStatus' --output text 2>/dev/null || echo NONE)"
@@ -59,3 +65,6 @@ aws cloudformation deploy "${aws_args[@]}" --stack-name "${stack}" --template-fi
   "ProtectedUserPoolArns=${pools}" "ProtectedDistributionArn=arn:aws:cloudfront::${account}:distribution/${distribution}" \
   "BootstrapBucketName=${bucket}"
 aws cloudformation describe-stacks "${aws_args[@]}" --stack-name "${stack}" --query 'Stacks[0].StackStatus' --output text
+deploy_role="$(aws cloudformation describe-stacks "${aws_args[@]}" --stack-name "${stack}" \
+  --query 'Stacks[0].Outputs[?OutputKey==`DeployRoleArn`].OutputValue | [0]' --output text)"
+gh variable set CONTROL_PLANE_DEPLOY_ROLE_ARN --repo AnthusAI/Babulus --body "${deploy_role}"

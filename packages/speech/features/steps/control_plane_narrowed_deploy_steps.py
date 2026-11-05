@@ -33,6 +33,13 @@ SYNTHESIZE_APP_SCRIPT = (
     "print(json.dumps(assembly.stacks[0].template))\n"
 )
 DEFAULT_APPLY_SCRIPT = REPOSITORY_ROOT / "infra" / "control-plane-deploy" / "apply.sh"
+DEFAULT_CONTEXT_SCRIPT = (
+    REPOSITORY_ROOT / "infra" / "control-plane-deploy" / "write-deploy-context.sh"
+)
+EXAMPLE_CONTEXT = (
+    REPOSITORY_ROOT / "infra" / "control-plane-deploy" / "deploy-context.example.json"
+)
+SETUP_GUIDE = REPOSITORY_ROOT / "docs" / "new-account-setup.md"
 MANAGED_POLICY_LIMIT = 6144
 INLINE_POLICY_LIMIT = 10240
 ACCOUNT_ID_PATTERN = re.compile(r"\b\d{12}\b")
@@ -562,3 +569,51 @@ def step_script_delete_guard(context) -> None:
     guard = text.index('if [[ "${status}" == "ROLLBACK_COMPLETE" ]]')
     assert text.count("delete-stack") == 1
     assert guard < text.index("delete-stack") < text.index("\nfi", guard)
+
+
+@given("the deploy context script is read")
+def step_read_context_script(context) -> None:
+    context.apply_script_path = DEFAULT_CONTEXT_SCRIPT
+    context.apply_script_text = DEFAULT_CONTEXT_SCRIPT.read_text(encoding="utf-8")
+
+
+@then("the script refuses a values file that still holds placeholders")
+def step_context_script_refuses_placeholders(context) -> None:
+    assert 'contains("<")' in context.apply_script_text
+
+
+@then("the script writes a SecureString parameter")
+def step_context_script_secure(context) -> None:
+    assert "--type SecureString" in context.apply_script_text
+
+
+@then("the example values file holds only placeholders")
+def step_example_context_placeholders(context) -> None:
+    values = json.loads(EXAMPLE_CONTEXT.read_text(encoding="utf-8"))
+    assert values
+    for key, value in values.items():
+        assert value.startswith("<") and value.endswith(">"), key
+
+
+@given("the new account setup guide is read")
+def step_read_setup_guide(context) -> None:
+    context.setup_guide_text = SETUP_GUIDE.read_text(encoding="utf-8")
+
+
+@then("the guide names every stack under infra")
+def step_guide_names_stacks(context) -> None:
+    for template in (REPOSITORY_ROOT / "infra").glob("*/template.yml"):
+        assert f"infra/{template.parent.name}" in context.setup_guide_text, template
+
+
+@then("the guide names the deploy context script and the apply script")
+def step_guide_names_scripts(context) -> None:
+    assert "write-deploy-context.sh" in context.setup_guide_text
+    assert "apply.sh" in context.setup_guide_text
+
+
+@then("the README and AGENTS both link to the guide")
+def step_readme_and_agents_link(context) -> None:
+    for name in ("README.md", "AGENTS.md"):
+        text = (REPOSITORY_ROOT / name).read_text(encoding="utf-8")
+        assert "docs/new-account-setup.md" in text, name

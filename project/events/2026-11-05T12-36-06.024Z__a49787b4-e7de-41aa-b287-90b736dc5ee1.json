@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "event_id": "a49787b4-e7de-41aa-b287-90b736dc5ee1",
+  "issue_id": "babulus-20cc6dfa-8a96-4d7f-a08d-6444aa114862",
+  "event_type": "issue_created",
+  "occurred_at": "2026-11-05T12:36:06.024Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "Document first-time AWS account setup and off-golden-path steps",
+    "description": "",
+    "issue_type": "task",
+    "status": "open",
+    "priority": 2,
+    "assignee": null,
+    "parent": null,
+    "labels": []
+  }
+}

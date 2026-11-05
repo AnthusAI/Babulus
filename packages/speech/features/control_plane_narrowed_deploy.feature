@@ -97,3 +97,17 @@ Feature: The control plane deploys through narrowed roles that cannot act outsid
     And the script stops unless the signed in account is the one named on the command line
     And the script selects the GitHub OIDC provider by name
     And the script deletes the stack only from the ROLLBACK_COMPLETE state
+
+  Scenario: The private settings script refuses a values file it cannot trust
+    Given the deploy context script is read
+    Then the script runs under bash and has valid bash syntax
+    And the script stops unless the signed in account is the one named on the command line
+    And the script refuses a values file that still holds placeholders
+    And the script writes a SecureString parameter
+    And the example values file holds only placeholders
+
+  Scenario: Someone setting up a new account is told what to do and in what order
+    Given the new account setup guide is read
+    Then the guide names every stack under infra
+    And the guide names the deploy context script and the apply script
+    And the README and AGENTS both link to the guide

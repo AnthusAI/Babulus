@@ -4,8 +4,8 @@ The `BabulusControlPlane` stack (`packages/control-plane`) deploys from
 GitHub Actions through three roles that can act only on that stack. It does
 not use the CDK bootstrap roles: the bootstrap CloudFormation execution role
 has full administrator access, so anything merged to main could then change
-anything in the account. Nothing in this path is applied automatically. The
-roles are created once by hand, after their permissions are reviewed.
+anything in the account. The stack itself deploys automatically on merge. Its
+roles do not: a person applies them, after reviewing their permissions.
 
 ## What it is
 
@@ -44,26 +44,33 @@ and on a manual run from main. It does nothing until the repository variable
 control plane checks" on the same commit and does not deploy if that check
 fails or never reports. Runs are serialized and never cancelled midway.
 
-## One-time apply order
+## Applying and changing the roles
 
-1. Review the template's permissions.
-2. Run `infra/control-plane-deploy/apply.sh <aws-profile> <account-id>` with an
-   administrator session. It stops unless that session is in the named account,
-   takes the template from `origin/main`, looks up the parameter values without
-   printing them, and applies the stack. It deletes the stack first only if a
-   failed create left it in `ROLLBACK_COMPLETE`. A later change to the template
-   needs the same run, because the pipeline cannot change its own roles.
-3. Check that the script ends by printing `CREATE_COMPLETE` or `UPDATE_COMPLETE`.
-4. Create the SecureString parameter `/babulus/control-plane/deploy-context`
-   (see below).
-5. Set the repository variable `CONTROL_PLANE_DEPLOY_ROLE_ARN` to the
-   `DeployRoleArn` output of the deploy stack. The execution role's ARN is
-   derived from it by the workflow.
-6. Merge to main, or run the workflow manually from main.
+First-time order across every stack is in
+[new-account-setup.md](new-account-setup.md). These roles are the one part of
+the control plane the pipeline cannot deploy, because they are what it deploys
+with and it is denied from changing them.
+
+Run `infra/control-plane-deploy/apply.sh <aws-profile> <account-id>` with an
+administrator session. It stops unless that session is in the named account,
+takes the template from `origin/main`, looks up the parameter values without
+printing them, applies the stack and sets the repository variable
+`CONTROL_PLANE_DEPLOY_ROLE_ARN`. It deletes the stack first only if a failed
+create left it in `ROLLBACK_COMPLETE`.
+
+Run it again when:
+
+- `infra/control-plane-deploy/template.yml` changes. Merge first, because the
+  script reads `origin/main`, then run it, then rerun the deploy workflow. The
+  run the merge itself started uses the old roles and may fail.
+- A Cognito user pool is added to the account. The protected list is a snapshot
+  taken when the script runs, so a new pool has no protection until then.
 
 ## The deploy-context parameter
 
-The SSM parameter holds one JSON object of CDK context values. Its keys are the
+Write it with `infra/control-plane-deploy/write-deploy-context.sh <aws-profile>
+<account-id> <values-file>`, starting from `deploy-context.example.json`. The
+values file stays outside the repository. The SSM parameter holds one JSON object of CDK context values. Its keys are the
 context names the stack reads. The workflow masks every value in the logs and
 never prints the object or uploads `cdk.out`.
 
