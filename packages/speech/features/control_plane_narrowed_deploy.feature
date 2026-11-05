@@ -109,6 +109,13 @@ Feature: The control plane deploys through narrowed roles that cannot act outsid
     Given the control plane deploy workflow is read
     Then the workflow deletes the stack only from ROLLBACK_COMPLETE and only through the execution role, before CDK runs
 
+  Scenario: A failed first create leaves nothing behind, and a real deployment keeps its data
+    Given the control plane app is synthesized in narrowed deploy mode
+    And the narrowed deploy template is parsed
+    Then no resource in the stack is kept when its first create fails
+    And the tables, the audio bucket and the worker image repository are kept when the stack is deleted
+    And the execution role can delete what a failed first create made
+
   Scenario: A deploy warns when the roles are behind the template in the repository
     Given the control plane deploy workflow is read
     Then the workflow warns about out of date roles before it deploys and does not stop for it
