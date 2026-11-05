@@ -685,3 +685,14 @@ def step_deploy_role_reads_own_template(context) -> None:
     ]
     assert len(own_stack) == 1
     assert _statement_actions(own_stack[0]) == ["cloudformation:GetTemplate"]
+
+
+@then(
+    "the workflow deletes the stack only from ROLLBACK_COMPLETE and only through the execution role, before CDK runs"
+)
+def step_workflow_clears_failed_create(context) -> None:
+    text = context.deploy_workflow_text
+    guard = text.index('status.stdout.strip() == "ROLLBACK_COMPLETE"')
+    delete = text.index('"delete-stack", *stack, "--role-arn", exec_role_arn')
+    assert text.count("delete-stack") == 1
+    assert guard < delete < text.index('"cdk", "deploy"')

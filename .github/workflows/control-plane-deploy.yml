@@ -134,6 +134,27 @@ jobs:
 
           role_arn = os.environ["DEPLOY_ROLE_ARN"]
           exec_role_arn = role_arn.rsplit("/", 1)[0] + "/babulus-control-plane-cfn-exec"
+
+          # A failed first create leaves an empty stack that must be deleted. CDK
+          # deletes it without naming a role, which the deploy role may not do.
+          stack = ["--stack-name", "BabulusControlPlane"]
+          status = subprocess.run(
+              [
+                  "aws", "cloudformation", "describe-stacks", *stack,
+                  "--query", "Stacks[0].StackStatus", "--output", "text",
+              ],
+              capture_output=True,
+              text=True,
+          )
+          if status.returncode == 0 and status.stdout.strip() == "ROLLBACK_COMPLETE":
+              subprocess.run(
+                  ["aws", "cloudformation", "delete-stack", *stack, "--role-arn", exec_role_arn],
+                  check=True,
+              )
+              subprocess.run(
+                  ["aws", "cloudformation", "wait", "stack-delete-complete", *stack],
+                  check=True,
+              )
           fetched = subprocess.run(
               [
                   "aws", "ssm", "get-parameter",
