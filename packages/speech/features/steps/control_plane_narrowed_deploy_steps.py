@@ -661,3 +661,27 @@ def step_no_duplicate_sids(context) -> None:
             ids = json.dumps(document)
             found = re.findall(r'"Sid": "([^"]+)"', ids)
             assert len(found) == len(set(found)), key
+
+
+@then(
+    "the workflow warns about out of date roles before it deploys and does not stop for it"
+)
+def step_workflow_warns_out_of_date(context) -> None:
+    text = context.deploy_workflow_text
+    warning = text.index("The deploy roles are out of date")
+    assert warning < text.index("Deploy through the narrowed execution role")
+    assert "::warning::" in text[warning - 40 : warning]
+    check = text[text.index("Warn if the deploy roles are out of date") : warning]
+    assert "check=True" not in check
+
+
+@then("the deploy role can do nothing to its own roles stack but read its template")
+def step_deploy_role_reads_own_template(context) -> None:
+    role = _role(context, "ControlPlaneDeployRole")
+    own_stack = [
+        statement
+        for statement in _role_statements(role, "Allow")
+        if _text(statement["Resource"]).endswith(":stack/${AWS::StackName}/*")
+    ]
+    assert len(own_stack) == 1
+    assert _statement_actions(own_stack[0]) == ["cloudformation:GetTemplate"]
