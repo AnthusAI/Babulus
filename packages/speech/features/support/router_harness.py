@@ -44,6 +44,8 @@ class RouterHarness:
         headers: dict[str, str] | None = None,
         body: dict[str, Any] | None = None,
         path_parameters: dict[str, str] | None = None,
+        raw_body: str | None = None,
+        is_base64_encoded: bool = False,
     ) -> dict[str, Any]:
         """Invoke the router with an API Gateway HTTP API v2 event.
 
@@ -52,6 +54,8 @@ class RouterHarness:
         :param headers: Request headers.
         :param body: JSON request body.
         :param path_parameters: Route path parameters.
+        :param raw_body: Body sent exactly as given, in place of ``body``.
+        :param is_base64_encoded: Whether API Gateway base64 encoded the body.
         :returns: The router's proxy response.
         """
         return self.router.handler(
@@ -59,7 +63,12 @@ class RouterHarness:
                 "requestContext": {"http": {"method": method}},
                 "rawPath": path,
                 "headers": headers or {},
-                "body": json.dumps(body) if body is not None else None,
+                "body": (
+                    raw_body
+                    if raw_body is not None
+                    else json.dumps(body) if body is not None else None
+                ),
+                "isBase64Encoded": is_base64_encoded,
                 "pathParameters": path_parameters,
                 "queryStringParameters": None,
             },

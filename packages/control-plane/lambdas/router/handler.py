@@ -174,8 +174,9 @@ def handler(event: dict[str, Any], _context: Any) -> dict[str, Any]:
     path = event.get("rawPath", "")
     path_params = event.get("pathParameters") or {}
     headers = {k.lower(): v for k, v in (event.get("headers") or {}).items()}
-    body_raw = event.get("body") or ""
-    body = json.loads(body_raw) if body_raw else {}
+    body = _request_body(event)
+    if body is None:
+        return _response(400, {"error": "invalid_json_body"})
 
     try:
         if method == "POST" and path == "/jobs":
@@ -266,6 +267,25 @@ def handler(event: dict[str, Any], _context: Any) -> dict[str, Any]:
 
 def _utc_now_iso() -> str:
     return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+def _request_body(event: dict[str, Any]) -> dict[str, Any] | None:
+    """Parse the request body as a JSON object.
+
+    :param event: API Gateway HTTP API v2 event.
+    :returns: The body object, an empty object for no body, or None when the body
+        is not a JSON object.
+    """
+    raw = event.get("body") or ""
+    if not raw:
+        return {}
+    try:
+        if event.get("isBase64Encoded"):
+            raw = base64.b64decode(raw).decode("utf-8")
+        body = json.loads(raw)
+    except (ValueError, UnicodeDecodeError):
+        return None
+    return body if isinstance(body, dict) else None
 
 
 def _response(status: int, payload: dict[str, Any]) -> dict[str, Any]:

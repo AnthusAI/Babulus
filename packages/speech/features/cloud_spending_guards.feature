@@ -229,6 +229,17 @@ Feature: Cloud compute starts only after every spending guard passes
     And no Batch job is submitted
     And Prospectus received no requests
 
+  Scenario: A request body that is not a JSON object is refused and starts nothing
+    When a caller creates a speech job with a body that is not JSON
+    Then the request is refused as a bad request with "invalid_json_body"
+    And no timer was armed by the request
+    And no Batch job is submitted
+    And Prospectus received no requests
+
+  Scenario: A base64 encoded JSON body is read like any other
+    When an unauthenticated caller creates a speech job with a base64 encoded body
+    Then the request is refused with "site_key_required"
+
   Scenario: Creating a speech job with an unknown site key starts nothing
     When a caller with an unknown site key creates a speech job
     Then the request is refused with "invalid_site_key"
