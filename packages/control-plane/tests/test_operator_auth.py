@@ -72,3 +72,15 @@ def test_unknown_signing_key_refreshes_the_jwks_at_most_once_per_interval(
         reasons.append(raised.value.reason)
     assert jwk_client.fetch_count - fetches_before == 1
     assert reasons == ["invalid_token", "unknown_signing_key", "unknown_signing_key"]
+
+
+@pytest.mark.parametrize("groups", [(), ("viewers",)])
+def test_verifier_rejects_a_pool_user_outside_the_operators_group(
+    groups: tuple[str, ...],
+) -> None:
+    """A valid token for a user who is not an operator is refused."""
+    with pytest.raises(auritus_operator_auth.OperatorTokenError) as raised:
+        auritus_operator_auth.verify_operator_token(
+            operator_access_token(groups=groups)
+        )
+    assert raised.value.reason == "not_an_operator"

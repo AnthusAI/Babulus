@@ -98,6 +98,7 @@ def operator_access_token(
     client_id: str = TEST_CLI_CLIENT_ID,
     user_pool_id: str = TEST_USER_POOL_ID,
     key_id: str = TEST_SIGNING_KEY_ID,
+    groups: tuple[str, ...] = ("operators",),
 ) -> str:
     """Mint an operator token for the test user pool.
 
@@ -108,6 +109,7 @@ def operator_access_token(
     :param client_id: The app client the token claims to be issued to.
     :param user_pool_id: The user pool named in the issuer claim.
     :param key_id: The ``kid`` header naming the signing key.
+    :param groups: The ``cognito:groups`` claim; empty leaves it out.
     :returns: A compact RS256 JWT.
     """
     install_test_user_pool()
@@ -124,6 +126,8 @@ def operator_access_token(
         "exp": issued_at + 3600,
         "jti": f"jti-{now}",
     }
+    if groups:
+        claims["cognito:groups"] = list(groups)
     if token_use == "id":
         claims["aud"] = client_id
     signing_key = _pool_private_key if signed_by_pool else _forger_private_key

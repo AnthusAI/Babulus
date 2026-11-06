@@ -60,6 +60,9 @@ def user_pool_issuer(user_pool_id: str) -> str:
     return f"https://cognito-idp.{region}.amazonaws.com/{user_pool_id}"
 
 
+OPERATORS_GROUP = "operators"
+
+
 def verify_operator_token(token: str) -> dict[str, Any]:
     """Verify a Cognito operator access token and return its claims.
 
@@ -69,8 +72,8 @@ def verify_operator_token(token: str) -> dict[str, Any]:
     :param token: The raw JWT from the ``Authorization`` header.
     :returns: The verified token claims.
     :raises OperatorTokenError: If the token is missing, forged, expired,
-        not an access token, issued to another client, or if the verifier
-        is not configured.
+        not an access token, issued to another client, held by a user outside
+        the operators group, or if the verifier is not configured.
     """
     user_pool_id = os.environ.get("USER_POOL_ID", "").strip()
     allowed_client_ids = {
@@ -103,6 +106,11 @@ def verify_operator_token(token: str) -> dict[str, Any]:
         raise OperatorTokenError("not_an_access_token")
     if claims.get("client_id") not in allowed_client_ids:
         raise OperatorTokenError("client_not_allowed")
+    # Any Google account can sign in to the pool, so a valid token alone does
+    # not make an operator. Only a person with AWS access can add a user to
+    # this group.
+    if OPERATORS_GROUP not in (claims.get("cognito:groups") or []):
+        raise OperatorTokenError("not_an_operator")
     return claims
 
 

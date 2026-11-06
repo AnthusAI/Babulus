@@ -40,6 +40,12 @@ TOKEN_DESCRIPTIONS = {
     "an operator access token issued to an unknown client": lambda: (
         operator_access_token(client_id="someone-elses-client")
     ),
+    "an access token for a pool user outside the operators group": lambda: (
+        operator_access_token(groups=())
+    ),
+    "an access token for a pool user in some other group": lambda: (
+        operator_access_token(groups=("viewers",))
+    ),
     "an operator access token issued by a different user pool": lambda: (
         operator_access_token(user_pool_id=OTHER_USER_POOL_ID)
     ),
