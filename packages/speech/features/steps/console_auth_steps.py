@@ -1,139 +1,154 @@
-"""Step definitions for web console operator authentication specs."""
+"""Steps that read the web console's sign-in source."""
 
 from __future__ import annotations
 
-from behave import given, then, when
+import re
+from pathlib import Path
+
+from behave import given, then
+
+CONSOLE = Path(__file__).resolve().parents[4] / "apps" / "console"
 
 
-@given("a mock Cognito endpoint for web client")
-def step_mock_cognito_web(context) -> None:
-    context.cognito_users = {
-        "operator@example.com": "secret123",
-    }
-    context.web_session = None
+def _read(*parts: str) -> str:
+    return CONSOLE.joinpath(*parts).read_text(encoding="utf-8")
 
 
-@when('the web console submits email "{email}" and password "{password}"')
-def step_web_login(context, email: str, password: str) -> None:
-    stored = context.cognito_users.get(email)
-    if stored and stored == password:
-        context.web_session = {
-            "email": email,
-            "id_token": f"mock-id-token-for-{email}",
-            "access_token": f"mock-access-token-for-{email}",
-            "refresh_token": "mock-refresh-token",
-        }
-    else:
-        context.web_session = None
+@given("the console's login page source is read")
+def step_read_login(context) -> None:
+    context.console_text = _read("app", "login", "page.tsx")
 
 
-@then("the console receives an access token and id token")
-def step_check_tokens(context) -> None:
-    assert context.web_session is not None
-    assert "access_token" in context.web_session
-    assert "id_token" in context.web_session
+@given("the console's sign-in library is read")
+def step_read_auth(context) -> None:
+    context.console_text = _read("lib", "auth.ts")
 
 
-@then("the operator identity is authenticated")
-def step_check_authenticated(context) -> None:
-    assert context.web_session is not None
-    assert context.web_session["email"] == "operator@example.com"
+@given("the console's API client is read")
+def step_read_api(context) -> None:
+    context.console_text = _read("lib", "api.ts")
 
 
-@given("an authenticated web console session")
-def step_given_auth_session(context) -> None:
-    context.web_session = {
-        "email": "operator@example.com",
-        "access_token": "valid-web-jwt-token",
-        "id_token": "valid-id-token",
-    }
+@given("the console's auth guard is read")
+def step_read_guard(context) -> None:
+    context.console_text = _read("components", "AuthGuard.tsx")
 
 
-@when("an admin API request is dispatched")
-def step_dispatch_admin_req(context) -> None:
-    token = context.web_session.get("access_token") if context.web_session else None
-    headers = {}
-    if token:
-        headers["Authorization"] = f"Bearer {token}"
-    context.dispatched_headers = headers
+@given("the console's header is read")
+def step_read_header(context) -> None:
+    context.console_text = _read("components", "Header.tsx")
 
 
-@then("the request header contains a Bearer authorization token")
-def step_check_bearer_header(context) -> None:
-    auth = context.dispatched_headers.get("Authorization", "")
-    assert auth.startswith("Bearer ")
-    assert len(auth.split(" ")) == 2
+@then('the page has a button labelled "{label}"')
+def step_button_label(context, label: str) -> None:
+    assert label in context.console_text
+    assert context.console_text.count("<button") == 1
 
 
-@when("the operator logs out")
-def step_operator_logout(context) -> None:
-    context.web_session = None
+@then("the page has no password or email field")
+def step_no_fields(context) -> None:
+    assert "<input" not in context.console_text
+    assert 'type="password"' not in context.console_text
 
 
-@then("the session tokens are cleared")
-def step_tokens_cleared(context) -> None:
-    assert context.web_session is None
+@then("the page offers no other identity provider")
+def step_no_other_provider(context) -> None:
+    for word in ("IdentityCenter", "Identity Center", "Cognito credentials", "SAML"):
+        assert word not in context.console_text, word
 
 
-@given("an unauthenticated visitor")
-def step_unauthenticated_visitor(context) -> None:
-    context.web_session = None
-    context.current_route = None
+@then('it builds a hosted UI authorize address with identity_provider "{provider}"')
+def step_authorize(context, provider: str) -> None:
+    assert f"identity_provider: '{provider}'" in context.console_text
+    assert "/oauth2/authorize" in context.console_text
 
 
-@when('the visitor attempts to navigate to "{route}"')
-def step_visitor_navigates(context, route: str) -> None:
-    # AuthGuard redirects to /login if no valid session exists and route != /login
-    if not context.web_session and route != "/login":
-        context.current_route = "/login"
-    else:
-        context.current_route = route
+@then("it asks for the authorization code flow with an S256 code challenge")
+def step_pkce(context) -> None:
+    text = context.console_text
+    assert "response_type: 'code'" in text
+    assert "code_challenge_method: 'S256'" in text
+    assert "crypto.subtle.digest('SHA-256'" in text
 
 
-@then('the visitor is redirected to "{expected_route}"')
-def step_visitor_redirected(context, expected_route: str) -> None:
-    assert context.current_route == expected_route
+@then("it checks a random state and keeps the verifier only in session storage")
+def step_state(context) -> None:
+    text = context.console_text
+    assert "crypto.getRandomValues" in text
+    assert "sessionStorage.setItem(PKCE_STORAGE_KEY" in text
+    assert "state !== expectedState" in text
+    assert "localStorage.setItem(PKCE" not in text
 
 
-@given("the operator is on the login page")
-def step_on_login_page(context) -> None:
-    context.current_page = "/login"
-    context.oauth_redirect_url = None
+@then('the default hosted UI domain prefix is "{prefix}"')
+def step_domain_prefix(context, prefix: str) -> None:
+    assert f"DEFAULT_COGNITO_DOMAIN = '{prefix}'" in context.console_text
+    assert "NEXT_PUBLIC_COGNITO_DOMAIN" in context.console_text
 
 
-@when('the operator selects sign in with "{provider}"')
-def step_selects_sso(context, provider: str) -> None:
-    # URL format constructed by console for Cognito Hosted UI SSO
-    domain = "auritus-auth.auth.us-east-1.amazoncognito.com"
-    client_id = "7gu2aukbk8n6c2o5a1q805ckp7"
-    redirect_uri = "http://localhost:3000/callback"
-    context.oauth_redirect_url = (
-        f"https://{domain}/oauth2/authorize?identity_provider={provider}"
-        f"&client_id={client_id}&response_type=code&redirect_uri={redirect_uri}"
+@then("the callback exchange sends the code verifier to the token endpoint")
+def step_verifier_sent(context) -> None:
+    assert "/oauth2/token" in context.console_text
+    assert "code_verifier: verifier" in context.console_text
+
+
+@then("the callback exchange refuses a state that does not match")
+def step_state_refused(context) -> None:
+    text = context.console_text
+    assert text.index("state !== expectedState") < text.index("/oauth2/token")
+
+
+@then("it never uses USER_PASSWORD_AUTH or InitiateAuth")
+def step_no_password_auth(context) -> None:
+    assert "USER_PASSWORD_AUTH" not in context.console_text
+    assert "InitiateAuth" not in context.console_text
+    assert "PASSWORD" not in context.console_text
+
+
+@then("it has no simulated development session")
+def step_no_simulation(context) -> None:
+    text = context.console_text.lower()
+    assert "simulated" not in text
+    assert "dev-token" not in text
+    assert "loginwithcognito" not in text
+
+
+@then("the console source has no password field anywhere")
+def step_no_password_anywhere(context) -> None:
+    for path in list((CONSOLE / "app").rglob("*.tsx")) + list(
+        (CONSOLE / "components").rglob("*.tsx")
+    ):
+        assert 'type="password"' not in path.read_text(encoding="utf-8"), path
+
+
+@then("a 403 answer becomes the message that the person is not an operator yet")
+def step_403(context) -> None:
+    text = context.console_text
+    assert re.search(r"status === 403\) \{[^}]*NOT_OPERATOR_MESSAGE", text, re.S)
+    assert "not an operator yet" in _read("lib", "auth.ts")
+
+
+@then("a 401 answer is still reported as Unauthorized")
+def step_401(context) -> None:
+    assert re.search(
+        r"status === 401\) \{\s*throw new Error\('Unauthorized'\)", context.console_text
     )
-    context.selected_provider = provider
 
 
-@then(
-    'the browser initiates OAuth authorization against the Cognito Hosted UI for provider "{provider}"'
-)
-def step_verify_oauth_redirect(context, provider: str) -> None:
-    assert context.oauth_redirect_url is not None
-    assert f"identity_provider={provider}" in context.oauth_redirect_url
-    assert "response_type=code" in context.oauth_redirect_url
+@then('a visitor without a stored session is redirected to "{route}"')
+def step_redirect(context, route: str) -> None:
+    text = context.console_text
+    assert "getStoredSession()" in text
+    assert f"router.replace('{route}')" in text
 
 
-@given("an OAuth authorization code from an upstream identity provider")
-def step_given_auth_code(context) -> None:
-    context.auth_code = "mock-auth-code-from-idp"
+@then("the login and callback pages need no session")
+def step_open_pages(context) -> None:
+    assert "pathname === '/login' || pathname === '/callback'" in context.console_text
 
 
-@when("the callback page processes the code")
-def step_process_callback(context) -> None:
-    # Exchange code for tokens
-    context.web_session = {
-        "email": "operator@example.com",
-        "id_token": "sso-id-token",
-        "access_token": "sso-access-token",
-        "refresh_token": "sso-refresh-token",
-    }
+@then('signing out clears the stored session and returns to "{route}"')
+def step_logout(context, route: str) -> None:
+    text = context.console_text
+    assert "clearSession();" in text
+    assert f"router.push('{route}')" in text

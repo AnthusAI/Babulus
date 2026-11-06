@@ -75,3 +75,30 @@ def step_no_password(context) -> None:
 def step_srp(context) -> None:
     for client in _resources_of(context, "AWS::Cognito::UserPoolClient"):
         assert "ALLOW_USER_SRP_AUTH" in client["Properties"]["ExplicitAuthFlows"]
+
+
+@then("every Cognito app client lists Google as its only sign-in provider")
+def step_google_only(context) -> None:
+    clients = _resources_of(context, "AWS::Cognito::UserPoolClient")
+    assert clients
+    for client in clients:
+        providers = client["Properties"]["SupportedIdentityProviders"]
+        assert providers == ["Google"], providers
+
+
+@then('the route "{route_key}" requires the operator authorizer')
+def step_route_authorized(context, route_key: str) -> None:
+    routes = [
+        r
+        for r in _resources_of(context, "AWS::ApiGatewayV2::Route")
+        if r["Properties"]["RouteKey"] == route_key
+    ]
+    assert len(routes) == 1, route_key
+    assert routes[0]["Properties"]["AuthorizationType"] == "CUSTOM", route_key
+
+
+@then("the API allows the PATCH method from a browser")
+def step_cors_patch(context) -> None:
+    apis = _resources_of(context, "AWS::ApiGatewayV2::Api")
+    assert apis
+    assert "PATCH" in apis[0]["Properties"]["CorsConfiguration"]["AllowMethods"]

@@ -1,4 +1,11 @@
-/** Operator authentication and token management for Auritus Web Console. */
+/**
+ * Operator sign-in for the Babulus control plane console.
+ *
+ * Google is the only way in: the Cognito hosted UI runs the authorization code
+ * flow with PKCE and sends the browser back to /callback. Being signed in does
+ * not make someone an operator; the API answers 403 until an administrator adds
+ * them to the operators group.
+ */
 
 export interface Session {
   email: string;
@@ -35,116 +42,96 @@ export function clearSession(): void {
   localStorage.removeItem(SESSION_STORAGE_KEY);
 }
 
-export async function loginWithCognito(email: string, password: string): Promise<Session> {
-  const clientId = process.env.NEXT_PUBLIC_COGNITO_CLIENT_ID;
-  const region = process.env.NEXT_PUBLIC_AWS_REGION || 'us-east-1';
+const PKCE_STORAGE_KEY = 'babulus_console_pkce';
+const DEFAULT_COGNITO_DOMAIN = 'babulus-control-plane-auth';
 
+export const NOT_OPERATOR_MESSAGE =
+  'You are signed in, but you are not an operator yet. Ask an administrator to add you to the operators group, then sign in again.';
+
+function cognitoConfig() {
+  const domain = process.env.NEXT_PUBLIC_COGNITO_DOMAIN || DEFAULT_COGNITO_DOMAIN;
+  const region = process.env.NEXT_PUBLIC_AWS_REGION || 'us-east-1';
+  const clientId = process.env.NEXT_PUBLIC_COGNITO_CLIENT_ID || '';
+  const redirectUri = `${window.location.origin}/callback`;
+  return { host: `${domain}.auth.${region}.amazoncognito.com`, clientId, redirectUri };
+}
+
+function base64Url(bytes: Uint8Array): string {
+  let binary = '';
+  bytes.forEach((byte) => {
+    binary += String.fromCharCode(byte);
+  });
+  return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+
+function randomString(byteLength: number): string {
+  return base64Url(crypto.getRandomValues(new Uint8Array(byteLength)));
+}
+
+async function challengeFor(verifier: string): Promise<string> {
+  const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(verifier));
+  return base64Url(new Uint8Array(digest));
+}
+
+/** Build the hosted UI address that signs in with Google, and remember the PKCE secrets for /callback. */
+export async function startGoogleSignIn(): Promise<string> {
+  const { host, clientId, redirectUri } = cognitoConfig();
   if (!clientId) {
-    // If no client ID configured in env, fallback to simulated dev session
-    const devSession: Session = {
-      email,
-      accessToken: `dev-token-${Date.now()}`,
-      idToken: `dev-id-${Date.now()}`,
-      expiresAt: Date.now() + 3600 * 1000,
-    };
-    saveSession(devSession);
-    return devSession;
+    throw new Error('Sign-in is not configured: set NEXT_PUBLIC_COGNITO_CLIENT_ID (see apps/console/README.md).');
   }
+  const verifier = randomString(64);
+  const state = randomString(16);
+  sessionStorage.setItem(PKCE_STORAGE_KEY, JSON.stringify({ verifier, state }));
 
-  const endpoint = `https://cognito-idp.${region}.amazonaws.com/`;
-  const response = await fetch(endpoint, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-amz-json-1.1',
-      'X-Amz-Target': 'AWSCognitoIdentityProviderService.InitiateAuth',
-    },
-    body: JSON.stringify({
-      AuthFlow: 'USER_PASSWORD_AUTH',
-      ClientId: clientId,
-      AuthParameters: {
-        USERNAME: email,
-        PASSWORD: password,
-      },
-    }),
-  });
-
-  const data = await response.json();
-
-  if (!response.ok) {
-    const errorMsg = data.__type ? `${data.__type.split('#').pop()}: ${data.message}` : data.message || 'Login failed';
-    throw new Error(errorMsg);
-  }
-
-  const authResult = data.AuthenticationResult;
-  if (!authResult || !authResult.AccessToken) {
-    throw new Error('Authentication succeeded but no access token returned.');
-  }
-
-  const session: Session = {
-    email,
-    accessToken: authResult.AccessToken,
-    idToken: authResult.IdToken || '',
-    expiresAt: Date.now() + (authResult.ExpiresIn || 3600) * 1000,
-  };
-
-  saveSession(session);
-  return session;
-}
-
-export function getSsoAuthorizeUrl(provider: 'Google' | 'IdentityCenter'): string {
-  const domain = process.env.NEXT_PUBLIC_COGNITO_DOMAIN || 'auritus-auth';
-  const region = process.env.NEXT_PUBLIC_AWS_REGION || 'us-east-1';
-  const clientId = process.env.NEXT_PUBLIC_COGNITO_CLIENT_ID || '';
-  const redirectUri =
-    typeof window !== 'undefined'
-      ? `${window.location.origin}/callback`
-      : 'http://localhost:3001/callback';
-
-  return `https://${domain}.auth.${region}.amazoncognito.com/oauth2/authorize?identity_provider=${encodeURIComponent(
-    provider
-  )}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&client_id=${encodeURIComponent(
-    clientId
-  )}&scope=openid+email+profile`;
-}
-
-export async function exchangeSsoCode(code: string): Promise<Session> {
-  const domain = process.env.NEXT_PUBLIC_COGNITO_DOMAIN || 'auritus-auth';
-  const region = process.env.NEXT_PUBLIC_AWS_REGION || 'us-east-1';
-  const clientId = process.env.NEXT_PUBLIC_COGNITO_CLIENT_ID || '';
-  const redirectUri =
-    typeof window !== 'undefined'
-      ? `${window.location.origin}/callback`
-      : 'http://localhost:3001/callback';
-
-  const tokenUrl = `https://${domain}.auth.${region}.amazoncognito.com/oauth2/token`;
   const params = new URLSearchParams({
-    grant_type: 'authorization_code',
+    identity_provider: 'Google',
+    response_type: 'code',
     client_id: clientId,
-    code,
     redirect_uri: redirectUri,
+    scope: 'openid email profile',
+    state,
+    code_challenge: await challengeFor(verifier),
+    code_challenge_method: 'S256',
   });
+  return `https://${host}/oauth2/authorize?${params.toString()}`;
+}
 
-  const response = await fetch(tokenUrl, {
+/** Trade the code Google sign-in returned for tokens, checking the state and sending the PKCE verifier. */
+export async function completeGoogleSignIn(code: string, state: string | null): Promise<Session> {
+  const { host, clientId, redirectUri } = cognitoConfig();
+  const stored = sessionStorage.getItem(PKCE_STORAGE_KEY);
+  sessionStorage.removeItem(PKCE_STORAGE_KEY);
+  if (!stored) {
+    throw new Error('This sign-in did not start in this browser tab. Start again from the sign-in page.');
+  }
+  const { verifier, state: expectedState } = JSON.parse(stored) as { verifier: string; state: string };
+  if (!state || state !== expectedState) {
+    throw new Error('The sign-in response did not match the request. Start again from the sign-in page.');
+  }
+
+  const response = await fetch(`https://${host}/oauth2/token`, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    body: params.toString(),
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({
+      grant_type: 'authorization_code',
+      client_id: clientId,
+      code,
+      redirect_uri: redirectUri,
+      code_verifier: verifier,
+    }).toString(),
   });
-
   const data = await response.json();
   if (!response.ok) {
     throw new Error(data.error_description || data.error || 'Failed to exchange authorization code.');
   }
 
-  let email = 'operator@sso';
+  let email = '';
   if (data.id_token) {
     try {
-      const payloadBase64 = data.id_token.split('.')[1];
-      const decoded = JSON.parse(atob(payloadBase64));
-      if (decoded.email) email = decoded.email;
+      const payload = data.id_token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
+      email = JSON.parse(atob(payload)).email || '';
     } catch {
-      // fallback to placeholder
+      // The address is only shown in the header.
     }
   }
 
@@ -154,7 +141,6 @@ export async function exchangeSsoCode(code: string): Promise<Session> {
     idToken: data.id_token || '',
     expiresAt: Date.now() + (data.expires_in || 3600) * 1000,
   };
-
   saveSession(session);
   return session;
 }

@@ -42,5 +42,21 @@ if ! jq -e 'type == "object" and (.bootstrap_bucket_name | type == "string") and
   exit 2
 fi
 
+# set-google-client.sh adds google_oauth_secret_arn to the stored parameter. Keep
+# it when the values file does not name one, so rewriting the settings cannot
+# send the next deploy back to a placeholder secret.
+work_dir="$(mktemp -d)"
+trap 'rm -rf "${work_dir}"' EXIT
+merged_file="${work_dir}/context.json"
+existing_arn="$(aws ssm get-parameter "${aws_args[@]}" --name /babulus/control-plane/deploy-context \
+  --with-decryption --query Parameter.Value --output text 2> /dev/null \
+  | jq -r '.google_oauth_secret_arn // empty' 2> /dev/null || true)"
+if [[ -n "${existing_arn}" ]] && ! jq -e 'has("google_oauth_secret_arn")' "${values_file}" > /dev/null; then
+  SECRET_ARN="${existing_arn}" jq '. + {google_oauth_secret_arn: env.SECRET_ARN}' "${values_file}" > "${merged_file}"
+  echo "Kept google_oauth_secret_arn from the stored settings." >&2
+else
+  cp "${values_file}" "${merged_file}"
+fi
+
 aws ssm put-parameter "${aws_args[@]}" --name /babulus/control-plane/deploy-context --type SecureString \
-  --overwrite --value "file://${values_file}" --query Version --output text
+  --overwrite --value "file://${merged_file}" --query Version --output text

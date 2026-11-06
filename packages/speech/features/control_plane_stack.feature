@@ -18,3 +18,13 @@ Feature: The control plane deploys as one Babulus stack that signs people in wit
     Given the control plane app is synthesized
     Then no Cognito app client allows USER_PASSWORD_AUTH
     And every Cognito app client allows SRP sign-in
+
+  Scenario: Every app client signs in through Google and nothing else
+    Given the control plane app is synthesized
+    Then every Cognito app client lists Google as its only sign-in provider
+
+  Scenario: The cloud switch route is behind the operator authorizer and the browser may call it
+    Given the control plane app is synthesized
+    Then the route "PATCH /sites/{id}" requires the operator authorizer
+    And the route "GET /sites" requires the operator authorizer
+    And the API allows the PATCH method from a browser

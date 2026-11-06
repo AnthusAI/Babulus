@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "event_id": "506584d5-5366-48b2-b782-2aecf4d259ab",
+  "issue_id": "babulus-c88c51e1-e103-498a-9e9f-f45be0b2bbea",
+  "event_type": "issue_created",
+  "occurred_at": "2026-11-06T12:08:25.609Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "Google-only operator sign-in, cloud switch per site, operator scripts",
+    "description": "",
+    "issue_type": "task",
+    "status": "open",
+    "priority": 2,
+    "assignee": null,
+    "parent": null,
+    "labels": []
+  }
+}
