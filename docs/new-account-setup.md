@@ -112,6 +112,13 @@ Run the "Control plane deploy" workflow from `main`, or merge a change under `pa
 deploys on merge. Any permission the first run lacks shows up as an `AccessDenied` in the workflow log. Add it to the
 template and repeat from the rerun steps below; new permissions need approval.
 
+## Operators
+
+An operator token is accepted only for a user in the control plane user pool's `operators` group. Anyone with a Google
+account can sign in to that pool once Google sign-in is configured, so membership is what makes an operator, and only a
+person with an administrator session can grant it. The group does not exist until a person creates it, so nobody is an
+operator by default.
+
 ## What must be rerun by hand later
 
 | When | Do this |

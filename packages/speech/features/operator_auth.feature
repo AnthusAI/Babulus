@@ -3,7 +3,9 @@ Feature: Operator authentication on the Auritus API
   Auritus user pool to the CLI or the web console. The API gateway
   authorizer and the router both verify that token's signature against the
   user pool's published signing keys, its issuer, its expiry, that it is an
-  access token, and that it was issued to an Auritus client. A worker that
+  access token, that it was issued to an Auritus client, and that its user
+  is in the operators group. Anyone with a Google account can sign in to the
+  pool, so only a person with AWS access can make a user an operator. A worker that
   is not an operator may only touch the one job whose single-use job token
   it holds. Nothing else gets through: not a forged token, not an expired
   token, and not a bare "Bearer" header with an arbitrary value.
@@ -24,6 +26,8 @@ Feature: Operator authentication on the Auritus API
       | an operator access token that expired an hour ago        |
       | an operator ID token signed by the user pool             |
       | an operator access token issued to an unknown client     |
+      | an access token for a pool user outside the operators group |
+      | an access token for a pool user in some other group      |
       | an operator access token issued by a different user pool |
       | an unsigned operator access token                        |
       | an operator access token signed with a shared secret     |
