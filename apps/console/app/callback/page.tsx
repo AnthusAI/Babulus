@@ -2,7 +2,7 @@
 
 import React, { Suspense, useEffect, useRef, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { exchangeSsoCode, getStoredSession } from '../../lib/auth';
+import { completeGoogleSignIn, getStoredSession } from '../../lib/auth';
 
 function CallbackContent() {
   const router = useRouter();
@@ -27,7 +27,7 @@ function CallbackContent() {
     }
 
     if (!code) {
-      setError('No authorization code received from identity provider.');
+      setError('No authorization code received from Google sign-in.');
       return;
     }
 
@@ -39,7 +39,7 @@ function CallbackContent() {
 
     async function processCode(authCode: string) {
       try {
-        await exchangeSsoCode(authCode);
+        await completeGoogleSignIn(authCode, searchParams ? searchParams.get('state') : null);
         router.replace('/');
       } catch (err: any) {
         // If an active session was already stored, do not flash error
@@ -47,7 +47,7 @@ function CallbackContent() {
           router.replace('/');
           return;
         }
-        setError(err.message || 'Failed to complete SSO authentication.');
+        setError(err.message || 'Failed to complete Google sign-in.');
       }
     }
 
@@ -57,7 +57,7 @@ function CallbackContent() {
   if (error) {
     return (
       <div className="console-container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh' }}>
-        <div className="card" style={{ maxWidth: '450px', padding: '2rem', textAlign: 'center' }}>
+        <div style={{ maxWidth: '450px', padding: '2rem', textAlign: 'center', background: 'var(--card)', borderRadius: '12px' }}>
           <h2 style={{ color: 'var(--danger)', marginBottom: '1rem' }}>Authentication Failed</h2>
           <p style={{ color: 'var(--ink-muted)', marginBottom: '1.5rem', fontSize: '0.9rem' }}>{error}</p>
           <button onClick={() => router.push('/login')} className="button button-primary" style={{ width: '100%' }}>
@@ -70,7 +70,7 @@ function CallbackContent() {
 
   return (
     <div className="console-container" style={{ padding: '5rem 0', textAlign: 'center', color: 'var(--ink-muted)' }}>
-      Completing single sign-on authentication...
+      Completing Google sign-in...
     </div>
   );
 }

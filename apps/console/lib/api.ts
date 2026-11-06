@@ -1,6 +1,6 @@
 /** Admin API client for Auritus monitoring and queue control. */
 
-import { getAuthorizationHeader } from './auth';
+import { getAuthorizationHeader, NOT_OPERATOR_MESSAGE } from './auth';
 
 export interface OverviewMetrics {
   counts: {
@@ -93,8 +93,12 @@ async function apiFetch<T>(path: string, options: RequestInit = {}): Promise<T> 
   };
 
   const response = await fetch(url, { ...options, headers });
-  if (response.status === 401 || response.status === 403) {
+  if (response.status === 401) {
     throw new Error('Unauthorized');
+  }
+  if (response.status === 403) {
+    // Signed in with Google but not in the operators group.
+    throw new Error(NOT_OPERATOR_MESSAGE);
   }
   if (!response.ok) {
     const errorBody = await response.json().catch(() => ({}));
@@ -168,6 +172,8 @@ export interface Site {
   label: string;
   disabled: boolean;
   created_at: string;
+  cloud_enabled?: boolean;
+  account_id?: string | null;
 }
 
 export interface CreatedSite extends Site {
@@ -181,6 +187,16 @@ export async function fetchSites(): Promise<Site[]> {
 
 export async function createSite(label: string): Promise<CreatedSite> {
   return apiFetch('/sites', { method: 'POST', body: JSON.stringify({ label }) });
+}
+
+export async function setSiteCloud(
+  siteId: string,
+  cloudEnabled: boolean,
+  accountId?: string
+): Promise<{ site_id: string; cloud_enabled: boolean; account_id: string | null }> {
+  const body: { cloud_enabled: boolean; account_id?: string } = { cloud_enabled: cloudEnabled };
+  if (accountId) body.account_id = accountId;
+  return apiFetch(`/sites/${encodeURIComponent(siteId)}`, { method: 'PATCH', body: JSON.stringify(body) });
 }
 
 export async function revokeSite(siteId: string): Promise<{ site_id: string; deleted: boolean }> {

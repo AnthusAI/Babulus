@@ -23,5 +23,8 @@ export default defineConfig({
     command: 'npm run dev',
     url: 'http://localhost:3000',
     reuseExistingServer: !process.env.CI,
+    // Sign-in specs need a client id to build the hosted UI address; it is a
+    // placeholder and nothing is sent to Cognito.
+    env: { NEXT_PUBLIC_COGNITO_CLIENT_ID: 'test-client-id' },
   },
 });

@@ -223,6 +223,9 @@ def handler(event: dict[str, Any], _context: Any) -> dict[str, Any]:
             return _create_site(body, headers)
         if method == "GET" and path == "/sites":
             return _list_sites(headers)
+        if method == "PATCH" and path.startswith("/sites/"):
+            site_id = path_params.get("id") or path.removeprefix("/sites/")
+            return _update_site(site_id, body, headers)
         if method == "DELETE" and path.startswith("/sites/"):
             site_id = path_params.get("id") or path.removeprefix("/sites/")
             return _delete_site(site_id, headers)
@@ -1741,9 +1744,77 @@ def _list_sites(headers: dict[str, str]) -> dict[str, Any]:
                     "label": row.get("label"),
                     "disabled": bool(row.get("disabled")),
                     "created_at": row.get("created_at"),
+                    "cloud_enabled": row.get("cloud_enabled") is True,
+                    "account_id": row.get("account_id"),
                 }
                 for row in items
             ]
+        },
+    )
+
+
+def _valid_account_uuid(value: Any) -> str | None:
+    """Return a Prospectus Account UUID in canonical form, or None.
+
+    :param value: The ``account_id`` a caller supplied.
+    :returns: The lower-case hyphenated UUID, or None when it is not one.
+    """
+    if not isinstance(value, str):
+        return None
+    try:
+        parsed = uuid.UUID(value.strip())
+    except ValueError:
+        return None
+    return str(parsed)
+
+
+def _update_site(
+    site_id: str, body: dict[str, Any], headers: dict[str, str]
+) -> dict[str, Any]:
+    """Turn the cloud fallback on or off for one site.
+
+    Cloud compute is charged to a Prospectus Account, so turning it on needs a
+    valid Account UUID. Turning it off may omit the Account, which is then
+    left as it was.
+
+    :param site_id: The site to change.
+    :param body: ``{"cloud_enabled": bool, "account_id": "<uuid>"}``.
+    :param headers: Request headers for auth (operator-only).
+    :returns: 200 with the site's cloud fields.
+    :raises ValueError: ``invalid_cloud_enabled`` or ``invalid_account_id``.
+    :raises LookupError: If no site exists for the given id.
+    """
+    _require_operator(headers)
+    cloud_enabled = body.get("cloud_enabled")
+    if not isinstance(cloud_enabled, bool):
+        raise ValueError("invalid_cloud_enabled")
+    account_id = None
+    if cloud_enabled or body.get("account_id") is not None:
+        account_id = _valid_account_uuid(body.get("account_id"))
+        if account_id is None:
+            raise ValueError("invalid_account_id")
+    if not _sites.get_item(Key={"site_id": site_id}).get("Item"):
+        raise LookupError("site_not_found")
+    names = {"#cloud": "cloud_enabled", "#updated": "updated_at"}
+    values: dict[str, Any] = {":cloud": cloud_enabled, ":updated": _utc_now_iso()}
+    expression = "SET #cloud = :cloud, #updated = :updated"
+    if account_id is not None:
+        names["#account"] = "account_id"
+        values[":account"] = account_id
+        expression += ", #account = :account"
+    updated = _sites.update_item(
+        Key={"site_id": site_id},
+        UpdateExpression=expression,
+        ExpressionAttributeNames=names,
+        ExpressionAttributeValues=values,
+        ReturnValues="ALL_NEW",
+    )["Attributes"]
+    return _response(
+        200,
+        {
+            "site_id": site_id,
+            "cloud_enabled": updated.get("cloud_enabled") is True,
+            "account_id": updated.get("account_id"),
         },
     )
 

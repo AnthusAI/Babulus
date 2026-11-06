@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { fetchSites, createSite, revokeSite, Site, CreatedSite } from '../../lib/api';
+import { Cloud, CloudOff } from 'lucide-react';
+import { fetchSites, createSite, revokeSite, setSiteCloud, Site, CreatedSite } from '../../lib/api';
 import { formatEmbedSnippet } from '../../lib/embed';
 
 export default function SitesPage() {
@@ -12,6 +13,8 @@ export default function SitesPage() {
   const [isCreating, setIsCreating] = useState(false);
   const [createdSite, setCreatedSite] = useState<CreatedSite | null>(null);
   const [copyFeedback, setCopyFeedback] = useState<string | null>(null);
+  const [accountDrafts, setAccountDrafts] = useState<Record<string, string>>({});
+  const [savingCloudFor, setSavingCloudFor] = useState<string | null>(null);
 
   // Load sites on mount
   useEffect(() => {
@@ -85,6 +88,35 @@ export default function SitesPage() {
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Failed to revoke site';
       setError(message);
+    }
+  };
+
+  const handleSetCloud = async (site: Site, enabled: boolean) => {
+    const draft = accountDrafts[site.site_id];
+    const accountId = (draft !== undefined ? draft : site.account_id || '').trim();
+    if (enabled && !accountId) {
+      setError('Turning cloud on needs the Prospectus Account UUID to charge.');
+      return;
+    }
+    setSavingCloudFor(site.site_id);
+    setError(null);
+    try {
+      const updated = await setSiteCloud(site.site_id, enabled, accountId || undefined);
+      setSites((prev) =>
+        prev.map((row) =>
+          row.site_id === site.site_id
+            ? { ...row, cloud_enabled: updated.cloud_enabled, account_id: updated.account_id }
+            : row
+        )
+      );
+      setAccountDrafts((prev) => {
+        const { [site.site_id]: _removed, ...rest } = prev;
+        return rest;
+      });
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Failed to update the cloud setting');
+    } finally {
+      setSavingCloudFor(null);
     }
   };
 
@@ -201,19 +233,20 @@ export default function SitesPage() {
               <th>Label</th>
               <th>Created At</th>
               <th>Status</th>
+              <th>Cloud</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
             {error && !sites.length ? (
               <tr>
-                <td colSpan={5} style={{ textAlign: 'center', padding: '2.5rem', color: 'var(--danger)' }}>
+                <td colSpan={6} style={{ textAlign: 'center', padding: '2.5rem', color: 'var(--danger)' }}>
                   Error loading sites: {error}
                 </td>
               </tr>
             ) : sites.length === 0 ? (
               <tr>
-                <td colSpan={5} style={{ textAlign: 'center', padding: '2.5rem', color: 'var(--ink-muted)' }}>
+                <td colSpan={6} style={{ textAlign: 'center', padding: '2.5rem', color: 'var(--ink-muted)' }}>
                   {loading ? 'Loading sites...' : 'No sites yet. Create one above to get started.'}
                 </td>
               </tr>
@@ -237,6 +270,44 @@ export default function SitesPage() {
                     <span className={`badge badge-${site.disabled ? 'disabled' : 'active'}`}>
                       {site.disabled ? 'Disabled' : 'Active'}
                     </span>
+                  </td>
+                  <td>
+                    <div style={{ display: 'grid', gap: '0.4rem', minWidth: '260px' }}>
+                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.8rem', fontWeight: 600 }}>
+                        {site.cloud_enabled ? <Cloud size={14} /> : <CloudOff size={14} />}
+                        {site.cloud_enabled ? 'Cloud on' : 'Cloud off'}
+                      </span>
+                      <input
+                        type="text"
+                        aria-label={`Prospectus Account UUID for ${site.label}`}
+                        value={accountDrafts[site.site_id] ?? site.account_id ?? ''}
+                        onChange={(e) => setAccountDrafts((prev) => ({ ...prev, [site.site_id]: e.target.value }))}
+                        placeholder="Prospectus Account UUID"
+                        className="mono"
+                        style={{ width: '100%', padding: '0.35rem 0.6rem', borderRadius: '8px', border: 'none', background: 'var(--paper-deep)', fontSize: '0.75rem' }}
+                        disabled={savingCloudFor === site.site_id}
+                      />
+                      <div style={{ display: 'flex', gap: '0.4rem' }}>
+                        <button
+                          onClick={() => handleSetCloud(site, true)}
+                          className="button"
+                          style={{ fontSize: '0.75rem', padding: '0.3rem 0.6rem', border: 'none', borderRadius: '8px' }}
+                          disabled={savingCloudFor === site.site_id}
+                        >
+                          {site.cloud_enabled ? 'Save account' : 'Turn on'}
+                        </button>
+                        {site.cloud_enabled && (
+                          <button
+                            onClick={() => handleSetCloud(site, false)}
+                            className="button"
+                            style={{ fontSize: '0.75rem', padding: '0.3rem 0.6rem', border: 'none', borderRadius: '8px' }}
+                            disabled={savingCloudFor === site.site_id}
+                          >
+                            Turn off
+                          </button>
+                        )}
+                      </div>
+                    </div>
                   </td>
                   <td>
                     <button

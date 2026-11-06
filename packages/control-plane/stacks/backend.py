@@ -460,10 +460,9 @@ class BackendStack(Stack):
         # AWS IAM Identity Center or corporate SAML 2.0 Identity Provider
         saml_metadata_url = self.node.try_get_context("saml_metadata_url")
         saml_idp = None
-        supported_idps = [
-            cognito.UserPoolClientIdentityProvider.COGNITO,
-            cognito.UserPoolClientIdentityProvider.GOOGLE,
-        ]
+        # Google only: leaving COGNITO out means no app client offers a
+        # username and password, so signing in is always a Google account.
+        supported_idps = [cognito.UserPoolClientIdentityProvider.GOOGLE]
 
         if saml_metadata_url:
             saml_idp = cognito.UserPoolIdentityProviderSaml(
@@ -652,6 +651,7 @@ class BackendStack(Stack):
                     apigwv2.CorsHttpMethod.GET,
                     apigwv2.CorsHttpMethod.POST,
                     apigwv2.CorsHttpMethod.PUT,
+                    apigwv2.CorsHttpMethod.PATCH,
                     apigwv2.CorsHttpMethod.DELETE,
                     apigwv2.CorsHttpMethod.OPTIONS,
                 ],
@@ -715,6 +715,7 @@ class BackendStack(Stack):
         for method, path in [
             (apigwv2.HttpMethod.POST, "/sites"),
             (apigwv2.HttpMethod.GET, "/sites"),
+            (apigwv2.HttpMethod.PATCH, "/sites/{id}"),
             (apigwv2.HttpMethod.DELETE, "/sites/{id}"),
         ]:
             http_api.add_routes(

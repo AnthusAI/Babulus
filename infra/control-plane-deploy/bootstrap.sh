@@ -63,6 +63,14 @@ for pool_id in $(aws cognito-idp list-user-pools --max-results 60 "${aws_args[@]
 done
 distribution="$(aws cloudfront list-distributions "${aws_args[@]}" \
   --query 'DistributionList.Items[?Comment==`babul.us front door`].Id | [0]' --output text)"
+# Present once set-google-client.sh has run. Left empty otherwise, so the stack
+# makes its own placeholder secret.
+google_secret_name="babulus-control-plane-google-oauth"
+google_secret_arn="$(aws secretsmanager describe-secret "${aws_args[@]}" --secret-id "${google_secret_name}" \
+  --query ARN --output text 2> /dev/null || echo "")"
+if [[ "${google_secret_arn}" == "None" ]]; then
+  google_secret_arn=""
+fi
 bucket="$(aws cloudformation describe-stack-resource "${aws_args[@]}" --stack-name CDKToolkit \
   --logical-resource-id StagingBucket --query 'StackResourceDetail.PhysicalResourceId' --output text)"
 
@@ -104,7 +112,8 @@ aws cloudformation create-change-set "${aws_args[@]}" "${change_set_args[@]}" --
   "ParameterKey=GitHubRepoId,ParameterValue=${repo_id}" \
   "ParameterKey=ProtectedUserPoolArns,ParameterValue='${pools}'" \
   "ParameterKey=ProtectedDistributionArn,ParameterValue=arn:aws:cloudfront::${account}:distribution/${distribution}" \
-  "ParameterKey=BootstrapBucketName,ParameterValue=${bucket}" > /dev/null
+  "ParameterKey=BootstrapBucketName,ParameterValue=${bucket}" \
+  "ParameterKey=GoogleOAuthSecretArn,ParameterValue=${google_secret_arn}" > /dev/null
 aws cloudformation wait change-set-create-complete "${aws_args[@]}" "${change_set_args[@]}" 2> /dev/null || true
 change_set_status="$(aws cloudformation describe-change-set "${aws_args[@]}" "${change_set_args[@]}" --query Status --output text)"
 change_set_reason="$(aws cloudformation describe-change-set "${aws_args[@]}" "${change_set_args[@]}" --query StatusReason --output text)"

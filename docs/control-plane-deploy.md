@@ -76,6 +76,10 @@ values file stays outside the repository. The SSM parameter holds one JSON objec
 context names the stack reads. The workflow masks every value in the logs and
 never prints the object or uploads `cdk.out`.
 
+Sign-in is Google only: the user pool's app clients list Google (and SAML, only if `saml_metadata_url` is set) as their
+providers, never the pool's own username and password sign-in. Operators are the members of the pool's `operators`
+group; `infra/control-plane-deploy/add-operator.sh` manages it.
+
 Required key:
 
 - `bootstrap_bucket_name`
@@ -83,7 +87,12 @@ Required key:
 Keys the stack reads, set only the ones that apply:
 
 - `account`, `region`
-- `google_oauth_secret_arn`, `cognito_domain_prefix`, `saml_metadata_url`
+- `google_oauth_secret_arn`: the full ARN of the Secrets Manager secret
+  `babulus-control-plane-google-oauth`, JSON `{client_id, client_secret}`. Written for you by
+  `infra/control-plane-deploy/set-google-client.sh`, never by hand. When it is set the stack reads that secret. When it
+  is missing the stack makes its own secret holding `REPLACE_ME` placeholders, which a later deploy could reset, so set
+  it before the first deploy. `bootstrap.sh` finds the same secret by name and lets the execution role read it.
+- `cognito_domain_prefix` (default `babulus-control-plane-auth`), `saml_metadata_url`
 - `worker_image_tag`
 - `alert_from_address`, `daily_site_quota`
 - `claim_timeout_seconds`, `race_seconds`, `retention_days`
